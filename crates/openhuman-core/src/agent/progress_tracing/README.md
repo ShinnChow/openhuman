@@ -27,12 +27,14 @@ content).
   POST to the backend's `/telemetry/langfuse/ingestion` proxy, derived from
   `effective_backend_api_url`, authenticated with the session bearer; the
   backend injects the Langfuse project keys and forwards to
-  `/api/public/ingestion`. Carries `x-sdk-name` via
-  `crate::api::product::product_identity_header` per AGENTS.md. Pushes are
-  allowlisted to `staging`/`development` hosts (`environment_for_base`,
-  `LANGFUSE_PUSH_ENVIRONMENTS`) and skipped elsewhere with one `info` log per
-  process; batches are split at 500 events. Failures are logged and swallowed
-  so tracing never breaks a turn.
+  `/api/public/ingestion`. `push_spans` builds a bare `reqwest` request and
+  stamps `x-sdk-name` via `crate::api::product::product_identity_header`
+  (AGENTS.md "Backend API"); `push_observations` sends through the vendored
+  `tinyagents_harness::LangfuseClient::proxy`, splitting the batch at 500
+  events. Pushes are allowlisted to `staging`/`development` hosts
+  (`environment_for_base`, `LANGFUSE_PUSH_ENVIRONMENTS`) and skipped elsewhere
+  with one `info` log per process. Failures are logged and swallowed so
+  tracing never breaks a turn.
 - `journal_projection.rs` — `spans_from_observations` rebuilds spans from the
   durable `AgentObservation` journal instead of the live stream, by folding
   journalled events through the same `SpanCollector`, so a UI/supervisor can

@@ -17,7 +17,7 @@
 //!   preference into the `user_profile` memory namespace.
 //!   [`SavePreferenceTool`] stores a free-form preference in either the
 //!   `general` or `situational` lane.
-//! - [`RunWorkflowTool`] / [`AwaitWorkflowTool`] — spawn a
+//! - `RunWorkflowTool` / `AwaitWorkflowTool` — spawn a
 //!   `crate::skills::runtime` workflow run and wait on its outcome. Compiled
 //!   in only with the `skills` feature, so builds without it omit both tools
 //!   from the catalog.
