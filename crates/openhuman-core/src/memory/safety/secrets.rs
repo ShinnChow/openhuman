@@ -14,9 +14,12 @@ use serde_json::Value;
 
 use super::pii::redact_pii;
 
-const REDACTED_SECRET: &str = "[REDACTED_SECRET]";
-const REDACTED_PRIVATE_KEY: &str = "[REDACTED_PRIVATE_KEY]";
-const MAX_JSON_SANITIZE_DEPTH: usize = 128;
+// `pub(super)`: `safety_tests.rs` and its nested test submodules assert
+// against these tokens and the depth cap directly, the same way they could
+// when this file's contents lived in the parent's own scope via `include!`.
+pub(super) const REDACTED_SECRET: &str = "[REDACTED_SECRET]";
+pub(super) const REDACTED_PRIVATE_KEY: &str = "[REDACTED_PRIVATE_KEY]";
+pub(super) const MAX_JSON_SANITIZE_DEPTH: usize = 128;
 
 /// Tally of what a sanitization pass changed.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
