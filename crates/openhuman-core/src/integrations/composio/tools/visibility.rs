@@ -40,7 +40,7 @@ pub(super) enum ToolDecision {
 /// slugs default to `Write` so the sandbox gate errs on the side of
 /// blocking rather than letting a potentially-mutating action slip
 /// through uncategorised.
-pub(super) async fn resolve_action_scope(slug: &str) -> ToolScope {
+pub(crate) async fn resolve_action_scope(slug: &str) -> ToolScope {
     resolve_action_scope_sync(slug)
 }
 
@@ -59,7 +59,7 @@ fn resolve_action_scope_sync(slug: &str) -> ToolScope {
 }
 
 /// Whether an action must pass through the human approval gate.
-pub(super) fn action_mutates_external_state(slug: &str) -> bool {
+pub(crate) fn action_mutates_external_state(slug: &str) -> bool {
     matches!(
         resolve_action_scope_sync(slug),
         ToolScope::Write | ToolScope::Admin

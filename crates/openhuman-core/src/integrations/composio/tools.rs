@@ -51,4 +51,4 @@ pub use registry::all_composio_agent_tools;
 // submodule.
 use crate::tools::traits::Tool;
 
-pub(super) use visibility::{action_mutates_external_state, resolve_action_scope};
+pub(crate) use visibility::{action_mutates_external_state, resolve_action_scope};
