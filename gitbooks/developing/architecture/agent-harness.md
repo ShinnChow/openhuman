@@ -480,34 +480,36 @@ The harness shell lives under `crates/openhuman-core/src/agent/`, with the tinya
 | `../tinyagents/middleware.rs`            | The named OpenHuman middleware stack (approval/security, tool policy, recovery, budgets, circuit breaker).    |
 | `harness/graph.rs`                       | The channel/CLI bus turn route into the tinyagents runner.                                                    |
 | `harness/subagent_runner/`               | `run_subagent`, history replay, fork-mode, oversized-result handoff; `ops/graph.rs` is its tinyagents route.  |
-| `agent_orchestration/subagent_sessions/` | Durable reusable sub-agent identity, compatibility matching, persisted status/history.                        |
+| `orchestration/subagent_sessions/`       | Durable reusable sub-agent identity, compatibility matching, persisted status/history.                        |
 | `harness/definition.rs`                  | `AgentDefinition` - what an archetype declares.                                                               |
 | `harness/tool_filter.rs`                 | Toolkit-action ranking for integrations sub-agents.                                                           |
 | `../tinyagents/payload_summarizer.rs`    | Oversized-tool-result detour.                                                                                 |
-| `harness/engine/`                        | Surviving OpenHuman seams: `CheckpointStrategy`, `TurnProgress`.                                              |
+| `harness/session/tool_progress.rs`       | Surviving OpenHuman seam: `TurnProgress`.                                                                     |
 | `dispatcher.rs`                          | Tool-call dialect abstraction (persisted-transcript compatibility).                                           |
 | `triage/`                                | External-trigger classification + escalation.                                                                 |
-| `../agent_registry/agents/`              | Built-in archetypes - one subdirectory per agent.                                                             |
+| `registry/agents/`                       | Built-in archetypes - one subdirectory per agent.                                                             |
 | `hooks.rs` / `stop_hooks.rs`             | Post-turn and mid-turn hook surfaces.                                                                         |
 | `cost.rs`                                | Per-turn USD/token accounting.                                                                                |
 | `progress.rs`                            | Real-time progress events to the UI.                                                                          |
-| `memory_loader.rs`                       | Memory-Tree context injection per user message.                                                               |
+| `harness/memory_context.rs`              | Memory-Tree context injection per user message.                                                               |
 
 ## Agent state graphs (`agent_graph`): HISTORICAL (removed)
 
 > **⚠️ This section describes a design that was never shipped and has been removed.**
-> The bespoke `crates/openhuman-core/src/agent_graph/` engine, `GraphBlueprint`, and the
-> `SqliteCheckpointer` described below **do not exist**. The live system runs on
+> The bespoke `agent_graph/` engine, `GraphBlueprint`, and the
+> `SqliteCheckpointer` described below **do not exist** at those paths any more.
+> The live system runs on
 > the published **tinyagents** crate; see the status banner at the top of this
 > page and "Agent engine + orchestration on tinyagents (live)" below. Graphs are
-> built with `tinyagents::graph::GraphBuilder` (`agent_orchestration/*/graph.rs`,
+> built with `tinyagents::graph::GraphBuilder` (`orchestration/*/graph.rs`,
 > `tinyagents/delegation.rs`), durable
-> checkpoints use `SqlRunLedgerCheckpointer`, and per-agent graph selection is
+> checkpoints use TinyAgents' own `SqliteCheckpointer` (the earlier
+> `SqlRunLedgerCheckpointer` adapter is retired), and per-agent graph selection is
 > `AgentGraph` (`agent/harness/agent_graph.rs`) with each agent's
-> `agent_registry/agents/<id>/graph.rs`. The text below is retained only as
+> `registry/agents/<id>/graph.rs`. The text below is retained only as
 > pre-migration design history.
 
-Alongside the linear tool-call loop, the harness ships a **LangGraph-style state-machine engine** under [`crates/openhuman-core/src/agent_graph/`](../../../crates/openhuman-core/src/agent_graph/) (issue #4249). Where the loop is an implicit "prompt → tool → result → next prompt" cycle, a graph models agent execution as an explicit directed graph of **nodes** (states) and **edges** (transitions), with typed working state that survives across transitions, parallel branches, and checkpoints.
+Alongside the linear tool-call loop, the harness ships a **LangGraph-style state-machine engine** under `crates/openhuman-core/src/agent_graph/` (issue #4249, referenced here only as design history — the path no longer exists). Where the loop is an implicit "prompt → tool → result → next prompt" cycle, a graph models agent execution as an explicit directed graph of **nodes** (states) and **edges** (transitions), with typed working state that survives across transitions, parallel branches, and checkpoints.
 
 ```
 StateGraph::new(name)
