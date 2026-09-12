@@ -3,7 +3,6 @@
 //! serde default helpers its `#[serde(default = ...)]` attributes name.
 
 use serde::{Deserialize, Serialize};
-use std::path::PathBuf;
 
 use super::execution_spec::{ModelSpec, SandboxMode, ToolScope};
 use super::prompt_source::PromptSource;
