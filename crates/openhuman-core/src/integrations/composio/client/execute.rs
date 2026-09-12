@@ -101,7 +101,7 @@ impl ComposioClient {
         // covers the same calendar query case and is the shared entry
         // point for `composio_execute`, per-action tools, and direct-
         // mode dispatch.
-        let arguments = super::execute_prepare::prepare_execute_arguments(tool, arguments)
+        let arguments = super::super::execute_prepare::prepare_execute_arguments(tool, arguments)
             .map_err(anyhow::Error::msg)?;
         let connection_id = connection_id.map(str::trim).filter(|id| !id.is_empty());
         tracing::debug!(
@@ -118,7 +118,7 @@ impl ComposioClient {
             .await?;
         if !resp.successful {
             if let Some(ref err) = resp.error {
-                resp.error = Some(super::error_mapping::format_provider_error(tool, err));
+                resp.error = Some(super::super::error_mapping::format_provider_error(tool, err));
             }
         }
         Ok(resp)
@@ -127,7 +127,7 @@ impl ComposioClient {
     /// `POST /agent-integrations/composio/execute` — single, non-retrying
     /// HTTP round-trip. Use this when the caller owns the retry loop
     /// (e.g. `auth_retry`) to avoid double-retry. In particular,
-    /// [`super::auth_retry::execute_with_auth_retry`] uses this entry
+    /// [`super::super::auth_retry::execute_with_auth_retry`] uses this entry
     /// point so its `must retry exactly once` contract still holds
     /// after PR #1707 introduced the inner retry.
     pub(crate) async fn execute_tool_once(
@@ -147,7 +147,7 @@ impl ComposioClient {
         // `execute_tool` — this disjoint entry point must block too.
         crate::security::egress::enforce_egress(&egress)?;
         crate::security::egress::emit_external_transfer(egress);
-        let arguments = super::execute_prepare::prepare_execute_arguments(tool, arguments)
+        let arguments = super::super::execute_prepare::prepare_execute_arguments(tool, arguments)
             .map_err(anyhow::Error::msg)?;
         tracing::debug!(tool = %tool, "[composio] execute_tool_once (no built-in retry)");
         let body = json!({ "tool": tool, "arguments": arguments });
@@ -166,7 +166,7 @@ impl ComposioClient {
             ),
         }
         result.map_err(|e| {
-            anyhow::Error::msg(super::error_mapping::remap_transport_error(
+            anyhow::Error::msg(super::super::error_mapping::remap_transport_error(
                 tool,
                 &e.to_string(),
             ))
