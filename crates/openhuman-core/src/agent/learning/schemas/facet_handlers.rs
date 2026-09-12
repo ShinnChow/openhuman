@@ -264,7 +264,6 @@ pub(super) fn handle_unpin_facet(params: Map<String, Value>) -> ControllerFuture
 
 // ── forget_facet ──────────────────────────────────────────────────────────────
 
-
 pub(super) fn handle_forget_facet(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         use tinymemory_api::provider::{FacetState, UserState};
