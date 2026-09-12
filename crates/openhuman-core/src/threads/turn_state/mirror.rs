@@ -27,3 +27,10 @@ pub use state::TurnStateMirror;
 
 #[cfg(test)]
 pub(crate) use caps::MAX_PERSISTED_TRANSCRIPT_ITEM;
+#[cfg(test)]
+use super::store::TurnStateStore;
+#[cfg(test)]
+use super::types::{
+    SubagentToolCall, SubagentTranscriptItem, ToolTimelineStatus, TranscriptItem, TurnLifecycle,
+    TurnPhase,
+};
