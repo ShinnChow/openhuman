@@ -1,8 +1,10 @@
 //! Request-id formatting and parameter redaction for RPC log lines.
 //!
-//! Used by `core::dispatch`'s `[rpc:dispatch]` trace logs and by
-//! `core::jsonrpc` when logging request/response summaries, so that neither
-//! call site has to re-implement redaction. [`redact_params_for_log`] and
+//! [`redact_params_for_log`] is what `core::dispatch` calls for its
+//! `[rpc:dispatch] enter` trace line; [`format_request_id`],
+//! [`summarize_rpc_result`] and [`redact_result_for_trace`] are the matching
+//! helpers for transport-side request/response logging and currently have no
+//! caller outside this module's tests. [`redact_params_for_log`] and
 //! [`redact_result_for_trace`] strip the same set of sensitive keys —
 //! `api_key`, `apikey`, `token`, `access_token`, `refresh_token`,
 //! `authorization`, `password`, `secret`, `client_secret` — from JSON objects

@@ -1,12 +1,18 @@
 //! Socket.IO live-event bridge to the desktop shell.
 //!
-//! `spawn_web_channel_bridge` subscribes to a handful of domain broadcast
-//! channels — web-chat events, dictation hotkeys, overlay attention bubbles
-//! (`crate::desktop::overlay::subscribe_attention_events`, see
-//! `desktop/overlay/README.md`), core notifications, transcription results,
-//! and shell companion state — and fans each one out to every connected
-//! Socket.IO client, emitting both a colon- and an underscore-separated event
-//! name for frontend compatibility. `COMPANION_STATE_BUS` is a broadcast
+//! `spawn_web_channel_bridge` spawns one forwarding task per source. Domain
+//! broadcast channels: web-chat events (`crate::web_chat`), dictation hotkeys
+//! and transcription results (`crate::voice::dictation_listener`), overlay
+//! attention bubbles (`crate::desktop::overlay::subscribe_attention_events`,
+//! see `desktop/overlay/README.md`), core notifications
+//! (`crate::desktop::notifications`), and shell companion state
+//! (`COMPANION_STATE_BUS`). `DomainEvent`s read off `crate::core::bus::BUS`:
+//! session expiry, MCP setup secret requests, memory sync and tree-build
+//! progress, channel listener health, and active-workspace changes. Web-chat
+//! events go to the initiating client's room and the `thread:<id>` room
+//! (`emit_web_channel_event`); everything else is broadcast to every
+//! connected client, most under both a colon- and an underscore-separated
+//! event name for frontend compatibility. `COMPANION_STATE_BUS` is a broadcast
 //! channel dedicated to shell-originated companion lifecycle events: the
 //! companion implementation itself lives in the Tauri shell, but the native
 //! macOS notch WKWebView has no Tauri IPC bridge and connects to the
