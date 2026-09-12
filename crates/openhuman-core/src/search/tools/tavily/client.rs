@@ -69,7 +69,7 @@ impl TavilyClient {
     /// Privacy epic S7 (#4441): under `LocalOnly` the search is refused before
     /// anything reaches Tavily. Returns the `[policy-blocked]` tool result to hand
     /// straight back from `execute`, or `None` when the transfer is permitted.
-    fn local_only_block(&self) -> Option<ToolResult> {
+    pub(super) fn local_only_block(&self) -> Option<ToolResult> {
         crate::security::egress::local_only_tool_block(&self.egress_descriptor())
             .map(ToolResult::error)
     }
@@ -95,14 +95,14 @@ impl TavilyClient {
     /// API's own 1..=20 range rather than to the configured `max_results` --
     /// config supplies the *default* when the call omits one, and a caller may
     /// ask for more (this matches `querit.rs`).
-    fn requested_results(&self, args: &Value) -> usize {
+    pub(super) fn requested_results(&self, args: &Value) -> usize {
         args.get("max_results")
             .and_then(Value::as_u64)
             .map(|n| n.clamp(1, 20) as usize)
             .unwrap_or(self.max_results)
     }
 
-    async fn post(&self, path: &str, body: Value) -> anyhow::Result<Value> {
+    pub(super) async fn post(&self, path: &str, body: Value) -> anyhow::Result<Value> {
         let api_key = self.key()?;
         let client = self.http_client()?;
         let url = format!("{}/{}", self.api_url.trim_end_matches('/'), path);
@@ -153,7 +153,7 @@ impl TavilyClient {
         })
     }
 
-    fn render_plain(
+    pub(super) fn render_plain(
         &self,
         results: &[TavilyResultItem],
         query_images: &[TavilyImage],
@@ -218,7 +218,7 @@ impl TavilyClient {
         lines.join("\n")
     }
 
-    fn render_markdown(
+    pub(super) fn render_markdown(
         &self,
         results: &[TavilyResultItem],
         query_images: &[TavilyImage],
