@@ -5,7 +5,7 @@ Rust core as a library in "opencompany" — headless, no RPC server, no Tauri
 shell, targeting 100-1000 live agents in a 2 GB RAM / 2 vCPU box.
 
 It follows the repo's existing slim convention (`cargo build --no-default-features
---features "<explicit list>"`, see AGENTS.md "Compile-time domain gates") and keeps
+--features "<explicit list>"`, see `crates/openhuman-core/README.md` "Feature flags" and the policy comments above `[features]` in `crates/openhuman-core/Cargo.toml`) and keeps
 only the domains the opencompany use cases actually exercise: **agent turns,
 subagent delegation, memory ingest, workflow (flows) runs, and python/js skill
 execution.**
@@ -36,7 +36,7 @@ There is **no** `library-minimal` meta-feature in `Cargo.toml`, on purpose — s
 ## Keep / drop table
 
 The single `default` list this session was written against no longer exists.
-There are two sets now (AGENTS.md, "Compile-time domain gates"): **Contrib** is
+There are two sets now (`crates/openhuman-core/README.md`, "Feature flags"): **Contrib** is
 `[features] default`, what a bare `cargo check` compiles; **Product** is
 `scripts/ci/product-features.txt`, what the desktop app ships. Both columns
 below are current. `desktop-automation` has since been removed from the tree
@@ -177,7 +177,7 @@ risk and needs no `INTENTIONALLY_NOT_FORWARDED` entry.
 
 ## Why no `Cargo.toml` alias
 
-The repo convention (AGENTS.md "Slim-profile convention") is deliberate: **no
+The repo convention (the `[features]` policy comments in `crates/openhuman-core/Cargo.toml`) is deliberate: **no
 `full` meta-feature; build slim variants with an explicit feature list.** A
 `library-minimal = ["skills","flows"]` alias would be convenient, but it:
 
@@ -238,4 +238,4 @@ prioritization.
 - The original profiling session write-up covering deep memory/CPU attribution
   (why RSS is mostly not live heap) was removed from the tree; see git history
   at `0017c58d86~1`.
-- AGENTS.md "Compile-time domain gates" — the per-gate behavior and dependency notes.
+- `crates/openhuman-core/README.md` "Feature flags" and the per-gate comments in `crates/openhuman-core/Cargo.toml` — the per-gate behavior and dependency notes.
