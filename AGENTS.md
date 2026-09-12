@@ -13,17 +13,18 @@ Architecture: [overview](gitbooks/developing/architecture.md),
 | Path | Purpose |
 | --- | --- |
 | `app/src/` | Vite and React frontend |
-| `crates/openhuman-app/` | Thin desktop host |
-| `crates/openhuman-core/` | Business domains, transport, dispatch, auth, RPC, and runtime composition |
+| `crates/openhuman-app/` | Thin desktop host; excluded from the root workspace, build with `--manifest-path crates/openhuman-app/Cargo.toml` |
+| `crates/openhuman-core/` | Package `openhuman`: business domains under `src/<domain>/`, transport/dispatch/auth under `src/core/` |
+| `crates/openhuman-core/src/<domain>/` | Flat business-domain modules (agent, memory, tools, security, channels, ...) |
+| `crates/openhuman-core/src/core/` | CLI, JSON-RPC and HTTP dispatch, controller registry, event bus, runtime composition; no business logic |
+| `crates/openhuman-core/src/main.rs` | `openhuman-core` CLI |
 | `crates/openhuman-embed/` | Typed library facade for embedding the core in another product |
 | `crates/openhuman-rpc/` | Shared RPC contracts, response decoding, and HTTP client used by app and TUI |
 | `crates/openhuman-tui/` | Standalone terminal frontend |
-| `crates/openhuman-core/src/` | Business domains, server dispatch, and runtime composition |
-| `crates/openhuman-core/src/main.rs` | `openhuman-core` CLI |
 | `tests/` | Rust integration and JSON-RPC tests |
 | `gitbooks/` | Public product and contributor documentation |
 | `docs/` | Internal maintainer documentation |
-| `vendor/` | Recursive git submodules |
+| `vendor/` | Recursive git submodules; root `Cargo.toml` `[patch]` tables point into this tree |
 
 Run commands from the repository root. The root package is a private pnpm
 workspace.
