@@ -1,4 +1,4 @@
-# javascript
+# runtime/javascript
 
 First-class **JavaScript language slot** for the core. This module is a thin
 re-export facade: it gives the rest of the codebase a stable
