@@ -15,7 +15,9 @@
 //!   its envelope, and classifying/logging failures.
 //! - [`tool`] — the `Tool` wrapper: schema and parent-catalogue rendering.
 
+#[path = "agent_prepare_context/scout_run.rs"]
 mod scout_run;
+#[path = "agent_prepare_context/tool.rs"]
 mod tool;
 
 #[cfg(test)]

@@ -49,31 +49,32 @@ struct ResolvedCallFigures {
 /// An [`EventListener`] that mirrors harness events onto openhuman's progress
 /// sink and cost tracker.
 pub(crate) struct OpenhumanEventBridge {
-    on_progress: Option<Sender<AgentProgress>>,
-    model: String,
+    pub(super) on_progress: Option<Sender<AgentProgress>>,
+    pub(super) model: String,
     /// Telemetry provider id (`"managed"`, `"openai"`, …) — from
     /// [`Provider::telemetry_provider_id`](crate::inference::provider::Provider::telemetry_provider_id).
     /// Rides on `ModelCallCompleted` so trace exporters render the Langfuse
     /// model as `{provider_id}.{model}`.
-    provider_id: String,
-    max_iterations: u32,
+    pub(super) provider_id: String,
+    pub(super) max_iterations: u32,
     /// `None` for a parent turn; `Some` to emit child-scoped `Subagent*` events.
-    scope: Option<SubagentScope>,
+    pub(super) scope: Option<SubagentScope>,
     /// Shared with the model adapter so thinking deltas line up with the
     /// model call (iteration) they belong to.
-    cursor: IterationCursor,
+    pub(super) cursor: IterationCursor,
     /// Shared `call_id → tool_name` map written by the model adapter's
     /// `ThinkingForwarder` on tool-call start; read here to label the
     /// incremental tool-argument fragments projected off the crate stream.
-    tool_names: ToolNameMap,
+    pub(super) tool_names: ToolNameMap,
     /// Shared `call_id → (success, failure, elapsed_ms, output_chars)`
     /// side-channel written by `ToolOutcomeCaptureMiddleware`; read when
     /// projecting `ToolCallCompleted`.
-    failure_map: ToolFailureMap,
+    pub(super) failure_map: ToolFailureMap,
     /// Shared FIFO carry of the per-call provider `UsageInfo` the model adapter
     /// observed; drained in `record_usage` to restore backend-charged USD +
     /// context-window + cache-creation/reasoning tokens the crate `Usage` drops.
-    usage_carry: ProviderUsageCarry,
+    #[allow(dead_code)]
+    pub(super) usage_carry: ProviderUsageCarry,
     /// Model-call iterations whose `UsageRecorded` has already been folded into
     /// the global cost tracker (W2-budget-dedupe). A single model call can now
     /// surface **two** `UsageRecorded` events — one from the harness runtime
@@ -82,15 +83,15 @@ pub(crate) struct OpenhumanEventBridge {
     /// delivered to this bridge. Keyed on the run-scoped model-call identity (the
     /// iteration cursor, bumped once per `ModelStarted`) so a given call's usage
     /// is recorded exactly once. See [`OpenhumanEventBridge::record_usage`].
-    recorded_iterations: Mutex<std::collections::HashSet<u32>>,
+    pub(super) recorded_iterations: Mutex<std::collections::HashSet<u32>>,
     /// Per-iteration figures resolved by `record_usage` (see
     /// [`ResolvedCallFigures`]); taken by the `ModelCompleted` arm.
-    resolved_calls: Mutex<std::collections::HashMap<u32, ResolvedCallFigures>>,
+    pub(super) resolved_calls: Mutex<std::collections::HashMap<u32, ResolvedCallFigures>>,
     /// `call_id → start instant` for in-flight tool calls, written on
     /// `ToolStarted` and taken on `ToolCompleted` so the projected completion
     /// event carries a real `elapsed_ms` (the crate event has no timing).
-    tool_started_at: Mutex<std::collections::HashMap<String, std::time::Instant>>,
-    state: Mutex<BridgeState>,
+    pub(super) tool_started_at: Mutex<std::collections::HashMap<String, std::time::Instant>>,
+    pub(super) state: Mutex<BridgeState>,
     /// Ordered overflow buffer for progress events that hit backpressure
     /// (channel `Full`). Once ANY event spills here, `draining` stays set and
     /// every subsequent event queues here too — a single spawned forwarder
@@ -98,13 +99,13 @@ pub(crate) struct OpenhumanEventBridge {
     /// `try_send` can never jump ahead of an earlier spilled event and scramble
     /// start/completed ordering (which would leave a tool row stuck `running`
     /// when a `ToolCallCompleted` overtakes its `ToolCallStarted`) (#4466).
-    overflow: Arc<Mutex<OverflowState>>,
+    pub(super) overflow: Arc<Mutex<OverflowState>>,
 }
 
 /// Backpressure overflow state guarded by a single mutex so the "are we
 /// draining?" decision and the queue mutation stay atomic together.
 #[derive(Default)]
-struct OverflowState {
+pub(super) struct OverflowState {
     queue: std::collections::VecDeque<AgentProgress>,
     draining: bool,
 }

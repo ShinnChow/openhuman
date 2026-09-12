@@ -173,6 +173,4 @@ impl BrowserTool {
 
         Ok(())
     }
-
-    /// Execute an agent-browser command
 }
