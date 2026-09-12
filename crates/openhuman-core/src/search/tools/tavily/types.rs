@@ -142,7 +142,6 @@ pub(super) fn escape_link_destination(raw: &str) -> String {
 }
 
 /// Copy a string array argument onto the Tavily request body.
-/// Copy a string array argument onto the Tavily request body.
 pub(super) fn copy_domain_filter(args: &Value, from: &str, body: &mut Value) {
     if let Some(list) = args.get(from).filter(|v| v.is_array()) {
         body[from] = list.clone();
