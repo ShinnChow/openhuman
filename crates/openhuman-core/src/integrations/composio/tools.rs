@@ -49,6 +49,8 @@ pub use registry::all_composio_agent_tools;
 // — can still reach these via a plain `use super::*;`, exactly as when
 // this was one un-split file. See each item's `pub(super)` in its owning
 // submodule.
+use crate::tools::traits::{PermissionLevel, Tool, ToolCategory, ToolResult};
+
 use authorize::ComposioAuthorizeTool;
 use connect::{
     canonicalize_toolkit_slug, composio_connect_timeout, connection_is_active,
