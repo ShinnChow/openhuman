@@ -14,7 +14,7 @@ use super::checksums::{
     valid_nie_es, valid_nino, valid_ssn, valid_verhoeff,
 };
 use super::normalize::{scan_candidates, Candidates, NormalizedView};
-use super::secrets::{Sanitized, SanitizationReport};
+use crate::memory::safety::secrets::{Sanitized, SanitizationReport};
 
 // ---------- Multilingual personal-PII redaction ----------
 //

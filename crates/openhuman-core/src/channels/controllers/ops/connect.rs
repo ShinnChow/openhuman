@@ -1,7 +1,23 @@
 //! Core channel connect/disconnect/status operations.
 
+mod catalog;
+mod connect_channel;
+mod disconnect;
+mod email;
+mod memory;
+mod shared;
+mod status;
+mod test_channel;
+
+#[allow(unused_imports)]
+pub(crate) use catalog::{describe_channel, list_channels};
+pub use connect_channel::connect_channel;
+pub use disconnect::disconnect_channel;
+pub(crate) use email::persist_email_config;
+pub(crate) use shared::merge_listener_health;
+pub use status::{channel_status, connected_channel_slugs, get_default_channel, set_default_channel};
+pub use test_channel::test_channel;
+
 #[cfg(test)]
 #[path = "connect_email_config_tests_tests.rs"]
 mod email_config_tests;
-include!("connect_part_01.rs");
-include!("connect_part_02.rs");
