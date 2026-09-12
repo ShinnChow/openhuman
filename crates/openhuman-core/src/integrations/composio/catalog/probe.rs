@@ -124,7 +124,7 @@ pub(crate) fn seed_probe_cache_expired(slug: &str, sample: ProbedOutputSample) {
 /// contain one user/connection/args' actual private data, and nothing that
 /// reads from the cache (only [`apply_probe_override`]) ever needs the raw
 /// payload — only the derived `primary_array_path`/`output_fields`.
-fn cache_probe_result(slug: &str, sample: ProbedOutputSample) {
+pub(super) fn cache_probe_result(slug: &str, sample: ProbedOutputSample) {
     let cached = ProbedOutputSample {
         sample: Value::Null,
         ..sample
@@ -201,7 +201,7 @@ pub(crate) fn apply_probe_override(mut contract: ToolContract) -> ToolContract {
 /// decide that: the builder never asked for (and the user never approved)
 /// THIS specific write. `None` means "refuse — no confirmed Read scope", not
 /// "assume Read".
-fn resolve_composio_action_scope(
+pub(super) fn resolve_composio_action_scope(
     slug: &str,
 ) -> Option<crate::integrations::composio::providers::ToolScope> {
     use crate::integrations::composio::providers::{
