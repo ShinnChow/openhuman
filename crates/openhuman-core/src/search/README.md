@@ -52,5 +52,5 @@ that constructs that engine's tool set — e.g. `managed::build` wraps a single
 
 See [`tools/README.md`](tools/README.md) for the provider -> tool -> transport
 table, and
-[`gitbooks/features/native-tools/web-search.md`](../../../../../gitbooks/features/native-tools/web-search.md)
+[`gitbooks/features/native-tools/web-search.md`](../../../../gitbooks/features/native-tools/web-search.md)
 for the user-facing description of engine selection.

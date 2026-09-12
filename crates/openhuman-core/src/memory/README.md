@@ -23,13 +23,37 @@ What stays here, per that split:
   engine crate cannot name the `Tool` trait).
 - **Guard** — [`guard/`](guard/), the taint/scope/budget policy gate over
   every provider call.
-- **Driver binding** — [`driver/`](driver/), which provider backs a
-  workspace.
+- **Driver binding** — [`binding.rs`](binding.rs) (`memory::binding::for_config`,
+  the workspace-keyed driver binding the Layer rules below reference) and
+  [`driver/`](driver/), which provider backs a workspace. The built-in driver
+  is the compiled TinyMemory TinyBus module; there is no in-process engine
+  driver any more.
 - **Ops** — [`ops/`](ops/), RPC handlers that delegate into the core.
+- **Contract facade** — [`api.rs`](api.rs) (`memory::api`), the selective
+  re-export of `tinymemory-api` that is the bus vocabulary — see its own
+  module docs for what it excludes and why.
 - **Seam impls** — [`host.rs`](host.rs) — `install_memory_event_sink` and
   `MemoryHostConfig for Config`. Its sibling `host_impls.rs` held the half that
   only an in-process engine could use, and went with the engine when the test
   build stopped linking one (openhuman#6161).
+- **Host-owned wire shapes** — [`rpc_models.rs`](rpc_models.rs) /
+  [`ingestion_models.rs`](ingestion_models.rs), the RPC request/response
+  shapes that used to live in `tinymemory_core::rpc_models`, re-exported flat
+  from [`mod.rs`](mod.rs) (`pub use rpc_models::*`).
+- **Host-only policy modules**, each with its own reasoning for why it is not
+  the engine's:
+  - [`auto_recall/`](auto_recall/) — Lane C, the gated, bounded pre-turn
+    recall of facts about the user (#6040).
+  - [`safety.rs`](safety.rs) — the host-side secret/PII scrubbers applied to
+    anything this host persists or hands on.
+  - [`source_scope.rs`](source_scope.rs) — the host-side per-turn
+    memory-source allowlist.
+  - [`obsidian_registry.rs`](obsidian_registry.rs) — is the memory content
+    root a vault Obsidian already knows about.
+  - [`exit.rs`](exit.rs), [`sync_activity.rs`](sync_activity.rs),
+    [`sync_events_bridge.rs`](sync_events_bridge.rs),
+    [`preferences/`](preferences/) — smaller host-side seams; see each file's
+    own doc comment.
 
 This module used to be mostly a **re-export** of the engine crate — a wall of
 `pub use tinymemory_core::{chat, global, ingest_pipeline, ingestion,

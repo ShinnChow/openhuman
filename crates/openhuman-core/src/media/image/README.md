@@ -35,7 +35,10 @@ Gated transitively by the `media` feature at
 | `image_generation.rs` | `image_generation` schema and output-format contract.               |
 | `image_view.rs`       | `view_image` schema and detail-level contract.                      |
 | `prompt.rs`           | Agent prompt guidance for enabled image tools.                      |
-| `tests.rs`            | Contract-level e2e tests across config, schemas, and prompt output. |
+| `image_tests.rs`      | Contract-level e2e tests across config, schemas, and prompt output. |
+
+Per-file tests also live alongside their subject: `image_generation_tests.rs`,
+`image_view_tests.rs`, `prompt_tests.rs`.
 
 ## Notes
 
