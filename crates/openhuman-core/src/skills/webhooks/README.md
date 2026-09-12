@@ -63,7 +63,7 @@ None. This domain owns no `tools.rs` agent tools.
 
 ## Events
 
-Subscriber (in `bus.rs`): **`WebhookRequestSubscriber`** — `name() = "webhook::request_handler"`, `domains() = ["webhook"]`. Registered at startup (see `channels/runtime/startup.rs`).
+Subscriber (in `bus.rs`): **`WebhookRequestSubscriber`** — `name() = "webhook::request_handler"`, `domains() = ["webhook"]`. Registered in `register_domain_subscribers()` (`crates/openhuman-core/src/core/jsonrpc.rs`), gated on the `Skills` domain group being enabled (`plan.skills`); `channels/runtime/startup_part_01.rs` explicitly skips registering it to avoid double-registration when both startup paths run in the same process.
 
 - **Subscribes**: `DomainEvent::WebhookIncomingRequest` (published by the socket transport in `socket/event_handlers.rs`).
 - **Publishes**: `DomainEvent::WebhookRegistered` / `WebhookUnregistered` (from the router on registration changes — `WebhookUnregistered`, the `registration_changed` debug event and the route re-persist all fire **only when a registration was actually removed**; unregistering an absent tunnel is a silent no-op that returns `Ok(false)`, see #6091), `DomainEvent::WebhookReceived` (when routed to a target), `DomainEvent::WebhookProcessed` (always, with status/elapsed/error).
@@ -78,7 +78,7 @@ The router also runs a separate `tokio::sync::broadcast` channel of `WebhookDebu
 
 ## Dependencies
 
-- `crate::core::event_bus` — `publish_global`, `DomainEvent`, `EventHandler` for the subscriber and registration events.
+- `crate::core::bus` — `BUS`, `DomainEvent`, `EventHandler` for the subscriber and registration events.
 - `crate::core::all` — `ControllerFuture`, `RegisteredController` for controller registration.
 - `crate::core::{ControllerSchema, FieldSchema, TypeSchema}` — RPC schema types.
 - `crate::core::observability::report_error` — error reporting for body-decode / agent-trigger failures.
