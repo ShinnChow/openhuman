@@ -18,7 +18,7 @@ use super::super::providers::{
 };
 
 /// Decision returned by [`evaluate_tool_visibility`].
-enum ToolDecision {
+pub(super) enum ToolDecision {
     /// Action is curated for this toolkit and user scope allows it.
     Allow,
     /// Action exists in the curated list but the user's scope blocks
