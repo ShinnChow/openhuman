@@ -9,6 +9,8 @@
 //!                 (moved from `voice/`; audio I/O and the voice RPC surface
 //!                 stay in `crate::voice`)
 //! - `http/`     — OpenAI-compatible `/v1/chat/completions` endpoint
+//! - `embeddings/` — embedding provider selection and RPC
+//! - `tokenjuice/` — host adapter for the `tinyjuice` token-compression module
 //!
 //! The RPC surface is `inference.*`; old `local_ai_*` RPC names are resolved
 //! by the legacy alias layer for backwards compatibility.
