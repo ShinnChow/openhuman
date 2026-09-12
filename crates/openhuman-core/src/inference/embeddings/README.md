@@ -25,7 +25,18 @@ The canonical embedding-space signature is
 provider signatures must remain byte-identical or stored vectors split into
 incompatible spaces.
 
-The memory tree uses the same factory through
-`memory_tree/score/embed::ProviderEmbedder`; its fixed on-disk dimension remains
-1024. Ollama requests use TinyAgents'
-`RECOMMENDED_OLLAMA_CONTEXT_TOKENS` for both `num_ctx` and `num_batch`.
+The separately compiled TinyMemory module reaches this factory through the
+`EmbeddingHost` bus interface in `modules/memory_host.rs`, which resolves the
+API key and calls `create_embedding_provider_with_config` per request; its
+fixed on-disk dimension remains 1024 (see `memory/tree/health` mismatch
+errors). Ollama requests use TinyAgents' `RECOMMENDED_OLLAMA_CONTEXT_TOKENS`
+for both `num_ctx` and `num_batch`.
+
+## Wiring
+
+- Controllers are registered from `all_embeddings_registered_controllers()`,
+  called by `core/all.rs` alongside the other domain registrations.
+- RPC handlers live in `schemas.rs` and dispatch through `rpc.rs`.
+- See `mod.rs` for the current provider set (Managed default via the backend's
+  `POST /openai/v1/embeddings`, Voyage, OpenAI, Cohere, Ollama, Custom, Noop)
+  and `tinyinference::embeddings` for their concrete implementations.
