@@ -8,6 +8,7 @@ use crate::platform::socket::token_provider::{is_invalid_token_error, static_tok
 use crate::platform::socket::manager::SharedState;
 use std::sync::Arc;
 use tokio::sync::mpsc;
+use futures_util::{SinkExt, StreamExt};
 use tokio_tungstenite::tungstenite::{Error as WsError, Message as WsMessage};
 use crate::platform::socket::types::ConnectionStatus;
 fn make_shared() -> Arc<SharedState> {
