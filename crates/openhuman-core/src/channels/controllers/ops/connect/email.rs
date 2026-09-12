@@ -68,7 +68,7 @@ pub(crate) fn parse_port_field(
 /// channel already does at match time. An absent field defaults to `["*"]`
 /// (allow any) so a freshly-connected mailbox actually receives — the channel
 /// treats an *empty* list as deny-all.
-fn parse_email_senders(value: Option<&Value>) -> Vec<String> {
+pub(crate) fn parse_email_senders(value: Option<&Value>) -> Vec<String> {
     let raw = match value {
         Some(Value::String(s)) => s.clone(),
         Some(Value::Array(items)) => items
