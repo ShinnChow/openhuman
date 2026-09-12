@@ -13,8 +13,8 @@
 // keeping a byte map back to the original string, so matches found on the
 // normalized view can be spliced onto the exact original bytes.
 
-struct NormalizedView {
-    normalized: String,
+pub(super) struct NormalizedView {
+    pub(super) normalized: String,
     // For each byte offset i in `normalized`, `byte_map[i]` is the byte offset
     // in the original string where the corresponding char *starts*.
     // The last entry maps the normalized length to the original length, so
@@ -23,7 +23,7 @@ struct NormalizedView {
 }
 
 impl NormalizedView {
-    fn build(original: &str) -> Self {
+    pub(super) fn build(original: &str) -> Self {
         let mut normalized = String::with_capacity(original.len());
         let mut byte_map: Vec<usize> = Vec::with_capacity(original.len() + 1);
         for (idx, ch) in original.char_indices() {
@@ -46,7 +46,7 @@ impl NormalizedView {
         }
     }
 
-    fn norm_to_orig(&self, norm_byte: usize) -> usize {
+    pub(super) fn norm_to_orig(&self, norm_byte: usize) -> usize {
         if norm_byte >= self.byte_map.len() {
             return *self.byte_map.last().unwrap_or(&0);
         }
@@ -118,7 +118,7 @@ fn fold_char(c: char) -> char {
 /// "run this class's precise regex"; an unset flag means the class cannot
 /// possibly match, so its regex is skipped (and never compiled).
 #[derive(Default, Clone, Copy)]
-struct Candidates {
+pub(super) struct Candidates {
     cpf_fmt: bool,
     cnpj_fmt: bool,
     cuit: bool,
@@ -142,7 +142,7 @@ struct Candidates {
 
 impl Candidates {
     /// True if any class is a candidate — i.e. the text is worth a precise pass.
-    fn any(&self) -> bool {
+    pub(super) fn any(&self) -> bool {
         self.cpf_fmt
             || self.cnpj_fmt
             || self.cuit
@@ -192,7 +192,7 @@ const MYNUMBER_JP_KEYWORDS: &[&[u8]] = &["マイナンバー".as_bytes(), "個�
 /// continuation bytes are all `>= 0x80`, so scanning `as_bytes()` for ASCII
 /// digits/punctuation/letters is boundary-safe. Keyword probes run over the
 /// same byte slice so the non-Latin needles match verbatim.
-fn scan_candidates(text: &str) -> Candidates {
+pub(super) fn scan_candidates(text: &str) -> Candidates {
     let bytes = text.as_bytes();
 
     let mut total_digits: usize = 0;
