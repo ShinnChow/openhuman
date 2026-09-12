@@ -5,8 +5,6 @@
 
 use tinymemory_api::capabilities::{Capabilities, Capability};
 
-use tinymemory_api::capabilities::{Capabilities, Capability};
-
 /// The release whose capability set [`ARTIFACT_CAPABILITIES`] was read from.
 ///
 /// Checked against the registry pin by `the_capability_list_matches_the_pinned_release`,
