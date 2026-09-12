@@ -23,7 +23,7 @@ use super::super::client::{create_composio_client, direct_list_connections, Comp
 /// The agent frequently guesses `google_drive` where Composio uses
 /// `googledrive` (#3993); without this the OAuth handoff fails with an opaque
 /// error.
-fn canonicalize_toolkit_slug(slug: &str) -> String {
+pub(super) fn canonicalize_toolkit_slug(slug: &str) -> String {
     let key = slug.trim().to_ascii_lowercase();
     match key.as_str() {
         "feishu" | "lark" => "larksuite".to_string(),
@@ -47,13 +47,13 @@ fn canonicalize_toolkit_slug(slug: &str) -> String {
 /// present user (a click + OAuth round-trip completes well inside it) while
 /// guaranteeing the act path degrades to a fast connect prompt instead of
 /// hanging. Generous by design; env-overridable, `0` restores the full gate TTL.
-const DEFAULT_COMPOSIO_CONNECT_TIMEOUT_SECS: u64 = 120;
+pub(super) const DEFAULT_COMPOSIO_CONNECT_TIMEOUT_SECS: u64 = 120;
 
 
 /// Resolve the connect-card park bound. Reads
 /// `OPENHUMAN_COMPOSIO_CONNECT_TIMEOUT_SECS`; `0` means "no composio-side bound"
 /// (`None`) → fall back to the gate's own TTL.
-fn composio_connect_timeout() -> Option<std::time::Duration> {
+pub(super) fn composio_connect_timeout() -> Option<std::time::Duration> {
     parse_composio_connect_timeout(
         std::env::var("OPENHUMAN_COMPOSIO_CONNECT_TIMEOUT_SECS")
             .ok()
@@ -65,7 +65,7 @@ fn composio_connect_timeout() -> Option<std::time::Duration> {
 /// deterministically unit-testable. An absent/unparseable value falls back to
 /// [`DEFAULT_COMPOSIO_CONNECT_TIMEOUT_SECS`]; `0` yields `None` (opt out of the
 /// composio-side bound).
-fn parse_composio_connect_timeout(env_value: Option<&str>) -> Option<std::time::Duration> {
+pub(super) fn parse_composio_connect_timeout(env_value: Option<&str>) -> Option<std::time::Duration> {
     let secs = env_value
         .and_then(|v| v.trim().parse::<u64>().ok())
         .unwrap_or(DEFAULT_COMPOSIO_CONNECT_TIMEOUT_SECS);
@@ -89,7 +89,7 @@ fn parse_composio_connect_timeout(env_value: Option<&str>) -> Option<std::time::
 /// Distinguishing `Err` from `Ok(false)` lets the caller fail closed on a
 /// transient backend/auth failure **without** fabricating an "OAuth not
 /// complete" reason that wrongly blames the user (#4062, coderabbit review).
-async fn connection_is_active(config: &Config, toolkit: &str) -> anyhow::Result<bool> {
+pub(super) async fn connection_is_active(config: &Config, toolkit: &str) -> anyhow::Result<bool> {
     let active_match = |connections: &[super::super::types::ComposioConnection]| {
         connections
             .iter()
