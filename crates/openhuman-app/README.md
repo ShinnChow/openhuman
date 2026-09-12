@@ -82,8 +82,8 @@ the `openhuman_core` product-feature forwarding above and do not belong in
 | --- | --- |
 | Core lifecycle | `core_process.rs`, `core_rpc.rs`, `process_kill.rs`, `process_recovery.rs`, `workspace_paths.rs` |
 | Gateways (feature-gated) | `gateway/` (`types`, `store`, `ops`, `provision`, `registry`, `commands`) |
-| Platform integration | `deep_link_ipc.rs` (Linux), `deep_link_ipc_windows.rs`, `deep_link_registration_check.rs`, `native_notifications/`, `imessage_scanner/` (macOS `chat.db` reader), `mascot_native_window.rs`, `notch_window.rs`, `ptt_hotkeys.rs`/`ptt_overlay.rs`, `dictation_hotkeys.rs`, `window_state.rs` |
-| Updates / reset | `app_update.rs`, `local_data_reset.rs`, `reset_reboot_schedule.rs` |
+| Platform integration | `deep_link_ipc.rs` (Linux), `deep_link_ipc_windows.rs`, `deep_link_registration_check.rs`, `native_notifications/`, `imessage_scanner/` (macOS `chat.db` reader), `mascot_native_window.rs` and `notch_window.rs` (macOS), `ptt_hotkeys.rs`/`ptt_overlay.rs`, `dictation_hotkeys.rs`, `window_state.rs` |
+| Updates / reset | `app_update.rs`, `local_data_reset.rs`, `reset_reboot_schedule.rs` (Windows) |
 | Misc | `artifact_commands.rs`, `claude_code.rs`, `mcp_commands.rs`, `loopback_oauth.rs`, `directory_picker.rs`, `file_logging.rs`, `stderr_panic_hook.rs` |
 
 ## Tests
