@@ -92,9 +92,9 @@ Other domains contribute prompt content without living in this directory:
   `## Agent profile` persona body plus the optional cross-profile workspace
   notice; added by `agent/harness/session/builder/factory.rs`.
 - `tools/agent_policy/prompt.rs` — `render_tool_policy_boundary` is not a
-  section: `agent/harness/session/turn/context.rs` string-appends its `## Tool Policy
-  Boundary` block after the builder output so the session-scoped bytes land
-  at the tail of the prompt.
+  section: `agent/harness/session/turn/context.rs` string-appends its
+  `## Tool Policy Boundary` block after the builder output so the
+  session-scoped bytes land at the tail of the prompt.
 
 Built-in archetype system prompts (orchestrator, welcome, integrations_agent,
 …) live in `agent/registry/agents/<name>/prompt.rs` and
