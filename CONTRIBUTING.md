@@ -200,8 +200,8 @@ cargo run --manifest-path Cargo.toml --bin openhuman-core
 Which mode to choose:
 
 - `pnpm dev`: frontend-only iteration in the browser.
-- `pnpm --filter openhuman-app dev:app`: full desktop app flow with Tauri + CEF on macOS.
-- `pnpm dev:app:win`: full desktop app flow on native Windows. This invokes the repository's Git Bash bootstrap to configure MSVC, Ninja, the vendored Tauri CLI, and the Windows CEF runtime.
+- `pnpm --filter openhuman-app dev:app`: full desktop app flow with Tauri + Wry on macOS.
+- `pnpm dev:app:win`: full desktop app flow on native Windows. This invokes the repository's Git Bash bootstrap (`scripts/run-dev-win.sh`) to configure MSVC, Ninja, and the Windows CEF runtime.
 - `cargo run --bin openhuman-core`: core/RPC work when you want the Rust server without the desktop shell.
 
 #### Windows desktop troubleshooting
