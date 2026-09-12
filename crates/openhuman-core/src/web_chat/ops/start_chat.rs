@@ -15,7 +15,7 @@ use crate::security::prompt_injection::{
 
 use super::super::event_bus::publish_web_channel_event;
 use super::super::run_task::run_chat_task;
-use super::super::types::ChatRequestMetadata;
+use super::super::types::{ChatRequestMetadata, InFlightEntry};
 use super::super::web_errors::classify_inference_error;
 use super::parallel_turn::spawn_parallel_turn;
 use super::state::{cancel_in_flight_gracefully, key_for, IN_FLIGHT};

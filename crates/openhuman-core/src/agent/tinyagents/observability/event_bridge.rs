@@ -40,10 +40,10 @@ pub(super) struct BridgeState {
 /// keyed by iteration so the subsequent `ModelCompleted` projection reports
 /// the same numbers as the wallet accounting.
 #[derive(Clone, Copy, Debug)]
-struct ResolvedCallFigures {
-    cost_usd: f64,
-    cache_creation_tokens: u64,
-    reasoning_tokens: u64,
+pub(super) struct ResolvedCallFigures {
+    pub(super) cost_usd: f64,
+    pub(super) cache_creation_tokens: u64,
+    pub(super) reasoning_tokens: u64,
 }
 
 /// An [`EventListener`] that mirrors harness events onto openhuman's progress
