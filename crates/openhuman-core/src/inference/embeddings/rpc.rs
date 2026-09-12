@@ -31,6 +31,9 @@ use super::factory::create_embedding_provider_with_config;
 
 const LOG_PREFIX: &str = "[embeddings::rpc]";
 
+/// Build an embedding provider from the live config — the same construction
+/// [`embed`] uses, exposed so other domains (e.g. `codegraph`) can obtain a
+/// provider for `signature()` + direct embedding without a JSON-RPC round-trip.
 pub fn provider_from_config(config: &Config) -> anyhow::Result<Box<dyn super::EmbeddingProvider>> {
     build_embedder(
         config,
@@ -67,11 +70,6 @@ fn build_embedder(
         custom_endpoint.as_deref(),
     )
 }
-
-/// Normalized result of the setup-time test embed in [`update_settings`].
-/// Collapses the `Result<Result<_, _>, Elapsed>` timeout shape into one enum so
-/// the verification policy can be expressed (and unit-tested) as a pure
-/// function over it.
 
 pub(crate) fn resolve_api_key(config: &Config, provider_name: &str) -> String {
     let slug = if provider_name.starts_with("custom:") {

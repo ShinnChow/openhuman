@@ -3,6 +3,9 @@
 
 use crate::rpc::RpcOutcome;
 
+/// GET `{endpoint}/models` (OpenAI-compatible) and return the served model ids.
+/// Time-boxed and best-effort — any failure returns `Err` and the caller falls
+/// back to the live test-embed probe (issue #3761).
 pub(super) async fn fetch_served_model_ids(
     endpoint: &str,
     api_key: &str,

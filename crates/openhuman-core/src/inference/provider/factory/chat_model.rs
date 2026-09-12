@@ -1,3 +1,6 @@
+//! One-shot `create_chat_model*` entry points, the readiness probe, the
+//! default-temperature wrapper, and the unresolved-route error builder.
+
 use super::*;
 
 /// Build an `Arc<dyn ChatModel>` for the given workload role.

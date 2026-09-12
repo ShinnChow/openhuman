@@ -1,3 +1,6 @@
+//! `primary_cloud` / legacy `inference_url` resolution: which cloud entry an
+//! unset (or `"cloud"`) route falls through to, and the BYOK fail-closed sentinel.
+
 use super::*;
 
 pub(super) fn resolve_primary_cloud_provider_string(config: &Config) -> String {

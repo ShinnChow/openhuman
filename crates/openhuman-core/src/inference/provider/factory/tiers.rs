@@ -1,3 +1,6 @@
+//! Managed tier / `hint:*` vocabulary: tier↔role lookups, passthrough
+//! detection, and per-tier vision capability for the managed backend.
+
 use super::*;
 
 pub(super) fn is_abstract_tier_model(model: &str) -> bool {

@@ -1,3 +1,6 @@
+//! The managed OpenHuman backend as a crate-native `ChatModel`: tier pinning per
+//! workload role, `hint:*` translation, and the single managed egress emission.
+
 use super::*;
 
 /// Canonical managed-backend tier for a specialised workload role.

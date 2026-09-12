@@ -7,6 +7,8 @@ use super::probe::probe_custom_embeddings;
 use super::{resolve_api_key, LOG_PREFIX};
 use crate::inference::embeddings::factory::create_embedding_provider_with_config;
 
+/// Generates embeddings for the given input texts using the currently
+/// configured provider.
 pub async fn embed(
     config: &Config,
     inputs: &[String],
@@ -145,7 +147,3 @@ pub async fn test_connection(
         }
     }
 }
-
-/// Build an embedding provider from the live config — the same construction
-/// [`embed`] uses, exposed so other domains (e.g. `codegraph`) can obtain a
-/// provider for `signature()` + direct embedding without a JSON-RPC round-trip.

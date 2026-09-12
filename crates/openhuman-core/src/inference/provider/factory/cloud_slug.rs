@@ -1,3 +1,6 @@
+//! `<slug>:<model>` BYOK cloud providers: shared slug resolution (model fallback,
+//! abstract-tier remapping, credentials, codex routing) and the crate-native builders.
+
 use super::*;
 
 /// Look up a `cloud_providers` entry by slug and build the provider.

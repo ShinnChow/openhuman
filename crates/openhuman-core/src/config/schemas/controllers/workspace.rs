@@ -76,7 +76,7 @@ pub(super) fn handle_reset_local_data(_params: Map<String, Value>) -> Controller
     Box::pin(async { to_json(config_rpc::reset_local_data().await?) })
 }
 
-pub(super) fn handle_get_data_paths(params: Map<String, Value>) -> ControllerFuture {
+pub(crate) fn handle_get_data_paths(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         log::debug!("[config][rpc] get_data_paths enter");
         match resolve_data_paths(params).await {
@@ -117,7 +117,7 @@ async fn resolve_data_paths(
     }
 }
 
-pub(super) fn handle_get_agent_paths(_params: Map<String, Value>) -> ControllerFuture {
+pub(crate) fn handle_get_agent_paths(_params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async {
         log::debug!("[config][rpc] get_agent_paths enter");
         match config_rpc::get_agent_paths().await {

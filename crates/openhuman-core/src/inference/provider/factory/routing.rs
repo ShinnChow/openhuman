@@ -1,3 +1,6 @@
+//! Role → configured provider-string resolution (`provider_for_role`) plus the
+//! managed-credits bypass check and the `<model>[@<temp>]` suffix parser.
+
 use super::*;
 
 /// The provider route a role has **explicitly** configured, before any

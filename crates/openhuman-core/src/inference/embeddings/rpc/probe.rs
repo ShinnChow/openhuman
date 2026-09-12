@@ -52,7 +52,11 @@ pub(super) async fn probe_custom_embeddings(
                 .and_then(serde_json::Value::as_array)
                 .ok_or_else(|| "custom embeddings response missing embedding array".to_string())?
                 .iter()
-                .map(|value| value.as_f64().map(|value| value as f32).ok_or_else(|| "custom embeddings response contains a non-numeric vector".to_string()))
+                .map(|value| {
+                    value.as_f64().map(|value| value as f32).ok_or_else(|| {
+                        "custom embeddings response contains a non-numeric vector".to_string()
+                    })
+                })
                 .collect()
         })
         .collect()
@@ -75,6 +79,10 @@ pub(super) fn final_probe_dims(model: &str, configured: usize, actual: usize) ->
     }
 }
 
+/// Normalized result of the setup-time test embed in [`update_settings`].
+/// Collapses the `Result<Result<_, _>, Elapsed>` timeout shape into one enum so
+/// the verification policy can be expressed (and unit-tested) as a pure
+/// function over it.
 pub(super) enum EmbedProbe {
     /// The endpoint returned vectors (may still be empty/zero-dim — checked).
     Returned(Vec<Vec<f32>>),
@@ -312,7 +320,3 @@ fn is_embedding_endpoint_unreachable(lower: &str) -> bool {
         || lower.contains("failed to lookup address")
         || lower.contains("tcp connect error")
 }
-
-/// GET `{endpoint}/models` (OpenAI-compatible) and return the served model ids.
-/// Time-boxed and best-effort — any failure returns `Err` and the caller falls
-/// back to the live test-embed probe (issue #3761).

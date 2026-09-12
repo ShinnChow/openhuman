@@ -1,3 +1,6 @@
+//! Per-turn `create_turn_chat_model*` entry points pinned to an explicit model
+//! (the `TurnModelSource` constructors), by role or by explicit provider string.
+
 use super::*;
 
 /// Build a crate-native [`ChatModel`] for the **turn path**, pinned to an explicit

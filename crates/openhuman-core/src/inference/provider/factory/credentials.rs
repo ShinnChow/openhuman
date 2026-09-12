@@ -1,3 +1,6 @@
+//! Auth-profile credential lookup for `<slug>` cloud providers, including the
+//! OpenAI OAuth fallback and the scoped legacy `config.api_key` fallback.
+
 use super::*;
 
 /// Auth-profile storage key for a slug-keyed provider.

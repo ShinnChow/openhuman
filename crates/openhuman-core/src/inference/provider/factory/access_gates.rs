@@ -1,3 +1,6 @@
+//! Access chokepoints every provider constructor runs through: privacy-mode
+//! `LocalOnly` enforcement, the backend-session requirement, and egress disclosure.
+
 use super::*;
 
 /// Human-readable label for an *external* provider string, used in the

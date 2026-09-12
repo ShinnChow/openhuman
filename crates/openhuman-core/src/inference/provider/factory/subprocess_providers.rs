@@ -1,3 +1,5 @@
+//! Subprocess-backed providers: the Claude Agent SDK and the Claude Code CLI.
+
 use super::*;
 
 /// Build the Claude Agent SDK subprocess directly as a crate model. This is a

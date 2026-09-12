@@ -1,3 +1,6 @@
+//! Local OpenAI-compatible runtimes (Ollama / LM Studio / MLX / OMLX /
+//! local-openai) as crate-native `ChatModel`s.
+
 use super::*;
 
 /// Local OpenAI-compatible runtimes (Ollama / LM Studio / MLX / OMLX /

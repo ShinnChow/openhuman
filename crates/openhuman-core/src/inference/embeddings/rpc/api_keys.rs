@@ -8,6 +8,7 @@ use crate::security::credentials::AuthService;
 
 use super::LOG_PREFIX;
 
+/// Stores an API key for a specific embedding provider.
 pub async fn set_api_key(
     config: &Config,
     provider_slug: &str,
@@ -81,6 +82,3 @@ pub async fn clear_api_key(
         vec![format!("embedding API key cleared for {provider_slug}")],
     ))
 }
-
-/// Generates embeddings for the given input texts using the currently
-/// configured provider.

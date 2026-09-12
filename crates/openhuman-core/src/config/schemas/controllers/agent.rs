@@ -11,11 +11,11 @@ use super::super::helpers::{
     SandboxSettingsUpdate, SetBrowserAllowAllParams,
 };
 
-pub(super) fn handle_get_autonomy_settings(_params: Map<String, Value>) -> ControllerFuture {
+pub(crate) fn handle_get_autonomy_settings(_params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move { to_json(config_rpc::get_autonomy_settings().await?) })
 }
 
-pub(super) fn handle_update_autonomy_settings(params: Map<String, Value>) -> ControllerFuture {
+pub(crate) fn handle_update_autonomy_settings(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let update = deserialize_params::<AutonomySettingsUpdate>(params)?;
         let patch = config_rpc::AutonomySettingsPatch {
