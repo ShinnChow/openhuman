@@ -90,7 +90,7 @@ None. This module owns no agent tools (`tools.rs` does not exist).
 - `crate::subconscious` — post-login bootstrap / user-switch reset.
 - `crate::inference`, `::voice`, `::autocomplete` — login-gated services started/stopped.
 - `crate::api::config`, `::jwt`, `::rest` — backend API URL, session-token read, `BackendOAuthClient` + OAuth/handoff types.
-- `crate::core::all` (`ControllerFuture`, `RegisteredController`), `crate::core` (`ControllerSchema`/`FieldSchema`/`TypeSchema`), `crate::core::event_bus` (`DomainEvent`/`EventHandler`), `crate::rpc::RpcOutcome` — controller registry + RPC envelope + event bus.
+- `crate::core::all` (`ControllerFuture`, `RegisteredController`), `crate::core` (`ControllerSchema`/`FieldSchema`/`TypeSchema`), `crate::core::events::DomainEvent` + `tinybus::EventHandler`, `crate::rpc::RpcOutcome` (`crate::rpc` is the `pub use openhuman_rpc as rpc` alias in `lib.rs`, so this is the `openhuman-rpc` crate's type) — controller registry + RPC envelope + event bus.
 
 ## Used by
 
