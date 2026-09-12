@@ -8,9 +8,9 @@ signs it with the wallet's key, and retries the request with the proof in a
 so the client never needs native gas currency (SOL/ETH) to pay.
 
 Sibling of the [`wallet`](../wallet/README.md) module in the
-[`web3`](../README.md) family; unlike wallet-driven swaps/bridges, x402
-payments are typically triggered transparently from inside a generic HTTP
-tool call rather than through an explicit agent action.
+[`web3`](../README.md) family. Payments are reached either through the
+dedicated `x402_request` agent tool or as a 402 fallback inside the generic
+`http_request` tool.
 
 ## Compile-time gate (`web3` feature)
 
@@ -34,9 +34,9 @@ not need a stub. Signatures must match the real ones exactly; `cargo check
 | --- | --- |
 | `mod.rs` | Facade root: feature gate, re-exports (`handle_402`, `handle_402_and_pay`, `try_paid_request`, `X402Client`, `X402Error`, `X402PaymentResult`, `init_ledger`, the controller pair, wire types). |
 | `ops.rs` | Thin include-based split (`include!("ops_part_01.rs")` / `ops_part_02.rs`) of the client logic: parse a 402 challenge, build the Solana (`exact` scheme: ComputeBudget limit/price, SPL `TransferChecked`, optional Memo) or EVM (`exact` scheme: EIP-3009 `transferWithAuthorization`) payment, sign, and retry with the proof. |
-| `ops_part_01.rs` | Solana challenge parsing, `wallet_signer` (Solana signer resolution), payment building/signing, `X402Client`/`try_paid_request`. |
-| `ops_part_02.rs` | EVM challenge parsing, `evm_signer` (EVM signer resolution), EIP-712 payload construction, `handle_402`/`handle_402_and_pay`. |
-| `store.rs` | Append-only JSONL payment ledger (`PaymentLedger`) with session/daily/monthly budget enforcement; `PaymentRecord`, `PaymentStatus`, `SpendingSummary`, `SpendingBudget`, `BudgetCheck`, the process-global `GLOBAL_LEDGER`, and `with_ledger`/`with_ledger_mut` accessors. |
+| `ops_part_01.rs` | `X402Client`/`try_paid_request`, `X402PaymentResult`, `X402Error`, `handle_402`/`handle_402_and_pay`, `PAYMENT-REQUIRED`/`PAYMENT-RESPONSE` header parsing, `wallet_signer` (Solana signer resolution through the wallet module), `build_solana_payment` and `build_evm_payment` (both sign via `modules::wallet::sign_message`). |
+| `ops_part_02.rs` | EVM EIP-712 authorization/payload construction (`evm_payment_authorization`, `evm_payment_payload`), `evm_signer` (EVM signer resolution), the Solana instruction builders (ComputeBudget, `TransferChecked`, Memo), and a `cfg(test)`-only local `k256` signer used to check the construction against a fixed vector. |
+| `store.rs` | Append-only JSONL payment ledger (`PaymentLedger`) with per-request/daily/monthly budget enforcement and session/daily/monthly spend summaries; `PaymentRecord`, `PaymentStatus`, `SpendingSummary`, `SpendingBudget`, `BudgetCheck`, the process-global `GLOBAL_LEDGER`, `init_global` (re-exported as `init_ledger`), and `with_ledger`/`with_ledger_mut` accessors. |
 | `schemas.rs` | RPC controller schemas + handlers for the `x402` namespace: `get_summary`, `list_payments`, `update_budget`. |
 | `tools.rs` | `X402RequestTool` (`x402_request`) — purpose-built agent tool for x402 endpoints, as opposed to the generic `http_request` tool's opportunistic 402 fallback. |
 | `types.rs` | Wire types for the v2 protocol: header names, CAIP-2 network/asset constants (Solana mainnet/devnet, Base/Ethereum, USDC mints/contracts), `PaymentRequired`/`PaymentRequirements`/`PaymentPayload`/`PaymentProof` (Evm/Solana variants), `SettlementResponse`, `ResourceInfo`. |
@@ -74,9 +74,13 @@ which handles a 402 only as a silent fallback for any endpoint.
   `GLOBAL_LEDGER`, guarded by a `parking_lot::Mutex`.
 - **Budget enforcement** (`SpendingBudget`, defaults: 1 USDC per request, 10
   USDC per day, 100 USDC per month, in atomic units) is checked against the
-  in-memory ledger before a payment is built; `update_budget` changes the
-  limits for the running process only — it does not rewrite historical
-  records.
+  in-memory ledger before a payment is built. Daily and monthly totals sum
+  the `Settled` records for the current UTC day / calendar month; the session
+  total (records tagged with this process's `x402-<uuid>` session id) is
+  reported by `get_summary` but is not a cap. `init_ledger` seeds the limits
+  from `OPENHUMAN_X402_PER_REQUEST_MAX` / `OPENHUMAN_X402_DAILY_MAX` /
+  `OPENHUMAN_X402_MONTHLY_MAX` when set; `update_budget` changes them for the
+  running process only and does not rewrite historical records.
 
 ## Dependencies
 
@@ -98,7 +102,7 @@ which handles a 402 only as a silent fallback for any endpoint.
 ## Used by
 
 - `crates/openhuman-core/src/tools/impl/network/http_request.rs` (~lines
-  165-225) — `handle_x402_payment`, gated `#[cfg(feature = "web3")]`, is the
+  165-265) — `handle_x402_payment`, gated `#[cfg(feature = "web3")]`, is the
   402 fallback path any HTTP tool call can hit; it calls
   `x402::handle_402_and_pay` and records to the same ledger via
   `x402::store::with_ledger_mut`.
@@ -117,9 +121,10 @@ which handles a 402 only as a silent fallback for any endpoint.
   transaction itself — the facilitator is the fee payer / on-chain submitter.
   The wallet does still need the payment asset (typically USDC) on the target
   chain.
-- Budgets are enforced per-process against the in-memory ledger snapshot; they
-  are not a substitute for on-chain spending limits and reset only when the
-  limits are explicitly updated via `update_budget`.
+- Budget limits live in the process (defaults or env at boot, then
+  `update_budget`); spend totals are recomputed from the on-disk ledger on
+  every boot, so restarting does not reset what was spent today or this
+  month. None of this substitutes for on-chain spending limits.
 - Two distinct paths reach a payment: the purpose-built `x402_request` agent
   tool (always expects a 402) and the generic `http_request` tool's
   opportunistic 402 fallback. Both funnel through `handle_402_and_pay` and the
