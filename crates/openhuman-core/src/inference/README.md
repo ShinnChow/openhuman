@@ -95,8 +95,8 @@ Also exposes a non-RPC HTTP router (`http::router()`) nested at `/v1` by `crates
 ## Persistence
 
 - `openai_oauth/store.rs` persists OAuth tokens via the credentials auth-profile store (`AuthProfilesStore`, `auth-profiles.json`, encrypted at rest) under profile key `provider:openai` / profile `oauth`.
-- `LocalAiService` holds in-process runtime state (status, whisper engine handle, owned `ollama serve` child) via the `local::global` `OnceCell` singleton — process-lifetime, not durably persisted.
-- Model artifacts live under `<root>/models/local-ai/` (`local/core.rs::model_artifact_path`); installed Whisper/Piper assets via `local/install*`.
+- `LocalAiService` holds in-process runtime state (status, owned `ollama serve` child) via the `local::global` `OnceCell` singleton — process-lifetime, not durably persisted.
+- Model artifacts live under `<root>/models/local-ai/` (`local/core.rs::model_artifact_path`); installed Piper assets via `local/install*`.
 - Routing/provider/local settings persisted through `config` (no dedicated `store.rs`).
 
 ## Dependencies
@@ -110,15 +110,15 @@ Also exposes a non-RPC HTTP router (`http::router()`) nested at `/v1` by `crates
 - `crate::util` — small shared helpers.
 - `crate::core::all` — `ControllerFuture`, `RegisteredController` (controller registry).
 - `crate::core::types` — `ControllerSchema`, `FieldSchema`, `TypeSchema`.
-- `crate::core::event_bus` — `DomainEvent`, `publish_global` (SessionExpired).
+- `crate::core::bus` (`BUS.publish`) / `crate::core::events::DomainEvent` — `SessionExpired` publishing on auth failure.
 - `crate::core::observability` — `expected_error_kind` for Sentry-noise classification.
 - `crate::core::jsonrpc` — endpoint mounting reference for `/v1`.
 - `crate::core::auth` — bearer auth for the OpenAI-compatible endpoint.
-- External: `motosan_ai_oauth` (Codex OAuth), `sysinfo` (device profile), `reqwest`, `whisper`-cpp engine bindings.
+- External: `motosan_ai_oauth` (Codex OAuth), `sysinfo` (device profile), `reqwest`.
 
 ## Used by
 
-Widely depended on by the agent layer (`agent/harness`, `agent/harness/session`, `agent/tools`, `agent/triage`, `agent/harness/subagent_runner`), `context`, `voice`, `memory_tree/tree_runtime`, `learning` (+ `learning/transcript_ingest`), `channels`, `embeddings`, `subconscious`, `threads`, and `migrations`/`config/schema`.
+Widely depended on by the agent layer (`agent/harness`, `agent/harness/session`, `agent/tools`, `agent/triage`, `agent/harness/subagent_runner`, `agent/learning`, `agent/context`), `voice`, `memory/tree/tree_runtime`, `channels`, `web_chat`, `inference/embeddings`, `threads`, and `migrations`/`config/schema`.
 
 ## Notes / gotchas
 

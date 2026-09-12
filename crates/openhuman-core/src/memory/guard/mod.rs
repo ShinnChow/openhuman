@@ -83,15 +83,13 @@
 //! be taken: it would make a `readonly` tier start rejecting learning-cache
 //! rebuilds, which is a behaviour change rather than a refactor.
 //!
-//! Current unguarded profile callers:
-//!
-//! - `memory/sync/composio/providers/profile.rs`
-//! - `agent/learning/{tools,startup,schemas}.rs`
-//!
-//! A second, independent write path into `user_profile` exists and is *not*
-//! covered by the `.profile_store(` needle: `agent/harness/archivist/lifecycle.rs`
-//! calls `profile::profile_upsert` on a connection injected at construction.
-//! It has no production construction site today.
+//! A repo-wide search for `.profile_store(` (re-run for this note; see
+//! `memory/bypass_allowlist_tests.rs` for the enforced allowlist) finds no
+//! production caller left outside the memory family itself — the callers this
+//! note used to list under `memory/sync/composio/providers/` and
+//! `agent/learning/` are gone or moved onto the guarded surface. Confirm with
+//! the same grep before relying on this being still true; the allowlist test
+//! is the actual enforcement, this paragraph is not.
 //!
 //! `MemoryClient::memory_handle()` is already `pub(crate)`; do not widen it.
 

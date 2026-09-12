@@ -1,3 +1,7 @@
+//! `run_chat_task` — builds the session agent, runs a turn through the agent
+//! harness, and spawns the progress bridge alongside it. Called from
+//! `ops::start_chat` once validation and cache-lookup are done.
+
 use std::sync::Arc;
 
 use crate::agent::profiles::AgentProfileStore;
