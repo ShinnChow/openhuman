@@ -30,7 +30,7 @@ Startup recovery skips when `OPENHUMAN_CORE_REUSE_EXISTING=1` is set so manual C
 
 ### Overview
 
-The **`crates/openhuman-app`** crate (Rust package **`OpenHuman`**, binary **`OpenHuman`**) is a **desktop-only** host. It embeds the React UI, registers plugins (deep link, opener, OS, notifications, autostart, updater), manages the main window and tray, and runs the core JSON-RPC server **in-process**.
+The **`crates/openhuman-app`** crate (Cargo package **`openhuman-app`**, lib **`openhuman`**, binary **`OpenHuman`**) is a **desktop-only** host. It embeds the React UI, registers plugins (deep link, opener, OS, notifications, autostart, updater), manages the main window and tray, and runs the core JSON-RPC server **in-process**.
 
 Non-desktop targets fail at compile time (`compile_error!` in `lib.rs`).
 
