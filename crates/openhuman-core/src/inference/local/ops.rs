@@ -29,3 +29,5 @@ use reactions::{extract_first_emoji, is_emoji_start};
 use turn_guards::{
     effective_agent_chat_origin, grant_turn_cwd, normalize_model_override, resolve_turn_cwd,
 };
+#[cfg(test)]
+use crate::config::Config;
