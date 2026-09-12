@@ -1,7 +1,7 @@
 //! Forwards a running turn's `AgentProgress` stream into `WebChannelEvent`
 //! socket events and mirrors it into `TurnStateStore`. Also emits the
 //! `inference_heartbeat` liveness beat (see [`INFERENCE_HEARTBEAT_SECS`])
-//! so a long silent prefill can't trip the frontend's disconnect timer.
+//! so a long silent prefill can't trip the frontend's ~120s silence timeout.
 
 use serde_json::json;
 

@@ -17,10 +17,15 @@ task-source sub-domains, and the remaining non-search tool families.
 - Own the [`file_storage`](file_storage/README.md) managed cloud file-storage tool family as a child module.
 - Classify transport and user-state failures through `core::observability::report_error_or_expected`.
 
-Every request `IntegrationClient` sends to the TinyHumans backend carries a
-sanitized `x-sdk-name` (see `ProductIdentity` handling in `client_part_01.rs`
-and `client_tests.rs::product_identity_seen_by_backend`), per AGENTS.md
-"Backend API".
+Every request `IntegrationClient` sends through the `tinyhumans-sdk` client
+carries the sanitized `x-sdk-name` product identity
+(`crate::api::product::product_identity_headers()` applied via
+`with_default_headers` in `client_part_01.rs`; asserted by
+`integration_requests_carry_the_default_product_identity` in
+`client_tests_part_01_tests.rs`). The one deliberate exception, per AGENTS.md
+"Backend API", is `get_bytes`: it uses a separate untagged `download_client`
+because the file-storage download route answers a 302 to a presigned S3 URL
+and reqwest keeps custom headers across the cross-host redirect.
 
 ## Members
 
@@ -28,23 +33,11 @@ and `client_tests.rs::product_identity_seen_by_backend`), per AGENTS.md
 | --- | --- |
 | `client.rs` + `client_part_01.rs` / `client_part_02.rs` | `IntegrationClient`: `post`/`get`/`get_bytes`/`patch`/`delete`/`upload_multipart`/`pricing`, backend URL sanitization, and client construction. |
 | `types.rs` | Shared serde types for backend envelopes and pricing. |
-| `tools.rs` | Non-search, non-connector agent tools: Google Places, stock/market data, Twilio. |
+| `tools.rs` + `tools/` | Non-search, non-connector agent tools: `tools/google_places.rs` (search + details), `tools/stock_prices.rs` (quote, exchange rate, options, crypto series, commodity via backend financial APIs), `tools/twilio.rs` (outbound calls). `tools.rs` only declares and re-exports them. |
 | [`file_storage/`](file_storage/README.md) | Managed cloud file-storage agent tools (`Storage*Tool`), backed by the backend's S3-based `file_storage` provider. |
 | [`composio/`](composio/README.md) | Composio connector integration: catalogs, connections, triggers, direct-auth fallback, and the `tinyconnectors` module bridge. |
 | [`task_sources/`](task_sources/README.md) | Normalizes external task feeds (via the Composio providers) into agent-facing list/fetch/filter tools. |
-| `test_support.rs` + `test_support_backend.rs` | In-process fake integration backend (`spawn_fake_integration_backend`) used by `tools/ops_tests_part_02_tests.rs` / `ops_tests_part_03_tests.rs` to exercise integration tools without a real backend. |
-
-## Key Files
-
-| File | Role |
-| --- | --- |
-| `crates/openhuman-core/src/integrations/mod.rs` | Export-only module root. Declares the `client`, `composio`, `file_storage`, `task_sources`, `tools`, `types` submodules; re-exports `build_client`, `pricing_for_config`, `IntegrationClient`, pricing/envelope types. |
-| `crates/openhuman-core/src/integrations/client.rs` | `IntegrationClient` construction and top-level methods; split across `client_part_01.rs` / `client_part_02.rs`. |
-| `crates/openhuman-core/src/integrations/types.rs` | Shared serde types for backend envelopes and pricing. |
-| `crates/openhuman-core/src/integrations/tools.rs` | Aggregates and re-exports the non-search, non-connector tool modules. |
-| `crates/openhuman-core/src/integrations/tools/google_places.rs` | Google Places search + details. |
-| `crates/openhuman-core/src/integrations/tools/stock_prices.rs` | Market data via backend financial APIs. |
-| `crates/openhuman-core/src/integrations/tools/twilio.rs` | Outbound phone calls via backend Twilio. |
+| `test_support.rs` + `test_support_backend.rs` | In-process axum fake of the integration backend (`spawn_fake_integration_backend`, records every request). Not a `mod` of this module: `tools/ops_tests.rs` pulls it in with `#[path = "../integrations/test_support.rs"]` for `ops_tests_part_02_tests.rs` / `ops_tests_part_03_tests.rs`. |
 
 ## Search Boundary
 
