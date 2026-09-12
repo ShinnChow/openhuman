@@ -96,7 +96,7 @@ Both subscribers are registered idempotently from `crates/openhuman-core/src/cor
 - `crates/openhuman-core/src/core/jsonrpc.rs` — registers the restart/shutdown event-bus subscribers at startup.
 - `crates/openhuman-core/src/platform/doctor/core.rs` — reads `service::daemon::state_file_path`.
 - `crates/openhuman-core/src/platform/update/ops.rs`, `crates/openhuman-core/src/config/ops/loader_part_01.rs` — reference `crate::platform::service` (restart/mock-agent-running paths).
-- `crates/openhuman-core/src/core/all.rs` and `lib.rs` — module wiring.
+- `lib.rs` — module wiring.
 
 ## Notes / gotchas
 

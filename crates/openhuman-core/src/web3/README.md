@@ -87,12 +87,19 @@ deBridge uses real EVM chain ids (1 ETH, 10 Optimism, 56 BNB, 137 Polygon,
 maps a deBridge id to the local signer family; ids we can't sign for are
 rejected at quote time.
 
+## Wiring
+
+- `crates/openhuman-core/src/core/all.rs`: `crate::web3::wallet::all_wallet_registered_controllers()` (~line 884), `crate::web3::all_web3_registered_controllers()` (~line 890), `crate::web3::x402::all_x402_registered_controllers()` (~line 569) — each pushed onto the controller registry under `DomainGroup::Web3`.
+- `crates/openhuman-core/src/tools/mod.rs` lines 59-60: `#[cfg(feature = "web3")] pub use crate::web3::wallet::tools::*;` re-exports the wallet agent tool structs.
+- `crates/openhuman-core/src/tools/ops.rs`: calls `crate::web3::all_web3_agent_tools()` to register the swap/bridge/dapp agent tools, alongside the wallet and x402 tool registrations.
+
 ## Dependencies
 
 - [`crate::web3::wallet`] — `sign_and_broadcast_evm` / `sign_and_broadcast_solana` (crate-internal), `status` for address resolution, `EvmNetwork` / `WalletChain`.
 - [`crate::integrations`] (`IntegrationClient`, `build_client`) — backend auth + transport.
 - `crate::security::approval::APPROVAL_CHAT_CONTEXT` — quote-owner binding.
 - `crate::core::all` / `crate::core` — RPC controller registry wiring.
+- `tinywallet-bus` (`crates/openhuman-core/Cargo.toml` ~line 864, optional, gated by the `web3` feature; features `btc`, `evm`, `solana`, `tron`, `keccak`, `net`, `wire`, `eip712`, `abi`, `tx-codec`) — the contract crate the wallet's signing primitives (and the x402 payment path's EIP-712/ERC-20 encoders) build on: address formats, wire types crossing the `Transport` seam, and the Tron verifier.
 
 ## Notes / gotchas
 
