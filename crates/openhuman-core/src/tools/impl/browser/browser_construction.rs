@@ -92,5 +92,4 @@ impl BrowserTool {
             false
         }
     }
-
 }

@@ -160,5 +160,4 @@ impl BrowserTool {
             body.trim()
         )))
     }
-
 }
