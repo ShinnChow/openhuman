@@ -17,44 +17,54 @@ security model); this README covers only the host seam.
   [`caps::open_flow_checkpointer`], the two entry points `flows::ops*.rs`
   calls to drive a run; re-exports `tinyflows_sqlite::checkpoint` as
   `checkpoint_sqlite` under its historical path.
-- `caps/` — six of the seven capability adapters, plus construction,
-  curation, preflight, and invocation logic:
+- `caps/` — every capability adapter except `memory`, plus construction,
+  curation, preflight, and invocation logic. `build_capabilities` also fills
+  `tasks` with the engine's own `TokioTaskRunner` and deliberately leaves
+  `shell` and `approvals` as `None` (no host shell adapter yet; approvals
+  reuse the engine's pause/`flows_resume` fallback).
   - `ops.rs` — `build_capabilities` (assembles the `Capabilities` bundle for
     one run), `open_flow_checkpointer` (opens the durable SQLite checkpointer
     at `<workspace_dir>/flows/checkpoints.db`), Composio curation/preflight
     (`is_curated_flow_tool`, `preflight_composio_args`), and the
     `OpenHumanTools` / `PreflightToolInvoker` tool-call adapters.
-  - `agent.rs` — `AgentRunner`: runs an `agent` node as a nested harness
-    invocation, resolving `agent_ref` and scaling the per-attempt timeout
-    against the iteration cap.
-  - `llm.rs` — `LlmProvider` over OpenHuman's inference stack; what an
-    `agent` node falls back to without an agent runner, and what a raw
-    completion node uses directly.
+  - `agent.rs` — `OpenHumanAgentRunner` (`AgentRunner`): resolves an `agent`
+    node's trusted `agent_ref` and routes it to a full harness turn
+    (`Agent::run_single`, a nested tinyagents graph) when a harness
+    `AgentDefinition` exists, or to a persona-shaped `OpenHumanLlm::complete`
+    when only a custom registry entry does. Also owns the timeout clamp and
+    its scaling against the definition's iteration cap.
+  - `llm.rs` — `OpenHumanLlm` (`LlmProvider`) over OpenHuman's inference
+    stack; what an `agent` node falls back to without an agent runner, and
+    what a raw completion node uses directly.
   - `prompt.rs` — message assembly, the `input_context` carrier and its size
     cap, and tolerant JSON extraction for structured-output nodes.
-  - `http.rs` — `HttpClient`; inherits the allowlist/DNS-rebind protection of
-    the underlying `HttpRequestTool` and adds `http_cred:<name>` credential
-    resolution, injected server-side after the approval gate computes its
-    redacted summary.
-  - `code.rs` — `CodeRunner`; runs JS/Python in the sandbox under a
-    wall-clock timeout.
-  - `state.rs` — `StateStore` over `flows::{kv_get,kv_set}`, namespaced per
-    flow so saved flows never collide on a state key.
-  - `resolver.rs` — `WorkflowResolver`; resolves a `sub_workflow` node's id to
-    a stored workflow (the engine only knows the id).
-  - `tier.rs` — the autonomy-tier and approval gate every acting node
-    (tool call, HTTP request, code run) passes through first.
+  - `http.rs` — `OpenHumanHttp` (`HttpClient`); inherits the allowlist and
+    DNS-rebind protection of the underlying `HttpRequestTool` and adds
+    `http_cred:<name>` credential resolution, injected after the approval
+    gate computes its redacted summary so the secret never reaches the UI,
+    graph, output, or logs.
+  - `code.rs` — `OpenHumanCode` (`CodeRunner`); runs JS/Python through
+    `sandbox::execute_in_sandbox` under `CODE_RUN_TIMEOUT_SECS`.
+  - `state.rs` — `FlowStateStore` (`StateStore`) over
+    `flows::{kv_get,kv_set}`, namespaced per flow (`"flow:<id>"`) so saved
+    flows never collide on a state key.
+  - `resolver.rs` — `OpenHumanWorkflowResolver` (`WorkflowResolver`);
+    resolves a `sub_workflow` node's id to a stored workflow.
+  - `tier.rs` — `enforce_node_tier_gate` / `gate_call_for_tier`: the
+    autonomy-tier and approval gate every acting node (tool call, HTTP
+    request, code run, memory read/write) passes through first.
   - `tools/` — `tool_call` node dispatch, split by slug namespace:
     `native.rs` for the `oh:` prefix (native OpenHuman tools, same registry
     the assistant uses), `composio.rs` for everything else (Composio
     actions; must stay the catch-all backend since Composio slugs carry no
     prefix).
 - `memory_adapter.rs` — `OpenHumanMemory`, the `MemoryProvider` adapter for
-  the `memory` node. Lives outside `caps/` per the repo's ~500-line
-  file-size convention (`caps/ops.rs` is already large). Routes every
-  operation through the same tier-gate pair as the other acting adapters
-  (`Read` for `recall`/`search`/`flavour`/`people`, `Write` for
-  `remember`/`forget`).
+  the `memory` node. Routes every operation through the same `tier.rs` gate
+  pair as the other acting adapters (`CommandClass::Read` for
+  `recall`/`search`/`flavour`/`people`, `CommandClass::Write` for
+  `remember`/`forget`); `remember`/`forget` hard-refuse any scope other than
+  `"flow"`, and `scope: "flow"` shares the `flow_namespace` the
+  `flow_memory_*` agent tools use.
 - `observability.rs` — `tinyflows::observability::RunObserver` impls:
   `TracingRunObserver` (log-only) and `FlowRunObserver`, which persists live
   steps via `flows::upsert_flow_run_step` and publishes
@@ -66,14 +76,18 @@ security model); this README covers only the host seam.
 
 ## Security model
 
-Every capability adapter that reaches outside the process goes through two
-independent layers before it acts: `tier.rs`'s autonomy-tier/approval gate,
-and (for Composio) `caps/ops.rs`'s deny-by-default curation check, which is
-intentionally stricter than the normal agent tool-call loop's curation
-because a flow author's `tool_call.slug` is free-form and never round-trips
-through live tool discovery first. See
-[flows-on-tinyagents.md § The security model: two gates](../../../../../gitbooks/developing/architecture/flows-on-tinyagents.md#the-security-model-two-gates)
-for the full contract.
+The contract is spelled out in
+[flows-on-tinyagents.md § The security model: two gates](../../../../../gitbooks/developing/architecture/flows-on-tinyagents.md#the-security-model-two-gates);
+this module holds the outer gate. `tier.rs` consults the user's autonomy
+tier for each acting node's `CommandClass` and forces an `ApprovalGate`
+round-trip on `Prompt`, even when the saved flow's own `require_approval` is
+false. Composio `tool_call` nodes additionally pass `caps/ops.rs`'s
+deny-by-default curation check (`is_curated_flow_tool`), stricter than the
+agent loop's because a flow author's slug is free-form and never round-trips
+through live tool discovery; `tools/composio.rs` documents why the tier gate
+must run before curation. The inner gate (the agent definition's `ToolScope`
+and sandbox) applies to the nested harness turn `agent.rs` starts, with no
+new origin wrapper.
 
 ## Used by
 
@@ -83,9 +97,12 @@ for the full contract.
 
 ## Tests
 
-`tinyflows_tests.rs` (capability-seam smoke tests against the real engine),
-`checkpoint_compat_tests.rs` (SQLite checkpoint schema/format compatibility),
-`memory_node_e2e_tests.rs` (end-to-end `memory` node coverage through the
-real engine, adapter, and store — kept separate from `tinyflows_tests.rs`
-because it exercises a real store rather than doubles), plus a
-`*_tests.rs`/`#[cfg(test)] mod tests` file alongside most modules above.
+`tinyflows_tests.rs` (capability-seam smoke tests against the real engine;
+note the real `HttpRequestTool` blocks loopback, so HTTP coverage asserts the
+SSRF/allowlist rejections rather than a mock round-trip),
+`checkpoint_compat_tests.rs` (proves the `tinyflows-sqlite` checkpoint store
+stays byte-compatible with the `tinyagents` backend it was ported from),
+`memory_node_e2e_tests.rs` (the `memory` node through the real engine,
+adapter, and on-disk store — kept apart from `tinyflows_tests.rs` because the
+unit tests only exercise error paths against an empty workspace), plus a
+`<module>_tests.rs` file beside most modules above.
