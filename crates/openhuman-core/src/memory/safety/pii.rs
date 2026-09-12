@@ -22,3 +22,15 @@ mod normalize;
 mod patterns;
 
 pub(super) use patterns::{has_likely_email, has_likely_pii, redact_pii};
+
+// Flattened test-only re-exports so `safety_tests.rs` and its own submodules
+// can exercise the internals directly (checksum validators, the
+// normalization pass) the same way they could when everything lived in one
+// `include!`-spliced scope.
+#[cfg(test)]
+pub(super) use checksums::{
+    digits, valid_cnpj, valid_cpf, valid_cuit, valid_dni_es, valid_iban, valid_luhn,
+    valid_nie_es, valid_nino, valid_ssn, valid_verhoeff,
+};
+#[cfg(test)]
+pub(super) use normalize::{scan_candidates, NormalizedView};

@@ -2,6 +2,7 @@
 //! helpers shared by the client and both tools.
 
 use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
 
 const IMAGE_DESCRIPTION_MAX_CHARS: usize = 300;
 
@@ -113,7 +114,7 @@ pub struct TavilyExtractFailure {
     pub error: Option<String>,
 }
 
-fn non_empty(value: Option<&str>) -> Option<String> {
+pub(super) fn non_empty(value: Option<&str>) -> Option<String> {
     value
         .map(str::trim)
         .filter(|s| !s.is_empty())
@@ -123,7 +124,7 @@ fn non_empty(value: Option<&str>) -> Option<String> {
 /// Escape a remote page title for use as a markdown link label. Titles are
 /// attacker-controlled, and an unescaped `[`/`]` breaks out of the link and
 /// lets a crafted page inject markdown into the agent transcript.
-fn escape_link_text(raw: &str) -> String {
+pub(super) fn escape_link_text(raw: &str) -> String {
     raw.replace('\\', r"\\")
         .replace('[', r"\[")
         .replace(']', r"\]")
@@ -132,7 +133,7 @@ fn escape_link_text(raw: &str) -> String {
 /// Render a URL as a markdown link destination. Bare parentheses (common in
 /// Wikipedia URLs) terminate the destination early, so wrap in angle brackets
 /// and drop the characters that would close them.
-fn escape_link_destination(raw: &str) -> String {
+pub(super) fn escape_link_destination(raw: &str) -> String {
     let cleaned: String = raw
         .trim()
         .chars()
@@ -144,7 +145,7 @@ fn escape_link_destination(raw: &str) -> String {
 
 /// Copy a string array argument onto the Tavily request body.
 /// Copy a string array argument onto the Tavily request body.
-fn copy_domain_filter(args: &Value, from: &str, body: &mut Value) {
+pub(super) fn copy_domain_filter(args: &Value, from: &str, body: &mut Value) {
     if let Some(list) = args.get(from).filter(|v| v.is_array()) {
         body[from] = list.clone();
     }
@@ -152,14 +153,14 @@ fn copy_domain_filter(args: &Value, from: &str, body: &mut Value) {
 
 /// Copy an optional string argument onto the Tavily request body under the
 /// same (already snake_case) key.
-fn copy_string(args: &Value, key: &str, body: &mut Value) {
+pub(super) fn copy_string(args: &Value, key: &str, body: &mut Value) {
     if let Some(value) = non_empty(args.get(key).and_then(Value::as_str)) {
         body[key] = json!(value);
     }
 }
 
 /// Copy an optional boolean argument onto the Tavily request body.
-fn copy_bool(args: &Value, key: &str, body: &mut Value) {
+pub(super) fn copy_bool(args: &Value, key: &str, body: &mut Value) {
     if let Some(value) = args.get(key).and_then(Value::as_bool) {
         body[key] = json!(value);
     }
