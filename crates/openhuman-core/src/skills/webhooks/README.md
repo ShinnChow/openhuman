@@ -93,9 +93,8 @@ The router also runs a separate `tokio::sync::broadcast` channel of `WebhookDebu
 - `crates/openhuman-core/src/core/all.rs` — registers the controllers/schemas into the RPC registry.
 - `crates/openhuman-core/src/platform/socket/manager.rs` — stores the `WebhookRouter` (`set_webhook_router` / `webhook_router`) on the socket manager; ops/bus retrieve it from there.
 - `crates/openhuman-core/src/platform/socket/event_handlers.rs` — publishes `WebhookIncomingRequest` from the socket and reads the shared router slot.
-- `crates/openhuman-core/src/channels/runtime/startup.rs` — registers `WebhookRequestSubscriber` at startup.
-- `crates/openhuman-core/src/core/event_bus/events.rs` — defines the `Webhook*` `DomainEvent` variants this module uses.
-- `crates/openhuman-core/src/core/jsonrpc.rs` — RPC transport surface.
+- `crates/openhuman-core/src/core/jsonrpc.rs` — registers `WebhookRequestSubscriber` in `register_domain_subscribers()` and provides the RPC transport surface.
+- `crates/openhuman-core/src/core/events.rs` — defines the `Webhook*` `DomainEvent` variants this module uses.
 
 ## Notes / gotchas
 
