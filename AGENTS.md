@@ -277,6 +277,7 @@ method constants, request and response types, and its contract version.
 | `tinywallet-bus` | `web3` |
 | `tinymcp-bus` | `mcp` |
 | `tinychannels-bus` | channel vocabulary |
+| `tinyconnectors-bus` | OAuth connector (Composio) wire contract; called through `integrations/composio/module_client.rs` |
 
 Rules:
 
