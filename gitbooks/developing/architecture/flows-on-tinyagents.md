@@ -81,7 +81,7 @@ Because the engine keys persisted state by a caller-supplied `thread_id`,
 durable **HITL resume** is `engine::resume_with_checkpointer` over the same
 `tinyagents::graph::SqliteCheckpointer` the agent harness uses - opened once per
 host at `<workspace_dir>/flows/checkpoints.db`
-([`caps.rs`](../../../crates/openhuman-core/src/flows/tinyflows/caps.rs), `open_flow_checkpointer`).
+([`caps/`](../../../crates/openhuman-core/src/flows/tinyflows/caps/mod.rs), `open_flow_checkpointer`).
 
 ## Run state: one JSON map, a merge reducer, and the `{json,text,raw}` envelope
 
@@ -152,7 +152,7 @@ code, persistence, sub-workflow lookup - is a **capability trait** the host
 implements ([`vendor/tinyflows/src/caps/mod.rs`](../../../vendor/tinyflows/src/caps/mod.rs)).
 `openhuman::flows::tinyflows::caps` supplies one adapter per trait, assembled into a
 `Capabilities` bundle per run by `build_capabilities`
-([`caps.rs`](../../../crates/openhuman-core/src/flows/tinyflows/caps.rs)):
+([`caps/`](../../../crates/openhuman-core/src/flows/tinyflows/caps/mod.rs)):
 
 | tinyflows trait    | Node(s) it backs                | OpenHuman adapter           | Wraps                                            |
 | ------------------ | ------------------------------- | --------------------------- | ------------------------------------------------ |
@@ -237,7 +237,7 @@ around the whole engine future
 `[autonomy]` tier through `SecurityPolicy::gate_decision` for that node's
 `CommandClass` (`http_request` → Network, `code` → Write, native `oh:` tools →
 their classified class) in `enforce_node_tier_gate`
-([`caps.rs`](../../../crates/openhuman-core/src/flows/tinyflows/caps.rs)):
+([`caps/`](../../../crates/openhuman-core/src/flows/tinyflows/caps/mod.rs)):
 
 - a `readonly` run **`Block`s** at the network/code boundary and never dispatches;
 - a `supervised` run's `Prompt` decision is escalated by `gate_call_for_tier`
@@ -343,7 +343,7 @@ sequenceDiagram
 | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | [`vendor/tinyflows/src/`](../../../vendor/tinyflows/src/)                                                       | The engine: `model/`, `validate.rs`, `compiler.rs`, `engine.rs`, `expr.rs`, `caps/`, `nodes/`. |
 | [`vendor/tinyflows/src/caps/mod.rs`](../../../vendor/tinyflows/src/caps/mod.rs)                                 | The seven capability traits + `Capabilities` bundle.                                           |
-| [`crates/openhuman-core/src/flows/tinyflows/caps.rs`](../../../crates/openhuman-core/src/flows/tinyflows/caps.rs)                       | The host adapters, `build_capabilities`, `open_flow_checkpointer`, the two-layer gate helpers. |
+| [`crates/openhuman-core/src/flows/tinyflows/caps/`](../../../crates/openhuman-core/src/flows/tinyflows/caps/mod.rs)                       | The host adapters, `build_capabilities`, `open_flow_checkpointer`, the two-layer gate helpers. |
 | [`crates/openhuman-core/src/flows/ops.rs`](../../../crates/openhuman-core/src/flows/ops.rs)                                             | `flows_run` / `flows_resume` / `flows_build` / `flows_discover` and CRUD.                      |
 | [`crates/openhuman-core/src/flows/bus.rs`](../../../crates/openhuman-core/src/flows/bus.rs)                                             | `FlowTriggerSubscriber` - the host-side multi-trigger bridge.                                  |
 | [`crates/openhuman-core/src/flows/builder_tools.rs`](../../../crates/openhuman-core/src/flows/builder_tools.rs)                         | The builder's `propose` / `revise` / `dry_run` / `save` / `run` tools.                         |
