@@ -52,7 +52,8 @@ pub fn hosting_tools(account: &Account) -> Vec<Box<dyn Tool>> {
     ]
 }
 
-pub(super) fn required_str(args: &Value, key: &str) -> anyhow::Result<String> {
+/// Reads a required string argument.
+fn required_str(args: &Value, key: &str) -> anyhow::Result<String> {
     args.get(key)
         .and_then(Value::as_str)
         .map(str::trim)
@@ -64,7 +65,7 @@ pub(super) fn required_str(args: &Value, key: &str) -> anyhow::Result<String> {
 /// Renders one `env` object value. A number or a bool is still a variable, so
 /// it is rendered rather than dropped. `null` and a container are refused: a
 /// variable silently set to `"null"` is worse than a named error.
-pub(super) fn env_value(key: &str, value: &Value) -> anyhow::Result<String> {
+fn env_value(key: &str, value: &Value) -> anyhow::Result<String> {
     match value {
         Value::String(value) => Ok(value.clone()),
         Value::Number(_) | Value::Bool(_) => Ok(value.to_string()),
