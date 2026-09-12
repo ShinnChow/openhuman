@@ -18,6 +18,10 @@ use std::sync::Arc;
 use std::time::Duration;
 use std::path::PathBuf;
 use std::sync::MutexGuard;
+use tinyagents_harness::ids::TaskId;
+use tinyagents_harness::steering::{SteeringCommand, SteeringCommandKind};
+use tokio::sync::watch;
+use tokio::task::AbortHandle;
 
 /// Serializes every test that touches the global [`REGISTRY`]. We reuse the
 /// crate-wide `TEST_ENV_LOCK` (rather than a module-local mutex) because the
