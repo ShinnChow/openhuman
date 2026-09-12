@@ -424,8 +424,7 @@ fn center_origin_after_min_floor_stays_in_work_area() {
         centered_x < work_area.x,
         "precondition: naive center should land off-screen"
     );
-    let (x, y, w, h) =
-        clamp_to_work_area(centered_x, centered_y, clamped_w, clamped_h, work_area);
+    let (x, y, w, h) = clamp_to_work_area(centered_x, centered_y, clamped_w, clamped_h, work_area);
     assert_eq!((x, y), (work_area.x, work_area.y));
     assert_eq!((w, h), (clamped_w, clamped_h));
 }

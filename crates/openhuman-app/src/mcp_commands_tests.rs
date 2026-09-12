@@ -6,8 +6,7 @@ use super::*;
 
 #[test]
 fn config_path_claude_desktop_macos() {
-    let path =
-        config_path_for_client("claude-desktop", "macos").expect("should resolve on macos");
+    let path = config_path_for_client("claude-desktop", "macos").expect("should resolve on macos");
     let s = path.display().to_string();
     assert!(
         s.contains("Library/Application Support/Claude/claude_desktop_config.json"),
@@ -17,8 +16,7 @@ fn config_path_claude_desktop_macos() {
 
 #[test]
 fn config_path_claude_desktop_linux() {
-    let path =
-        config_path_for_client("claude-desktop", "linux").expect("should resolve on linux");
+    let path = config_path_for_client("claude-desktop", "linux").expect("should resolve on linux");
     let s = path.display().to_string();
     assert!(
         s.contains(".config/Claude/claude_desktop_config.json"),
@@ -109,9 +107,7 @@ fn binary_path_result_contains_openhuman_core() {
             // Acceptable in a clean CI checkout where the binary hasn't
             // been built yet. The error must be descriptive.
             assert!(
-                e.contains("openhuman-core")
-                    || e.contains("current_exe")
-                    || e.contains("target"),
+                e.contains("openhuman-core") || e.contains("current_exe") || e.contains("target"),
                 "error message should reference the binary or path: {e}"
             );
         }

@@ -36,7 +36,9 @@ use prompt::{
     should_arm_speak_back, spoken_delta, VOICE_READBACK_PREFIX,
 };
 #[cfg(test)]
-use turn_handler::next_handoff_line;
+use turn_handler::{next_handoff_line, VOICE_HANDOFF_LINES};
+#[cfg(test)]
+use crate::agent::progress::AgentProgress;
 
 #[cfg(test)]
 #[path = "realtime_harness_tests.rs"]

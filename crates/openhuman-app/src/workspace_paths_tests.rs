@@ -73,8 +73,7 @@ fn preview_workspace_text_from_root_reads_utf8_text() {
     let workspace = tempdir().unwrap();
     fs::write(workspace.path().join("readme.md"), "# Hello").unwrap();
 
-    let preview =
-        preview_workspace_text_from_root(workspace.path(), "readme.md", 1024).unwrap();
+    let preview = preview_workspace_text_from_root(workspace.path(), "readme.md", 1024).unwrap();
 
     assert_eq!(preview.path, "readme.md");
     assert_eq!(preview.contents, "# Hello");

@@ -2,7 +2,6 @@
 
 use super::*;
 
-
 #[test]
 fn is_protected_windows_pid_matches_kernel_pids() {
     assert!(is_protected_windows_pid(0));
