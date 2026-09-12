@@ -524,7 +524,7 @@ pub async fn start_chat(
         let mut in_flight = IN_FLIGHT.lock().await;
         in_flight.insert(
             map_key,
-            crate::web_chat::types::InFlightEntry {
+            InFlightEntry {
                 request_id: request_id.clone(),
                 handle,
                 run_queue: turn_run_queue,
