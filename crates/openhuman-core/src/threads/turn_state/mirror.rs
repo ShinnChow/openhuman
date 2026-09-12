@@ -17,5 +17,10 @@
 #[cfg(test)]
 #[path = "mirror_tests.rs"]
 mod tests;
-include!("mirror_part_01.rs");
-include!("mirror_part_02.rs");
+
+mod caps;
+mod lifecycle;
+mod observe;
+mod state;
+
+pub use state::TurnStateMirror;
