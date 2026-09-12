@@ -1,4 +1,3 @@
-use crate::json_schema::compute_primary_array_path_from_value;
 //! Unit tests for the live Composio catalog and the real-output probe.
 //!
 //! Moved here with the code they exercise. Two of them
@@ -8,6 +7,8 @@ use crate::json_schema::compute_primary_array_path_from_value;
 //! a foreign test can call it would leak implementation surface to the whole
 //! crate to satisfy a test.
 
+
+use crate::json_schema::compute_primary_array_path_from_value;
 // `super` is `catalog` itself — this file is included as its child module — so
 // the glob reaches its private helpers as well as its imports.
 use super::*;

@@ -1,5 +1,3 @@
-use crate::modules::memory::capabilities::capabilities_for;
-use crate::modules::memory::capabilities::ARTIFACT_CAPABILITIES_PIN;
 //! Tests for the memory module client.
 //!
 //! Nothing here loads a module. What is testable without one is what decides a
@@ -9,6 +7,9 @@ use crate::modules::memory::capabilities::ARTIFACT_CAPABILITIES_PIN;
 //! where they can be honest — `tinymemory`'s own loader E2E, against a real
 //! broker and a real `dlopen`.
 
+
+use crate::modules::memory::capabilities::capabilities_for;
+use crate::modules::memory::capabilities::ARTIFACT_CAPABILITIES_PIN;
 use std::sync::Arc;
 
 use tinymemory_api::capabilities::{Capabilities, Capability};

@@ -1,11 +1,12 @@
+//! `<slug>:<model>` BYOK cloud providers: shared slug resolution (model fallback,
+//! abstract-tier remapping, credentials, codex routing) and the crate-native builders.
+
+
 use crate::inference::provider::crate_anthropic;
 use crate::inference::provider::crate_openai;
 use crate::inference::provider::factory::access_gates::verify_backend_session_active;
 use crate::inference::provider::factory::access_gates::verify_session_active;
 use crate::inference::provider::fallback_diagnostics;
-//! `<slug>:<model>` BYOK cloud providers: shared slug resolution (model fallback,
-//! abstract-tier remapping, credentials, codex routing) and the crate-native builders.
-
 use super::*;
 
 /// Look up a `cloud_providers` entry by slug and build the provider.

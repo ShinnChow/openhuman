@@ -1,9 +1,10 @@
-use crate::mcp::registry::schemas::params::read_optional_string;
-use crate::mcp::registry::schemas::params::read_optional_u32;
-use crate::mcp::registry::schemas::read_optional_u32;
 //! `mcp_setup` handler implementations — deserialise params and delegate
 //! to `setup_ops.rs`.
 
+
+use crate::mcp::registry::schemas::params::read_optional_string;
+use crate::mcp::registry::schemas::params::read_optional_u32;
+use crate::mcp::registry::schemas::read_optional_u32;
 use serde_json::{Map, Value};
 
 use crate::config::rpc as config_rpc;
