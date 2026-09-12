@@ -39,10 +39,10 @@ This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDU
 | Node.js                 | `>=24.0.0` from [`app/package.json`](app/package.json)     | Install the current Node 24 release or newer.                                                                                                                |
 | pnpm                    | `pnpm@10.10.0` from [`package.json`](package.json)         | The repo enforces pnpm via the root `packageManager` field.                                                                                                  |
 | Rust                    | `1.96.1` from [`rust-toolchain.toml`](rust-toolchain.toml) | Install with `rustup`; `rustfmt` and `clippy` are required components.                                                                                       |
-| CMake                   | Current stable                                             | Required by native Rust dependencies such as Whisper bindings.                                                                                               |
-| Ninja                   | Current stable                                             | Required on Windows as the CMake generator for native crates built by `scripts/run-dev-win.sh` (e.g. Whisper bindings).                                      |
+| CMake                   | Current stable                                             | Optional. Only `aws-lc-sys` (via `rustls`) needs it, and only when the root workspace is built with non-default features; default builds do not use it.        |
+| Ninja                   | Current stable                                             | Required on Windows: `scripts/run-dev-win.sh` exits if `ninja` is not on PATH (it pins `CMAKE_GENERATOR=Ninja` for any CMake-driven crate).                    |
 | ripgrep (`rg`)          | Current stable                                             | Used by the `lint:commands-tokens` pre-push step (scans `app/src/components/commands/`). Without it, `git push` fails the hook with `rg: command not found`. |
-| Vendored module sources | Git submodules under `vendor/`                             | The `tiny*` module crates patched into the Rust workspace. Run `git submodule update --init --recursive vendor/` before building.                            |
+| Vendored module sources | Git submodules under `vendor/`                             | The `tiny*` crates the Rust workspaces depend on by path. Run `git submodule update --init --recursive vendor/` before building.                              |
 | macOS tools             | Xcode Command Line Tools                                   | Needed for local desktop builds on macOS.                                                                                                                    |
 | Linux desktop packages  | System GTK/WebKit/AppIndicator build deps                  | Install the package set Tauri requires for your distro before attempting desktop builds.                                                                     |
 
@@ -63,31 +63,16 @@ rustup toolchain install 1.96.1 --profile minimal
 rustup component add rustfmt clippy --toolchain 1.96.1
 ```
 
-**3. LLVM / Clang**
+**3. CMake and Ninja**
 
-`whisper-rs-sys` depends on `libclang`. Download the Windows x86_64 release from [github.com/llvm/llvm-project/releases](https://github.com/llvm/llvm-project/releases) (~822 MB). During install, check **"Add LLVM to system PATH for all users"**. If you see a "PATH too long" warning, skip the PATH step and set the environment variable manually:
+`scripts/run-dev-win.sh` pins Ninja as the CMake generator and exits if it cannot find `ninja`. No crate in the default desktop build compiles through CMake today, but the script expects both tools. Install them via winget:
 
 ```powershell
-$env:LIBCLANG_PATH = "C:\Program Files\LLVM\bin"
-```
-
-**4. CMake**
-
-`whisper.cpp` requires CMake. Install via winget:
-
-```bash
 winget install Kitware.CMake
-```
-
-**5. Ninja**
-
-The CEF build uses Ninja as its CMake generator. Install it via winget:
-
-```powershell
 winget install --id Ninja-build.Ninja -e
 ```
 
-**6. Node.js and pnpm**
+**4. Node.js and pnpm**
 
 Install Node.js 24+ and pnpm@10.10.0 as usual.
 
@@ -95,9 +80,8 @@ Install Node.js 24+ and pnpm@10.10.0 as usual.
 
 1. VS Build Tools → restart terminal
 2. Rust (`rustup`) → restart terminal
-3. LLVM → restart terminal
-4. CMake + Ninja → restart terminal
-5. Node.js + pnpm → restart terminal
+3. CMake + Ninja → restart terminal
+4. Node.js + pnpm → restart terminal
 
 **Quick dependency check**
 
@@ -105,35 +89,28 @@ Install Node.js 24+ and pnpm@10.10.0 as usual.
 # Verify all required tools are reachable
 rustc --version
 cargo --version
-clang --version
 cmake --version
 ninja --version
 node --version
 pnpm --version
-
-# Verify libclang is accessible (needed by whisper-rs-sys)
-$env:LIBCLANG_PATH = "C:\Program Files\LLVM\bin"
-clang -v
 ```
 
 #### Platform notes
 
 - **Web-only development** needs Node, pnpm, and the Rust toolchain present in the repo. You can usually ignore desktop-only system packages.
-- **Desktop development** uses Tauri with Wry as its webview on macOS and Linux. Windows additionally requires the CEF toolchain staged by `scripts/run-dev-win.sh`. Use `pnpm --filter openhuman-app dev:app` on macOS and `pnpm dev:app:win` on native Windows.
+- **Desktop development** uses Tauri with Wry as its webview on every platform (`crates/openhuman-app/Cargo.lock` resolves `tauri-runtime-wry`; there is no CEF crate). Use `pnpm --filter openhuman-app dev:app` on macOS and `pnpm dev:app:win` on native Windows.
 - **Linux desktop builds** require extra system packages beyond Node/Rust. Follow the distro-specific Tauri dependency list before running desktop commands, then use the OpenHuman scripts below. For deeper platform troubleshooting, see [`gitbooks/developing/getting-set-up.md`](gitbooks/developing/getting-set-up.md).
-- **Windows 10 WSL + classic X11 forwarding** is unsupported for the desktop app. The Tauri/CEF stack on Windows can hang, render blank windows, or crash before useful app logs are available. Use native Windows development, or Windows 11 WSLg if you need a Linux GUI workflow. OpenHuman logs a startup warning when it detects WSL with `DISPLAY` set but no `WAYLAND_DISPLAY`/WSLg markers.
-- **Windows desktop builds** additionally require Visual Studio C++ Build Tools (MSVC v143), LLVM/Clang, CMake, and Ninja. See [Windows-specific setup](#windows-specific-setup) for the full list and install order.
+- **Windows 10 WSL + classic X11 forwarding** is unsupported for the desktop app. The Tauri desktop flow can hang, render blank windows, or crash before useful app logs are available. Use native Windows development, or Windows 11 WSLg if you need a Linux GUI workflow. OpenHuman logs a startup warning when it detects WSL with `DISPLAY` set but no `WAYLAND_DISPLAY`/WSLg markers.
+- **Windows desktop builds** additionally require Visual Studio C++ Build Tools (MSVC v143), CMake, and Ninja. See [Windows-specific setup](#windows-specific-setup) for the full list and install order.
 - **macOS desktop builds** require a one-time codesigning cert. After cloning, run `bash scripts/setup-dev-codesign.sh` once to create the local "OpenHuman Dev Signer" self-signed certificate that Tauri uses when bundling dev builds. Without it, `pnpm --filter openhuman-app dev:app` fails at the bundle/sign step with `OpenHuman Dev Signer: no identity found`.
 - **Skills development** happens in the separate [`tinyhumansai/openhuman-skills`](https://github.com/tinyhumansai/openhuman-skills) repository. This repo consumes built skill bundles from GitHub or a local override path; it does not vendor the skills source as a submodule.
 
 Example macOS bootstrap with Homebrew:
 
 ```bash
-brew install node@24 pnpm rustup-init cmake ninja ripgrep
+brew install node@24 pnpm rustup-init ripgrep
 rustup toolchain install 1.96.1 --profile minimal
 rustup component add rustfmt clippy --toolchain 1.96.1
-# Release builds ship a universal macOS binary, so the x86_64 target is required even on Apple Silicon
-rustup target add x86_64-apple-darwin
 ```
 
 ### 2. Clone and install
@@ -148,7 +125,7 @@ git submodule update --init --recursive
 pnpm install
 ```
 
-Why submodules matter here: `vendor/` holds the `tiny*` module crates (`tinyagents`, `tinymemory`, `tinybus`, and so on) that the root `Cargo.toml` `[patch]` tables point into. If they are missing, `cargo check` and `cargo build` fail to resolve those crates.
+Why submodules matter here: `vendor/` holds the `tiny*` crates (`tinyagents`, `tinymemory`, `tinybus`, `tinyhumans-sdk`, and so on). `crates/openhuman-core/Cargo.toml` and `crates/openhuman-app/Cargo.toml` depend on them with `path = "../../vendor/..."`, and the root and app `[patch]` tables redirect the git/crates.io versions of `tinymemory-api`, `tinyinference`, `tinyflows`, and `tinychannels` into the same tree. If the submodules are missing, `cargo check` and `cargo build` fail to resolve those paths.
 
 ### 3. Configure for development
 
@@ -201,7 +178,7 @@ Which mode to choose:
 
 - `pnpm dev`: frontend-only iteration in the browser.
 - `pnpm --filter openhuman-app dev:app`: full desktop app flow with Tauri + Wry on macOS.
-- `pnpm dev:app:win`: full desktop app flow on native Windows. This invokes the repository's Git Bash bootstrap (`scripts/run-dev-win.sh`) to configure MSVC, Ninja, and the Windows CEF runtime.
+- `pnpm dev:app:win`: full desktop app flow on native Windows. This invokes the repository's Git Bash bootstrap (`scripts/run-dev-win.sh`) to configure the MSVC toolchain, Ninja, and PATH before launching the local `@tauri-apps/cli` (`tauri dev`). The script still prints a `CEF_RUNTIME_PATH` warning left over from the pre-Wry runtime; it is harmless.
 - `cargo run --bin openhuman-core`: core/RPC work when you want the Rust server without the desktop shell.
 
 #### Windows desktop troubleshooting
@@ -219,7 +196,7 @@ $env:OPENHUMAN_DEV_PORT = "14320"
 pnpm dev:app:win
 ```
 
-On systems using a non-UTF-8 code page, native CEF or Whisper compilation can fail with MSVC errors `C4819` and `C2220`. Opt into UTF-8 for the current PowerShell session before starting the app:
+On systems using a non-UTF-8 code page, MSVC-compiled native dependencies can fail with errors `C4819` and `C2220`. Opt into UTF-8 for the current PowerShell session before starting the app:
 
 ```powershell
 $env:CL = "/utf-8"
