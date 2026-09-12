@@ -23,9 +23,9 @@ runs, and how the two runtimes compose.
 
 ## Two crates, one engine
 
-| Crate                         | Role                                                                                                                                            | Where                                                                                                  |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `tinyflows`                   | Host-agnostic workflow model + validate + compile + run. Never hard-codes a vendor; every outside-world effect goes through a capability trait. | [`vendor/tinyflows/`](../../../vendor/tinyflows/)                                                      |
+| Crate                         | Role                                                                                                                                            | Where                                                                                                                          |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `tinyflows`                   | Host-agnostic workflow model + validate + compile + run. Never hard-codes a vendor; every outside-world effect goes through a capability trait. | [`vendor/tinyflows/`](../../../vendor/tinyflows/)                                                                              |
 | `tinyagents`                  | The published state-graph + agent-loop harness both runtimes lower onto.                                                                        | crate; OpenHuman seam in [`crates/openhuman-core/src/agent/tinyagents/`](../../../crates/openhuman-core/src/agent/tinyagents/) |
 | `openhuman::flows`            | The host: CRUD/run/resume RPCs, SQLite store, triggers, the builder/scout agents.                                                               | [`crates/openhuman-core/src/flows/`](../../../crates/openhuman-core/src/flows/)                                                |
 | `openhuman::flows::tinyflows` | The **capability seam** - adapters implementing the `tinyflows` traits over real OpenHuman services.                                            | [`crates/openhuman-core/src/flows/tinyflows/`](../../../crates/openhuman-core/src/flows/tinyflows/)                            |
@@ -91,20 +91,14 @@ The entire run's working memory is a single `serde_json::Value` laid out as
 ```json
 {
   "run": {
-    "trigger": {
-      /* the trigger payload seeded at start */
-    }
+    "trigger": {/* the trigger payload seeded at start */}
   },
   "nodes": {
     "planner": {
-      "items": [
-        /* … */
-      ]
+      "items": [/* … */]
     },
     "drafter": {
-      "items": [
-        /* … */
-      ]
+      "items": [/* … */]
     }
   }
 }
@@ -305,11 +299,11 @@ The three agents that touch flows all run on the shared agent harness -
 `Agent::from_config_for_agent` → `run_single` under a scoped origin - the same
 pattern the flow's own `agent` nodes use:
 
-| Agent                 | Registry id          | Entry point                                                        | Tool belt                                                                                                                                                                                                                             |
-| --------------------- | -------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Agent                 | Registry id          | Entry point                                                                    | Tool belt                                                                                                                                                                                                                                         |
+| --------------------- | -------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Builder** (copilot) | `workflow_builder`   | `flows_build` ([`ops.rs`](../../../crates/openhuman-core/src/flows/ops.rs))    | `propose_workflow` / `revise_workflow` (validate-only), `dry_run_workflow` (compile + run vs. mocks), `save_workflow`, `run_workflow`, catalog/connection reads ([`builder_tools.rs`](../../../crates/openhuman-core/src/flows/builder_tools.rs)) |
 | **Scout** (discovery) | `flow_discovery`     | `flows_discover` ([`ops.rs`](../../../crates/openhuman-core/src/flows/ops.rs)) | `suggest_workflows` ([`discovery_tools.rs`](../../../crates/openhuman-core/src/flows/discovery_tools.rs))                                                                                                                                         |
-| **Executor**          | _(n/a - the engine)_ | `flows_run` / `flows_resume`                                       | the capability seam above                                                                                                                                                                                                             |
+| **Executor**          | _(n/a - the engine)_ | `flows_run` / `flows_resume`                                                   | the capability seam above                                                                                                                                                                                                                         |
 
 Both agents live under
 [`crates/openhuman-core/src/flows/agents/`](../../../crates/openhuman-core/src/flows/agents/) as
@@ -343,11 +337,11 @@ sequenceDiagram
 
 ## Where to look in the code
 
-| Path                                                                                                            | What lives there                                                                               |
-| --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| [`vendor/tinyflows/crates/tinyflows/src/`](../../../vendor/tinyflows/crates/tinyflows/src/)                                                       | The engine: `model/`, `validate.rs`, `compiler.rs`, `engine.rs`, `expr.rs`, `caps/`, `nodes/`. |
-| [`vendor/tinyflows/crates/tinyflows/src/caps/mod.rs`](../../../vendor/tinyflows/crates/tinyflows/src/caps/mod.rs)                                 | The capability traits + `Capabilities` bundle.                                                 |
-| [`crates/openhuman-core/src/flows/tinyflows/caps/`](../../../crates/openhuman-core/src/flows/tinyflows/caps/mod.rs)                       | The host adapters, `build_capabilities`, `open_flow_checkpointer`, the two-layer gate helpers. |
+| Path                                                                                                                                    | What lives there                                                                               |
+| --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| [`vendor/tinyflows/crates/tinyflows/src/`](../../../vendor/tinyflows/crates/tinyflows/src/)                                             | The engine: `model/`, `validate.rs`, `compiler.rs`, `engine.rs`, `expr.rs`, `caps/`, `nodes/`. |
+| [`vendor/tinyflows/crates/tinyflows/src/caps/mod.rs`](../../../vendor/tinyflows/crates/tinyflows/src/caps/mod.rs)                       | The capability traits + `Capabilities` bundle.                                                 |
+| [`crates/openhuman-core/src/flows/tinyflows/caps/`](../../../crates/openhuman-core/src/flows/tinyflows/caps/mod.rs)                     | The host adapters, `build_capabilities`, `open_flow_checkpointer`, the two-layer gate helpers. |
 | [`crates/openhuman-core/src/flows/ops.rs`](../../../crates/openhuman-core/src/flows/ops.rs)                                             | `flows_run` / `flows_resume` / `flows_build` / `flows_discover` and CRUD.                      |
 | [`crates/openhuman-core/src/flows/bus.rs`](../../../crates/openhuman-core/src/flows/bus.rs)                                             | `FlowTriggerSubscriber` - the host-side multi-trigger bridge.                                  |
 | [`crates/openhuman-core/src/flows/builder_tools.rs`](../../../crates/openhuman-core/src/flows/builder_tools.rs)                         | The builder's `propose` / `revise` / `dry_run` / `save` / `run` tools.                         |
