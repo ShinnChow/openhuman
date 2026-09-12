@@ -17,7 +17,7 @@ impl Agent {
     ///
     /// `turn_usage` — when `Some`, attributes per-message token/cost figures
     /// to the last assistant message in the written transcript.
-    pub(in super::super) fn persist_session_transcript(
+    pub(crate) fn persist_session_transcript(
         &mut self,
         messages: &[ChatMessage],
         input_tokens: u64,
