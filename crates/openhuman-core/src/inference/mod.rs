@@ -2,9 +2,9 @@
 //!
 //! This module is the canonical home for all inference concerns:
 //! - `local/`    — Ollama / LM Studio / Piper runtime management
-//!                 (was `crates/openhuman-core/src/local_ai/`)
+//!                 (was `local_ai/`)
 //! - `provider/` — native chat models, cloud/local routing, auth and errors
-//!                 (was `crates/openhuman-core/src/providers/`)
+//!                 (was `providers/`)
 //! - `voice/`    — transcription (STT) and TTS inference implementations
 //!                 (moved from `crates/openhuman-core/src/voice/`)
 //! - `http/`     — OpenAI-compatible `/v1/chat/completions` endpoint
