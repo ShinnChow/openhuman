@@ -29,6 +29,7 @@ use crate::memory::api::provider::retrieval::{
     SourceRetrievalQuery,
 };
 use crate::memory::api::provider::types::{IngestItem, IngestOutcome};
+use crate::memory::api::types::NamespaceMemoryHit;
 use crate::memory::api::provider::{
     EpisodicEvent, MemoryChunks, MemoryEpisodic, MemoryPeople, MemoryProfile, MemoryRetrieval,
     MemoryScoring,
