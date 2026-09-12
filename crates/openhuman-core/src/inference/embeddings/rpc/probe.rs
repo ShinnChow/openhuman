@@ -1,129 +1,81 @@
+//! The setup-time embed probe: sending one width-agnostic request to a custom
+//! endpoint and classifying what came back into an accept-or-reject verdict.
 
-/// Tests connectivity to the configured (or specified) embedding provider.
-pub async fn test_connection(
-    config: &Config,
-    provider_slug: Option<&str>,
-    model: Option<&str>,
-    dims: Option<usize>,
-) -> Result<RpcOutcome<serde_json::Value>, String> {
-    let slug = provider_slug.unwrap_or(&config.memory.embedding_provider);
-    let model = model.unwrap_or(&config.memory.embedding_model);
-    let dims = dims.unwrap_or(config.memory.embedding_dimensions);
+use crate::rpc::RpcOutcome;
 
-    let api_key = resolve_api_key(config, slug);
+use crate::inference::embeddings::factory::model_supports_dimensions;
 
-    let custom_endpoint = if slug.starts_with("custom:") {
-        slug.strip_prefix("custom:").map(|s| s.to_string())
+/// Send one OpenAI-compatible embedding request without requesting or
+/// validating a vector width. This is intentionally separate from the live
+/// provider: a setup probe must discover a custom endpoint's native width,
+/// while a live provider must enforce the width persisted after that probe.
+pub(super) async fn probe_custom_embeddings(
+    endpoint: &str,
+    api_key: &str,
+    model: &str,
+) -> Result<Vec<Vec<f32>>, String> {
+    let base = endpoint.trim_end_matches('/');
+    let url = if base.ends_with("/embeddings") {
+        base.to_string()
+    } else if base.ends_with("/v1") {
+        format!("{base}/embeddings")
     } else {
-        None
+        format!("{base}/v1/embeddings")
     };
+    let mut request = reqwest::Client::new()
+        .post(&url)
+        .json(&serde_json::json!({ "model": model, "input": ["connection test"] }));
+    if !api_key.trim().is_empty() {
+        request = request.bearer_auth(api_key.trim());
+    }
+    let response = request
+        .send()
+        .await
+        .map_err(|e| format!("custom embeddings request to {url} failed: {e}"))?;
+    let status = response.status();
+    let body = response
+        .text()
+        .await
+        .map_err(|e| format!("custom embeddings response read failed: {e}"))?;
+    if !status.is_success() {
+        return Err(format!("custom embeddings returned HTTP {status}: {body}"));
+    }
+    let data = serde_json::from_str::<serde_json::Value>(&body)
+        .map_err(|e| format!("custom embeddings response was not JSON: {e}"))?
+        .get("data")
+        .and_then(serde_json::Value::as_array)
+        .cloned()
+        .ok_or_else(|| "custom embeddings response missing data array".to_string())?;
+    data.into_iter()
+        .map(|item| {
+            item.get("embedding")
+                .and_then(serde_json::Value::as_array)
+                .ok_or_else(|| "custom embeddings response missing embedding array".to_string())?
+                .iter()
+                .map(|value| value.as_f64().map(|value| value as f32).ok_or_else(|| "custom embeddings response contains a non-numeric vector".to_string()))
+                .collect()
+        })
+        .collect()
+}
 
-    let provider_tag = if slug.starts_with("custom:") {
-        "custom"
+/// Dimension to persist after a successful Custom verification probe.
+///
+/// For a `text-embedding-3-*` model the endpoint honoured the requested size,
+/// so keep the user's `configured` value (Matryoshka). For every other model we
+/// probed dimension-agnostically, so adopt the endpoint's actual returned
+/// length (`actual`) — the user can't be expected to know it, and storing the
+/// real size is what lets the live embed path's length guard pass afterwards.
+/// Falls back to `configured` if the probe somehow reported a zero-length
+/// vector (defensive — `classify_embed_probe` already rejects empty vectors).
+pub(super) fn final_probe_dims(model: &str, configured: usize, actual: usize) -> usize {
+    if model_supports_dimensions(model) || actual == 0 {
+        configured
     } else {
-        slug
-    };
-
-    tracing::debug!(
-        provider = provider_tag,
-        model,
-        dims,
-        "{LOG_PREFIX} test_connection starting"
-    );
-
-    let result = if let Some(endpoint) = custom_endpoint.as_deref() {
-        probe_custom_embeddings(endpoint, &api_key, model).await
-    } else {
-        let embedder = create_embedding_provider_with_config(
-            config,
-            provider_tag,
-            model,
-            dims,
-            &api_key,
-            None,
-        )
-        .map_err(|e| e.to_string())?;
-        embedder
-            .embed(&["connection test"])
-            .await
-            .map_err(|e| e.to_string())
-    };
-
-    match result {
-        Ok(vectors) => {
-            let actual_dims = vectors.first().map(|v| v.len()).unwrap_or(0);
-            let payload = serde_json::json!({
-                "success": true,
-                "provider": provider_tag,
-                "model": model,
-                "requested_dimensions": dims,
-                "actual_dimensions": actual_dims,
-            });
-            Ok(RpcOutcome::new(
-                payload,
-                vec!["connection test passed".into()],
-            ))
-        }
-        Err(e) => {
-            let payload = serde_json::json!({
-                "success": false,
-                "provider": provider_tag,
-                "model": model,
-                "error": e.to_string(),
-            });
-            Ok(RpcOutcome::new(
-                payload,
-                vec![format!("connection test failed: {e}")],
-            ))
-        }
+        actual
     }
 }
 
-/// Build an embedding provider from the live config — the same construction
-/// [`embed`] uses, exposed so other domains (e.g. `codegraph`) can obtain a
-/// provider for `signature()` + direct embedding without a JSON-RPC round-trip.
-pub fn provider_from_config(config: &Config) -> anyhow::Result<Box<dyn super::EmbeddingProvider>> {
-    build_embedder(
-        config,
-        &config.memory.embedding_provider,
-        &config.memory.embedding_model,
-        config.memory.embedding_dimensions,
-    )
-}
-
-/// Construct an embedding provider for an explicit `(provider_name, model,
-/// dims)` triple, resolving the stored API key + inline `custom:<url>` endpoint
-/// the same way [`embed`] / [`test_connection`] do. Single construction seam so
-/// the save-time probe in [`update_settings`] and the live embed path can't
-/// drift on slug-normalization / credential-lookup rules.
-fn build_embedder(
-    config: &Config,
-    provider_name: &str,
-    model: &str,
-    dims: usize,
-) -> anyhow::Result<Box<dyn super::EmbeddingProvider>> {
-    let api_key = resolve_api_key(config, provider_name);
-    let custom_endpoint = provider_name.strip_prefix("custom:").map(|s| s.to_string());
-    let provider_slug = if provider_name.starts_with("custom:") {
-        "custom"
-    } else {
-        provider_name
-    };
-    create_embedding_provider_with_config(
-        config,
-        provider_slug,
-        model,
-        dims,
-        &api_key,
-        custom_endpoint.as_deref(),
-    )
-}
-
-/// Normalized result of the setup-time test embed in [`update_settings`].
-/// Collapses the `Result<Result<_, _>, Elapsed>` timeout shape into one enum so
-/// the verification policy can be expressed (and unit-tested) as a pure
-/// function over it.
-enum EmbedProbe {
+pub(super) enum EmbedProbe {
     /// The endpoint returned vectors (may still be empty/zero-dim — checked).
     Returned(Vec<Vec<f32>>),
     /// The embed call returned an error; the string is the provider detail.
@@ -142,7 +94,7 @@ enum EmbedProbe {
 /// classify-and-suppress the resulting embed flood in code — residual floods
 /// (e.g. the user unloads the model after a good save) are handled Sentry-side.
 /// The known shapes only get a friendlier remediation message.
-fn classify_embed_probe(outcome: EmbedProbe) -> Option<RpcOutcome<serde_json::Value>> {
+pub(super) fn classify_embed_probe(outcome: EmbedProbe) -> Option<RpcOutcome<serde_json::Value>> {
     let reject = |error: &str, message: &str, summary: &str, detail: Option<&str>| {
         let mut body = serde_json::json!({ "error": error, "message": message });
         if let Some(d) = detail {
@@ -364,107 +316,3 @@ fn is_embedding_endpoint_unreachable(lower: &str) -> bool {
 /// GET `{endpoint}/models` (OpenAI-compatible) and return the served model ids.
 /// Time-boxed and best-effort — any failure returns `Err` and the caller falls
 /// back to the live test-embed probe (issue #3761).
-async fn fetch_served_model_ids(endpoint: &str, api_key: &str) -> Result<Vec<String>, String> {
-    #[derive(serde::Deserialize)]
-    struct ModelEntry {
-        id: String,
-    }
-    #[derive(serde::Deserialize)]
-    struct ModelsResponse {
-        #[serde(default)]
-        data: Vec<ModelEntry>,
-    }
-
-    let url = format!("{}/models", endpoint.trim_end_matches('/'));
-    let client = reqwest::Client::new();
-    let mut req = client.get(&url).timeout(std::time::Duration::from_secs(5));
-    if !api_key.trim().is_empty() {
-        req = req.bearer_auth(api_key.trim());
-    }
-    let resp = req
-        .send()
-        .await
-        .map_err(|e| format!("models request failed: {e}"))?;
-    if !resp.status().is_success() {
-        return Err(format!("models request returned status {}", resp.status()));
-    }
-    let parsed: ModelsResponse = resp
-        .json()
-        .await
-        .map_err(|e| format!("models parse failed: {e}"))?;
-    Ok(parsed.data.into_iter().map(|m| m.id).collect())
-}
-
-/// Normalize an embedding model id for tolerant *suggestion* matching:
-/// lowercase, drop a leading `text-embedding-`, drop a trailing `:tag`. Used
-/// only to suggest the right served name — never to silently rewrite the id.
-fn normalize_embed_model_id(name: &str) -> String {
-    let lower = name.trim().to_ascii_lowercase();
-    let stripped = lower.strip_prefix("text-embedding-").unwrap_or(&lower);
-    stripped.split(':').next().unwrap_or(stripped).to_string()
-}
-
-/// Decide whether the requested model is acceptable given the endpoint's served
-/// list. Returns `Some(reject)` only when the endpoint reports a non-empty list
-/// that does NOT contain the requested id — i.e. we have positive evidence the
-/// model isn't loaded. An empty/unknown list returns `None` (defer to the live
-/// test-embed probe) so we never block on a server that doesn't expose
-/// `/models` (issue #3761).
-fn check_requested_model_served(
-    requested: &str,
-    served: &[String],
-) -> Option<RpcOutcome<serde_json::Value>> {
-    if served.is_empty() || served.iter().any(|m| m == requested) {
-        return None;
-    }
-    Some(reject_model_not_served(requested, served))
-}
-
-/// Build the "model not served" rejection: names what the endpoint actually
-/// serves and, when a normalized match exists, suggests the exact name to pick
-/// (e.g. `bge-m3` → `text-embedding-bge-m3`). Reuses the
-/// `EMBEDDINGS_NO_MODEL_LOADED` error code so the existing Embeddings setup
-/// dialog surfaces `message` and keeps the config unsaved (issue #3761).
-fn reject_model_not_served(requested: &str, served: &[String]) -> RpcOutcome<serde_json::Value> {
-    let want = normalize_embed_model_id(requested);
-    let suggestion = served
-        .iter()
-        .find(|m| normalize_embed_model_id(m) == want)
-        .cloned();
-    let served_list = served.join(", ");
-    let message = match suggestion.as_deref() {
-        Some(s) => format!(
-            "`{requested}` isn't loaded on this embeddings server — but the same model appears to be served as `{s}`. Select `{s}` (the exact name your server reports), then save again. Available models: {served_list}."
-        ),
-        None => format!(
-            "`{requested}` isn't loaded on this embeddings server. Select one of the loaded models (the exact name your server reports), then save again. Available models: {served_list}."
-        ),
-    };
-    let mut body = serde_json::json!({
-        "error": "EMBEDDINGS_NO_MODEL_LOADED",
-        "message": message,
-        "requested_model": requested,
-        "available_models": served,
-    });
-    if let Some(s) = suggestion {
-        body["suggested_model"] = serde_json::Value::String(s);
-    }
-    RpcOutcome::new(
-        body,
-        vec!["embedding model not served by endpoint — not saved".to_string()],
-    )
-}
-
-pub(crate) fn resolve_api_key(config: &Config, provider_name: &str) -> String {
-    let slug = if provider_name.starts_with("custom:") {
-        "custom"
-    } else {
-        provider_name
-    };
-    let cred_provider = format!("embeddings:{slug}");
-    let auth = AuthService::from_config(config);
-    auth.get_provider_bearer_token(&cred_provider, None)
-        .ok()
-        .flatten()
-        .unwrap_or_default()
-}
