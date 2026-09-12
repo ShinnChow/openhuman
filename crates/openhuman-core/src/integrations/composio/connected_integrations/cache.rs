@@ -18,7 +18,7 @@ use std::time::{Duration, Instant};
 ///
 /// Background: the primary invalidation path is the
 /// `ComposioConnectionCreated` → `wait_for_connection_active` bus flow
-/// (see [`super::bus::ComposioConnectionCreatedSubscriber`]), which
+/// (see [`crate::integrations::composio::bus::ComposioConnectionCreatedSubscriber`]), which
 /// polls the backend for up to 60 s after `composio_authorize` returns
 /// a `connectUrl`. On Windows the OAuth round-trip can exceed that
 /// window (Defender SmartScreen, slower browser launch, extra consent
@@ -74,7 +74,7 @@ pub(crate) fn cache_key(config: &Config) -> String {
 /// Clear cached connected integrations so the next call to
 /// [`fetch_connected_integrations`] hits the backend again.
 ///
-/// Called by [`super::bus::ComposioConnectionCreatedSubscriber`] when a
+/// Called by [`crate::integrations::composio::bus::ComposioConnectionCreatedSubscriber`] when a
 /// new OAuth connection completes, by [`composio_list_connections`]
 /// when it observes a divergence between the backend response and the
 /// cached snapshot, and from tests. Clears the entire map because the
@@ -203,7 +203,7 @@ fn read_cached_integrations(
 ///     hashes within one process lifetime.
 ///
 /// Only `connected == true` entries contribute. Unconnected toolkits are
-/// stripped by [`super::super::tools::orchestrator_tools::collect_orchestrator_tools`]
+/// stripped by [`crate::integrations::composio::tools::orchestrator_tools::collect_orchestrator_tools`]
 /// anyway, so churn among the unconnected set never changes the agent's
 /// surface and shouldn't trigger a refresh.
 pub fn connected_set_hash(integrations: &[ConnectedIntegration]) -> u64 {
@@ -254,7 +254,7 @@ fn connected_toolkit_set(integrations: &[ConnectedIntegration]) -> HashSet<Strin
 /// in chat in sync with the badge the user sees in Settings, even when
 /// the primary event-bus invalidation path misses (e.g. Windows OAuth
 /// flows that overrun the 60 s readiness poll).
-pub(crate) fn sync_cache_with_connections(connections: &[super::types::ComposioConnection]) {
+pub(crate) fn sync_cache_with_connections(connections: &[crate::integrations::composio::types::ComposioConnection]) {
     let live_active: HashSet<String> = connections
         .iter()
         .filter(|c| c.is_active())

@@ -9,7 +9,8 @@
 use super::current_user_fetch::{fetch_current_user, sanitize_snapshot_user};
 use super::current_user_generation::{
     clear_current_user_failure_unless_stale, current_user_generation,
-    note_current_user_success_unless_stale, record_current_user_failure_unless_stale,
+    note_current_user_success_unless_stale, record_current_user_failure_locked,
+    record_current_user_failure_unless_stale,
 };
 use super::auth_timeout::{auth_fetch_timeout, current_user_backoff_base};
 use super::LOG_PREFIX;
