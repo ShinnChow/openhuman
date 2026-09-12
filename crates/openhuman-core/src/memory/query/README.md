@@ -43,7 +43,7 @@ and `fetch_leaves` call into (`query_source_scope`, `query_source_kind`,
 `crate::memory::ops::guard::active_memory_guard()` and calls the
 `MemoryRetrieval` family on the returned `MemoryGuard`, rather than reaching
 into `tinymemory_core::tree::retrieval` directly — see the module doc in
-`backend.rs` and `docs/specs/2026-08-13-memory-module-port.md` §2.1. Every
+`backend.rs` (the spec it cites is not checked in). Every
 `scope` argument passed to the guard is `None`; the guard intersects that with
 the ambient per-turn allowlist, so this can only narrow what a turn may see,
 never widen it. `search_entities`, `cover_window` and `fast_walk` call
