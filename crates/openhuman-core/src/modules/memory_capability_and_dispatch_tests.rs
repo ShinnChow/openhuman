@@ -165,11 +165,14 @@ fn every_operation_label_is_classified_and_no_mutation_is_a_read() {
     .expect("a valid pattern");
 
     let mut labels: Vec<String> = Vec::new();
-    // Discovered, not enumerated. A hard-coded `memory_part_01..04` would keep
-    // passing after the file is split differently — scanning fewer sources,
-    // finding fewer labels, and quietly checking less than it claims to.
+    // Discovered, not enumerated. A hard-coded file list would keep passing
+    // after the module is split differently — scanning fewer sources, finding
+    // fewer labels, and quietly checking less than it claims to. The memory
+    // client lives under `modules/memory/` as one file per responsibility
+    // (`documents_tree.rs`, `core_provider.rs`, ...) rather than as
+    // mechanically cut `memory_part_NN.rs` files.
     let modules_dir = format!(
-        "{}/crates/openhuman-core/src/modules",
+        "{}/crates/openhuman-core/src/modules/memory",
         env!("OPENHUMAN_REPOSITORY_ROOT")
     );
     let mut parts: Vec<std::path::PathBuf> = std::fs::read_dir(&modules_dir)
@@ -179,17 +182,13 @@ fn every_operation_label_is_classified_and_no_mutation_is_a_read() {
         .filter(|path| {
             path.file_name()
                 .and_then(|name| name.to_str())
-                .is_some_and(|name| {
-                    name.starts_with("memory_part_")
-                        && name.ends_with(".rs")
-                        && !name.contains("_tests")
-                })
+                .is_some_and(|name| name.ends_with(".rs") && !name.contains("_tests"))
         })
         .collect();
     parts.sort();
     assert!(
         parts.len() >= 4,
-        "expected the memory client to be split across at least four parts, found {:?} — if the \
+        "expected the memory client to be split across at least four files, found {:?} — if the \
          split changed, this scan is looking in the wrong place",
         parts
     );
