@@ -4,7 +4,10 @@ Repo-maintenance, CI, dev-loop, and release tooling. This is a map, not a
 manual — each entry point below has its own header comment or README with the
 details.
 
-## Sub-directories with their own README
+## Sub-directories
+
+The first seven have their own README; the rest are documented by the header
+comments of the scripts inside them.
 
 | Directory | Purpose |
 | --- | --- |
@@ -19,10 +22,10 @@ details.
 | `mock-api/` | The shared mock backend modules (routes, socket, admin, state) behind `mock-api-server.mjs` / `mock-api-core.mjs`; exercised by `pnpm mock:api` and Rust/E2E test runs. |
 | `lib/` | Small parsers shared by the CI gates (checklist, coverage matrix, feature forwarding, module pins). |
 | `__tests__/`, `tests/` | Unit tests for the scripts themselves (`node --test`, plus a PowerShell installer test). |
-| `fixtures/` | Static JSON fixtures used by release/version scripts. |
-| `theme-codemod/` | Codemod for migrating design-token/theme usage. |
-| `agent-batch/` | Launches and tracks batches of agent runs (`pnpm agent-batch`). |
-| `deep-work/` | CLI for long-running focused work sessions (`pnpm deep-work`). |
+| `fixtures/` | `latest.json` / `release.json` release-metadata fixtures consumed by `test_install.sh` (the `install.sh` test). |
+| `theme-codemod/` | Codemod collapsing audited `light dark:` Tailwind pairings into the semantic theme utilities (`node scripts/theme-codemod/migrate.mjs [--write]`; see `gitbooks/developing/theming.md`). |
+| `agent-batch/` | Validates a batch spec of parallel agent branches, checks file overlap, prints per-agent launch prompts, and reports status (`pnpm agent-batch <validate\|overlap\|launch\|status> <spec.json>`). |
+| `deep-work/` | Issue-to-PR workflow automation over worktrees and AI agents: `pnpm deep-work start\|pick\|continue\|status\|list\|cleanup`. |
 
 ## pnpm-wired entry points
 
@@ -56,13 +59,18 @@ above.
   `check-kernel-floor.sh` (dependency-floor ratchet), `check-prompt-budget.sh`
   (fixed-prefix token ratchet), `check-linux-tls-dependencies.sh`.
 - **`i18n-*`** — translation coverage and audit tools (`i18n-coverage.ts`,
-  `i18n-find-english.ts`, `i18n-react-audit.ts`, `i18n-doc-scan.sh`).
-- **`ios-*` / `android-init.sh`** — mobile client scaffolding
-  (`tauri ios init` / `tauri android init` wrappers) for the experimental iOS
-  client and Android.
+  `i18n-find-english.ts`, `i18n-react-audit.ts`, behind `pnpm i18n:*`);
+  `i18n-doc-scan.sh` scans the Chinese GitBook docs instead of the app.
+- **`ios-init.sh` / `android-init.sh`** — `tauri ios init` /
+  `tauri android init` wrappers (`pnpm tauri:ios:init`, `pnpm tauri:android:init`)
+  for the experimental mobile clients; **`ios-appstore-*`** build, export, and
+  upload the iOS IPA and its App Store Connect assets/metadata.
 - **`install.sh` / `install.ps1`** — the public installer scripts referenced
   from the README/download flow; exercised by `docs/RELEASE-MANUAL-SMOKE.md`.
-- **`ci-cancel-aware.sh`** — wraps a long-running CI command so a superseding
-  push cancels it; required by `AGENTS.md` for long CI build/test commands.
+- **`ci-cancel-aware.sh`** — wraps a long-running CI command, polling the
+  workflow run's status (via `GH_TOKEN`) and killing the command's process tree
+  when the run is cancelled — needed because `docker exec` swallows the
+  runner's signals in container jobs. Required by `AGENTS.md` for long CI
+  build/test commands.
 - **`assert-shed.sh`** / **`dep-sim.py`** — prove or simulate a dependency
   reduction before claiming one in a PR; cited by `AGENTS.md`.
