@@ -20,7 +20,8 @@ The memory agent is a specialist sub-agent that navigates the user's memory tree
 | `mod.rs` | Module declarations and re-exports |
 | `types.rs` | Benchmark and performance tracking types |
 | `ops.rs` | Benchmarking harness for memory walk performance |
-| `tools.rs` | `call_memory_agent` tool implementation |
+| `tools.rs` | `call_memory_agent` tool implementation, re-exported from [`tools/mod.rs`](../../tools/mod.rs) (`pub use crate::memory::agent::tools::*;`) |
+| `memory_loader.rs` | The `[Cross-chat context]` / `[Prior conversations]` prompt-injection surface: `CROSS_CHAT_HEADER`, `MemoryCitation`, and `collect_recall_citations`. The old per-turn `memory_loader.load_context()` block (two full scans of the `global` namespace every turn) was removed from `core_turn.rs` — see [`memory/auto_recall/mod.rs`](../auto_recall/mod.rs) for what replaced it — but this file's citation/header plumbing is still live, called from the harness's memory context assembly (`agent/harness/memory_context.rs`, `agent/harness/session/turn/core.rs`) and consumed by `web_chat`'s reply presentation for rendering citations. |
 
 ## Memory tree structure
 
@@ -65,4 +66,4 @@ The built-in agent is registered at `crates/openhuman-core/src/memory/agent/agen
 - `prompt.rs` — dynamic prompt builder
 - `prompt.md` — system prompt archetype
 
-The agent has access to the full memory retrieval tool surface: `memory_tree` (with deterministic E2GraphRAG `walk`/`smart_walk` modes plus `search_entities`/`query_source`/`cover_window`/`drill_down`/`fetch_leaves`), `memory_recall`, and `query_memory`.
+The agent has access to the full memory retrieval tool surface: `memory_tree` (with deterministic E2GraphRAG `walk`/`smart_walk` modes plus `search_entities`/`query_source`/`cover_window`/`drill_down`/`fetch_leaves`), `memory_recall`, and `query_memory`. [`memory/query/`](../query/) also exposes an `ingest_document` mode on `memory_tree`, but `agent.toml`'s `[tools] named` allowlist does not grant it to this agent — the memory agent is read-only by design (`sandbox_mode = "read_only"`).
