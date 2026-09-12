@@ -488,3 +488,4 @@ async fn fetch_connected_integrations_uncached(
     }
 
     Some(integrations)
+}
