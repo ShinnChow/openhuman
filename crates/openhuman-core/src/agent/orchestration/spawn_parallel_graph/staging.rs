@@ -11,8 +11,8 @@
 //! The rejection sentences stay here, which is why the crate reports conflicts
 //! as data.
 
-use std::path::PathBuf;
 use std::collections::HashMap;
+use std::path::PathBuf;
 
 use tinyagents_graph::parallel::{
     parse_relative_claim_paths, plan_shared_workspace_dispatch, ClaimConflict, ClaimPathError,
@@ -224,7 +224,6 @@ fn shared_workspace_write_claim(
     }
     Ok(Some(paths))
 }
-
 
 pub(crate) fn snapshot_agent_definitions(
     registry: &AgentDefinitionRegistry,
@@ -454,4 +453,3 @@ pub(crate) fn with_ownership_boundary(prompt: &str, ownership: Option<&str>) -> 
         None => prompt.to_string(),
     }
 }
-

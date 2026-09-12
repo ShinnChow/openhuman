@@ -61,12 +61,12 @@ mod wait;
 #[path = "running_subagents_tests.rs"]
 mod tests;
 
+#[cfg(test)]
+pub(crate) use cancel::prune;
 pub(crate) use cancel::{
     cancel_all, cancel_by_session, cancel_by_session_in_workspace, cancel_by_task,
     cancel_for_thread, CancelledSubagent,
 };
-#[cfg(test)]
-pub(crate) use cancel::prune;
 pub(crate) use registry::{register, status_channel, SubagentResumeRef, SubagentStatus};
 pub(crate) use resolve::{
     resume_ref_for_task, resume_ref_for_task_in_workspace, task_id_for_session,
@@ -75,7 +75,7 @@ pub(crate) use resolve::{
 pub(crate) use roster::{active_subagents_context_block, snapshot_for_parent, SubagentSnapshot};
 pub use steering::{steer, SteerError};
 pub(crate) use steering::{steer_control, steer_directive, SteerDirectiveError, SteeringDirective};
+pub(crate) use task_ledger::{reconcile_orphaned_tasks_on_boot, task_record_for_task_in_workspace};
 #[cfg(test)]
 pub(crate) use task_ledger::{record_spawned, task_records};
-pub(crate) use task_ledger::{reconcile_orphaned_tasks_on_boot, task_record_for_task_in_workspace};
 pub(crate) use wait::{wait, wait_in_workspace, WaitError, WaitOutcome};

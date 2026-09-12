@@ -42,13 +42,12 @@ pub(super) async fn write_profile_md(
 /// Ask the backend LLM to distil the raw LinkedIn Markdown into a
 /// concise, high-signal profile document suitable for agent context.
 pub async fn summarise_profile_with_llm(config: &Config, raw_md: &str) -> anyhow::Result<String> {
-    let (model_chat, _) =
-        crate::inference::provider::create_chat_model_from_string_with_model_id(
-            "summarization",
-            "openhuman",
-            config,
-            0.3,
-        )?;
+    let (model_chat, _) = crate::inference::provider::create_chat_model_from_string_with_model_id(
+        "summarization",
+        "openhuman",
+        config,
+        0.3,
+    )?;
 
     let system = "\
 You are a profile analyst. You will receive a user's LinkedIn profile in Markdown format. \

@@ -16,10 +16,12 @@ pub(super) fn handle_linkedin_enrichment(params: Map<String, Value>) -> Controll
             .and_then(Value::as_str)
             .map(str::to_string);
         let config = config_rpc::load_config_with_timeout().await?;
-        let result =
-            crate::agent::learning::linkedin_enrichment::run_linkedin_enrichment(&config, preset_profile_url)
-                .await
-                .map_err(|e| format!("linkedin enrichment failed: {e:#}"))?;
+        let result = crate::agent::learning::linkedin_enrichment::run_linkedin_enrichment(
+            &config,
+            preset_profile_url,
+        )
+        .await
+        .map_err(|e| format!("linkedin enrichment failed: {e:#}"))?;
 
         let payload = serde_json::json!({
             "profile_url": result.profile_url,
@@ -47,9 +49,11 @@ pub(super) fn handle_save_profile(params: Map<String, Value>) -> ControllerFutur
         let config = config_rpc::load_config_with_timeout().await?;
 
         let body = if summarize {
-            crate::agent::learning::linkedin_enrichment::summarise_profile_with_llm(&config, &markdown)
-                .await
-                .map_err(|e| format!("LLM summarisation failed: {e:#}"))?
+            crate::agent::learning::linkedin_enrichment::summarise_profile_with_llm(
+                &config, &markdown,
+            )
+            .await
+            .map_err(|e| format!("LLM summarisation failed: {e:#}"))?
         } else {
             markdown
         };

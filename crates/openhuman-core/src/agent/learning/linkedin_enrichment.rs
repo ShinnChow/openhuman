@@ -21,11 +21,13 @@ use regex::Regex;
 use serde_json::json;
 use std::sync::LazyLock;
 
-use gmail_discovery::search_gmail_for_linkedin;
 pub use gmail_discovery::scrape_linkedin_profile;
-use memory_persistence::{persist_linkedin_profile, persist_linkedin_url_only, profile_memory_writer};
-use profile_markdown::{write_profile_md, write_profile_md_url_only};
+use gmail_discovery::search_gmail_for_linkedin;
+use memory_persistence::{
+    persist_linkedin_profile, persist_linkedin_url_only, profile_memory_writer,
+};
 pub use profile_markdown::{render_profile_markdown, summarise_profile_with_llm};
+use profile_markdown::{write_profile_md, write_profile_md_url_only};
 
 #[cfg(test)]
 #[path = "linkedin_enrichment_tests.rs"]

@@ -10,9 +10,7 @@ pub(super) async fn get_cache() -> Result<crate::agent::learning::cache::FacetCa
     let guard = crate::memory::ops::guard::active_memory_guard()
         .await
         .map_err(|e| format!("memory unavailable: {e}"))?;
-    Ok(crate::agent::learning::cache::FacetCache::new(
-        guard,
-    ))
+    Ok(crate::agent::learning::cache::FacetCache::new(guard))
 }
 
 /// Build the full facet key from class string + key suffix.

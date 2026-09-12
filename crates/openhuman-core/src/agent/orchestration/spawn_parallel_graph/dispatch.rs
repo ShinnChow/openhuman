@@ -126,7 +126,6 @@ async fn create_spawn_parallel_worktree(
     }
 }
 
-
 pub(crate) async fn stage_spawn_parallel_workers_from_defs(
     parent_session: &str,
     progress_sink: Option<&Sender<AgentProgress>>,

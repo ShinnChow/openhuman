@@ -287,3 +287,5 @@ pub fn namespace_hit(
         chunk_id: None,
         supporting_relations: Vec::new(),
         taint: MemoryTaint::default(),
+    }
+}

@@ -328,10 +328,9 @@ pub(super) fn handle_reset_cache(_params: Map<String, Value>) -> ControllerFutur
 
         let cache = get_cache().await?;
 
-        let (deleted, pinned_preserved) =
-            crate::agent::learning::cache::reset_non_pinned(&cache)
-                .await
-                .map_err(|e| format!("reset_cache failed: {e:#}"))?;
+        let (deleted, pinned_preserved) = crate::agent::learning::cache::reset_non_pinned(&cache)
+            .await
+            .map_err(|e| format!("reset_cache failed: {e:#}"))?;
 
         tracing::info!(
             "[learning.reset_cache] deleted={deleted} pinned_preserved={pinned_preserved}"

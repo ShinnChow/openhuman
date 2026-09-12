@@ -5,7 +5,9 @@
 use anyhow::{Context, Result};
 use serde_json::{json, Value};
 
-use tinyagents_session::run_ledger::{upsert_workflow_run, WorkflowRun, WorkflowRunStatus, WorkflowRunUpsert};
+use tinyagents_session::run_ledger::{
+    upsert_workflow_run, WorkflowRun, WorkflowRunStatus, WorkflowRunUpsert,
+};
 
 use super::super::types::{WorkflowDefinition, WorkflowPhase};
 use crate::config::Config;
@@ -156,7 +158,10 @@ pub(super) fn phase_prompt(
 /// The synthesize phase's combined output becomes the run summary. Falls back
 /// to the last completed phase's output if no phase is literally named
 /// `synthesize`.
-pub(super) fn synthesize_summary(definition: &WorkflowDefinition, phase_states: &Value) -> Option<String> {
+pub(super) fn synthesize_summary(
+    definition: &WorkflowDefinition,
+    phase_states: &Value,
+) -> Option<String> {
     let pick = |name: &str| -> Option<String> {
         let outputs = phase_states
             .get(name)

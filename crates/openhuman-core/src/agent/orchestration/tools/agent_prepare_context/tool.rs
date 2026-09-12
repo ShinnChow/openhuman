@@ -10,7 +10,9 @@ use async_trait::async_trait;
 use serde_json::json;
 use tinytools::ToolRunContext;
 
-use super::scout_run::{already_prepared_context_bundle, run_context_scout_with_catalog_and_workspace};
+use super::scout_run::{
+    already_prepared_context_bundle, run_context_scout_with_catalog_and_workspace,
+};
 
 /// Spawns the `context_scout` sub-agent to collect context and propose a plan.
 pub struct AgentPrepareContextTool;
@@ -50,12 +52,11 @@ impl AgentPrepareContextTool {
         };
         let visible = &parent.visible_tool_names;
         let specs: &[std::sync::Arc<crate::tools::ToolSpec>] =
-            if parent.visible_tool_specs.is_empty()
-        {
-            &parent.all_tool_specs
-        } else {
-            &parent.visible_tool_specs
-        };
+            if parent.visible_tool_specs.is_empty() {
+                &parent.all_tool_specs
+            } else {
+                &parent.visible_tool_specs
+            };
         let mut out = String::with_capacity(2048);
         for spec in specs.iter() {
             if spec.name == "agent_prepare_context" {
@@ -88,7 +89,11 @@ impl AgentPrepareContextTool {
 
     /// Build the scout's task prompt: the request, optional focus, and the
     /// parent tool catalogue the scout draws its recommendations from.
-    pub(super) fn build_scout_prompt(question: &str, focus: Option<&str>, tool_catalog: &str) -> String {
+    pub(super) fn build_scout_prompt(
+        question: &str,
+        focus: Option<&str>,
+        tool_catalog: &str,
+    ) -> String {
         let mut prompt = String::with_capacity(question.len() + tool_catalog.len() + 512);
         let _ = writeln!(prompt, "[Request]\n{question}\n");
         if let Some(focus) = focus.filter(|f| !f.trim().is_empty()) {

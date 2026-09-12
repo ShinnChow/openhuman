@@ -84,8 +84,7 @@ pub(crate) const DETACHED_LEDGER_TIMEOUT_MS: u64 = 120_000;
 static REGISTRY: OnceLock<DetachedTaskRegistry<RunningSubagentMetadata, SubagentStatus>> =
     OnceLock::new();
 
-pub(crate) fn registry() -> &'static DetachedTaskRegistry<RunningSubagentMetadata, SubagentStatus>
-{
+pub(crate) fn registry() -> &'static DetachedTaskRegistry<RunningSubagentMetadata, SubagentStatus> {
     REGISTRY.get_or_init(|| {
         DetachedTaskRegistry::new(
             shared_steering_registry().clone(),

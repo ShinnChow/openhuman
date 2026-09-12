@@ -76,8 +76,9 @@ enum SpawnParallelUpdate {
     Collected(SpawnParallelCollected),
 }
 
-type SpawnParallelNodeFuture =
-    Pin<Box<dyn Future<Output = tinyagents_harness::Result<NodeResult<SpawnParallelUpdate>>> + Send>>;
+type SpawnParallelNodeFuture = Pin<
+    Box<dyn Future<Output = tinyagents_harness::Result<NodeResult<SpawnParallelUpdate>>> + Send>,
+>;
 
 fn phase_node(
     phase: &'static str,

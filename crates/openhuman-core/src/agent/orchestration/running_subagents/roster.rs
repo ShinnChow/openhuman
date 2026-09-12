@@ -85,28 +85,27 @@ pub(crate) fn active_subagents_context_block(
     let store = crate::agent::orchestration::subagent_sessions::SubagentSessionStore {
         workspace_dir: workspace_dir.to_path_buf(),
     };
-    let durable: Vec<_> =
-        match crate::agent::orchestration::subagent_sessions::list_for_parent(
-            &store,
-            parent_session,
-            None,
-        ) {
-            Ok(sessions) => sessions
-                .into_iter()
-                .filter(|s| {
-                    use crate::agent::orchestration::subagent_sessions::DurableSubagentStatus;
-                    s.status != DurableSubagentStatus::Closed
-                        && !live_session_ids.contains(&s.subagent_session_id)
-                })
-                .take(DURABLE_ROSTER_CAP)
-                .collect(),
-            Err(err) => {
-                log::warn!(
+    let durable: Vec<_> = match crate::agent::orchestration::subagent_sessions::list_for_parent(
+        &store,
+        parent_session,
+        None,
+    ) {
+        Ok(sessions) => sessions
+            .into_iter()
+            .filter(|s| {
+                use crate::agent::orchestration::subagent_sessions::DurableSubagentStatus;
+                s.status != DurableSubagentStatus::Closed
+                    && !live_session_ids.contains(&s.subagent_session_id)
+            })
+            .take(DURABLE_ROSTER_CAP)
+            .collect(),
+        Err(err) => {
+            log::warn!(
                     "[running_subagents] durable roster load failed parent_session={parent_session} error={err}"
                 );
-                Vec::new()
-            }
-        };
+            Vec::new()
+        }
+    };
 
     if workers.is_empty() && durable.is_empty() {
         return None;
