@@ -58,3 +58,10 @@ pub(crate) use probe::{seed_probe_cache, seed_probe_cache_expired};
 use crate::config::Config;
 #[cfg(test)]
 use serde_json::Value;
+#[cfg(test)]
+use contract::{compute_composio_array_path, live_catalog_fetch_lock};
+#[cfg(test)]
+use probe::{
+    cache_probe_result, probed_output_sample, resolve_composio_action_scope, ProbedOutputSample,
+    COMPOSIO_ENVELOPE_META_KEYS_AT_ROOT,
+};
