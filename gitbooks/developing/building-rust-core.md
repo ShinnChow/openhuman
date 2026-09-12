@@ -7,26 +7,34 @@ icon: terminal
 
 This page is the contributor-facing reference for compiling the Rust core on a fresh machine.
 
-It covers the **core workspace member only**:
+It covers the **core workspace and its sibling crates**:
 
 - Cargo package: `openhuman`
 - Binary: `openhuman-core`
 - Library: `openhuman_core`
 
-If you want the full desktop app (`pnpm dev`, Tauri, CEF, frontend tooling), use [Getting Set Up](getting-set-up.md). That path has extra JavaScript, submodule, and desktop-runtime requirements that are **not** needed for a core-only `cargo` workflow.
+The root `Cargo.toml` is a virtual workspace whose members are
+`crates/openhuman-core`, `crates/openhuman-embed`, `crates/openhuman-rpc`, and
+`crates/openhuman-tui`. `crates/openhuman-app` (the Tauri desktop shell) is
+excluded from that workspace and builds from its own manifest.
+
+If you want the full desktop app (`pnpm dev`, Tauri, frontend tooling), use [Getting Set Up](getting-set-up.md). That path has extra JavaScript, submodule, and desktop-runtime requirements that are **not** needed for a core-only `cargo` workflow.
 
 ## 1. Install the pinned Rust toolchain
 
 The repository pins Rust in [`rust-toolchain.toml`](../../rust-toolchain.toml):
 
-- Channel: `1.93.0`
+- Channel: `1.96.1`
 - Components: `rustfmt`, `clippy`
+
+The pin exists because `rusqlite` 0.40 / `libsqlite3-sys` 0.38 use the
+`cfg_select!` macro, stabilized in 1.96 (unstable through 1.95).
 
 Recommended install:
 
 ```bash
-rustup toolchain install 1.93.0 --component rustfmt --component clippy
-rustup default 1.93.0
+rustup toolchain install 1.96.1 --component rustfmt --component clippy
+rustup default 1.96.1
 ```
 
 You can also let `cargo` auto-install from `rust-toolchain.toml` after `rustup` itself is installed.
@@ -44,12 +52,22 @@ That is enough for the Rust workspace. Core sources, the package manifest, and
 the authoritative domain implementation live under `crates/openhuman-core/`.
 The stable host-facing library facade is the sibling
 `crates/openhuman-embed/` package, while the terminal frontend is
-`crates/openhuman-tui/`.
+`crates/openhuman-tui/`. Shared JSON-RPC contracts and the HTTP client used by
+the Tauri shell and the TUI live in `crates/openhuman-rpc/`.
 
-Desktop/Tauri work is different:
+The recursive submodules under repo-root `vendor/` are required for the core
+build too, not just the desktop shell: `crates/openhuman-core/Cargo.toml`
+path-depends on `vendor/tinyagents`, `vendor/tinymemory`, `vendor/tinymcp`,
+and the rest of the `tiny*` family, and the root `Cargo.toml` `[patch]`
+entries point into `vendor/tinyagents`, `vendor/tinyflows`,
+`vendor/tinychannels`, and `vendor/motosan-ai-oauth`.
 
-- `crates/openhuman-app/vendor/` submodules are only needed when building the desktop shell or CEF-aware Tauri tooling.
-- For that flow, follow [Getting Set Up](getting-set-up.md) and run `git submodule update --init --recursive`.
+```bash
+git submodule update --init --recursive vendor/
+```
+
+Desktop/Tauri work has extra requirements on top of this — follow [Getting
+Set Up](getting-set-up.md) for those.
 
 ## 3. Build commands
 
