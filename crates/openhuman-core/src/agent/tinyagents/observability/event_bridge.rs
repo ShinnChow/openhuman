@@ -15,7 +15,9 @@ use crate::agent::progress::AgentProgress;
 use crate::inference::provider::UsageInfo;
 use crate::tools::traits::humanize_tool_name;
 
-use super::cap_pauser::{IterationCursor, ProviderUsageCarry, SubagentScope, ToolFailureMap, ToolNameMap};
+use super::cap_pauser::{
+    IterationCursor, ProviderUsageCarry, SubagentScope, ToolFailureMap, ToolNameMap,
+};
 
 #[derive(Default)]
 struct BridgeState {
