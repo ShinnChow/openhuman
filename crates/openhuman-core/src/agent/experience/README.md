@@ -80,9 +80,9 @@ Records are stored through the shared `Memory` abstraction (no dedicated DB):
 ## Used by
 
 - `crates/openhuman-core/src/core/all.rs` — registers controllers/schemas and the namespace description.
-- `crates/openhuman-core/src/agent/harness/session/builder.rs` — constructs `AgentExperienceCaptureHook::new(...)` and registers it for the learning/capture flow.
-- `crates/openhuman-core/src/agent/harness/session/turn.rs` — imports from this module and `inject_agent_experience_context` to retrieve + prepend the experience block into the enriched user message before a turn runs.
-- `crates/openhuman-core/src/mod.rs` — declares the module.
+- `crates/openhuman-core/src/agent/harness/session/builder/factory.rs` — constructs `AgentExperienceCaptureHook::with_profile(...)` and registers it for the learning/capture flow.
+- `crates/openhuman-core/src/agent/harness/session/turn/core.rs` — imports from this module and defines `inject_agent_experience_context` to retrieve + prepend the experience block into the enriched user message before a turn runs.
+- `crates/openhuman-core/src/agent/mod.rs` — declares `pub mod experience`.
 - `crates/openhuman-core/src/memory/sync/workspace/mod.rs` — references it (doc comment) as a peer memory writer.
 
 ## Notes / gotchas
