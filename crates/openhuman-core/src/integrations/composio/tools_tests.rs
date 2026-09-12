@@ -2,7 +2,7 @@ use super::*;
 use std::path::Path;
 use std::sync::Arc;
 
-use crate::medulla::client::ToolResult;
+use crate::tools::traits::ToolResult;
 struct WorkspaceEnvGuard {
     previous: Option<std::ffi::OsString>,
 }
