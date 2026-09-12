@@ -1,7 +1,9 @@
 //! `TavilyClient`: HTTP plumbing and markdown-formatting for both the
 //! `/search` and `/extract` Tavily endpoints.
 
-use super::types::{escape_link_destination, escape_link_text, non_empty, TavilyResultItem};
+use super::types::{
+    escape_link_destination, escape_link_text, non_empty, TavilyImage, TavilyResultItem,
+};
 use crate::tools::traits::ToolResult;
 use serde_json::Value;
 use std::time::Duration;

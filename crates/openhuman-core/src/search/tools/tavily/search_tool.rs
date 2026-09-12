@@ -1,7 +1,7 @@
 //! `TavilySearchTool`: web / news / finance search via `POST /search`.
 
 use super::client::TavilyClient;
-use super::types::{copy_bool, copy_domain_filter, copy_string, non_empty};
+use super::types::{copy_bool, copy_domain_filter, copy_string, non_empty, TavilySearchResponse};
 use crate::tools::traits::{Tool, ToolCallOptions, ToolResult};
 use async_trait::async_trait;
 use serde_json::{json, Value};
