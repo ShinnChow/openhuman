@@ -60,7 +60,7 @@ fn envelope() -> TriggerEnvelope {
 
 const VALID_JSON_REPLY: &str = "{\"action\":\"acknowledge\",\"reason\":\"all good\"}";
 
-#[path = "evaluator_fallback_chain_tests.rs"]
-mod fallback_chain_tests;
 #[path = "evaluator_deferral_tests.rs"]
 mod deferral_tests;
+#[path = "evaluator_fallback_chain_tests.rs"]
+mod fallback_chain_tests;

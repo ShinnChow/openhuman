@@ -5,7 +5,11 @@ use serde_json::{Map, Value};
 use crate::config::rpc as config_rpc;
 use crate::core::all::ControllerFuture;
 
-use super::super::helpers::{deserialize_params, to_json, ActivityLevelSettingsUpdate, AgentSettingsUpdate, AutonomySettingsUpdate, BrowserSettingsUpdate, MemorySyncSettingsUpdate, PrivacyModeUpdate, SandboxSettingsUpdate, SetBrowserAllowAllParams};
+use super::super::helpers::{
+    deserialize_params, to_json, ActivityLevelSettingsUpdate, AgentSettingsUpdate,
+    AutonomySettingsUpdate, BrowserSettingsUpdate, MemorySyncSettingsUpdate, PrivacyModeUpdate,
+    SandboxSettingsUpdate, SetBrowserAllowAllParams,
+};
 
 pub(super) fn handle_get_autonomy_settings(_params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move { to_json(config_rpc::get_autonomy_settings().await?) })
@@ -108,7 +112,9 @@ pub(super) fn handle_get_activity_level_settings(_params: Map<String, Value>) ->
     Box::pin(async move { to_json(config_rpc::get_activity_level_settings().await?) })
 }
 
-pub(super) fn handle_update_activity_level_settings(params: Map<String, Value>) -> ControllerFuture {
+pub(super) fn handle_update_activity_level_settings(
+    params: Map<String, Value>,
+) -> ControllerFuture {
     Box::pin(async move {
         let update = deserialize_params::<ActivityLevelSettingsUpdate>(params)?;
         let patch = config_rpc::ActivityLevelSettingsPatch {

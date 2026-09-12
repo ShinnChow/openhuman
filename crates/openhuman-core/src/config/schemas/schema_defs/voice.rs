@@ -6,7 +6,7 @@ use super::super::helpers::{json_output, optional_bool, optional_json, optional_
 
 pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
     match function {
-"get_dictation_settings" => Some( ControllerSchema {
+        "get_dictation_settings" => Some(ControllerSchema {
             namespace: "config",
             function: "get_dictation_settings",
             description: "Read current voice dictation settings.",

@@ -28,7 +28,6 @@
 //! sending no tool schemas to the backend — the turn degrades to a plain
 //! chat completion.
 
-
 mod arm;
 mod chain;
 mod outcome;
@@ -39,15 +38,17 @@ pub use chain::{run_triage, run_triage_with_arms};
 pub use outcome::{TriageOutcome, TriageResolutionPath, TriageRun};
 
 #[cfg(test)]
+use super::envelope::TriggerEnvelope;
+#[cfg(test)]
+use super::routing::ResolvedProvider;
+#[cfg(test)]
+use crate::agent::harness::definition::{AgentDefinition, PromptSource};
+#[cfg(test)]
 pub(crate) use arm::{classify_error, ArmError};
 #[cfg(test)]
 pub(crate) use chain::run_triage_with_arms_for_test;
 #[cfg(test)]
 pub(crate) use prompt::{extract_inline_prompt, render_user_message, truncate_payload};
-#[cfg(test)]
-use super::envelope::TriggerEnvelope;
-#[cfg(test)]
-use super::routing::ResolvedProvider;
 
 #[cfg(test)]
 #[path = "evaluator_tests.rs"]

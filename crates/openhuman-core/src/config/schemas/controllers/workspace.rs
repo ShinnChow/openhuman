@@ -5,9 +5,15 @@ use serde_json::{Map, Value};
 use crate::config::rpc as config_rpc;
 use crate::core::all::ControllerFuture;
 
-use super::super::helpers::{deserialize_params, to_json, AgentPathsUpdate, AnalyticsSettingsUpdate, OnboardingCompletedSetParams, WorkspaceOnboardingFlagParams, WorkspaceOnboardingFlagSetParams, DEFAULT_ONBOARDING_FLAG_NAME};
+use super::super::helpers::{
+    deserialize_params, to_json, AgentPathsUpdate, AnalyticsSettingsUpdate,
+    OnboardingCompletedSetParams, WorkspaceOnboardingFlagParams, WorkspaceOnboardingFlagSetParams,
+    DEFAULT_ONBOARDING_FLAG_NAME,
+};
 
-pub(super) fn handle_workspace_onboarding_flag_exists(params: Map<String, Value>) -> ControllerFuture {
+pub(super) fn handle_workspace_onboarding_flag_exists(
+    params: Map<String, Value>,
+) -> ControllerFuture {
     Box::pin(async move {
         let payload = deserialize_params::<WorkspaceOnboardingFlagParams>(params)?;
         to_json(

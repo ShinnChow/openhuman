@@ -5,7 +5,9 @@ use serde_json::{Map, Value};
 use crate::config::rpc as config_rpc;
 use crate::core::all::ControllerFuture;
 
-use super::super::helpers::{deserialize_params, to_json, ComposioTriggerSettingsUpdate, SearchSettingsUpdate};
+use super::super::helpers::{
+    deserialize_params, to_json, ComposioTriggerSettingsUpdate, SearchSettingsUpdate,
+};
 
 pub(super) fn handle_update_search_settings(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
@@ -58,7 +60,9 @@ pub(super) fn handle_get_search_settings(_params: Map<String, Value>) -> Control
     })
 }
 
-pub(super) fn handle_update_composio_trigger_settings(params: Map<String, Value>) -> ControllerFuture {
+pub(super) fn handle_update_composio_trigger_settings(
+    params: Map<String, Value>,
+) -> ControllerFuture {
     Box::pin(async move {
         log::debug!("[config][rpc] update_composio_trigger_settings enter");
         let update = match deserialize_params::<ComposioTriggerSettingsUpdate>(params) {
@@ -85,7 +89,9 @@ pub(super) fn handle_update_composio_trigger_settings(params: Map<String, Value>
     })
 }
 
-pub(super) fn handle_get_composio_trigger_settings(_params: Map<String, Value>) -> ControllerFuture {
+pub(super) fn handle_get_composio_trigger_settings(
+    _params: Map<String, Value>,
+) -> ControllerFuture {
     Box::pin(async {
         log::debug!("[config][rpc] get_composio_trigger_settings enter");
         match config_rpc::get_composio_trigger_settings().await {

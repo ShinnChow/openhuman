@@ -5,7 +5,10 @@ use serde_json::{Map, Value};
 use crate::config::rpc as config_rpc;
 use crate::core::all::ControllerFuture;
 
-use super::super::helpers::{deserialize_params, to_json, LocalAiSettingsUpdate, MemorySettingsUpdate, ModelSettingsUpdate, RuntimeSettingsUpdate};
+use super::super::helpers::{
+    deserialize_params, to_json, LocalAiSettingsUpdate, MemorySettingsUpdate, ModelSettingsUpdate,
+    RuntimeSettingsUpdate,
+};
 
 pub(super) fn handle_get_config(_params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async { to_json(config_rpc::load_and_get_config_snapshot().await?) })

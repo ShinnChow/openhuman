@@ -121,8 +121,7 @@ pub(super) async fn try_arm(
         // which `prepare_messages_for_provider` short-circuits before
         // any disk read happens. The same constructor is used at the
         // main channel-dispatch site in `channels::runtime::dispatch`.
-        multimodal_files:
-            crate::config::MultimodalFileConfig::for_untrusted_channel_input(),
+        multimodal_files: crate::config::MultimodalFileConfig::for_untrusted_channel_input(),
         max_tool_iterations: 1,
         on_delta: None,
         target_agent_id: Some("trigger_triage".to_string()),

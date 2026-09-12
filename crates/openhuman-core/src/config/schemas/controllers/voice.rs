@@ -5,7 +5,9 @@ use serde_json::{Map, Value};
 use crate::config::rpc as config_rpc;
 use crate::core::all::ControllerFuture;
 
-use super::super::helpers::{deserialize_params, to_json, DictationSettingsUpdate, VoiceServerSettingsUpdate};
+use super::super::helpers::{
+    deserialize_params, to_json, DictationSettingsUpdate, VoiceServerSettingsUpdate,
+};
 
 pub(super) fn handle_get_dictation_settings(_params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async { to_json(config_rpc::get_dictation_settings().await?) })
