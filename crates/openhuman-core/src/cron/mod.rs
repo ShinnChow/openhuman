@@ -1,3 +1,10 @@
+//! Scheduled-job runtime: cron/human-delay parsing, the job + run store, the
+//! polling scheduler, and delivery of job output into the agent / channel
+//! pipelines. Shell jobs sandbox through `security::SecurityPolicy`; agent
+//! jobs build an `Agent` directly; flow jobs hand off to
+//! `flows::bus::FlowTriggerSubscriber` via `DomainEvent::FlowScheduleTick`.
+//! See `README.md` for the full module map.
+
 // Host-condition policy for scheduled work (battery / AC / thermal). Lives
 // with cron because it exists to answer "may this scheduled job run now?".
 pub mod scheduler_gate;
