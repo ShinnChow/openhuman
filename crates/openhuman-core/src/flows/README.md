@@ -4,12 +4,15 @@ Saved automation workflows — the graphs a user builds on the canvas or the
 copilot builds for them. Owns CRUD/enable/run/resume/cancel for saved flows,
 the trigger → run bridge, the authoring tools (propose/create/edit/validate/
 dry-run/save), discovery/suggestion tools, and the medulla workflow-plane
-bridge. Does NOT own the workflow engine itself (`tinyflows`, vendored) or the
-state-graph runtime it lowers onto (`tinyagents`, via
-`crates/openhuman-core/src/agent/tinyagents/`).
+bridge. Does NOT own the workflow engine itself: `tinyflows` (vendored) owns
+the model, validation, compilation, and its own in-crate state-graph runtime,
+and reaches OpenHuman only through the capability traits `tinyflows/` here
+implements.
 
 See [gitbooks/developing/architecture/flows-on-tinyagents.md](../../../../gitbooks/developing/architecture/flows-on-tinyagents.md)
-for how one flow run lowers onto tinyagents, and
+for the run pipeline and security model (note: it still describes `tinyflows`
+as lowering onto `tinyagents`; the vendored crate now carries that runtime
+in-crate under `vendor/tinyflows/crates/tinyflows/src/graph/`), and
 [`tinyflows/README.md`](tinyflows/README.md) for the capability seam; this
 file is the directory map.
 
@@ -51,9 +54,9 @@ from always-compiled code.
 ## Calls into
 
 - `vendor/tinyflows/` — the actual workflow model, validation, compilation, and run engine; this domain never re-implements it.
-- `crates/openhuman-core/src/agent/tinyagents/` — the state-graph engine both the agent harness and tinyflows lower onto.
+- `crates/openhuman-core/src/agent/tinyagents/` — message/tool-call/usage conversions used by the `llm` and `prompt` capabilities, and `thread_context::with_thread_id` around a run; `agent` nodes run a nested harness turn through the `agent` capability (`tinyflows/caps/agent.rs`).
 - `crates/openhuman-core/src/cron/` — `add_flow_schedule_job` arms a schedule-triggered flow as a `JobType::Flow` cron job; the scheduler fires it by publishing `DomainEvent::FlowScheduleTick`, which `bus::FlowTriggerSubscriber` picks up.
-- `crates/openhuman-core/src/platform/socket/medulla/workflows/` — `WorkflowBridge` trait implemented by `medulla_bridge`.
+- `crates/openhuman-core/src/platform/socket/medulla/workflows.rs` — `WorkflowBridge` trait implemented by `medulla_bridge`.
 - `crates/openhuman-core/src/skills/` — the `Workflow` / `WorkflowScope` catalogue types used by `catalogue.rs`, and the `BundledSkill` mechanism used by `skills/flow-authoring/`.
 - `crates/openhuman-core/src/memory/` — `memory_tools`/`tinyflows::memory_adapter` read/write agent memory under the `flows` scope.
 
