@@ -64,7 +64,17 @@ The Linux backend's docstring references `crate::security::landlock` as conceptu
 
 ## Used by
 
-- Declared at `crates/openhuman-core/src/mod.rs:37` (`pub mod cwd_jail;`). No other `src/` Rust files currently reference `openhuman::sandbox::cwd_jail` — it is a self-standing facade not yet wired into a calling domain.
+- Declared in `crates/openhuman-core/src/sandbox/mod.rs` (`pub mod cwd_jail;`).
+- `crates/openhuman-core/src/sandbox/ops.rs` — `execute_local_jail` builds a
+  `Jail` from the resolved `SandboxPolicy` and spawns through
+  `cwd_jail::default_backend()`, falling back to `cwd_jail::NoopBackend`
+  when no OS jail is available.
+- `crates/openhuman-core/src/agent/platform_shell.rs` — doc references to
+  `cwd_jail::spawn` when explaining why shell-spawning is routed through a
+  shared, Windows-aware command builder.
+- `crates/openhuman-core/src/tools/impl/system/{node_exec,npm_exec}.rs` and
+  `agent/profiles/guard.rs` mention `cwd_jail` in comments/docs when
+  describing the `Local` sandbox backend.
 
 ## Notes / gotchas
 

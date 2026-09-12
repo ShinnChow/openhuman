@@ -28,7 +28,7 @@ drift.
 - Build prepared-transaction quotes (validated, fee-estimated, TTL'd) that must be explicitly confirmed before execution.
 - Sign and broadcast confirmed quotes per chain; restore (and TTL-refresh) the quote on failure so it stays retryable.
 - Bind each quote to the chat thread that prepared it so a leaked `quote_id` in a shared channel can't be hijacked from another agent session.
-- Expose six agent tools (`wallet_status`, `wallet_chain_status`, `wallet_prepare_transfer`, `wallet_tx_status`, `wallet_tx_receipt`, `wallet_lookup_tx`) and twelve `wallet` RPC controllers.
+- Expose six agent tools (`wallet_status`, `wallet_chain_status`, `wallet_prepare_transfer`, `wallet_tx_status`, `wallet_tx_receipt`, `wallet_lookup_tx`) and twelve `wallet.*` RPC controllers.
 - Provide crate-internal `sign_and_broadcast_evm` / `sign_and_broadcast_solana` primitives for the `web3` layer (sign+broadcast an externally-built unsigned transaction). Not exposed to the agent / RPC surface.
 
 ## Key files

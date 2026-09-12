@@ -61,8 +61,8 @@ Does not own a `store.rs`. Its effects are written through other layers:
 
 ## Used by
 
-- `crates/openhuman-core/src/config/schema/load.rs` — calls `migrations::run_pending(&mut config)` from `Config::load_or_init` (three call sites) and seeds new configs with `schema_version: CURRENT_SCHEMA_VERSION`.
-- `crates/openhuman-core/src/mod.rs` — declares `pub mod migrations;`.
+- `crates/openhuman-core/src/config/schema/load/impl_load.rs` — calls `migrations::run_pending(&mut config)` from `Config::load_or_init` (three call sites) and seeds new configs via `migrations::seed_new_workspace` with `schema_version: CURRENT_SCHEMA_VERSION`.
+- `crates/openhuman-core/src/config/mod.rs` — declares `pub mod migrations;`.
 
 ## Notes / gotchas
 
