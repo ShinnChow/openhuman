@@ -8,6 +8,7 @@ use super::pii::{
     digits, scan_candidates, valid_cnpj, valid_cpf, valid_cuit, valid_dni_es, valid_iban,
     valid_luhn, valid_nie_es, valid_nino, valid_ssn, valid_verhoeff, NormalizedView,
 };
+use super::secrets::{MAX_JSON_SANITIZE_DEPTH, REDACTED_PRIVATE_KEY, REDACTED_SECRET};
 
 /// Assembled rather than written out so a repository secret scanner does
 /// not read the fixture as a real key block.
