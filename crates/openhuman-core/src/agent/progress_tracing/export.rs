@@ -102,8 +102,8 @@ pub(crate) async fn export_run_trace(config: &Config, spans: &[TraceSpan]) {
 pub(crate) async fn export_run_trace_from_journal(
     config: &Config,
     trace_ctx: &TraceContext,
-    observations: &[AgentObservation],
-    run_telemetry: Option<&RunTelemetry>,
+    observations: &[tinyagents_harness::observability::AgentObservation],
+    run_telemetry: Option<&tinyagents_session::run_ledger::RunTelemetry>,
     live_spans: &[TraceSpan],
 ) {
     if observations.is_empty() && live_spans.is_empty() {

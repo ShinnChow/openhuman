@@ -613,5 +613,5 @@ fn dedup_named_jobs_ignores_unnamed_jobs() {
     assert_eq!(list_jobs(&config).unwrap().len(), 2);
 }
 
-#[path = "store_tests_part_01_tests.rs"]
-mod part_01_tests;
+#[path = "store_agent_floor_tests.rs"]
+mod agent_floor_tests;
