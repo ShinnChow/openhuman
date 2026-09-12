@@ -9,8 +9,10 @@
 //! the guard *unskippable by construction* for anyone holding it, because there
 //! is no second, unguarded shape to reach for.
 //!
-//! The load-bearing detail is the ten `as_*` accessors. Nine of the thirteen
-//! capability families are reachable **only** through them, so an override that
+//! The load-bearing detail is the `as_*` accessors. Every optional capability
+//! family (23 of the contract's 26; only `MemoryCore`, `MemoryRecall` and
+//! `MemoryPortability` are mandatory and implemented on the guard directly in
+//! [`mandatory`]) is reachable **only** through them, so an override that
 //! forwarded `self.inner.as_tree()` would hand out a raw driver handle and
 //! defeat the entire design with one method call. Each family therefore gets
 //! its own decorator, owned as a field on the guard (an accessor returns a
@@ -45,15 +47,16 @@
 //! - **Step 1's path half is a no-op**, because nothing in the contract carries
 //!   a filesystem path to validate.
 //!
-//! ## What this milestone does NOT do
+//! ## What still hands out the bare driver
 //!
-//! M4a is **purely additive**. [`CoreContext::memory`] is new and nothing has
-//! been migrated onto it; `CoreContext::memory_binding()` and
-//! `MemoryBinding::unguarded_provider()` still exist and still hand out the bare driver.
-//! The one production caller of `provider()` — the health probe in
-//! `memory::ops::provider` — should keep bypassing the guard: a liveness probe
-//! is not product code, and running it through the tier check would make an
-//! autonomy setting able to break status output.
+//! [`CoreContext::memory`] is the accessor product code holds.
+//! `CoreContext::memory_binding()` and `MemoryBinding::unguarded_provider()`
+//! still exist and still hand out the bare driver; `memory/bypass_allowlist_tests.rs`
+//! enumerates who may call them. The one production caller of
+//! `unguarded_provider()` — the health probe in `memory::ops::provider` —
+//! should keep bypassing the guard: a liveness probe is not product code, and
+//! running it through the tier check would make an autonomy setting able to
+//! break status output.
 //!
 //! ## Honesty clause: "the guard is the only path" is NOT yet true
 //!
@@ -91,8 +94,6 @@
 //! `agent/learning/` are gone or moved onto the guarded surface. Confirm with
 //! the same grep before relying on this being still true; the allowlist test
 //! is the actual enforcement, this paragraph is not.
-//!
-//! `MemoryClient::memory_handle()` is already `pub(crate)`; do not widen it.
 
 pub mod audit;
 pub mod budget;

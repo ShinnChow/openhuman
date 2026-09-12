@@ -2,7 +2,7 @@
 
 Startup data-migration runner gated by `Config::schema_version`. Each migration is a one-shot, idempotent transformation of on-disk data (the persisted `config.toml` and session transcripts). The runner — `run_pending` — is invoked from `Config::load_or_init` and is a fast no-op for workspaces whose `schema_version` already matches `CURRENT_SCHEMA_VERSION`. Failures are logged but never block startup; the next launch retries from the same starting version.
 
-> Not to be confused with the sibling `crates/openhuman-core/src/config/migration_helpers/` (singular), which is a **user-triggered RPC** that imports memory from a legacy OpenClaw workspace. This module (`migrations`, plural) is the **automatic schema-version runner** that fires once per workspace on the first launch of a new build.
+> Not to be confused with the sibling `crates/openhuman-core/src/config/migration_helpers/` (singular), which is a **user-triggered RPC** (`migrate.openclaw` / `migrate.hermes`) that imports memory from another assistant's workspace. This module (`migrations`, plural) is the **automatic schema-version runner** that fires once per workspace on the first launch of a new build.
 
 ## Responsibilities
 
