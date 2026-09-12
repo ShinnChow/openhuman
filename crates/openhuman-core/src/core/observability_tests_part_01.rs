@@ -621,6 +621,7 @@ fn classifies_ollama_user_config_rejections() {
             "should classify Ollama user-config rejection: {raw}"
         );
     }
+}
 
 #[test]
 fn classifies_embedding_backend_auth_failure() {
