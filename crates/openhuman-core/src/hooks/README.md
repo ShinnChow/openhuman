@@ -106,7 +106,7 @@ Cursor's `beforeShellExecution`, `beforeReadFile`, and `afterFileEdit` are not
 separate call sites here — `derived_event` maps tool names onto them
 (`SHELL_TOOLS`: `shell`/`run_command`/`bash`/...; `READ_TOOLS`:
 `file_read`/`read_diff`; `WRITE_TOOLS`: `file_write`/`edit`/...; MCP tools
-get `before`/`afterMcpExecution`). On the pre side the bridge fires
+get `beforeMCPExecution`/`afterMCPExecution`). On the pre side the bridge fires
 `preToolUse` and then the derived `before*` event with a Cursor-shaped
 payload, merging both verdicts; on the post side it fires `postToolUse` (or
 `postToolUseFailure`) and then `afterShellExecution`/`afterFileEdit`. A write
