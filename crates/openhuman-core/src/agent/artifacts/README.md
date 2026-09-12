@@ -46,7 +46,15 @@ All in the `ai` namespace:
 
 ## Agent tools
 
-None. This module owns no `tools.rs`.
+`tools.rs` exposes three LLM-callable wrappers over `ops.rs`, re-exported crate-wide through `crate::tools::mod`'s `pub use crate::agent::artifacts::tools::*`:
+
+| Tool | Permission | Behavior |
+| --- | --- | --- |
+| `artifact_list` | default (read-only) | Lists artifacts newest-first via `ops::ai_list_artifacts`; supports `offset`/`limit`. |
+| `artifact_get` | default (read-only) | Fetches one artifact's metadata + `absolute_path` via `ops::ai_get_artifact`. |
+| `artifact_delete` | `Dangerous` | Irreversibly deletes an artifact directory via `ops::ai_delete_artifact`. Ships **default-OFF**; must be opted in through the tool toggle map (`TOOL_ID_TO_RUST_NAMES` in `crate::tools::user_filter`). |
+
+Each tool is a thin shim: it validates/reads its args, calls the matching `ops` function, and serializes the returned `RpcOutcome.value` as the tool result. `artifact_list` deliberately lists the full workspace (no per-chat filtering) so agent orchestration sees everything it has produced; the per-chat filter is an RPC-only concern.
 
 ## Events
 
@@ -68,7 +76,7 @@ None. No `bus.rs`; the module publishes/subscribes to no `DomainEvent`s.
 
 ## Used by
 
-- `crates/openhuman-core/src/core/all.rs` — registers `all_artifacts_registered_controllers()` (line ~141) and `all_artifacts_controller_schemas()` (line ~307) into the global controller/schema registries. No other in-crate consumer of `save_artifact_meta` was found, so artifact creation is not yet wired from a producer domain.
+- `crates/openhuman-core/src/core/all.rs` — registered in the global controller registry via `all_artifacts_registered_controllers()`. `all_artifacts_controller_schemas()` is exported alongside for domain-local schema-coverage tests; the crate-wide `/schema` list (`core::all::all_controller_schemas`) is derived from registered controllers, not called separately per domain. No other in-crate consumer of `save_artifact_meta` was found, so artifact creation is not yet wired from a producer domain.
 
 ## Notes / gotchas
 

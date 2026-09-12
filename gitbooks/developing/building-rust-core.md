@@ -169,28 +169,10 @@ sudo pacman -S --needed base-devel cmake pkgconf clang openssl \
 Why these matter:
 
 - `build-essential` / `base-devel`, `cmake`, `pkg-config` / `pkgconf`: native builds used by transitive Rust dependencies.
-- `clang`, `libclang-dev`: bindgen / C and C++ compilation paths used by native crates.
+- `clang`, `libclang-dev`: bindgen (used by native crates such as `cpal`'s ALSA bindings) and C/C++ compilation paths.
 - `libssl-dev` / `openssl`: OpenSSL headers needed by some networking dependencies.
-- `libasound2-dev` / `alsa-lib`, `libxi-dev` / `libxi`, `libxtst-dev` / `libxtst`, `libxdo-dev` / `xdotool`, `libudev-dev` (included in Arch `systemd-libs`), `libevdev`: required by audio/input/device crates pulled into the core build.
-
-### `whisper-rs` + `clang` note
-
-`whisper-rs-sys` can fail under `clang` with:
-
-```text
-fatal error: 'array' file not found
-```
-
-This is why the docs call out `libstdc++-14-dev`: `clang` may pick GCC 14 C++ headers on Ubuntu runners.
-
-If your distro layout still leaves `libstdc++.so` unresolved for the build, use the same workaround documented in [`AGENTS.md`](../../AGENTS.md):
-
-```bash
-# Ubuntu/Debian — adjust the GCC version as needed
-sudo ln -sf /usr/lib/gcc/x86_64-linux-gnu/13/libstdc++.so /usr/lib/x86_64-linux-gnu/libstdc++.so
-```
-
-Arch Linux typically does not need this workaround because `gcc-libs` places `libstdc++.so` on the default library search path.
+- `libasound2-dev` / `alsa-lib`, `libxi-dev` / `libxi`, `libxtst-dev` / `libxtst`, `libxdo-dev` / `xdotool`, `libudev-dev` (included in Arch `systemd-libs`), `libevdev`: required by audio/input/device crates (`cpal`, `enigo`/X11 input handling) pulled into the core build.
+- `libstdc++-14-dev`: `clang`-driven builds may pick GCC 14 C++ headers on Ubuntu runners; this keeps `libstdc++.so` resolvable for those native crates.
 
 ### Linux desktop/Tauri package set
 
@@ -231,16 +213,15 @@ Install:
 Recommended commands after the Microsoft toolchain is installed:
 
 ```powershell
-rustup toolchain install 1.93.0 --component rustfmt --component clippy
+rustup toolchain install 1.96.1 --component rustfmt --component clippy
 rustup target add x86_64-pc-windows-msvc
 cargo build --manifest-path Cargo.toml --bin openhuman-core
 ```
 
-Windows note:
-
-- The repo patches `whisper-rs-sys` to force the static MSVC CRT and avoid the `LNK2038` / `LNK1169` mismatch called out in [`Cargo.toml`](../../Cargo.toml). Use the MSVC toolchain, not MinGW.
+Use the MSVC toolchain, not MinGW, to match CI and release builds.
 
 ## 7. Related paths
 
-- [Getting Set Up](getting-set-up.md): full desktop contributor setup with `pnpm`, Tauri, submodules, and sidecar staging.
+- [Getting Set Up](getting-set-up.md): full desktop contributor setup with `pnpm`, Tauri, and submodules. The core runs in-process inside the desktop shell (see [Tauri Shell](architecture/tauri-shell.md)); there is no sidecar staging step.
 - [OpenHuman Architecture](architecture/README.md): where the core fits into the desktop app and RPC flow.
+- [Deep Architecture Reference](architecture.md): the full crate map and repository layout.
