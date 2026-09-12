@@ -64,7 +64,7 @@ surfaces.
   `invalidate_thread_sessions`, plus `in_flight_entries_for_test` (exported
   unconditionally; `test_support/introspect.rs` uses it). The turn's
   in-flight/session state lives here (`THREAD_SESSIONS`,
-  `THREAD_BUDGET_SIGNALS`, `IN_FLIGHT`, parallel map).
+  `THREAD_BUDGET_SIGNALS`, `IN_FLIGHT`, `PARALLEL_IN_FLIGHT`).
 - `ChatRequestMetadata` (`types.rs`) — per-request metadata passed by every
   caller of `start_chat`/`spawn_progress_bridge`.
 - Schemas (`schemas.rs`): `all_web_channel_controller_schemas`,

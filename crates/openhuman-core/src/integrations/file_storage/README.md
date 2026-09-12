@@ -17,7 +17,8 @@ and TTL enforcement.
   plan / up to 1 year on paid plans. Billing goes through the standard
   integration billing flow (S3 rates plus margin), charged upfront for the
   whole TTL on upload and as egress on download/link generation.
-- Block all six tools when autonomy is read-only (`SecurityPolicy::can_act`).
+- Block the five mutating/transfer tools (everything except `storage_list_files`)
+  when autonomy is read-only (`SecurityPolicy::can_act`).
 
 ## Key Files
 
@@ -26,8 +27,8 @@ and TTL enforcement.
 | `mod.rs` | Export-only module root; re-exports `build_file_storage_tools` and the six `Storage*Tool` structs. |
 | `types.rs` | Serde types for backend responses (`UploadResponse`, `ListFilesResponse`, `FileMeta`, `LinkResponse`, `DeleteResponse`). |
 | `tools.rs` | Module doc listing the backend endpoints and billing model; wires in `tools_part_01.rs` / `tools_part_02.rs` via `include!`. |
-| `tools_part_01.rs` | Shared helpers (path resolution/validation, filename/mime handling) plus `StorageUploadFileTool`, `StorageDownloadFileTool`, `StorageListFilesTool`. |
-| `tools_part_02.rs` | `StorageGetLinkTool`, `StorageSetVisibilityTool`, `StorageDeleteFileTool`, and the `build_file_storage_tools` builder. |
+| `tools_part_01.rs` | Shared helpers (`resolve_upload_path`, `validate_file_id`, `validate_visibility`, `sanitize_filename`, `action_dir_for_context`, `readonly_autonomy_block`) plus `StorageUploadFileTool`, `StorageDownloadFileTool`, `StorageListFilesTool`, and the `StorageGetLinkTool` struct. |
+| `tools_part_02.rs` | The `Tool` impl for `StorageGetLinkTool`, `StorageSetVisibilityTool`, `StorageDeleteFileTool`, and the `build_file_storage_tools` builder. |
 | `tools_tests.rs` | Tool metadata/schema tests and path-resolution/sanitization unit tests. |
 
 ## Agent Tools
@@ -81,9 +82,11 @@ Called from `crates/openhuman-core/src/tools/ops.rs` (around line 905):
 tools.extend(crate::integrations::file_storage::build_file_storage_tools(...));
 ```
 
-The tool structs themselves are re-exported through
-`crates/openhuman-core/src/integrations/mod.rs` and
-`crates/openhuman-core/src/tools/mod.rs` (`pub use crate::integrations::tools::*;`).
+The tool structs are exported only from this module
+(`crate::integrations::file_storage::Storage*Tool`); unlike the sibling
+`integrations/tools.rs` family they are not re-exported through
+`crates/openhuman-core/src/tools/mod.rs`, because nothing constructs them
+outside `build_file_storage_tools`.
 
 ## Dependencies
 
@@ -99,6 +102,9 @@ The tool structs themselves are re-exported through
 ## Tests
 
 `tools_tests.rs` covers tool name/permission/category/schema metadata for all
-six tools plus unit tests for `resolve_upload_path` and `sanitize_filename`
-(traversal and symlink-escape rejection, filename sanitization).
+six tools, argument validation that fails before any network call, unit tests
+for `resolve_upload_path` (traversal escape, directory rejection) and
+`sanitize_filename`, the read-only autonomy block for the five guarded tools,
+and end-to-end flows for each tool against a `wiremock` backend (multipart
+upload, 302-to-presigned download, link, visibility, delete, envelope errors).
 </content>
