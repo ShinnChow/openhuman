@@ -47,6 +47,6 @@ use research::{format_research_response, research_payload, ResearchResponse};
 #[cfg(test)]
 use crate::integrations::IntegrationClient;
 #[cfg(test)]
-use crate::tools::traits::Tool as _;
+use crate::tools::traits::Tool;
 #[cfg(test)]
 use std::sync::Arc;

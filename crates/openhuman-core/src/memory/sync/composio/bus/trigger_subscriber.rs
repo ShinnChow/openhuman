@@ -16,7 +16,7 @@ use crate::integrations::composio::trigger_history;
 /// enabled by default; set to `1`/`true`/`yes` to opt out (e.g. for
 /// debugging or in environments where LLM calls on every Composio
 /// webhook are undesirable).
-const TRIAGE_DISABLED_ENV: &str = "OPENHUMAN_TRIGGER_TRIAGE_DISABLED";
+pub(super) const TRIAGE_DISABLED_ENV: &str = "OPENHUMAN_TRIGGER_TRIAGE_DISABLED";
 
 /// Logs and (when enabled) routes `ComposioTriggerReceived` events
 /// through the reusable `agent::triage` pipeline.
@@ -279,7 +279,7 @@ impl EventHandler<DomainEvent> for ComposioTriggerSubscriber {
 /// Returns `true` when `OPENHUMAN_TRIGGER_TRIAGE_DISABLED` is set to a
 /// truthy value. The pipeline is **on by default**; this env var is the
 /// opt-out escape hatch.
-fn triage_disabled() -> bool {
+pub(super) fn triage_disabled() -> bool {
     matches!(
         std::env::var(TRIAGE_DISABLED_ENV).ok().as_deref(),
         Some("1") | Some("true") | Some("TRUE") | Some("yes") | Some("YES")

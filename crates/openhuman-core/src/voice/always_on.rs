@@ -40,6 +40,11 @@ mod transcribe;
 pub use processor::{start_if_enabled, stop};
 
 #[cfg(test)]
+use processor::ENABLED;
+#[cfg(test)]
+use crate::modules::voice as tinyvoice;
+
+#[cfg(test)]
 #[path = "always_on_tests.rs"]
 mod tests;
 

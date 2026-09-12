@@ -73,7 +73,7 @@ async fn backend_composio_client(
 /// A binding with no `Sources` family reads as "not registrable" for the same
 /// reason a driver with no provider used to: nothing here would ever be able
 /// to call `accept_source_items` for it.
-async fn toolkit_is_memory_source_registrable(
+pub(super) async fn toolkit_is_memory_source_registrable(
     config: &crate::config::Config,
     toolkit: &str,
 ) -> bool {
@@ -533,7 +533,7 @@ impl EventHandler<DomainEvent> for ComposioConnectionCreatedSubscriber {
 // ── Connection-readiness polling ────────────────────────────────────
 
 #[derive(Debug)]
-enum WaitError {
+pub(super) enum WaitError {
     /// Polling exhausted [`CONNECTION_READY_TIMEOUT`] without observing
     /// the connection in an active state. `last_status` is whatever the
     /// backend last reported (e.g. `"INITIATED"`, `"PENDING"`).
