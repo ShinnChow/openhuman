@@ -21,6 +21,7 @@ Metadata domain for agent-generated artifacts (presentations, documents, images,
 | `crates/openhuman-core/src/agent/artifacts/ops.rs` | Business logic returning `RpcOutcome<Value>`: `ai_list_artifacts`, `ai_get_artifact`, `ai_delete_artifact`. Validates non-empty IDs, computes/guards `absolute_path`. `DEFAULT_LIMIT=50`, `MAX_LIMIT=200`. |
 | `crates/openhuman-core/src/agent/artifacts/store.rs` | Persistence over `tokio::fs`: `artifacts_root`, `save_artifact_meta`, `list_artifacts`, `get_artifact`, `delete_artifact`, plus `validate_artifact_id` / `assert_within_root` sandboxing helpers. |
 | `crates/openhuman-core/src/agent/artifacts/schemas.rs` | Controller schemas (`all_controller_schemas`), registry (`all_registered_controllers`), and `handle_*` fns delegating to `ops.rs`; param-parsing helpers (`read_required`, `read_optional_u64`, `type_name`). |
+| `crates/openhuman-core/src/agent/artifacts/tools.rs` | Agent tools `ArtifactListTool`, `ArtifactGetTool`, `ArtifactDeleteTool` — thin shims over `ops.rs` that unwrap the `RpcOutcome` and return the inner JSON as `ToolResult`. |
 | `crates/openhuman-core/src/agent/artifacts/ops_tests.rs` | Sibling test suite for `ops.rs` (via `#[path]`). |
 | `crates/openhuman-core/src/agent/artifacts/store_tests.rs` | Sibling test suite for `store.rs` (via `#[path]`). |
 
