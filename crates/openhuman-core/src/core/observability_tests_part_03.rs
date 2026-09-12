@@ -102,8 +102,7 @@ fn classifies_network_unreachable_errors() {
 
 #[test]
 fn custom_openai_ollama_timeout_fallback_chain_is_network_unreachable() {
-    let chain =
-        "custom_openai chat completions transport error: error sending request for url \
+    let chain = "custom_openai chat completions transport error: error sending request for url \
                  (http://localhost:11434/v1/chat/completions): operation timed out \
                  (responses fallback failed: custom_openai API error (404 Not Found): \
                  {\"error\":\"not found\"})";
@@ -522,9 +521,7 @@ fn classifies_socket_transient_http_errors() {
     // socket shape so a future regression in `is_transient_upstream_http_message`
     // surfaces here, not behind another classifier.
     assert_eq!(
-        expected_error_kind(
-            "WebSocket connect: HTTP error: 502: upstream returned bad gateway"
-        ),
+        expected_error_kind("WebSocket connect: HTTP error: 502: upstream returned bad gateway"),
         Some(ExpectedErrorKind::TransientUpstreamHttp)
     );
 
@@ -667,4 +664,3 @@ fn tool_execute_backend_401_invalid_token_does_not_hard_report() {
          reaches Sentry as a hard error"
     );
 }
-

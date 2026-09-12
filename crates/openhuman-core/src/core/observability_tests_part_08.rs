@@ -95,4 +95,3 @@ fn auth_get_me_opaque_filter_ignores_empty_and_unrelated() {
         "substring match must NOT trigger — strict equality only"
     );
 }
-

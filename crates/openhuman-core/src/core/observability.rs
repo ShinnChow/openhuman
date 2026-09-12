@@ -3709,7 +3709,6 @@ fn parse_version(version: &str) -> Option<(u32, u32)> {
     Some((major, minor))
 }
 
-
 #[cfg(test)]
 #[path = "observability_tests.rs"]
 mod tests;

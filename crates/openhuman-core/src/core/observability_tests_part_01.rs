@@ -537,8 +537,7 @@ fn does_not_classify_embedding_json_403_as_edge_block() {
 
     // A non-embed HTML 403 from some unrelated path must not be silenced by
     // this embed-scoped matcher.
-    let non_embed_html_403 =
-        "page fetch failed (403 Forbidden): <!doctype html><title>403</title>";
+    let non_embed_html_403 = "page fetch failed (403 Forbidden): <!doctype html><title>403</title>";
     assert_eq!(
         expected_error_kind(non_embed_html_403),
         None,
@@ -701,4 +700,3 @@ fn does_not_classify_unrelated_embedding_400s() {
         None
     );
 }
-

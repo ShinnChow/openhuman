@@ -652,4 +652,3 @@ where
 #[cfg(test)]
 #[path = "logging_tests.rs"]
 mod tests;
-

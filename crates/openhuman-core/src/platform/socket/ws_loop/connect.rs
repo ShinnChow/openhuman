@@ -19,8 +19,8 @@ use crate::api::models::socket::ConnectionStatus;
 use crate::util::utf8_safe_prefix_at_byte_boundary;
 
 use super::dispatch::handle_eio_message;
-use super::manager::{emit_state_change, SharedState};
-use super::types::{ConnectionOutcome, WsStream};
+use crate::platform::socket::manager::{emit_state_change, SharedState};
+use crate::platform::socket::types::{ConnectionOutcome, WsStream};
 
 /// Maximum HTTP redirect hops to follow during a single WebSocket connect attempt.
 ///

@@ -688,4 +688,3 @@ fn auth_get_me_opaque_filter_tolerates_surrounding_whitespace() {
         "trimmed equality must still match the opaque shape"
     );
 }
-

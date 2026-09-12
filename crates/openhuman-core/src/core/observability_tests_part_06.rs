@@ -686,4 +686,3 @@ fn session_expired_before_send_stays_domain_scoped() {
         "non-core domains must not be filtered as backend session expiry"
     );
 }
-

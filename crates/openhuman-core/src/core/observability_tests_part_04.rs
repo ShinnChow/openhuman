@@ -657,4 +657,3 @@ fn classifies_list_models_404_as_provider_user_state() {
         );
     }
 }
-

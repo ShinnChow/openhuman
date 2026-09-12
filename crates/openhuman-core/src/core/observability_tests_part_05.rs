@@ -40,8 +40,7 @@ fn couples_list_models_404_source_shape_to_classifier() {
     //     anchor is the formatted prefix, not a bare `404` substring, so it
     //     does NOT mis-fire on a 500 whose body merely relays an upstream
     //     404 (see `does_not_classify_non_404_list_models_failures_as_user_state`).
-    let prefixed =
-        "[inference::ops] list_models:error: provider returned 404: 404 page not found";
+    let prefixed = "[inference::ops] list_models:error: provider returned 404: 404 page not found";
     assert_eq!(
         expected_error_kind(prefixed),
         Some(ExpectedErrorKind::ProviderUserState),
@@ -687,4 +686,3 @@ fn skills_install_fetch_filter_keeps_server_and_wrong_shape_failures() {
         );
     }
 }
-

@@ -11,9 +11,9 @@ use tokio::time::Duration;
 use crate::api::models::socket::ConnectionStatus;
 
 use super::connect::run_connection;
-use super::manager::{emit_state_change, SharedState};
-use super::token_provider::{is_invalid_token_error, TokenProvider};
-use super::types::ConnectionOutcome;
+use crate::platform::socket::manager::{emit_state_change, SharedState};
+use crate::platform::socket::token_provider::{is_invalid_token_error, TokenProvider};
+use crate::platform::socket::types::ConnectionOutcome;
 
 /// Number of consecutive `ConnectionOutcome::Failed` attempts at which the
 /// loop fires exactly one `error`-level log (and therefore one Sentry event).

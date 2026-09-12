@@ -65,4 +65,3 @@ pub fn scrub_secrets(input: &str) -> String {
 #[cfg(test)]
 #[path = "log_redaction_tests.rs"]
 mod tests;
-

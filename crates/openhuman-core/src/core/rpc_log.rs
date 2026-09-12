@@ -86,4 +86,3 @@ fn is_sensitive_key(key: &str) -> bool {
 #[cfg(test)]
 #[path = "rpc_log_tests.rs"]
 mod tests;
-

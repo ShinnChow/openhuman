@@ -28,17 +28,13 @@ fn does_not_classify_unrelated_ollama_errors_as_user_config() {
     // Parse-failure on the response — real bug in either the server
     // or our deserializer, must still reach Sentry.
     assert_eq!(
-        expected_error_kind(
-            "ollama embed response parse failed: invalid type: expected sequence"
-        ),
+        expected_error_kind("ollama embed response parse failed: invalid type: expected sequence"),
         None
     );
     // Dimension mismatch — real bug (model dims don't match what we
     // recorded), must still reach Sentry.
     assert_eq!(
-        expected_error_kind(
-            "ollama embed dimension mismatch at index 0: expected 768, got 1024"
-        ),
+        expected_error_kind("ollama embed dimension mismatch at index 0: expected 768, got 1024"),
         None
     );
     // Unrelated `invalid model name` outside Ollama embed call —
@@ -693,4 +689,3 @@ fn does_not_demote_config_read_notfound_or_unkeyed_failures() {
         Some(ExpectedErrorKind::ConfigReadIoFailure),
     );
 }
-

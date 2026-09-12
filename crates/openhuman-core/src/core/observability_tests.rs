@@ -3,8 +3,7 @@ use super::*;
 #[cfg(feature = "crash-reporting")]
 fn event_with_tags(pairs: &[(&str, &str)]) -> sentry::protocol::Event<'static> {
     let mut event = sentry::protocol::Event::default();
-    let mut tags: std::collections::BTreeMap<String, String> =
-        std::collections::BTreeMap::new();
+    let mut tags: std::collections::BTreeMap<String, String> = std::collections::BTreeMap::new();
     for (k, v) in pairs {
         tags.insert((*k).to_string(), (*v).to_string());
     }
@@ -27,8 +26,7 @@ fn channel_message_404_event(method: &str) -> sentry::protocol::Event<'static> {
     event.tags.insert("status".into(), "404".into());
     event.tags.insert("method".into(), method.into());
     event.message = Some(
-        "PATCH /channels/telegram/messages/1103 failed (404); response_body_len=172"
-            .to_string(),
+        "PATCH /channels/telegram/messages/1103 failed (404); response_body_len=172".to_string(),
     );
     event
 }
@@ -69,7 +67,6 @@ fn event_with_exception_value(value: &str) -> sentry::protocol::Event<'static> {
     .into();
     event
 }
-
 
 #[path = "observability_tests_part_01.rs"]
 mod part_01;

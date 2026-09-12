@@ -128,4 +128,3 @@ pub enum TypeSchema {
 #[cfg(test)]
 #[path = "core_mod_tests.rs"]
 mod tests;
-

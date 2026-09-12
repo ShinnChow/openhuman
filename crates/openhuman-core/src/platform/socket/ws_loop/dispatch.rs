@@ -7,8 +7,8 @@ use tokio::sync::mpsc;
 
 use crate::util::utf8_safe_prefix_at_byte_boundary;
 
-use super::event_handlers::{handle_sio_event, parse_sio_event};
-use super::manager::SharedState;
+use crate::platform::socket::event_handlers::{handle_sio_event, parse_sio_event};
+use crate::platform::socket::manager::SharedState;
 
 /// Handle an incoming Engine.IO text message by its type prefix.
 pub(super) fn handle_eio_message(

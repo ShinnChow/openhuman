@@ -162,4 +162,3 @@ pub fn factory(options: &ClientOptions) -> Arc<dyn Transport> {
 #[cfg(test)]
 #[path = "sentry_transport_tests.rs"]
 mod tests;
-

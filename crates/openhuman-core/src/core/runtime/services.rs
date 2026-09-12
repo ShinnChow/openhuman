@@ -562,4 +562,3 @@ pub fn spawn_socket_auto_connect(
 #[cfg(test)]
 #[path = "services_tests.rs"]
 mod tests;
-

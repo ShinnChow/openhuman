@@ -228,4 +228,3 @@ pub fn resolve_legacy(method: &str) -> &str {
 #[cfg(test)]
 #[path = "legacy_aliases_tests.rs"]
 mod tests;
-

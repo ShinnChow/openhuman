@@ -27,4 +27,3 @@ pub const HTTP_SERVER_COMPILED_IN: bool = cfg!(feature = "http-server");
 #[cfg(test)]
 #[path = "http_server_status_tests.rs"]
 mod tests;
-
