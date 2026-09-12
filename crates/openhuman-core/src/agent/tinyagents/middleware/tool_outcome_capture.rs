@@ -58,9 +58,10 @@ impl Middleware<()> for ToolOutcomeCaptureMiddleware {
         // preserved, and already-structured `ToolPolicyMiddleware` denials (which
         // carry a `Workaround:` suffix) are left untouched. This runs before
         // classification below, which still recognises the preserved marker.
-        if let Some(enriched) =
-            crate::agent::tinyagents::policy_denial::maybe_enrich_policy_block(&result.name, &result.content)
-        {
+        if let Some(enriched) = crate::agent::tinyagents::policy_denial::maybe_enrich_policy_block(
+            &result.name,
+            &result.content,
+        ) {
             tracing::debug!(
                 tool = result.name.as_str(),
                 "[tinyagents::mw] enriched raw security-policy block with workaround + relay"
@@ -91,9 +92,7 @@ impl Middleware<()> for ToolOutcomeCaptureMiddleware {
                 std::borrow::Cow::Owned(format!("{error}\n{}", result.content))
             };
             let timed_out = combined.contains("timed out");
-            Some(crate::tools::status::classify(
-                &combined, timed_out,
-            ))
+            Some(crate::tools::status::classify(&combined, timed_out))
         };
         if let Ok(mut map) = self.failure_map.lock() {
             // Keep duration + rendered output size as a compatibility fallback

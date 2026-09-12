@@ -16,7 +16,9 @@ use crate::agent::progress::AgentProgress;
 use crate::agent::tinyagents::journal::TurnJournal;
 use crate::agent::tinyagents::observability::{self, OpenhumanEventBridge, SubagentScope};
 use crate::agent::tinyagents::tools::EarlyExitHook;
-use crate::agent::tinyagents::turn_outcome::{HaltSummarySlot, TinyagentsTurnOutcome, ToolOutcomeSink};
+use crate::agent::tinyagents::turn_outcome::{
+    HaltSummarySlot, TinyagentsTurnOutcome, ToolOutcomeSink,
+};
 
 /// Assemble the [`TinyagentsTurnOutcome`] for a run that returned
 /// successfully: stamp the durable journal's completed status, surface
@@ -167,9 +169,8 @@ pub(super) async fn finalize_turn_outcome(
             let input = run.usage.usage.input_tokens;
             let output = run.usage.usage.output_tokens;
             let cached = run.usage.usage.cache_read_tokens;
-            let charged = crate::platform::cost::catalog::estimate_cost_usd(
-                model, input, output, cached,
-            );
+            let charged =
+                crate::platform::cost::catalog::estimate_cost_usd(model, input, output, cached);
             crate::agent::tinyagents::turn_outcome::record_unobserved_turn_usage(
                 model, input, output, cached, charged,
             );

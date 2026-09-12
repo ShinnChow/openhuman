@@ -128,10 +128,9 @@ impl Middleware<()> for ArtifactIndexTocMiddleware {
         _state: &(),
         request: &mut ModelRequest,
     ) -> TaResult<()> {
-        let Some(store) = ctx
-            .stores
-            .get(crate::agent::harness::tool_result_artifacts::TINYAGENTS_TOOL_RESULT_ARTIFACT_STORE)
-        else {
+        let Some(store) = ctx.stores.get(
+            crate::agent::harness::tool_result_artifacts::TINYAGENTS_TOOL_RESULT_ARTIFACT_STORE,
+        ) else {
             return Ok(());
         };
         // A read failure and an empty index produce the same contents list —
@@ -162,10 +161,7 @@ impl Middleware<()> for ArtifactIndexTocMiddleware {
             let Ok(Some(entry)) = store.get(ARTIFACT_INDEX_NAMESPACE, key).await else {
                 continue;
             };
-            let tool = entry
-                .get("tool")
-                .and_then(|v| v.as_str())
-                .unwrap_or("tool");
+            let tool = entry.get("tool").and_then(|v| v.as_str()).unwrap_or("tool");
             let Some(path) = entry.get("artifact_path").and_then(|v| v.as_str()) else {
                 continue;
             };
@@ -210,8 +206,9 @@ impl Middleware<()> for ArtifactIndexTocMiddleware {
         // half the fix: the fixed text is ~118 tokens and the floor a small
         // window gets is 64, so the message still cleared its share with no
         // rows in it.
-        let compact =
-            format!("_{total} tool result(s) were written to disk — ask by tool name to locate one._");
+        let compact = format!(
+            "_{total} tool result(s) were written to disk — ask by tool name to locate one._"
+        );
         if self.input_budget > 0 {
             let cap = self.input_budget.max(1);
             let fixed = estimate_text_tokens(&header).saturating_add(FOOTER_ALLOWANCE);
@@ -235,8 +232,7 @@ impl Middleware<()> for ArtifactIndexTocMiddleware {
             // for the omitted-count line, which cannot be measured before the
             // count is known — it is one short sentence, and reserving it when
             // nothing is omitted only spends a row.
-            let mut used: u64 =
-                estimate_text_tokens(&header).saturating_add(FOOTER_ALLOWANCE);
+            let mut used: u64 = estimate_text_tokens(&header).saturating_add(FOOTER_ALLOWANCE);
             let mut kept = 0usize;
             for row in &rows {
                 used = used.saturating_add(estimate_text_tokens(row));

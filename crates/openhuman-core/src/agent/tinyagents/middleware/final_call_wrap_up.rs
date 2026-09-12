@@ -198,7 +198,11 @@ impl Middleware<()> for FinalCallWrapUpMiddleware {
                     let TaMessage::Tool(tool) = message else {
                         continue;
                     };
-                    if tool.content.iter().any(|block| !matches!(block, ContentBlock::Text(_))) {
+                    if tool
+                        .content
+                        .iter()
+                        .any(|block| !matches!(block, ContentBlock::Text(_)))
+                    {
                         continue;
                     }
                     let body: String = tool
@@ -263,8 +267,7 @@ impl Middleware<()> for FinalCallWrapUpMiddleware {
         request
             .messages
             .push(TaMessage::user(self.instruction.to_string()));
-        self.fired
-            .store(true, std::sync::atomic::Ordering::SeqCst);
+        self.fired.store(true, std::sync::atomic::Ordering::SeqCst);
         Ok(())
     }
 }

@@ -75,7 +75,10 @@ pub(crate) struct RepeatProgressMiddleware {
 }
 
 impl RepeatProgressMiddleware {
-    pub(crate) fn new(handle: SteeringHandle, halt_summary: crate::agent::tinyagents::HaltSummarySlot) -> Self {
+    pub(crate) fn new(
+        handle: SteeringHandle,
+        halt_summary: crate::agent::tinyagents::HaltSummarySlot,
+    ) -> Self {
         Self {
             handle,
             halt_summary,

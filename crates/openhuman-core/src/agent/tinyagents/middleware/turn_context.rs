@@ -97,8 +97,7 @@ impl Middleware<()> for TranscriptSnapshotMiddleware {
         _state: &(),
         request: &mut ModelRequest,
     ) -> TaResult<()> {
-        let history =
-            crate::agent::message_convert::messages_to_history(&request.messages);
+        let history = crate::agent::message_convert::messages_to_history(&request.messages);
         if let Ok(mut guard) = self.sink.lock() {
             *guard = history;
         }

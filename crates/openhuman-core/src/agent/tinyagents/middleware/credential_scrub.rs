@@ -86,8 +86,7 @@ impl ToolMiddleware<()> for CredentialScrubMiddleware {
         }
 
         if let Some(err) = result.error.as_ref() {
-            let scrubbed_err =
-                crate::agent::harness::credentials::scrub_credentials(err);
+            let scrubbed_err = crate::agent::harness::credentials::scrub_credentials(err);
             if &scrubbed_err != err {
                 tracing::warn!(
                     tool = %tool_name,

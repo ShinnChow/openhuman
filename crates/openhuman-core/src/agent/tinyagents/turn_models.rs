@@ -13,14 +13,12 @@ pub(crate) fn tinyagents_depth_error(
 ) -> Option<crate::agent::harness::subagent_runner::SubagentRunError> {
     match err {
         tinyagents_harness::TinyAgentsError::SubAgentDepth(max_depth)
-        | tinyagents_harness::TinyAgentsError::RecursionLimit(max_depth) => {
-            Some(
-                crate::agent::harness::subagent_runner::SubagentRunError::SpawnDepthExceeded {
-                    attempted_depth: max_depth.saturating_add(1),
-                    max_depth: *max_depth,
-                },
-            )
-        }
+        | tinyagents_harness::TinyAgentsError::RecursionLimit(max_depth) => Some(
+            crate::agent::harness::subagent_runner::SubagentRunError::SpawnDepthExceeded {
+                attempted_depth: max_depth.saturating_add(1),
+                max_depth: *max_depth,
+            },
+        ),
         _ => None,
     }
 }
@@ -328,10 +326,7 @@ impl TurnModelSource {
         }
         let provider_string = self.crate_native.as_ref().map(|source| {
             source.primary_override.clone().unwrap_or_else(|| {
-                crate::inference::provider::provider_for_role(
-                    &source.role,
-                    &source.config,
-                )
+                crate::inference::provider::provider_for_role(&source.role, &source.config)
             })
         });
         let local_kind = provider_string
@@ -354,10 +349,7 @@ impl TurnModelSource {
         }
         self.crate_native.as_ref().is_some_and(|source| {
             let provider = source.primary_override.clone().unwrap_or_else(|| {
-                crate::inference::provider::provider_for_role(
-                    &source.role,
-                    &source.config,
-                )
+                crate::inference::provider::provider_for_role(&source.role, &source.config)
             });
             crate::inference::local::profile::is_local_provider_string(&provider)
         })
@@ -407,9 +399,8 @@ impl TurnModelSource {
             let provider_string = cn.primary_override.clone().unwrap_or_else(|| {
                 crate::inference::provider::provider_for_role(&cn.role, &cn.config)
             });
-            let is_local = crate::inference::local::profile::is_local_provider_string(
-                &provider_string,
-            );
+            let is_local =
+                crate::inference::local::profile::is_local_provider_string(&provider_string);
             let provider_id = if provider_string == "openhuman"
                 || provider_string.is_empty()
                 || provider_string == "cloud"
@@ -458,9 +449,15 @@ impl TurnModelSource {
         }
         if let Some(cn) = &self.crate_native {
             let built = match cn.primary_override.as_deref() {
-                Some(ps) => crate::inference::provider::factory::create_turn_chat_model_from_string(
-                    &cn.role, ps, &cn.config, model, temperature,
-                ),
+                Some(ps) => {
+                    crate::inference::provider::factory::create_turn_chat_model_from_string(
+                        &cn.role,
+                        ps,
+                        &cn.config,
+                        model,
+                        temperature,
+                    )
+                }
                 None => crate::inference::provider::factory::create_turn_chat_model(
                     &cn.role,
                     &cn.config,

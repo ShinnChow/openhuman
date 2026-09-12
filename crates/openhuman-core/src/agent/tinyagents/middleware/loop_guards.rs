@@ -167,7 +167,11 @@ pub(crate) fn recoverable_identical_halt_summary(tool: &str, count: u32, result:
 
 /// Halt summary when many recoverable-looking failures pile up with no progress.
 /// Ported from the legacy loop.
-pub(crate) fn recoverable_no_progress_halt_summary(consecutive: u32, tool: &str, result: &str) -> String {
+pub(crate) fn recoverable_no_progress_halt_summary(
+    consecutive: u32,
+    tool: &str,
+    result: &str,
+) -> String {
     format!(
         "Stopping: {consecutive} recoverable-looking tool failures happened in a row with no \
          successful progress. Last error (from `{tool}`):\n{}\n\nThe turn is still bounded by the \

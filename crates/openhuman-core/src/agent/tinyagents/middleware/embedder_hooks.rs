@@ -22,9 +22,7 @@ pub(crate) struct EmbedderToolHooksMiddleware {
 }
 
 impl EmbedderToolHooksMiddleware {
-    pub(crate) fn new(
-        hooks: Vec<std::sync::Arc<dyn crate::agent::hooks::ToolHook>>,
-    ) -> Self {
+    pub(crate) fn new(hooks: Vec<std::sync::Arc<dyn crate::agent::hooks::ToolHook>>) -> Self {
         Self {
             hooks,
             arguments_by_call_id: std::sync::Mutex::new(std::collections::HashMap::new()),

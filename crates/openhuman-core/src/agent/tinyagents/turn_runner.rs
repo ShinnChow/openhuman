@@ -272,10 +272,12 @@ pub(crate) async fn run_turn_via_tinyagents_shared(
     // generated tools, dangling alias, etc.) aborts the turn instead of silently
     // resolving to an unintended component while a provider call is in flight.
     if !registry_diagnostics.is_empty() {
-        let (errors, warnings): (Vec<&tinyagents_registry::RegistryDiagnostic>, Vec<&tinyagents_registry::RegistryDiagnostic>) =
-            registry_diagnostics
-                .iter()
-                .partition(|d| matches!(d.severity, DiagnosticSeverity::Error));
+        let (errors, warnings): (
+            Vec<&tinyagents_registry::RegistryDiagnostic>,
+            Vec<&tinyagents_registry::RegistryDiagnostic>,
+        ) = registry_diagnostics
+            .iter()
+            .partition(|d| matches!(d.severity, DiagnosticSeverity::Error));
         for diag in &warnings {
             tracing::warn!(
                 kind = diag.kind.as_str(),

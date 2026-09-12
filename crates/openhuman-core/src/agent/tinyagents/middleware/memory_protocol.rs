@@ -24,17 +24,13 @@ use tinyinference::tool::ToolCall as TaToolCall;
 /// neither creates an entry nor obliges an index update. Non-memory tools are
 /// ignored, so this is a no-op on turns that never touch memory.
 pub struct MemoryProtocolMiddleware {
-    tracker:
-        std::sync::Mutex<crate::agent::harness::memory_protocol::MemoryProtocolTracker>,
+    tracker: std::sync::Mutex<crate::agent::harness::memory_protocol::MemoryProtocolTracker>,
     /// call_id → classified op, captured in `before_tool` (the tool result carries
     /// no arguments, yet `update_memory_md` and `memory_tree` can only be
     /// classified from their `file` / `mode` argument). Correlated back by
     /// `result.call_id` in `after_tool`.
     pending_ops: std::sync::Mutex<
-        std::collections::HashMap<
-            String,
-            crate::agent::harness::memory_protocol::MemoryOp,
-        >,
+        std::collections::HashMap<String, crate::agent::harness::memory_protocol::MemoryOp>,
     >,
 }
 
@@ -70,10 +66,8 @@ impl Middleware<()> for MemoryProtocolMiddleware {
         // Classify with the arguments in hand (the result won't carry them) and
         // stash the op keyed by call id. Only memory-relevant ops are stored, so
         // the map stays empty on turns that never touch memory.
-        let op = crate::agent::harness::memory_protocol::classify_memory_op(
-            &call.name,
-            &call.arguments,
-        );
+        let op =
+            crate::agent::harness::memory_protocol::classify_memory_op(&call.name, &call.arguments);
         if op != crate::agent::harness::memory_protocol::MemoryOp::Other {
             if let Ok(mut ops) = self.pending_ops.lock() {
                 ops.insert(call.id.clone(), op);

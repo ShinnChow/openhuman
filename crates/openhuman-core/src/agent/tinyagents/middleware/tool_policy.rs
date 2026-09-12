@@ -75,9 +75,7 @@ impl ToolPolicyMiddleware {
     fn callable_delegates_for(&self, owners: &[&str]) -> Vec<String> {
         let mut found: Vec<String> = Vec::new();
         for tool in self.tool_sets.iter().flat_map(|set| set.iter()) {
-            let Some(target) =
-                crate::tools::traits::delegation_target(tool.as_ref())
-            else {
+            let Some(target) = crate::tools::traits::delegation_target(tool.as_ref()) else {
                 continue;
             };
             if !owners.contains(&target) {
@@ -233,7 +231,6 @@ impl ToolPolicyMiddleware {
         }
         None
     }
-
 }
 
 impl ToolPolicyMiddleware {
@@ -246,9 +243,7 @@ impl ToolPolicyMiddleware {
             .iter()
             .flat_map(|set| set.iter())
             .find(|t| t.name() == name)
-            .and_then(|t| {
-                crate::tools::traits::generated_runtime_context(t.as_ref(), args)
-            })
+            .and_then(|t| crate::tools::traits::generated_runtime_context(t.as_ref(), args))
     }
 }
 
@@ -265,9 +260,7 @@ impl ToolMiddleware<()> for ToolPolicyMiddleware {
         call: TaToolCall,
         next: ToolHandler<'_, (), ()>,
     ) -> TaResult<MiddlewareToolOutcome> {
-        use crate::agent::tool_policy::{
-            ToolCallContext, ToolPolicyDecision, ToolPolicyRequest,
-        };
+        use crate::agent::tool_policy::{ToolCallContext, ToolPolicyDecision, ToolPolicyRequest};
 
         // Channel-permission ceiling first (session deny + per-call permission
         // level), mirroring the engine order in `agent_tool_exec`.
