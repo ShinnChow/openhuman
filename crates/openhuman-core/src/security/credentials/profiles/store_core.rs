@@ -21,8 +21,7 @@ impl AuthProfilesStore {
     pub fn new(state_dir: &Path, encrypt_secrets: bool) -> Self {
         let user_id = super::user_id_from_state_dir(state_dir);
         let policy = crate::security::keyring_consent::policy::check_secret_access();
-        let use_keychain = policy
-            == crate::security::keyring_consent::PolicyDecision::Proceed
+        let use_keychain = policy == crate::security::keyring_consent::PolicyDecision::Proceed
             && crate::security::keyring::is_available();
         log::debug!(
             "[auth] AuthProfilesStore::new state_dir={} user_id={user_id} use_keychain={use_keychain} policy={policy:?}",

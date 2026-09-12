@@ -12,8 +12,8 @@ pub use composio::{
 };
 pub use login_tokens::{auth_create_channel_link_token, consume_login_token};
 pub use oauth::{
-    oauth_connect, oauth_fetch_client_key, oauth_fetch_integration_tokens,
-    oauth_list_integrations, oauth_revoke_integration,
+    oauth_connect, oauth_fetch_client_key, oauth_fetch_integration_tokens, oauth_list_integrations,
+    oauth_revoke_integration,
 };
 pub use provider_credentials::{
     list_provider_credentials, list_provider_credentials_by_prefix, remove_provider_credentials,

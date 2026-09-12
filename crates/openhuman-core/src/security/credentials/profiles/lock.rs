@@ -13,8 +13,7 @@ use std::sync::atomic::Ordering;
 
 use super::{
     annotate_lock_create_failure, in_process_lock_for, is_pid_alive, AuthProfileLockGuard,
-    AuthProfilesStore, LOCK_WAIT_MS, LOCK_TIMEOUT_MS, MALFORMED_LOCK_GRACE_MS,
-    STALE_LOCK_AGE_MS,
+    AuthProfilesStore, LOCK_TIMEOUT_MS, LOCK_WAIT_MS, MALFORMED_LOCK_GRACE_MS, STALE_LOCK_AGE_MS,
 };
 
 impl AuthProfilesStore {
@@ -80,18 +79,14 @@ impl AuthProfilesStore {
         // that without bailing at the LOCK_TIMEOUT_MS boundary.
         let mut next_stale_recheck_ms: u64 = 1_000;
         loop {
-            let open_result = crate::util::retry_with_backoff(
-                "create auth profile lock",
-                6,
-                100,
-                || {
+            let open_result =
+                crate::util::retry_with_backoff("create auth profile lock", 6, 100, || {
                     OpenOptions::new()
                         .create_new(true)
                         .write(true)
                         .open(&self.lock_path)
                         .context("open lock file")
-                },
-            );
+                });
 
             match open_result {
                 Ok(mut file) => {

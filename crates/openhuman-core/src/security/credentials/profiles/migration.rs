@@ -388,12 +388,9 @@ impl AuthProfilesStore {
                             .insert(normalized_id.clone(), ap)
                             .map(|old| old.id);
                         new_persisted_profiles.insert(normalized_id.clone(), p);
+                        profile_id_migration_targets.insert(id.clone(), normalized_id.clone());
                         profile_id_migration_targets
-                            .insert(id.clone(), normalized_id.clone());
-                        profile_id_migration_targets.insert(
-                            normalize_profile_id_provider(&id),
-                            normalized_id.clone(),
-                        );
+                            .insert(normalize_profile_id_provider(&id), normalized_id.clone());
                         if self.use_keychain {
                             if let Some(old_id) = &old_id {
                                 pending_keychain_deletes.push(old_id.clone());
@@ -448,8 +445,7 @@ impl AuthProfilesStore {
                         p.provider = original_provider;
                         id.clone()
                     };
-                    profile_id_migration_targets
-                        .insert(id.clone(), final_id.clone());
+                    profile_id_migration_targets.insert(id.clone(), final_id.clone());
                     profile_id_migration_targets
                         .insert(normalize_profile_id_provider(&id), final_id.clone());
                     new_profiles.insert(final_id.clone(), ap);

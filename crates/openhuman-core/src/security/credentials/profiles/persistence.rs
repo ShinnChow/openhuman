@@ -9,14 +9,14 @@ use std::fs;
 #[cfg(test)]
 use std::sync::atomic::Ordering;
 
+#[cfg(test)]
+use super::consume_one;
 use super::{
     profile_kind_to_string, quarantine_corrupt_store, retry_with_backoff, write_owner_only,
     AuthProfile, AuthProfileKind, AuthProfilesData, AuthProfilesStore, EncryptedProfileFields,
     PersistedAuthProfile, PersistedAuthProfiles, CURRENT_SCHEMA_VERSION, PERSIST_RETRY_ATTEMPTS,
     PERSIST_RETRY_BASE_MS, PROFILES_FILENAME,
 };
-#[cfg(test)]
-use super::consume_one;
 
 impl AuthProfilesStore {
     pub(super) fn save_locked(&self, data: &AuthProfilesData) -> Result<()> {

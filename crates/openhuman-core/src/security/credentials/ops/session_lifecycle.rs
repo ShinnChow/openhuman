@@ -610,11 +610,7 @@ async fn store_session_inner(
         operation = "store_session",
         "[credentials][auth-store] scheduler gate cleared; ensuring re-embed backfill after login"
     );
-    crate::memory::ops::maintenance::reembed_best_effort(
-        &effective_config,
-        "session stored",
-    )
-    .await;
+    crate::memory::ops::maintenance::reembed_best_effort(&effective_config, "session stored").await;
     logs.push("memory re-embed backfill checked after login".to_string());
 
     // Bind the Sentry scope to this user so background events that fire
@@ -735,7 +731,9 @@ fn fallback_session_user_for_deferred_validation() -> Value {
     json!({ "pendingBackendValidation": true })
 }
 
-pub(crate) fn sanitize_stored_session_user(user: Option<serde_json::Value>) -> Option<serde_json::Value> {
+pub(crate) fn sanitize_stored_session_user(
+    user: Option<serde_json::Value>,
+) -> Option<serde_json::Value> {
     match user {
         Some(serde_json::Value::Object(map)) if map.is_empty() => None,
         Some(serde_json::Value::Null) => None,
@@ -743,7 +741,10 @@ pub(crate) fn sanitize_stored_session_user(user: Option<serde_json::Value>) -> O
     }
 }
 
-pub(crate) fn normalize_local_session_user(user: serde_json::Value, local_user_id: &str) -> serde_json::Value {
+pub(crate) fn normalize_local_session_user(
+    user: serde_json::Value,
+    local_user_id: &str,
+) -> serde_json::Value {
     let mut map = match user {
         serde_json::Value::Object(map) => map,
         other => return other,
@@ -762,8 +763,7 @@ pub(crate) fn normalize_local_session_user(user: serde_json::Value, local_user_i
 pub async fn clear_session(config: &Config) -> Result<RpcOutcome<serde_json::Value>, String> {
     let mut logs = Vec::new();
     let removed = {
-        let _session_mutation_lock = crate::desktop::app_state::
-            CURRENT_USER_SESSION_MUTATION_LOCK
+        let _session_mutation_lock = crate::desktop::app_state::CURRENT_USER_SESSION_MUTATION_LOCK
             .lock()
             .await;
         // Flip the scheduler-gate override first so any background worker that
