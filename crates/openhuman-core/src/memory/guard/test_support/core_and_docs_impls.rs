@@ -39,6 +39,7 @@ fn tree_status(namespace: &str) -> TreeStatus {
     }
 }
 
+#[async_trait]
 impl MemoryCore for RecordingProvider {
     async fn store(
         &self,
