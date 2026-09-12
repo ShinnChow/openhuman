@@ -19,8 +19,9 @@ The subsystem is organised in phases (issue #566): **Phase 1** the candidate tax
 | File | Role |
 | --- | --- |
 | `mod.rs` | Export-focused module root; phase docstrings + `pub use` re-exports. |
+| `startup.rs` | Registers the always-on Phase 2/3/4 subscribers (signature producer, rebuild trigger + 30-min loop, `ProfileMdRenderer`) on the global event bus; idempotent, `OnceLock`-guarded (#5003). |
 | `candidate.rs` | Phase 1 taxonomy: `FacetClass`, `CueFamily` (+ `weight()`), `EvidenceRef`, `LearningCandidate`, and the bounded FIFO `Buffer` with a `global()` singleton (cap 1024). |
-| `cache.rs` | `FacetCache` — typed wrapper over `user_profile_facets`; class↔key helpers (`class_from_key`, `key_with_class`, `class_prefix`). Delegates to `memory_store::profile`. |
+| `cache.rs` | `FacetCache` — typed wrapper over `user_profile_facets`; class↔key helpers (`class_from_key`, `key_with_class`, `class_prefix`). Delegates to the `MemoryProfile` family via `crate::memory::guard::MemoryGuard`. |
 | `stability_detector.rs` | Phase 3 `StabilityDetector::rebuild` — the scoring/budget/state-assignment cycle; thresholds, half-lives, budgets, and the `stability()` formula. Publishes `CacheRebuilt`. |
 | `scheduler.rs` | Periodic rebuild loop (`spawn_rebuild_loop`, default 30 min) + event-driven debounced trigger (`register_event_trigger`) subscribing to memory/tree-summarizer events. |
 | `schemas.rs` | All RPC controller schemas + `handle_*` async handlers for the `learning.*` namespace. |
