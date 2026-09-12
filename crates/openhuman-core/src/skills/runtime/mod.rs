@@ -2,9 +2,9 @@
 //! SKILL.md workflows.
 //!
 //! `crate::skills` owns discovery and installed skill metadata.
-//! `crate::skills::catalog` owns remote catalogs and install sources. This module owns actually running
-//! a skill, regardless of whether the skill's instructions call Python, Node,
-//! shell tools, or another OpenHuman agent tool.
+//! `crate::skills::catalog` owns remote catalogs and install sources. This
+//! module owns actually running a skill, regardless of whether the skill's
+//! instructions call Python, Node, shell tools, or another OpenHuman agent tool.
 //!
 //! ## Compile-time gate (`skills` feature)
 //!
