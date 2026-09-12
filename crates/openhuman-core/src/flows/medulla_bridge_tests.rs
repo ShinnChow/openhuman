@@ -449,7 +449,6 @@ async fn an_update_refuses_to_overwrite_a_concurrent_edit() {
         Some("User edit".to_string()),
         None,
         None,
-        None,
         Some(created.updated_at.clone()),
     )
     .await
