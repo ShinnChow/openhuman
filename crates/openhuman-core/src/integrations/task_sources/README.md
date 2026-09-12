@@ -101,7 +101,14 @@ Subscribes:
 
 - `DomainEvent::ComposioConnectionCreated` (domain filter `["composio"]`) via `TaskSourcesConnectionSubscriber` — fires a one-shot `ConnectionCreated` fetch for matching enabled sources. Registered once at startup (`register_task_sources_subscriber`, idempotent `OnceLock` handle).
 
-Startup wiring lives in `crates/openhuman-core/src/core/jsonrpc.rs` (registers the subscriber and starts the periodic poll).
+Startup wiring is split across two sites:
+
+- `crates/openhuman-core/src/core/jsonrpc.rs` (~2159) calls
+  `crate::integrations::task_sources::bus::register_task_sources_subscriber()`.
+- `crates/openhuman-core/src/core/runtime/services.rs` (~349) calls
+  `crate::integrations::task_sources::start_periodic_poll()` (alongside
+  `agent::task_dispatcher::start_board_poller()`) when the `ServiceSet`'s
+  `proactive_task_pollers` bootstrap job is enabled (documented at ~212).
 
 ## Persistence
 
@@ -115,9 +122,9 @@ Additive idempotent column migrations (`add_column_if_missing`) backfill `ingest
 ## Dependencies
 
 - `crate::core::all` — `ControllerFuture`, `RegisteredController` for the RPC registry.
-- `crate::core::event_bus` — `publish_global`, `subscribe_global`, `DomainEvent`, `EventHandler`, `SubscriptionHandle` for event publish/subscribe.
+- `crate::core::bus` (`BUS`) + `crate::core::events::DomainEvent` — `BUS.publish`/`BUS.subscribe` for event publish/subscribe.
 - `crate::config` (+ `config::rpc`) — `Config`, `load_config_with_timeout`; reads the `[task_sources]` block for defaults and the master switch.
-- `crate::memory::sync::composio::providers` — `get_provider`, `ProviderContext`, `NormalizedTask`, `TaskFetchFilter`, `ComposioProvider::fetch_tasks`; the actual external fetch + normalized task shape.
+- `crate::integrations::composio::providers` — `get_provider`, `ProviderContext`, `NormalizedTask`, `TaskFetchFilter`, `ComposioProvider::fetch_tasks`; the actual external fetch + normalized task shape.
 - `crate::agent::triage` — `run_triage`, `apply_decision`, `TriageOutcome`, `TriggerEnvelope`; dispatches the proactive agent turn for `AgentTodoProactive` sources.
 - `crate::threads::todos` (`todos::ops`) — `add`/`remove`, `BoardLocation`, `CardPatch`; the thread-scoped board cards are stored here. Also references `agent::task_board::TaskBoardCard` for `board_cards`.
 - `crate::cron::scheduler_gate` — `wait_for_capacity` capacity semaphore; gates proactive triage turns behind background-AI throttling.

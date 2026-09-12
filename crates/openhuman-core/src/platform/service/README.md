@@ -85,7 +85,7 @@ Both subscribers are registered idempotently from `crates/openhuman-core/src/cor
 ## Dependencies
 
 - `crate::config` — `Config` (paths, config dir) for every lifecycle/path operation; `config::rpc::load_config_with_timeout` in the schema handlers.
-- `crate::core::event_bus` — `DomainEvent`, `EventHandler`, `SubscriptionHandle`, `publish_global` / `subscribe_global` / `init_global` for restart/shutdown orchestration.
+- `crate::core::bus::BUS` (`tinybus::OnceBus<DomainEvent>`) — `publish` / `subscribe` for restart/shutdown orchestration; `crate::core::events::DomainEvent` for the event catalog.
 - `crate::core` (`ControllerSchema`, `FieldSchema`, `TypeSchema`) and `crate::core::all` (`ControllerFuture`, `RegisteredController`) — controller schema/registration contract.
 - `crate::rpc::RpcOutcome` — standard RPC result envelope.
 - External: `anyhow`, `serde`/`serde_json`, `tokio`, `async_trait`, plus OS CLIs (`launchctl`, `systemctl`, `schtasks`).
