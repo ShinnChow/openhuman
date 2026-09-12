@@ -12,7 +12,32 @@
 //! [`plan_shared_workspace_dispatch`](tinyagents_graph::parallel::plan_shared_workspace_dispatch).
 //! The rejection sentences stay here, which is why the crate reports conflicts
 //! as data.
+//!
+//! ## Module layout
+//!
+//! - [`request`] — request decoding and structural validation.
+//! - [`types`] — shared worker/result/lineage types.
+//! - [`staging`] — OpenHuman policy admission, shared-workspace arbitration,
+//!   worktree preflight, and progress projection for the `dispatch` phase.
+//! - [`workers`] — the serial and `map_reduce` worker fanout.
+//! - [`collect`] — collecting fanned-out results into the tool's final shape.
+//! - [`graph`] — the fixed phase-graph scaffold and topology export.
+//! - [`run`] — the public entry points that tie the above together.
 
-include!("spawn_parallel_graph_part_01.rs");
-include!("spawn_parallel_graph_part_02.rs");
-include!("spawn_parallel_graph_part_03.rs");
+mod collect;
+mod graph;
+mod request;
+mod run;
+mod staging;
+mod types;
+mod workers;
+
+pub(crate) use collect::{format_spawn_parallel_success, SpawnParallelGraphOutcome};
+pub(crate) use graph::spawn_parallel_graph_topology;
+pub(crate) use request::{ParallelAgentTask, SpawnParallelTaskValidationError};
+pub(crate) use run::run_spawn_parallel_graph_with_cancellation_and_workspace;
+pub(crate) use staging::with_ownership_boundary;
+pub(crate) use types::{ParallelAgentLineage, ParallelAgentResult};
+
+#[cfg(test)]
+pub(crate) use run::{run_spawn_parallel_graph, run_spawn_parallel_graph_with_cancellation};
