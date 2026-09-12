@@ -1,13 +1,22 @@
-// Sign-out invalidation for the current-user caches.
-//
-// `CURRENT_USER_CACHE`, `CURRENT_USER_FAILURE` and `LAST_CURRENT_USER_SUCCESS`
-// are all keyed on `(api_base, token)`, so clearing them is not enough on its
-// own:
-// `fetch_current_user_cached` awaits the network between reading them and
-// writing them, and a refresh already in flight when sign-out lands would
-// re-publish exactly the state the sign-out removed. A generation counter,
-// read when the token is read and re-checked under each cache's own lock,
-// is what closes that window (#5758).
+//! Sign-out invalidation for the current-user caches.
+//!
+//! `CURRENT_USER_CACHE`, `CURRENT_USER_FAILURE` and `LAST_CURRENT_USER_SUCCESS`
+//! are all keyed on `(api_base, token)`, so clearing them is not enough on its
+//! own:
+//! `fetch_current_user_cached` awaits the network between reading them and
+//! writing them, and a refresh already in flight when sign-out lands would
+//! re-publish exactly the state the sign-out removed. A generation counter,
+//! read when the token is read and re-checked under each cache's own lock,
+//! is what closes that window (#5758).
+
+use super::current_user::{CurrentUserFailure, CurrentUserFetchError, CURRENT_USER_CACHE, CURRENT_USER_FAILURE};
+use super::staleness::{clear_current_user_success, note_current_user_success_locked};
+use super::LOG_PREFIX;
+use log::debug;
+use once_cell::sync::Lazy;
+use serde_json::Value;
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::time::Instant;
 
 /// Bumped by [`forget_current_user_caches`]; read by `snapshot` before it
 /// loads the session token, threaded into `fetch_current_user_cached`, and
