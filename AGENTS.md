@@ -310,11 +310,13 @@ module release before migrating a host call to it.
 ## Backend API
 
 Backend calls use the vendored `tinyhumans-sdk`. Add missing backend routes to
-that SDK rather than recreating them in `src/api/`.
+that SDK rather than recreating them in `crates/openhuman-core/src/api/`.
 
-`src/api/` owns OpenHuman session-token lookup, base URL selection, transport
-configuration, and error classification. Every SDK error must pass through
-`classify_sdk_error`.
+`crates/openhuman-core/src/api/` owns OpenHuman session-token lookup, base URL
+selection, transport configuration, and error classification. Every SDK error
+returned by `BackendOAuthClient` must be mapped through `finish_authed_json` in
+`crates/openhuman-core/src/api/rest.rs` so transient transport failures are
+classified consistently.
 
 Every TinyHumans backend request must carry a sanitized `x-sdk-name`:
 
