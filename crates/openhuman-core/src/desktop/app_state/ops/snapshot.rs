@@ -33,10 +33,10 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::Instant;
 
 /// Correlates a snapshot call's own timing/debug log lines across the poll.
-static SNAPSHOT_REQ_COUNTER: AtomicU64 = AtomicU64::new(0);
+pub(super) static SNAPSHOT_REQ_COUNTER: AtomicU64 = AtomicU64::new(0);
 
 #[derive(Debug, Clone)]
-enum SnapshotCurrentUser {
+pub(super) enum SnapshotCurrentUser {
     User(Option<Value>),
     DeferredSessionRejected,
 }
@@ -47,9 +47,9 @@ impl SnapshotCurrentUser {
     }
 }
 
-type SnapshotCurrentUserResult = (SnapshotCurrentUser, Option<Box<Config>>);
+pub(super) type SnapshotCurrentUserResult = (SnapshotCurrentUser, Option<Box<Config>>);
 
-fn snapshot_current_user_result(user: Option<Value>) -> SnapshotCurrentUserResult {
+pub(super) fn snapshot_current_user_result(user: Option<Value>) -> SnapshotCurrentUserResult {
     (SnapshotCurrentUser::user(user), None)
 }
 
