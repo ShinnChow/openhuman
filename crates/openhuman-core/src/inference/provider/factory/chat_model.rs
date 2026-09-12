@@ -292,7 +292,11 @@ pub(super) fn with_default_temperature(
 /// Successful production routes never reach this function. Keeping error
 /// resolution separate means `create_chat_model*` no longer constructs a
 /// legacy `Provider` merely to discover that a route is invalid.
-pub(super) fn unresolved_chat_model_error(role: &str, provider: &str, config: &Config) -> anyhow::Error {
+pub(super) fn unresolved_chat_model_error(
+    role: &str,
+    provider: &str,
+    config: &Config,
+) -> anyhow::Error {
     let p = provider.trim();
 
     if let Err(error) = enforce_local_only_inference(role, p) {

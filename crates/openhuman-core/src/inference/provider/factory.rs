@@ -49,22 +49,24 @@ mod subprocess_providers;
 mod tiers;
 mod turn_model;
 
+pub(crate) use access_gates::{
+    current_host_requires_session, verify_backend_session_active, verify_session_active,
+};
+pub(crate) use chat_model::resolves_to_managed_backend;
 pub use chat_model::{
     create_chat_model, create_chat_model_from_string, create_chat_model_from_string_with_model_id,
     create_chat_model_with_model_id, probe_inference_readiness,
 };
-pub(crate) use chat_model::resolves_to_managed_backend;
-pub use credentials::{auth_key_for_slug, lookup_key_for_slug, redact_endpoint};
 pub(crate) use credentials::openai_bearer_is_oauth;
-pub use routing::{provider_for_role, role_bypasses_managed_credits};
-pub(crate) use routing::role_uses_implicit_cloud_fallback;
-pub use tiers::{resolve_model_for_hint, role_for_model_tier};
-pub(crate) use tiers::{is_known_openhuman_tier, is_raw_passthrough_model, oh_tier_supports_vision};
-pub(crate) use access_gates::{
-    current_host_requires_session, verify_backend_session_active, verify_session_active,
-};
+pub use credentials::{auth_key_for_slug, lookup_key_for_slug, redact_endpoint};
 pub(crate) use local_runtime::create_local_chat_model_from_string;
 pub(crate) use managed_backend::{make_openhuman_backend_model, summarization_tier_model};
+pub(crate) use routing::role_uses_implicit_cloud_fallback;
+pub use routing::{provider_for_role, role_bypasses_managed_credits};
+pub(crate) use tiers::{
+    is_known_openhuman_tier, is_raw_passthrough_model, oh_tier_supports_vision,
+};
+pub use tiers::{resolve_model_for_hint, role_for_model_tier};
 pub(crate) use turn_model::{
     create_turn_chat_model, create_turn_chat_model_from_string,
     create_turn_chat_model_from_string_with_native_tools,
@@ -100,7 +102,9 @@ use primary_cloud::{
     legacy_custom_inference_provider_string, legacy_inference_slug, looks_like_openhuman_backend,
     normalize_endpoint_for_compare, redact_inference_url, resolve_primary_cloud_provider_string,
 };
-use routing::{configured_route_for_role, route_has_usable_credentials, split_model_and_temperature};
+use routing::{
+    configured_route_for_role, route_has_usable_credentials, split_model_and_temperature,
+};
 use subprocess_providers::{
     claude_agent_sdk_model_from_string, prepare_claude_agent_sdk_chat_model,
     try_create_claude_agent_sdk_chat_model, try_create_claude_agent_sdk_chat_model_from_string,
@@ -108,7 +112,6 @@ use subprocess_providers::{
 };
 use tiers::is_abstract_tier_model;
 use turn_model::create_turn_chat_model_with_native_tools_and_route_inner;
-
 
 /// Test-only seam: inject a mock [`ChatModel`] so e2e tests can drive the
 /// autonomous run paths (`spawn_workflow_run_background`, the task dispatcher)

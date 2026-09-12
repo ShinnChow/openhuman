@@ -22,7 +22,10 @@ pub(super) type ResolvedChatModel = (Arc<dyn ChatModel<()>>, String);
 
 pub(super) type OptionalChatModelResult = Option<anyhow::Result<ResolvedChatModel>>;
 
-pub(super) fn try_create_local_runtime_chat_model(role: &str, config: &Config) -> OptionalChatModelResult {
+pub(super) fn try_create_local_runtime_chat_model(
+    role: &str,
+    config: &Config,
+) -> OptionalChatModelResult {
     let resolved = provider_for_role(role, config);
     try_create_local_runtime_chat_model_from_string(role, &resolved, config, true)
 }
@@ -33,9 +36,7 @@ pub(super) fn try_create_local_runtime_chat_model_from_string(
     config: &Config,
     require_session: bool,
 ) -> OptionalChatModelResult {
-    use crate::inference::local::profile::{
-        LOCAL_OPENAI_PROFILE, MLX_PROFILE, OMLX_PROFILE,
-    };
+    use crate::inference::local::profile::{LOCAL_OPENAI_PROFILE, MLX_PROFILE, OMLX_PROFILE};
 
     let p = provider.trim().to_string();
     let is_local = p.starts_with(OLLAMA_PROVIDER_PREFIX)

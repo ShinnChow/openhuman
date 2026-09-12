@@ -5,7 +5,10 @@ use super::*;
 /// Build the Claude Agent SDK subprocess directly as a crate model. This is a
 /// prompt-guided model: TinyAgents owns its text-tool protocol, while the
 /// provider owns only subprocess transport and NDJSON decoding.
-pub(super) fn try_create_claude_agent_sdk_chat_model(role: &str, config: &Config) -> OptionalChatModelResult {
+pub(super) fn try_create_claude_agent_sdk_chat_model(
+    role: &str,
+    config: &Config,
+) -> OptionalChatModelResult {
     let resolved = provider_for_role(role, config);
     try_create_claude_agent_sdk_chat_model_from_string(role, &resolved, config)
 }
@@ -43,7 +46,10 @@ pub(super) fn prepare_claude_agent_sdk_chat_model(
     Some(Ok(model))
 }
 
-pub(super) fn claude_agent_sdk_model_from_string(provider: &str, config: &Config) -> Option<String> {
+pub(super) fn claude_agent_sdk_model_from_string(
+    provider: &str,
+    config: &Config,
+) -> Option<String> {
     let provider = provider.trim();
     let model = if provider == CLAUDE_AGENT_SDK_PROVIDER {
         config.claude_agent_sdk.default_model.clone()
@@ -71,8 +77,8 @@ pub(super) fn try_create_claude_code_chat_model_from_string(
     model_override: Option<&str>,
 ) -> OptionalChatModelResult {
     let provider = provider.trim();
-    let model_with_temp = provider
-        .strip_prefix(crate::inference::provider::claude_code::PROVIDER_PREFIX)?;
+    let model_with_temp =
+        provider.strip_prefix(crate::inference::provider::claude_code::PROVIDER_PREFIX)?;
     let (configured_model, temperature_override) = split_model_and_temperature(model_with_temp);
     if temperature_override.is_some() {
         log::warn!(
@@ -95,8 +101,7 @@ pub(super) fn try_create_claude_code_chat_model_from_string(
     if let Err(error) = verify_session_active(config) {
         return Some(Err(error));
     }
-    let workspace =
-        crate::inference::provider::claude_code::workspace_dir_from_config(config);
+    let workspace = crate::inference::provider::claude_code::workspace_dir_from_config(config);
     let effective_model = model_override.unwrap_or(&configured_model).to_string();
     emit_inference_egress(
         role,
@@ -105,14 +110,13 @@ pub(super) fn try_create_claude_code_chat_model_from_string(
             crate::inference::provider::claude_code::PROVIDER_PREFIX
         ),
     );
-    let chat =
-        match crate::inference::provider::claude_code::ClaudeCodeProvider::from_env(
-            effective_model,
-            workspace,
-            config.action_dir.clone(),
-        ) {
-            Ok(model) => Arc::new(model) as Arc<dyn ChatModel<()>>,
-            Err(error) => return Some(Err(error)),
-        };
+    let chat = match crate::inference::provider::claude_code::ClaudeCodeProvider::from_env(
+        effective_model,
+        workspace,
+        config.action_dir.clone(),
+    ) {
+        Ok(model) => Arc::new(model) as Arc<dyn ChatModel<()>>,
+        Err(error) => return Some(Err(error)),
+    };
     Some(Ok((chat, configured_model)))
 }

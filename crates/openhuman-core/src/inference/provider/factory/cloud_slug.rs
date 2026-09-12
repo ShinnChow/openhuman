@@ -120,9 +120,10 @@ pub(super) fn resolve_cloud_slug<'a>(
     // their local chat model caused it would be a lie.
     let implicit_fallback = role_uses_implicit_cloud_fallback(role, config);
     let local_chat = if implicit_fallback {
-        config.chat_provider.as_deref().filter(|chat| {
-            crate::inference::local::profile::is_local_provider_string(chat)
-        })
+        config
+            .chat_provider
+            .as_deref()
+            .filter(|chat| crate::inference::local::profile::is_local_provider_string(chat))
     } else {
         None
     };
@@ -199,7 +200,10 @@ pub(super) fn resolve_cloud_slug<'a>(
 /// `verify_session_active`) runs before building. Temperature rides the per-call
 /// `ModelRequest` (managed/local parity; the `@<temp>` suffix still bakes a fixed
 /// override).
-pub(super) fn try_create_cloud_slug_chat_model(role: &str, config: &Config) -> OptionalChatModelResult {
+pub(super) fn try_create_cloud_slug_chat_model(
+    role: &str,
+    config: &Config,
+) -> OptionalChatModelResult {
     try_create_cloud_slug_chat_model_with_native_tools(role, config, true)
 }
 
@@ -379,11 +383,7 @@ pub(super) fn try_create_cloud_slug_chat_model_from_string_with_native_tools(
     // gates, so this constructs. Disclose as external. Single cloud chokepoint
     // for every cloud ChatModel/turn entry.
     crate::security::egress::emit_external_transfer(
-        crate::security::egress::EgressDescriptor::inference(
-            &slug,
-            &effective_model,
-            true,
-        ),
+        crate::security::egress::EgressDescriptor::inference(&slug, &effective_model, true),
     );
 
     let unsupported = config.temperature_unsupported_models.clone();

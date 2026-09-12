@@ -29,7 +29,9 @@ mod types;
 
 pub use types::ModelInfo;
 
-pub use catalog_listing::{append_query_param, list_configured_models, list_configured_models_from_config};
+pub use catalog_listing::{
+    append_query_param, list_configured_models, list_configured_models_from_config,
+};
 pub use local_runtime::synthesize_local_runtime_entry;
 pub use openrouter::is_openrouter_provider;
 pub use parsing::{merge_openai_codex_model_hints, model_items_from_body, parse_models_response};

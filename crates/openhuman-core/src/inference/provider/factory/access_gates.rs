@@ -170,10 +170,7 @@ pub(crate) fn verify_backend_session_active(config: &Config) -> anyhow::Result<(
         });
     let auth = AuthService::new(&state_dir, config.secrets.encrypt);
     let has_session = auth
-        .get_provider_bearer_token(
-            crate::security::credentials::APP_SESSION_PROVIDER,
-            None,
-        )?
+        .get_provider_bearer_token(crate::security::credentials::APP_SESSION_PROVIDER, None)?
         .filter(|s| !s.trim().is_empty())
         .is_some();
     if !has_session {

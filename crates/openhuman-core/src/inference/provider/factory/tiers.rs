@@ -32,10 +32,7 @@ pub fn resolve_model_for_hint(hint_or_tier: &str, config: &Config) -> String {
         ("burst", crate::config::MODEL_BURST_V1),
         ("coding", crate::config::MODEL_CODING_V1),
         ("vision", crate::config::MODEL_VISION_V1),
-        (
-            "summarization",
-            crate::config::MODEL_SUMMARIZATION_V1,
-        ),
+        ("summarization", crate::config::MODEL_SUMMARIZATION_V1),
         // Background subconscious workload rides the lightweight chat tier on the
         // managed backend; its `subconscious` *role* (handled below) still selects
         // the provider via `subconscious_provider`.
@@ -49,10 +46,7 @@ pub fn resolve_model_for_hint(hint_or_tier: &str, config: &Config) -> String {
         (crate::config::MODEL_BURST_V1, "burst"),
         (crate::config::MODEL_CODING_V1, "coding"),
         (crate::config::MODEL_VISION_V1, "vision"),
-        (
-            crate::config::MODEL_SUMMARIZATION_V1,
-            "summarization",
-        ),
+        (crate::config::MODEL_SUMMARIZATION_V1, "summarization"),
     ];
 
     let (tier, role) = if let Some(hint_key) = hint_or_tier.strip_prefix("hint:") {

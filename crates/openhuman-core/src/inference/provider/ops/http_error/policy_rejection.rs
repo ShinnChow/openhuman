@@ -102,8 +102,8 @@ pub fn log_backend_error_code_owned(
     status: reqwest::StatusCode,
     body: &str,
 ) {
-    let code = crate::inference::provider::extract_backend_error_code_token(body)
-        .unwrap_or_default();
+    let code =
+        crate::inference::provider::extract_backend_error_code_token(body).unwrap_or_default();
     tracing::info!(
         domain = "llm_provider",
         operation = operation,
