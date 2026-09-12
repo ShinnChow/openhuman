@@ -5,7 +5,7 @@
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 
 
-pub fn schemas(function: &str) -> ControllerSchema {
+pub(super) fn schemas(function: &str) -> ControllerSchema {
     match function {
         "list_toolkits" => ControllerSchema {
             namespace: "composio",

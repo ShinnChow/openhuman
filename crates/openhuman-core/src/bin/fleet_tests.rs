@@ -227,4 +227,3 @@ fn fleet_cors_headers_echo_allowed_origin_only() {
         .get(header::ACCESS_CONTROL_ALLOW_ORIGIN)
         .is_none());
 }
-}
