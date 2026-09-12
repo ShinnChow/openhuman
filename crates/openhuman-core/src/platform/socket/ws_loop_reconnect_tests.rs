@@ -2,6 +2,8 @@ use super::*;
 
 use crate::platform::socket::token_provider::TokenProvider;
 use std::sync::Arc;
+use tokio::sync::mpsc;
+use tokio_tungstenite::tungstenite::Error as WsError;
 /// Driver-level proof: when the configured URL responds with a 301 pointing
 /// at a working Engine.IO server, `ws_loop` follows the redirect, completes
 /// the handshake, and records a one-shot warning in `SharedState.error` so
