@@ -127,8 +127,8 @@ behavior, to make a feature work:
   `SecurityPolicy`.
 - `crates/openhuman-core/src/security/credentials/` — stores profile secrets
   through `keyring::SecretStore`.
-- `crates/openhuman-core/src/memory/guard/` — `enforce_write_tier` under
-  `MemoryCore::store`, and `redact` for audit lines.
+- `crates/openhuman-core/src/memory/guard/policy.rs` — `enforce_write_tier`
+  under `MemoryCore::store`, `live_policy`, and `egress` for outbound memory.
 
 ## Tests
 
