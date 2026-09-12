@@ -29,7 +29,7 @@ use crate::memory::api::provider::{
 };
 use crate::memory::api::capabilities::Capability;
 
-use super::policy::GuardPolicy;
+use super::super::policy::GuardPolicy;
 
 macro_rules! decorator {
     ($(#[$meta:meta])* $name:ident, $fam:ty, $accessor:ident, $cap:ident) => {
