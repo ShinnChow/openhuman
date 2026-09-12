@@ -50,7 +50,7 @@ All handlers go through `require_manager()` and error with `"SocketManager not i
 
 ## Events
 
-`event_handlers::handle_sio_event` is a thin transport router — it does not run domain logic itself. It mutates connection status for `ready`/`error` and publishes the following `DomainEvent`s via `publish_global` for other domains' bus subscribers:
+`event_handlers::handle_sio_event` is a thin transport router — it does not run domain logic itself. It mutates connection status for `ready`/`error` and publishes the following `DomainEvent`s via `crate::core::bus::BUS.publish` for other domains' bus subscribers:
 
 | Inbound SIO event | Published `DomainEvent` | Consumer domain |
 | --- | --- | --- |

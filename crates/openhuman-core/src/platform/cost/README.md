@@ -24,6 +24,9 @@ API-usage cost tracking and budget enforcement for the agent. Records per-call t
 | `crates/openhuman-core/src/platform/cost/rpc.rs`           | RPC-facing handlers (`dashboard`, `daily_history`, `summary`) returning `RpcOutcome<Value>`; DTO types; `resolve_tracker` with a cached fallback tracker + error-replay TTL.                                            |
 | `crates/openhuman-core/src/platform/cost/schemas.rs`       | Controller schemas + `handle_*` JSON-RPC dispatchers; `all_controller_schemas` / `all_registered_controllers`.                                                                                                          |
 | `crates/openhuman-core/src/platform/cost/tracker_tests.rs` | Sibling test suite for `tracker.rs` (`#[path]`-included).                                                                                                                                                               |
+| `crates/openhuman-core/src/platform/cost/catalog.rs` | Static per-model pricing + context-window catalog (`ModelPrice`, `lookup`, `estimate_cost_usd`, `PRICING_AS_OF`) and the tinyagents model-catalog adapters. |
+| `crates/openhuman-core/src/platform/cost/route.rs` | `CostRoute` / `route_for_model`: derives from the model id whether a record counts against OpenHuman-managed credits or is BYOK/local (#5016). |
+| `crates/openhuman-core/src/platform/cost/tools.rs` | Read-only, default-on LLM tools (`cost_get_dashboard`, `cost_get_daily_history`, …) re-exported through `crates/openhuman-core/src/tools/mod.rs`. |
 
 ## Public surface
 
