@@ -113,9 +113,9 @@ tools live elsewhere and are a distinct surface from these
 ## Compile-time gate (`mcp` feature)
 
 Every member above except `types` is gated on the `mcp` feature; with it
-off, `stub.rs` mirrors the always-on surface with empty/no-op bodies. `types` stays ungated so
-`ConnectedServerOverview` and `McpTool` are the same real type in both
-builds.
+off, `stub.rs` mirrors the always-on surface with empty/no-op bodies.
+`types` stays ungated so `ConnectedServerOverview` and `McpTool` are the
+same real type in both builds.
 
 ## Dependencies
 
