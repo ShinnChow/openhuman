@@ -66,6 +66,6 @@ pub(crate) use phase_exec::{execute_phase, PhaseExecOutcome};
 pub(crate) use scheduler::{select_next_phase, PhaseSelection};
 
 #[cfg(test)]
-pub(super) use lifecycle::run_engine_loop;
+pub(crate) use lifecycle::run_engine_loop;
 #[cfg(test)]
-pub(super) use state::init_phase_states;
+pub(crate) use state::init_phase_states;
