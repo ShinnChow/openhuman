@@ -34,4 +34,9 @@ use support::{
 #[cfg(test)]
 use crate::memory::conversations::{ConversationMessage, ConversationThread, CreateConversationThread};
 #[cfg(test)]
-use crate::memory::ConversationMessageRecord;
+use crate::memory::{
+    AppendConversationMessageRequest, ConversationMessageRecord, DeleteConversationThreadRequest,
+    EmptyRequest, GenerateConversationThreadTitleRequest, PaginationMeta,
+};
+#[cfg(test)]
+use crate::threads::title::{is_auto_generated_thread_title, title_from_user_message, THREAD_TITLE_LOG_PREFIX};
