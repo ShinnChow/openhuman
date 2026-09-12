@@ -1,14 +1,14 @@
 # inference
 
-Unified inference domain: the canonical home for everything LLM/STT/TTS/embedding-related. It owns the local-runtime manager (Ollama / LM Studio / Whisper / Piper), native TinyAgents `ChatModel` construction for managed/cloud/local/CLI routes, host credential and access policy, voice transcription and TTS inference, OpenAI/Codex subscription OAuth, and an OpenAI-compatible `/v1/chat/completions` HTTP endpoint. It consolidates the previously separate `local_ai/`, `providers/`, and inference parts of `voice/` under one domain root. The RPC surface is `inference.*`; older `local_ai_*` method names are compatibility aliases in `crates/openhuman-core/src/core/legacy_aliases.rs`.
+Unified inference domain: the canonical home for everything LLM/STT/TTS/embedding-related. It owns the local-runtime manager (Ollama / LM Studio / Piper), native TinyAgents `ChatModel` construction for managed/cloud/local/CLI routes, host credential and access policy, voice transcription and TTS inference, OpenAI/Codex subscription OAuth, and an OpenAI-compatible `/v1/chat/completions` HTTP endpoint. It consolidates the previously separate `local_ai/`, `providers/`, and inference parts of `voice/` under one domain root. The RPC surface is `inference.*`; older `local_ai_*` method names are compatibility aliases in `crates/openhuman-core/src/core/legacy_aliases.rs`.
 
 ## Responsibilities
 
-- Resolve workload names (`chat`, `reasoning`, `agentic`, `coding`, `memory`, `embeddings`, `heartbeat`, `learning`, `subconscious`, etc.) and provider strings (`openhuman`, `cloud`, `ollama:<model>`, `lmstudio:<model>`, `claude_agent_sdk:<model>`, `<slug>:<model>[@<temp>]`) to a concrete `Arc<dyn tinyinference::ChatModel<()>>` + model id.
-- Manage the local AI runtime: detect/spawn/adopt `ollama serve` and LM Studio, install/run Whisper (STT) and Piper (TTS), track download progress, and enforce a minimum-context-window floor.
+- Resolve workload names (`chat`, `reasoning`, `agentic`, `coding`, `memory`, `embeddings`, `heartbeat`, `learning`, etc.) and provider strings (`openhuman`, `cloud`, `ollama:<model>`, `lmstudio:<model>`, `claude_agent_sdk:<model>`, `claude-code:<model>`, `<slug>:<model>[@<temp>]`) to a concrete `Arc<dyn tinyinference::ChatModel<()>>` + model id.
+- Manage the local AI runtime: detect/spawn/adopt `ollama serve` and LM Studio, install/run Piper (TTS), track download progress, and enforce a minimum-context-window floor. Local STT (whisper.cpp) was retired; STT is now cloud/engine-configurable via `voice_server.stt_engine` (see `config/migrations/retire_local_whisper_stt.rs`).
 - Provide chat, vision (multimodal), summarization, embeddings, sentiment, and "should react" inference operations.
 - Preserve config-rejection, billing, authentication, and retry classification while TinyAgents owns model-call retry execution.
-- Resolve abstract tier names (`reasoning-v1`, `agentic-v1`, `coding-v1`, etc.) through the TinyAgents `ModelRouter` in `openhuman/tinyagents/routes.rs` and the provider factory here.
+- Resolve abstract tier names (`reasoning-v1`, `agentic-v1`, `coding-v1`, etc.) through the TinyAgents `ModelRouter` in `crates/openhuman-core/src/agent/tinyagents/routes.rs` and the provider factory here.
 - Run ChatGPT/Codex OAuth (PKCE) for the `openai` cloud slug and persist tokens in the encrypted auth-profile store.
 - Expose an OpenAI-compatible `/v1/*` HTTP endpoint guarded by a stable user-managed external bearer.
 - Detect device hardware profile and recommend/apply local model presets/tiers.
