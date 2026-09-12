@@ -13,8 +13,6 @@ use super::LOG_TARGET;
 /// clients POST here, NOT to `/api/public/ingestion` (which is unexposed and
 /// carries no keys).
 const INGESTION_PATH: &str = "/telemetry/langfuse/ingestion";
-/// Cap the push so a slow/hung Langfuse never stalls run teardown.
-const PUSH_TIMEOUT: Duration = Duration::from_secs(10);
 
 /// Resolve the Langfuse ingestion URL from the current backend host. Joins the
 /// proxy path onto [`effective_backend_api_url`] — the exact base-server
@@ -25,15 +23,6 @@ const PUSH_TIMEOUT: Duration = Duration::from_secs(10);
 pub(crate) fn ingestion_url(config: &Config) -> String {
     let base = effective_backend_api_url(&config.api_url);
     crate::api::config::api_url(&base, INGESTION_PATH)
-}
-
-/// Epoch-milliseconds → RFC 3339 / ISO-8601 string (Langfuse requires ISO
-
-    }
-    if let Ok(kind) = serde_json::to_value(span.kind) {
-        map.insert("kind".to_string(), kind);
-    }
-    Value::Object(map)
 }
 
 /// The domain the deployed backends live under. A host outside it cannot be
@@ -147,3 +136,15 @@ static SKIP_LOGGED: std::sync::Once = std::sync::Once::new();
 /// thing being avoided.
 fn skip_push(environment: &str) -> bool {
     if push_allowed(environment) {
+        return false;
+    }
+    SKIP_LOGGED.call_once(|| {
+        tracing::info!(
+            target: LOG_TARGET,
+            "[agent-tracing] Langfuse push disabled for environment {environment:?} \
+             (enabled in: {}) — traces stay local for the rest of this process",
+            LANGFUSE_PUSH_ENVIRONMENTS.join(", ")
+        );
+    });
+    true
+}

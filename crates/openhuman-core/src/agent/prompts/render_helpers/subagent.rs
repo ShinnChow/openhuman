@@ -20,7 +20,7 @@ use std::path::Path;
 /// Render a narrow, KV-cache-stable system prompt for a typed sub-agent.
 ///
 /// This is a purpose-built alternative to
-/// [`super::builder::SystemPromptBuilder::for_subagent`] for call sites
+/// [`crate::agent::prompts::builder::SystemPromptBuilder::for_subagent`] for call sites
 /// that only have indices into the parent's `&[Box<dyn Tool>]` vec (so they
 /// can't cheaply build a filtered owning slice for `ToolsSection`). The
 /// output mirrors what `for_subagent` would emit with the matching
@@ -85,7 +85,7 @@ pub fn render_subagent_system_prompt(
 /// backwards compatibility.
 ///
 /// `agents_md_global` / `agents_md_local` are the pre-loaded AGENTS.md layers
-/// (see [`super::agents_md::load_agents_md_layers`]); `None`/`None` (the value
+/// (see [`crate::agent::prompts::agents_md::load_agents_md_layers`]); `None`/`None` (the value
 /// the public wrapper passes) renders no AGENTS.md block. When present they are
 /// injected as `## Project instructions (AGENTS.md)` right after the user files
 /// and before the tool catalogue — matching the section order of the default /
@@ -322,6 +322,9 @@ pub fn render_subagent_system_prompt_with_format(
     out
 }
 
+/// Build a P-Format signature line (`name[a|b|c]`) from a `&dyn Tool`.
+/// Used by `render_subagent_system_prompt` which operates on `Box<dyn Tool>`
+/// directly (no intermediate `PromptTool`). Mirrors the `PromptTool` variant
 /// below — both BTreeMap-iterate the schema's `properties` in the same order.
 fn render_pformat_signature_for_box_tool(tool: &dyn crate::tools::Tool) -> String {
     let schema = tool.parameters_schema();

@@ -1,6 +1,16 @@
+//! Handlers for the per-facet learning controllers: list, get, update, pin,
+//! unpin, forget, and cache reset.
+
+use serde_json::{Map, Value};
+
+use crate::core::all::ControllerFuture;
+use crate::rpc::RpcOutcome;
+
+use super::{facet_to_json, forget_facet_log, full_key, get_cache};
+
 // ── list_facets ───────────────────────────────────────────────────────────────
 
-fn handle_list_facets(params: Map<String, Value>) -> ControllerFuture {
+pub(super) fn handle_list_facets(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         use tinymemory_api::provider::FacetState;
 
@@ -65,7 +75,7 @@ fn handle_list_facets(params: Map<String, Value>) -> ControllerFuture {
 
 // ── get_facet ─────────────────────────────────────────────────────────────────
 
-fn handle_get_facet(params: Map<String, Value>) -> ControllerFuture {
+pub(super) fn handle_get_facet(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         // These refusals are reachable from a dispatched call, not only from a
         // direct one. An *absent* `class`/`key` is refused earlier by
@@ -108,7 +118,7 @@ fn handle_get_facet(params: Map<String, Value>) -> ControllerFuture {
 
 // ── update_facet ──────────────────────────────────────────────────────────────
 
-fn handle_update_facet(params: Map<String, Value>) -> ControllerFuture {
+pub(super) fn handle_update_facet(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         use tinymemory_api::provider::UserState;
 
@@ -166,7 +176,7 @@ fn handle_update_facet(params: Map<String, Value>) -> ControllerFuture {
 
 // ── pin_facet ─────────────────────────────────────────────────────────────────
 
-fn handle_pin_facet(params: Map<String, Value>) -> ControllerFuture {
+pub(super) fn handle_pin_facet(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         use tinymemory_api::provider::UserState;
 
@@ -210,7 +220,7 @@ fn handle_pin_facet(params: Map<String, Value>) -> ControllerFuture {
 
 // ── unpin_facet ───────────────────────────────────────────────────────────────
 
-fn handle_unpin_facet(params: Map<String, Value>) -> ControllerFuture {
+pub(super) fn handle_unpin_facet(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         use tinymemory_api::provider::UserState;
 
@@ -254,22 +264,8 @@ fn handle_unpin_facet(params: Map<String, Value>) -> ControllerFuture {
 
 // ── forget_facet ──────────────────────────────────────────────────────────────
 
-/// The log line `learning.forget_facet` emits, given whether a row was actually
-/// written.
-///
-/// Split out so the claim can be unit-tested without a cache: the defect this
-/// replaces built the "state=dropped user_state=forgotten" line unconditionally,
-/// *before* the read told it whether there was anything to drop, so an absent key
-/// produced a log asserting a state change that never happened (#6108).
-fn forget_facet_log(full_key: &str, dropped: bool) -> Vec<String> {
-    vec![if dropped {
-        format!("learning.forget_facet: key={full_key} state=dropped user_state=forgotten")
-    } else {
-        format!("learning.forget_facet: key={full_key} not present — no change")
-    }]
-}
 
-fn handle_forget_facet(params: Map<String, Value>) -> ControllerFuture {
+pub(super) fn handle_forget_facet(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         use tinymemory_api::provider::{FacetState, UserState};
 
@@ -327,7 +323,7 @@ fn handle_forget_facet(params: Map<String, Value>) -> ControllerFuture {
 
 // ── reset_cache ───────────────────────────────────────────────────────────────
 
-fn handle_reset_cache(_params: Map<String, Value>) -> ControllerFuture {
+pub(super) fn handle_reset_cache(_params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         tracing::debug!("[learning.reset_cache] called");
 

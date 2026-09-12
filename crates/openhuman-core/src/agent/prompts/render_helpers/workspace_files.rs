@@ -145,7 +145,7 @@ pub fn inject_inline_content(prompt: &mut String, label: &str, content: &str, ma
 
 /// Shared `## Project instructions (AGENTS.md)` block writer.
 ///
-/// Used by both [`super::sections::AgentsInstructionsSection`] (the default /
+/// Used by both [`crate::agent::prompts::sections::AgentsInstructionsSection`] (the default /
 /// sub-agent builder chains) and the narrow sub-agent renderer
 /// ([`render_subagent_system_prompt_with_format`]) so the two paths never
 /// drift. The heading is emitted only when at least one layer carries content;
@@ -154,7 +154,7 @@ pub fn inject_inline_content(prompt: &mut String, label: &str, content: &str, ma
 /// capped at [`BOOTSTRAP_MAX_CHARS`] with a `[... truncated]` marker.
 ///
 /// Both inputs are already-loaded, pre-trimmed strings (see
-/// [`super::agents_md::load_agents_md`]) — this writer does no file I/O, keeping
+/// [`crate::agent::prompts::agents_md::load_agents_md`]) — this writer does no file I/O, keeping
 /// the rendered bytes a pure function of its inputs for KV-cache stability.
 pub(crate) fn write_agents_md_blocks(out: &mut String, global: Option<&str>, local: Option<&str>) {
     let mut body = String::new();
@@ -278,8 +278,8 @@ pub fn inject_workspace_file_capped(
 pub fn default_workspace_file_content(filename: &str) -> &'static str {
     // The bundled identity files live at `crates/openhuman-core/src/agent/prompts/`
     // (owned by the `agent/` tree because they describe agent identity).
-    // This module is under `crates/openhuman-core/src/agent/context/`, so the relative path
-    // walks up one level and back into `agent/prompts/`.
+    // This module is under `agent/prompts/render_helpers/`, so the relative path
+    // walks up one level back into `agent/prompts/`.
     match filename {
         "SOUL.md" => include_str!("../SOUL.md"),
         "IDENTITY.md" => include_str!("../IDENTITY.md"),

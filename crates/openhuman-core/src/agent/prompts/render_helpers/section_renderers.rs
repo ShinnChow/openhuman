@@ -1,5 +1,5 @@
 //! Functional `render_*` wrappers over the section structs in
-//! [`super::super::sections`], plus the per-turn datetime stamp and the
+//! [`crate::agent::prompts::sections`], plus the per-turn datetime stamp and the
 //! ambient-environment composer that `agents/<id>/prompt.rs` builders call.
 
 use super::super::sections::*;
@@ -160,7 +160,7 @@ pub fn render_user_identity(ctx: &PromptContext<'_>) -> Result<String> {
 /// Datetime is appended last so the time-volatile section sits at the
 /// tail of the prompt and the rest of the prefix stays cache-stable
 /// across turns within the same minute, matching the convention used
-/// by [`super::builder::SystemPromptBuilder::with_defaults`].
+/// by [`crate::agent::prompts::builder::SystemPromptBuilder::with_defaults`].
 pub fn render_ambient_environment(ctx: &PromptContext<'_>) -> Result<String> {
     let mut out = String::with_capacity(512);
     let runtime = render_runtime(ctx)?;
