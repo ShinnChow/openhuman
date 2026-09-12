@@ -83,8 +83,14 @@ cargo build --manifest-path Cargo.toml --bin openhuman-core
 # Check the stable host-facing embedding facade
 cargo check --manifest-path Cargo.toml -p openhuman-embed
 
+# Check the shared RPC contracts + HTTP client crate
+cargo check --manifest-path Cargo.toml -p openhuman-rpc
+
 # Build the terminal frontend (embeds the core in-process)
 cargo build --manifest-path Cargo.toml -p openhuman-tui
+
+# Check the desktop shell (separate Cargo world, own manifest/lockfile)
+cargo check --manifest-path crates/openhuman-app/Cargo.toml
 
 # Release build
 cargo build --manifest-path Cargo.toml --release --bin openhuman-core
@@ -131,8 +137,7 @@ Install:
 
 Why:
 
-- `whisper-rs` compiles native code during the build.
-- On macOS this crate is built with the `metal` feature enabled in [`Cargo.toml`](../../Cargo.toml), so Apple toolchains and SDK headers need to be present.
+- Native dependencies (`cpal` for audio behind the `voice` feature, `objc2`-based crates behind `contacts`) compile C/Objective-C code during the build and need Apple toolchains and SDK headers present.
 
 After Xcode CLT is installed, the core should build with the cargo commands above.
 
