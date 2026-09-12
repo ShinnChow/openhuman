@@ -106,7 +106,7 @@ These are subscriber registrations rather than a single `bus.rs`; subscriptions 
 - `crate::agent::context::prompt` — `PromptContext` / `PromptSection` / `LearnedContextData` for prompt injection.
 - `crate::integrations::composio` — `composio::client` (Gmail fetch for enrichment) and `composio::profile_md` (`replace_managed_block` for `PROFILE.md`).
 - `crate::integrations` — `build_client` / `IntegrationClient` for the Apify scrape call.
-- `crate::core::bus` / `crate::core::events` — `BUS.publish` / `BUS.subscribe`, `EventHandler`, and `DomainEvent::CacheRebuilt`.
+- `crate::core::bus` / `crate::core::events` / `tinybus` — `BUS.publish` / `BUS.subscribe`, `DomainEvent::CacheRebuilt`, and `tinybus::{EventHandler, SubscriptionHandle}`.
 - `crate::core::all` / `crate::rpc` — controller registry types (`RegisteredController`, `ControllerFuture`) and `RpcOutcome` (the latter re-exported from the `openhuman-rpc` crate via `pub use openhuman_rpc as rpc` in `lib.rs`).
 
 ## Used by
