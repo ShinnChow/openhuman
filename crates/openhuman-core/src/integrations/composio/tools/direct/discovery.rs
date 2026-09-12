@@ -93,7 +93,7 @@ impl ComposioTool {
     ///
     /// Pure (no I/O) so the param shape is unit-testable without a live
     /// HTTP round trip — mirrors [`Self::build_execute_action_v3_request`].
-    fn build_list_tool_schemas_v3_query(
+    pub(super) fn build_list_tool_schemas_v3_query(
         toolkits: &[&str],
         tags: Option<&[&str]>,
     ) -> Vec<(&'static str, String)> {
@@ -182,7 +182,7 @@ impl ComposioTool {
     }
 }
 
-fn map_v3_tools_to_actions(items: Vec<ComposioV3Tool>) -> Vec<ComposioAction> {
+pub(super) fn map_v3_tools_to_actions(items: Vec<ComposioV3Tool>) -> Vec<ComposioAction> {
     items
         .into_iter()
         .filter_map(|item| {
@@ -204,36 +204,36 @@ fn map_v3_tools_to_actions(items: Vec<ComposioV3Tool>) -> Vec<ComposioAction> {
 }
 
 #[derive(Debug, Deserialize)]
-struct ComposioActionsResponse {
+pub(super) struct ComposioActionsResponse {
     #[serde(default)]
-    items: Vec<ComposioAction>,
+    pub(super) items: Vec<ComposioAction>,
 }
 
 #[derive(Debug, Deserialize)]
-struct ComposioToolsResponse {
+pub(super) struct ComposioToolsResponse {
     #[serde(default)]
-    items: Vec<ComposioV3Tool>,
+    pub(super) items: Vec<ComposioV3Tool>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
-struct ComposioV3Tool {
+pub(super) struct ComposioV3Tool {
     #[serde(default)]
-    slug: Option<String>,
+    pub(super) slug: Option<String>,
     #[serde(default)]
-    name: Option<String>,
+    pub(super) name: Option<String>,
     #[serde(default)]
-    description: Option<String>,
+    pub(super) description: Option<String>,
     #[serde(rename = "appName", default)]
-    app_name: Option<String>,
+    pub(super) app_name: Option<String>,
     #[serde(default)]
-    toolkit: Option<ComposioToolkitRef>,
+    pub(super) toolkit: Option<ComposioToolkitRef>,
     /// JSON schema for the tool parameters. Composio v3 names this
     /// `input_parameters`; older payloads use `parameters`. Either
     /// shape deserialises into this field, and we re-emit it as
     /// `ComposioToolFunction::parameters` so direct-mode users get
     /// the same model-callable schema backend mode surfaces.
     #[serde(default, alias = "parameters")]
-    input_parameters: Option<serde_json::Value>,
+    pub(super) input_parameters: Option<serde_json::Value>,
     /// JSON schema for the tool's OUTPUT/return value, per Composio v3
     /// `/tools`'s `output_parameters` field ("Schema definition of return
     /// values from the tool" —
@@ -242,15 +242,15 @@ struct ComposioV3Tool {
     /// can ground a downstream binding in the tool's real output field
     /// names instead of guessing them.
     #[serde(default)]
-    output_parameters: Option<serde_json::Value>,
+    pub(super) output_parameters: Option<serde_json::Value>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
-struct ComposioToolkitRef {
+pub(super) struct ComposioToolkitRef {
     #[serde(default)]
-    slug: Option<String>,
+    pub(super) slug: Option<String>,
     #[serde(default)]
-    name: Option<String>,
+    pub(super) name: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
