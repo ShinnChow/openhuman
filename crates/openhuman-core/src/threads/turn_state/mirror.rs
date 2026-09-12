@@ -24,3 +24,6 @@ mod observe;
 mod state;
 
 pub use state::TurnStateMirror;
+
+#[cfg(test)]
+pub(crate) use caps::MAX_PERSISTED_TRANSCRIPT_ITEM;
