@@ -54,6 +54,8 @@ use crate::tools::traits::Tool;
 pub(crate) use visibility::{action_mutates_external_state, resolve_action_scope};
 
 #[cfg(test)]
+use crate::tools::traits::{PermissionLevel, ToolCategory};
+#[cfg(test)]
 use authorize::ComposioAuthorizeTool;
 #[cfg(test)]
 use connect::{
