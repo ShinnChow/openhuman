@@ -132,7 +132,7 @@ Example macOS bootstrap with Homebrew:
 brew install node@24 pnpm rustup-init cmake ninja ripgrep
 rustup toolchain install 1.96.1 --profile minimal
 rustup component add rustfmt clippy --toolchain 1.96.1
-# CEF builds a universal binary, so the x86_64 target is required even on Apple Silicon
+# Release builds ship a universal macOS binary, so the x86_64 target is required even on Apple Silicon
 rustup target add x86_64-apple-darwin
 ```
 
@@ -148,12 +148,7 @@ git submodule update --init --recursive
 pnpm install
 ```
 
-Why submodules matter here:
-
-- `crates/openhuman-app/vendor/tauri-cef`
-- `crates/openhuman-app/vendor/tauri-plugin-notification`
-
-Those vendored trees are part of the current desktop toolchain. If they are missing, desktop builds and Tauri CLI setup will fail.
+Why submodules matter here: `vendor/` holds the `tiny*` module crates (`tinyagents`, `tinymemory`, `tinybus`, and so on) that the root `Cargo.toml` `[patch]` tables point into. If they are missing, `cargo check` and `cargo build` fail to resolve those crates.
 
 ### 3. Configure for development
 
@@ -189,7 +184,7 @@ pnpm install
 # Web-only development (Vite dev server)
 pnpm dev
 
-# Preferred macOS desktop development path (sets up vendored Tauri CLI + CEF env)
+# Preferred macOS desktop development path (Tauri + Wry)
 pnpm --filter openhuman-app dev:app
 
 # Preferred native Windows desktop development path (run from PowerShell)
