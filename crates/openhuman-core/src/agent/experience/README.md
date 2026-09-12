@@ -71,7 +71,7 @@ Records are stored through the `Memory` trait (no dedicated DB), served by `Driv
 - Value: **base64 of the `AgentExperience` JSON**, `MemoryCategory::Custom("agent_experience")`. Base64 keeps the memory layer's bare-numeric PII scrubber from rewriting a Luhn-valid millisecond timestamp and corrupting the JSON (#5209); reads fall back to plain JSON for legacy rows.
 - `put` requires non-empty `task_summary` and `lesson`, preserves the original `created_at_ms` on update, stamps `updated_at_ms`, and runs `memory::safety::sanitize_text` over every free-text field (`task_fingerprint`, `task_summary`, `lesson`, `reuse_hint`, `avoid_hint`, `error_class`, `agent_id`, `entrypoint`, `tools_used`, `tool_sequence`, `tags`) before write. `id` and `profile_id` are keys and left intact.
 - Dismiss is a soft flag (`dismissed = true`), retained in `list`, filtered out of `retrieve`. `dismiss_for_profile` refuses to flag a record owned by a different profile.
-- Each memory subtree (`memory` for the shared tree, `memory-<suffix>` for a profile with dedicated memory) is its own binding and therefore its own store.
+- Each memory subtree (`memory` for the shared tree, `memory<suffix>` such as `memory-1` for a profile with dedicated memory) is its own binding and therefore its own store.
 
 ## Dependencies
 

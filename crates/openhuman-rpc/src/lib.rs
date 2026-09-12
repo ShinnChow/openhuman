@@ -2,9 +2,11 @@
 //!
 //! This crate is linked by `openhuman_core` (re-exported there as
 //! `openhuman_core::rpc`), the Tauri shell (`crates/openhuman-app`), and the
-//! TUI (`crates/openhuman-tui`). It exists as a separate crate so the shell
-//! can speak the same wire format without linking the whole core, and it must
-//! stay free of domain types and runtime dependencies.
+//! TUI (`crates/openhuman-tui`). It is a separate crate so the producer of
+//! RPC envelopes (the core) and their decoders (the shell's HTTP relay, the
+//! TUI) compile one definition of the wire shape, and that definition depends
+//! on nothing in the core. It must stay free of domain types and runtime
+//! dependencies.
 //!
 //! - [`RpcOutcome`] and [`apply_log_envelope`] define handler results and the
 //!   log envelope rule. Domain `ops.rs` operations return `RpcOutcome<T>`.
