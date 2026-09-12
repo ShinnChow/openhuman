@@ -67,7 +67,7 @@ None on disk. State lives in a process-global `OnceLock<HealthRegistry>` (lazy-i
 
 ## Dependencies
 
-- `crate::core::event_bus` (`DomainEvent`, `EventHandler`, `SubscriptionHandle`, `subscribe_global`) — to receive system/channel events.
+- `crate::core::bus::BUS.subscribe` (`crate::core::events::DomainEvent`, `tinybus::SubscriptionHandle`) — to receive system/channel events.
 - `crate::core::all` (`ControllerFuture`, `RegisteredController`) and `crate::core::{ControllerSchema, FieldSchema, TypeSchema}` — controller registry wiring.
 - `crate::rpc::RpcOutcome` — RPC handler return contract.
 - External crates: `chrono` (RFC3339 timestamps), `parking_lot::Mutex`, `serde`/`serde_json`, `async_trait`.
