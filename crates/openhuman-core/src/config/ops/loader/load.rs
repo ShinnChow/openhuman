@@ -175,7 +175,7 @@ async fn normalize_loaded_config(config: &mut Config) {
 ///   ([`catalog::enrich_entry`]).
 ///
 /// Idempotent: re-running over an already-priced registry is a no-op.
-pub(super) fn seed_and_enrich_model_registry(config: &mut Config) {
+pub(crate) fn seed_and_enrich_model_registry(config: &mut Config) {
     use crate::platform::cost::catalog;
 
     if config.model_registry.is_empty() {

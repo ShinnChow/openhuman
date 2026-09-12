@@ -27,7 +27,7 @@ use super::session_validation::{
     sanitize_stored_session_user,
 };
 
-pub(super) fn secret_store_for_config(config: &Config) -> SecretStore {
+pub(crate) fn secret_store_for_config(config: &Config) -> SecretStore {
     let data_dir = config
         .config_path
         .parent()
