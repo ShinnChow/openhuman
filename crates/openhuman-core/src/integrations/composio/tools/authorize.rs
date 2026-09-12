@@ -127,9 +127,3 @@ impl Tool for ComposioAuthorizeTool {
         }
     }
 }
-
-// ── composio_connect (inline approval card, #3993) ──────────────────
-
-/// Canonicalize an agent/user-supplied toolkit slug to the form Composio's
-/// backend expects. Mirrors `canonicalizeComposioToolkitSlug` on the FE
-/// (`app/src/lib/composio/toolkitSlug.ts`) — **keep the alias maps in sync**.
