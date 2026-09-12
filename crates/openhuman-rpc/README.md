@@ -41,18 +41,21 @@ HTTP client.
 - `crates/openhuman-core/src/lib.rs` — `pub use openhuman_rpc as rpc;`, so
   domain `ops.rs` files return `RpcOutcome<T>` through this crate rather than
   a locally defined type.
-- `crates/openhuman-app/src/core_rpc.rs` — re-exports `bearer_header`,
-  `redact_url_for_log`, `HttpRpcResponse` and calls `post_json_rpc` to reach
-  both the embedded core and self-hosted runtimes from the Rust host (see the
-  mixed-content note in that file, #3865).
-- `crates/openhuman-tui/src/cockpit.rs` and `controls.rs` — use `unwrap_rpc`
-  to read RPC responses rendered in the terminal UI.
+- `crates/openhuman-app/src/core_rpc.rs` — imports (`pub(crate) use`, renamed
+  to `relay_bearer_header` / `RelayHttpResponse`) `bearer_header`,
+  `HttpRpcResponse` and `redact_url_for_log`, and wraps `post_json_rpc` in
+  its own `post_json_rpc` / `relay_http_rpc` to reach both the embedded core
+  and self-hosted runtimes from the Rust host (see the mixed-content note in
+  that file, #3865).
+- `crates/openhuman-tui/src/cockpit.rs` — `pub use openhuman_rpc::unwrap_rpc;`
+  is the TUI's decode point; `controls.rs`, `app.rs` and `state.rs` read RPC
+  responses through it.
 
 ## Rules
 
-- Contract-only: no domain types, no tokio runtime dependency, no I/O outside
-  `client.rs`. Everything here must stay usable from the thin Tauri host
-  without pulling in the core.
+- Contract-only: no domain types, no dependency on `openhuman-core`, no
+  `tokio` of its own (`post_json_rpc` is `async` over `reqwest` but never
+  owns or spawns a runtime), and no I/O outside `client.rs`.
 - `apply_log_envelope`'s bare-vs-wrapped rule is a wire contract with a known
   defect (#6080), preserved deliberately:
 
