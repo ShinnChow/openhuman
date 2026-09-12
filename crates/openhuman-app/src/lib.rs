@@ -10,11 +10,11 @@
 //! application, and [`run_core_from_args`] dispatches straight into the
 //! core CLI for the `core`/`mcp` subcommands `main.rs` routes here.
 //!
-//! Shell-local Cargo features (`gateways`, `custom-protocol`,
-//! `e2e-test-support`, `sandbox-bubblewrap`) gate desktop-only behavior; the
-//! `openhuman_core` product feature list is forwarded explicitly below and
-//! guarded by the `VOICE_COMPILED_IN` / `HTTP_SERVER_COMPILED_IN` compile-time
-//! asserts.
+//! The Cargo features `gateways`, `custom-protocol`, `e2e-test-support`, and
+//! `sandbox-bubblewrap` are shell-local and not part of the product feature
+//! list; the `openhuman_core` product gates are forwarded explicitly in
+//! `Cargo.toml` and guarded by the `VOICE_COMPILED_IN` /
+//! `HTTP_SERVER_COMPILED_IN` compile-time asserts below.
 //!
 //! This crate is excluded from the root Cargo workspace — build it with
 //! `cargo check --manifest-path crates/openhuman-app/Cargo.toml`. See

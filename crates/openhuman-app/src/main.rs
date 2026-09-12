@@ -1,7 +1,7 @@
 // Always run as the Windows GUI subsystem so launching the Tauri app does
 // not pop a console window. Without this, debug builds default to
-// console-subsystem and a console flashes on every launch. The `core` CLI
-// subcommand path below re-attaches to the parent shell's console at
+// console-subsystem and a console flashes on every launch. The `core` and
+// `mcp` subcommand paths below re-attach to the parent shell's console at
 // runtime via AttachConsole, so command-line output still works.
 #![cfg_attr(target_os = "windows", windows_subsystem = "windows")]
 
