@@ -34,10 +34,13 @@ path = "../../tests/<name>.rs"
 
 The same applies to `examples/*.rs` via `[[example]]`. Some targets carry
 `required-features` (e.g. `observability_smoke` needs `crash-reporting`,
-`x402_twit_sh_live` needs `web3`, `json_rpc_e2e` needs voice-related features,
-`raw_coverage_all` has its own gate); `scripts/ci/list-feature-gated-rust-tests.mjs`
-enumerates them. Files under `tests/raw_coverage/` need no `[[test]]` entry —
-they ride in through `raw_coverage_all`.
+`x402_twit_sh_live` needs `web3`, `json_rpc_e2e` needs `voice`,
+`raw_coverage_all` needs `voice` and `inference`); all of those are off in the
+default contributor build, and a bare `cargo test` skips such targets silently
+(root `build.rs` emits a `cargo::warning` naming them).
+`scripts/ci/list-feature-gated-rust-tests.mjs` enumerates them. Files under
+`tests/raw_coverage/` need no `[[test]]` entry — they ride in through
+`raw_coverage_all`.
 
 `pnpm rust:layout` (`scripts/ci/check-openhuman-rust-layout.mjs`, run in CI
 Lite) fails the build on:

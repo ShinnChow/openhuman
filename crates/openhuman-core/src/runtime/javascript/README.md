@@ -29,8 +29,11 @@ exist in every build:
   `list_tools`, and the controller registry pair
   `all_javascript_controller_schemas` / `all_javascript_registered_controllers`
   (aliases of `all_runtime_node_controller_schemas` /
-  `all_runtime_node_registered_controllers`). These only exist because their
-  only consumers — the RPC bridge and `core/all.rs` — are gated off too.
+  `all_runtime_node_registered_controllers`). The controller pair only exists
+  with the feature on; the dispatcher behind `execute_tool` / `list_tools`
+  (`runtime::node::ops`) is itself always compiled because the ungated `flows`
+  `oh:` backend calls it directly — only this facade's alias is gated, since
+  its sole consumer here is the gated `runtime::node::rpc` bridge.
 
 ## Public surface
 
@@ -67,9 +70,10 @@ Handlers live in `runtime::node::rpc`, load config via
 
 - `crates/openhuman-core/src/core/all.rs` — wires
   `all_javascript_registered_controllers` into the controller registry.
-- `crates/openhuman-core/src/tools/ops.rs`,
-  `tools/impl/system/{shell,node_exec,npm_exec}.rs` — import
-  `crate::runtime::javascript::NodeBootstrap` for Node binary resolution.
+- `crates/openhuman-core/src/tools/ops.rs` — constructs the shared
+  `Arc<NodeBootstrap>` (only when `runtime-node` is on and `config.node.enabled`);
+  `tools/impl/system/{shell,node_exec,npm_exec}.rs` hold it for Node binary
+  resolution.
 - `crates/openhuman-core/src/runtime/node/rpc.rs` — calls back into
   `javascript::{list_tools, execute_tool}` through the facade alias.
 

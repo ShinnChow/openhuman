@@ -134,4 +134,5 @@ sandbox boundary. From `AGENTS.md`, do not weaken these:
   `web3/wallet/chains/*` and `web3/x402` (`wallet.rs`),
   `tools/impl/{document,presentation}` (`documents.rs`), `voice/` and
   `inference/voice` (`voice.rs`), `integrations/composio/module_client.rs`
-  (`connectors.rs`), and `inference/tokenjuice` (`tokenjuice_host.rs`).
+  (`connectors.rs`), and `inference/tokenjuice`, which `ensure_loaded`s
+  `tinyjuice` and is called back through `tokenjuice_host.rs`.
