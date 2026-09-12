@@ -29,7 +29,7 @@ CDP is the load-bearing primitive. Every "watch what's happening inside Slack / 
 
 Stock webviews can't give us any of that. So we vendor CEF.
 
-The vendored runtime lives at [`crates/openhuman-app/vendor/tauri-cef/`](https://github.com/tinyhumansai/openhuman/tree/main/crates/openhuman-app/vendor/tauri-cef) (forked from the upstream `tauri-cef` branch onto `tinyhumansai/tauri-cef:feat/cef-notification-intercept`, currently CEF 146.4.1). Every Tauri crate is patched at `crates/openhuman-app/Cargo.toml` via `[patch.crates-io]` to point at this fork. The vendored `cargo-tauri` CLI bundles Chromium correctly into `Contents/Frameworks/`; stock `@tauri-apps/cli` produces a broken bundle that panics in `cef::library_loader::LibraryLoader::new`. [`scripts/ensure-tauri-cli.sh`](../../scripts/ensure-tauri-cli.sh) reinstalls the vendored CLI whenever the fork is newer than the installed binary.
+The vendored runtime lived at `crates/openhuman-app/vendor/tauri-cef/` (forked from the upstream `tauri-cef` branch onto `tinyhumansai/tauri-cef:feat/cef-notification-intercept`, currently CEF 146.4.1). Every Tauri crate is patched at `crates/openhuman-app/Cargo.toml` via `[patch.crates-io]` to point at this fork. The vendored `cargo-tauri` CLI bundles Chromium correctly into `Contents/Frameworks/`; stock `@tauri-apps/cli` produces a broken bundle that panics in `cef::library_loader::LibraryLoader::new`. `scripts/ensure-tauri-cli.sh` (removed) reinstalled the vendored CLI whenever the fork is newer than the installed binary.
 
 ## What CEF is used for today
 
@@ -84,7 +84,7 @@ Code (removed): `crates/openhuman-app/src/meet_video/`.
 
 The fork at `feat/cef-notification-intercept` adds renderer-side shims for `Notification.permission`, `Notification.requestPermission()`, and `navigator.permissions.query({name: "notifications"})`. These now install in the real `tauri-runtime-cef` path on every runtime code path, so when Slack checks if it can show notifications, the answer is consistent with what CEF's permission callbacks already granted.
 
-This is the bulk of `docs/TAURI_CEF_FINDINGS_AND_CHANGES.md`. It's why Slack stops asking the same permission five times in a session.
+This was the bulk of the (since removed) `docs/TAURI_CEF_FINDINGS_AND_CHANGES.md`. It's why Slack stops asking the same permission five times in a session.
 
 ## The "no new JS injection" rule
 
