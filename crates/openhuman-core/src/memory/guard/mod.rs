@@ -49,7 +49,8 @@
 //!
 //! ## What still hands out the bare driver
 //!
-//! [`CoreContext::memory`] is the accessor product code holds.
+//! [`CoreContext::memory`](crate::core::runtime::context::CoreContext::memory)
+//! is the accessor product code holds.
 //! `CoreContext::memory_binding()` and `MemoryBinding::unguarded_provider()`
 //! still exist and still hand out the bare driver; `memory/bypass_allowlist_tests.rs`
 //! enumerates who may call them. The one production caller of
