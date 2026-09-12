@@ -17,8 +17,10 @@ use crate::tools::traits::{PermissionLevel, Tool, ToolCategory, ToolResult};
 use super::super::client::create_composio_client;
 use super::super::ops::load_user_scope_pref;
 use super::super::providers::{toolkit_from_slug, ToolScope};
-use super::visibility::{action_mutates_external_state, evaluate_tool_visibility, resolve_action_scope, scope_error_message};
-use super::visibility::ToolDecision;
+use super::visibility::{
+    action_mutates_external_state, evaluate_tool_visibility, resolve_action_scope,
+    scope_error_message, ToolDecision,
+};
 
 pub struct ComposioExecuteTool {
     /// Held instead of a pre-baked `ComposioClient` so the
@@ -205,7 +207,7 @@ impl Tool for ComposioExecuteTool {
         // Calendar list slugs so the host's IANA zone reaches the API
         // regardless of how the model built the args (issue #1714).
         // No-op for every other slug; respects caller-supplied values.
-        let iana = super::googlecalendar_args::current_iana_timezone();
+        let iana = super::super::googlecalendar_args::current_iana_timezone();
         tracing::debug!(
             target: "composio",
             slug = %tool,
@@ -213,7 +215,7 @@ impl Tool for ComposioExecuteTool {
             "[composio][dispatcher] applying calendar query defaults pre-dispatch"
         );
         let arguments =
-            super::googlecalendar_args::apply_calendar_query_defaults(&tool, arguments, &iana);
+            super::super::googlecalendar_args::apply_calendar_query_defaults(&tool, arguments, &iana);
 
         // Task-recency window (morning briefing): when the calling agent
         // installed a window, inject best-effort server-side narrowing for
@@ -225,7 +227,7 @@ impl Tool for ComposioExecuteTool {
                 - chrono::Duration::from_std(w).unwrap_or_else(|_| chrono::Duration::zero())
         });
         let arguments = match task_window_since {
-            Some(since) => super::task_window::apply_window_args(&tool, arguments, since),
+            Some(since) => super::super::task_window::apply_window_args(&tool, arguments, since),
             None => arguments,
         };
 
@@ -263,7 +265,7 @@ impl Tool for ComposioExecuteTool {
         let started = std::time::Instant::now();
         // Centralized prepare → retry → error-mapping pipeline (#1797),
         // mode-aware over the backend/direct split (#1710).
-        let res = super::execute_dispatch::execute_composio_action_kind(
+        let res = super::super::execute_dispatch::execute_composio_action_kind(
             kind,
             &tool,
             arguments,
@@ -278,7 +280,7 @@ impl Tool for ComposioExecuteTool {
                 // slug is a curated task-fetch action. Runs before the
                 // markdown/JSON body decision so the agent reads filtered data.
                 let resp = match task_window_since {
-                    Some(since) => super::task_window::filter_response(&tool, resp, since),
+                    Some(since) => super::super::task_window::filter_response(&tool, resp, since),
                     None => resp,
                 };
                 tracing::info!(

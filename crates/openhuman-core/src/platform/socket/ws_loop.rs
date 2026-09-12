@@ -18,7 +18,4 @@ mod reconnect;
 pub(super) use reconnect::ws_loop;
 
 #[cfg(test)]
-use manager::AckRegistry;
-
-#[cfg(test)]
-use super::manager;
+use super::manager::AckRegistry;
