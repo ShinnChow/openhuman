@@ -39,7 +39,7 @@ dedicated-workspace profiles from writing into a sibling's directory.
 | `store.rs` | `AgentProfileStore` (load/save/select/upsert/delete/resolve) over `<workspace>/agent_profiles.json`; `built_in_profiles`, `load_profiles`, id normalisation/slugification (`normalise_profile_id`, applied before `validate_profile_id` on every `upsert`), and the numeric `memory_dir_suffix` allocator. `delete` refuses built-in ids. |
 | `home.rs` | Per-profile home materialization: `profile_home`, `profile_action_workspace`, `profile_skills_dir`/`profile_skills_root`, `validate_profile_id`, `ensure_profile_home` (idempotent seed), `sync_soul_md_on_upsert` (reconcile an edited inline soul into the on-disk file), `dedicated_workspace_dir`. |
 | `paths.rs` | Personality-scoped path/content resolution: `resolve_personality_soul` (home `SOUL.md` → `soul_md_path` → inline `soul_md` → `None`), `resolve_personality_memory_md`, `effective_memory_suffix`, the `*_subdir_for_suffix` helpers, `profile_session_signature`, `PersonalityContext`, `filter_integrations`/`HasToolkit`, and the `pub(crate)` `soul_md_file_path` shared with the channel runtime's identity fingerprint. |
-| `guard.rs` | Cross-profile identity plumbing and write guard: `workspace_policy_id`/`profile_id_from_policy_id` (encode/decode the `WorkspaceDescriptor::policy_id`), `classify_cross_profile_target` (file tools), `scan_command_for_cross_profile` (shell/process tools, best-effort). |
+| `guard.rs` | Cross-profile identity plumbing and write guard: `workspace_policy_id`/`profile_id_from_policy_id` (encode/decode the `openhuman.profile:<id>` `WorkspaceDescriptor::policy_id`; only the encoder has a non-test caller, in the session builder), `classify_cross_profile_target` (file tools), `scan_command_for_cross_profile` (shell/process tools, best-effort), `PROFILES_ROOT_SENTINEL`. |
 | `prompt_section.rs` | `AgentProfilePromptSection` (a `PromptSection` named `agent_profile`), `render_agent_profile_block` (the same `## Agent profile` text for prompt paths without a `PromptContext`, used by `channels/system_prompt.rs`), and `cross_profile_workspace_notice`. |
 | `ops.rs` | `list`/`select`/`upsert`/`delete` business logic: `agent_id` validation against the global agent registry, home materialization, SOUL.md reconciliation, and read-only path enrichment (`soulMdFile`, `skillsDir`, `workspaceDir`) on the returned payload. |
 | `schemas.rs` | Controller schemas + thin handlers for the `profiles` namespace; re-exported as `all_profiles_controller_schemas` / `all_profiles_registered_controllers`. |
@@ -100,11 +100,12 @@ profile-less run rather than failing the job.
   integration filtering when building a session.
 - `agent/harness/session/turn/tools.rs` resolves `profile_skills_root` for
   workflow discovery.
-- `security/policy/path_checks.rs` (file tools) decodes the active profile
-  from the descriptor's `policy_id` and calls `classify_cross_profile_target`;
-  `tools/impl/system/mod.rs` (process tools) adds
+- `security/policy/path_checks.rs` (file tools) calls
+  `classify_cross_profile_target` once the session builder has armed
+  `SecurityPolicy::with_active_profile(profile_id, action_dir)`;
+  `tools/impl/system/mod.rs` (process tools) classifies the cwd and then adds
   `scan_command_for_cross_profile`. Both map `PROFILES_ROOT_SENTINEL` to a
-  root-specific denial message.
+  root-specific `[policy-blocked]` denial.
 - `cron/scheduler_part_02.rs` resolves a job's attributed profile via
   `load_profiles` and builds the run with
   `Agent::from_config_for_agent_with_profile`.

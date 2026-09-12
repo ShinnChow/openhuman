@@ -113,7 +113,8 @@ coverage must be at least 80 percent.
   (`scripts/ci/check-openhuman-rust-layout.mjs`) fails on missing or stale
   entries, on inline `#[cfg(test)] mod` blocks, and on files named
   `tests.rs`/`test.rs`. Files under `tests/raw_coverage/` are aggregated by
-  `build.rs` into the single `raw_coverage_all` target and need no entry.
+  the root `build.rs` (`build = "../../build.rs"`) into the single
+  `raw_coverage_all` target and need no entry.
 
 Shared mock backend:
 
@@ -313,10 +314,14 @@ Backend calls use the vendored `tinyhumans-sdk`. Add missing backend routes to
 that SDK rather than recreating them in `crates/openhuman-core/src/api/`.
 
 `crates/openhuman-core/src/api/` owns OpenHuman session-token lookup, base URL
-selection, transport configuration, and error classification. Every SDK error
-returned by `BackendOAuthClient` must be mapped through `finish_authed_json` in
-`crates/openhuman-core/src/api/rest.rs` so transient transport failures are
-classified consistently.
+selection, transport configuration, and error classification. Authenticated
+`BackendOAuthClient` requests go through `authed_json`, whose private
+`finish_authed_json` (`crates/openhuman-core/src/api/rest.rs`) classifies
+transient transport failures and maps 401/404 responses to typed
+`BackendApiError` variants; `IntegrationClient::map_sdk_error`
+(`crates/openhuman-core/src/integrations/client_part_01.rs`) plays the same
+role for integrations. Route new SDK calls through those helpers instead of
+matching `tinyhumans_sdk::Error` by hand.
 
 Every TinyHumans backend request must carry a sanitized `x-sdk-name`:
 
