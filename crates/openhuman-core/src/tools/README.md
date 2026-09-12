@@ -101,7 +101,7 @@ None. No `store.rs`; the module holds no persisted state. Tools that persist (me
 - `crate::security` — `SecurityPolicy` (host/path/command gating threaded into nearly every tool) + `AuditLogger`.
 - `crate::memory` — `memory::ops::guard::active_memory_guard` (read by `tool_stats`) and the memory-owned tool sets re-exported here; the registry takes no `Memory` handle itself.
 - `crate::integrations` — `build_client` backend HTTP client + the integration tool structs (apify, brave, parallel, stock, twilio, tinyfish, google_places, querit, seltz, searxng).
-- `crate::integrations::composio` — `all_composio_agent_tools`, mode-aware client for `tools.composio_execute`.
+- `crate::integrations::composio` — `all_composio_agent_tools`, mode-aware client (`create_composio_client`) for `openhuman.tools_composio_execute`.
 - `crate::runtime::javascript` / `crate::runtime::python` — `NodeBootstrap` shared by shell/node_exec/npm_exec (behind `runtime-node`), `PythonBootstrap` for `python_exec`.
 - `crate::mcp::config_servers` / `crate::mcp::registry` — generic remote MCP server registry + bridge tools (`mcp` feature).
 - `tinytools` (vendored via `vendor/tinyagents/`) — the `Tool` trait itself and its vocabulary, re-exported through `traits.rs`.
