@@ -372,20 +372,26 @@ Each `AgentDefinition` carries an `agent_tier` field (`chat` / `reasoning` / `wo
 
 For Composio toolkits with hundreds of actions (GitHub alone has 500+), loading every action into the sub-agent's tool set balloons prompt size. The harness ranks the toolkit's actions against the parent-refined task prompt with a cheap CPU-only filter (verb detection, token overlap, verb-alignment boost) and only loads the top-ranked subset into the sub-agent. No model call, pure heuristic - fast and explainable.
 
-## Language workflows (Rhai)
+## Language workflows (Rhai): HISTORICAL (removed)
 
-The fixed delegation primitives (`spawn_subagent`, `spawn_parallel_agents`, `run_workflow`) can't express _ad-hoc control flow_ — "spawn N readers, dedupe their findings, verify each survivor with 3 refuters, loop until dry". The **`rhai_workflows` tool** closes that gap: it exposes TinyAgents' Rhai-backed `.ragsh` REPL (the `repl` cargo feature) so the orchestrator can author and run its own workflow scripts.
+> **Status:** TinyAgents dropped its `repl`/`rlm` Rhai-backed REPL feature, and
+> the `rhai_workflows` tool and `crates/openhuman-core/src/flows/rhai/` module
+> described below no longer exist (`grep -rli rhai crates/` finds only an
+> unrelated `tinyflows` JSON-query dependency). The section is retained as
+> design history.
 
-**One tool call = one `eval_cell`.** The orchestrator's normal tool-call loop _is_ the CodeAct driver loop: the model writes a Rhai cell, the cell runs against a persistent per-session namespace (top-level `let` bindings survive into the next cell via an optional `session_id`), and the structured result flows back as the tool result. Scripts reach the host only through capability functions — `tool_call`, `agent_query`, `model_query`, their `*_batched` fan-out variants, `emit`, and `answer`.
+The fixed delegation primitives (`spawn_subagent`, `spawn_parallel_agents`, `run_workflow`) can't express _ad-hoc control flow_ — "spawn N readers, dedupe their findings, verify each survivor with 3 refuters, loop until dry". The **`rhai_workflows` tool** closed that gap: it exposed TinyAgents' Rhai-backed `.ragsh` REPL (the `repl` cargo feature) so the orchestrator could author and run its own workflow scripts.
 
-The domain lives in [`crates/openhuman-core/src/flows/rhai/`](../../../crates/openhuman-core/src/flows/rhai/README.md):
+**One tool call = one `eval_cell`.** The orchestrator's normal tool-call loop _was_ the CodeAct driver loop: the model wrote a Rhai cell, the cell ran against a persistent per-session namespace (top-level `let` bindings survived into the next cell via an optional `session_id`), and the structured result flowed back as the tool result. Scripts reached the host only through capability functions — `tool_call`, `agent_query`, `model_query`, their `*_batched` fan-out variants, `emit`, and `answer`.
 
-- **`policy.rs`** maps the autonomy tier + `tool_timeout` clamps onto a `tinyagents::ReplPolicy` (always bounded, never unbounded; `readonly` refused; `full` may raise call-count limits to a hard 2× ceiling).
-- **`bridge.rs`** builds the `CapabilityRegistry`: the parent's visible tools (each re-wrapped so the **approval gate runs in the bridge** — it is _not_ on the repl path, which bypasses the harness `wrap_tool` middleware), the turn's provider model, and a sub-agent capability per `allowed_subagent_ids`. Recursion/duplication hazards (`rhai`, legacy `rlm`, `spawn_*`, workflow tools, `CliRpcOnly`-scoped tools) are excluded. Because `eval_cell` runs on `spawn_blocking` + `block_on`, the `agent_query` adapter re-installs the `PARENT_CONTEXT` task-local that `run_subagent` resolves.
-- **`sessions.rs`** is a bounded (LRU + idle-TTL) manager of persistent sessions, one cell at a time (a concurrent call on a busy session returns a typed "busy" error).
-- **`ops.rs`** runs the cell on `spawn_blocking` under a layered time bound (rhai `on_progress` deadline → `bridge_block_on` timer race → outer `tokio::timeout` backstop → harness `ToolTimeout`), wires the run-cancellation token to a fresh per-cell `ReplCancelFlag`, and maps every failure mode to a model-consumable result.
+The domain lived in `crates/openhuman-core/src/flows/rhai/`:
 
-The tool is registered for the orchestrator on `supervised`/`full` tiers only, behind the `OPENHUMAN_RHAI_WORKFLOWS=0` kill switch; `OPENHUMAN_RHAI=0` and `OPENHUMAN_RLM=0` remain legacy aliases. The TinyAgents-side host-embedding support (external cancellation, live capability events) landed in that crate's `repl` feature.
+- **`policy.rs`** mapped the autonomy tier + `tool_timeout` clamps onto a `tinyagents::ReplPolicy` (always bounded, never unbounded; `readonly` refused; `full` could raise call-count limits to a hard 2× ceiling).
+- **`bridge.rs`** built the `CapabilityRegistry`: the parent's visible tools (each re-wrapped so the **approval gate ran in the bridge** — it was _not_ on the repl path, which bypassed the harness `wrap_tool` middleware), the turn's provider model, and a sub-agent capability per `allowed_subagent_ids`. Recursion/duplication hazards (`rhai`, legacy `rlm`, `spawn_*`, workflow tools, `CliRpcOnly`-scoped tools) were excluded. Because `eval_cell` ran on `spawn_blocking` + `block_on`, the `agent_query` adapter re-installed the `PARENT_CONTEXT` task-local that `run_subagent` resolves.
+- **`sessions.rs`** was a bounded (LRU + idle-TTL) manager of persistent sessions, one cell at a time (a concurrent call on a busy session returned a typed "busy" error).
+- **`ops.rs`** ran the cell on `spawn_blocking` under a layered time bound (rhai `on_progress` deadline → `bridge_block_on` timer race → outer `tokio::timeout` backstop → harness `ToolTimeout`), wired the run-cancellation token to a fresh per-cell `ReplCancelFlag`, and mapped every failure mode to a model-consumable result.
+
+The tool was registered for the orchestrator on `supervised`/`full` tiers only, behind an `OPENHUMAN_RHAI_WORKFLOWS=0` kill switch.
 
 ## Triage - handling external triggers
 
