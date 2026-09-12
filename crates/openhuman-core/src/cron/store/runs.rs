@@ -8,8 +8,8 @@ use anyhow::{Context, Result};
 use chrono::{DateTime, Utc};
 use rusqlite::params;
 
-const MAX_CRON_OUTPUT_BYTES: usize = 16 * 1024;
-const TRUNCATED_OUTPUT_MARKER: &str = "\n...[truncated]";
+pub(crate) const MAX_CRON_OUTPUT_BYTES: usize = 16 * 1024;
+pub(crate) const TRUNCATED_OUTPUT_MARKER: &str = "\n...[truncated]";
 
 pub fn record_last_run(
     config: &Config,
