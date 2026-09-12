@@ -199,7 +199,7 @@ impl OpenhumanEventBridge {
     /// delivered under backpressure instead of being dropped (the old bug). A
     /// `Closed` channel means the receiver is gone (turn tore down), where
     /// dropping is correct.
-    fn send(&self, progress: AgentProgress) {
+    pub(super) fn send(&self, progress: AgentProgress) {
         use tokio::sync::mpsc::error::TrySendError;
         let Some(tx) = &self.on_progress else {
             return;
@@ -260,13 +260,13 @@ impl OpenhumanEventBridge {
         }
     }
 
-    fn iteration(&self) -> u32 {
+    pub(super) fn iteration(&self) -> u32 {
         self.cursor.load(Ordering::SeqCst)
     }
 
     /// Accumulate a usage block, feed the global cost tracker, and emit a
     /// `TurnCostUpdated` so the UI footer stays live.
-    fn record_usage(&self, usage: &Usage) {
+    pub(super) fn record_usage(&self, usage: &Usage) {
         let iteration = self.iteration();
         // Dedupe guard (W2-budget-dedupe): record a given model call's usage into
         // the global cost tracker **exactly once**. Installing the observe-only
@@ -427,7 +427,7 @@ impl OpenhumanEventBridge {
     /// like `chat-v1`/`burst-v1` + the vendor catalog + heuristics) — the
     /// previous `cost::catalog::estimate_cost_usd` only knew concrete vendor
     /// ids, so every managed-tier call priced as $0 in traces and the footer.
-    fn estimate_call_cost(model: &str, usage: &Usage) -> f64 {
+    pub(super) fn estimate_call_cost(model: &str, usage: &Usage) -> f64 {
         crate::agent::cost::estimate_call_cost_usd(
             model,
             &UsageInfo {
