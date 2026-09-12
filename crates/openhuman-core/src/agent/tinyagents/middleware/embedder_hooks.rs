@@ -18,7 +18,8 @@ pub(crate) struct EmbedderToolHooksMiddleware {
     /// original call arguments, so without this cache every post-use event would
     /// report `Null` and an auditing/correlating host could not match inputs to
     /// outcomes.
-    arguments_by_call_id: std::sync::Mutex<std::collections::HashMap<String, serde_json::Value>>,
+    pub(super) arguments_by_call_id:
+        std::sync::Mutex<std::collections::HashMap<String, serde_json::Value>>,
 }
 
 impl EmbedderToolHooksMiddleware {
