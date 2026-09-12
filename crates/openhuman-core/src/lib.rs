@@ -14,12 +14,15 @@
 //! `flows`), `hooks`, `hosted`, `hosting` (feature `hosting`), `http_host`
 //! (feature `http-server`), `inference`, `integrations`, `json_schema`,
 //! `mcp`, `media` (feature `media`), `medulla`, `memory`, `modules` (feature
-//! `modules`), `platform`, `sandbox`, `search`, `security`, `skills`,
-//! `test_support` (feature `e2e-test-support`), `threads`, `tools`, `util`,
-//! `voice`, `web3`, `web_chat`. `core/` is not a domain: it holds transport,
-//! dispatch, the controller registry (`core::all`), the CLI, the event bus,
-//! and runtime composition (`core::runtime`). See `README.md` and AGENTS.md
-//! ("Rust domain structure") for the preferred per-domain module shape.
+//! `modules`), `platform`, `runtime`, `sandbox`, `search`, `security`,
+//! `skills`, `test_support` (feature `e2e-test-support`), `threads`, `tools`,
+//! `util`, `voice`, `web3`, `web_chat`. `channels`, `mcp`, `medulla`,
+//! `skills`, `voice` and `web3` are always declared but gate most of their
+//! contents inside their own `mod.rs` behind the feature of the same name.
+//! `core/` is not a domain: it holds transport, dispatch, the controller
+//! registry (`core::all`), auth, the CLI, the event bus, and runtime
+//! composition (`core::runtime`). See `README.md` and AGENTS.md ("Rust domain
+//! structure") for the preferred per-domain module shape.
 //!
 //! `pub use openhuman_rpc as rpc;` re-exports the `openhuman-rpc` crate, so
 //! `crate::rpc::{RpcOutcome, StructuredRpcError, ...}` are the same types the
@@ -30,7 +33,7 @@
 //! [`TokenSource`] and [`HostKind`] are the embeddable composition API;
 //! `openhuman-embed` layers a typed facade on top of them.
 //! [`run_core_from_args`] is the CLI entry point shared by `src/main.rs` and
-//! the desktop shell's `openhuman core` subcommand.
+//! the desktop shell binary's `core` and `mcp` subcommands.
 //!
 //! Cargo features split into a contributor `default` set and a larger
 //! shipped-product set (`scripts/ci/product-features.txt`); slim or headless

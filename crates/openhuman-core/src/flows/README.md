@@ -9,7 +9,9 @@ state-graph runtime it lowers onto (`tinyagents`, via
 `crates/openhuman-core/src/agent/tinyagents/`).
 
 See [gitbooks/developing/architecture/flows-on-tinyagents.md](../../../../gitbooks/developing/architecture/flows-on-tinyagents.md)
-for how one flow run lowers onto tinyagents; this file is the directory map.
+for how one flow run lowers onto tinyagents, and
+[`tinyflows/README.md`](tinyflows/README.md) for the capability seam; this
+file is the directory map.
 
 ## Gate shape — leaf, not facade
 
@@ -21,7 +23,8 @@ every symbol reached from outside is a registration site —
 `FlowTriggerSubscriber`, `core::runtime::services`' boot reconcile
 (`sweep_orphaned_running_runs_on_boot`, `reconcile_schedule_triggers_on_boot`),
 `medulla_bridge::install`, the agent-tool `vec!` in `tools::ops`, and the
-`workflow_builder` / `flow_discovery` built-ins in `agent_registry`. A
+`workflow_builder` / `flow_discovery` entries in
+`agent::registry::agents::loader::BUILTINS`. A
 registration site wants *absence* when the feature is off, not a
 disabled-error stub, or `flows.*` becomes a known method that fails at
 runtime. See `voice/` for the facade+stub shape used when a domain is called
@@ -29,20 +32,20 @@ from always-compiled code.
 
 ## Public surface
 
-- `pub mod ops` (split `ops_part_01..12.rs`) — CRUD (`flows_create/get/list/update/delete/duplicate/import/validate`), run lifecycle (`flows_run`, `flows_run_detached`, `flows_resume`, `flows_cancel_run`, `flows_list_runs`, `flows_get_run`, `flows_prune_runs`), `flows_set_enabled` (arms/disarms the trigger via `cron::add_flow_schedule_job` for schedule triggers and `bus`'s trigger-config helpers for the rest), builder (`flows_build`, `flows_build_cancel`), discovery (`flows_discover`, `flows_list_suggestions`, `flows_dismiss_suggestion`, `flows_mark_suggestion_built`), drafts (`flows_draft_create/get/update/list/delete/promote`), and boot reconciliation (`sweep_orphaned_running_runs_on_boot`, `reconcile_schedule_triggers_on_boot`).
-- `pub mod bus` — `FlowTriggerSubscriber`: matches `DomainEvent::FlowScheduleTick` / `ComposioTriggerReceived` / `WebhookIncomingRequest` against enabled flows' trigger nodes and spawns `ops::flows_run`; its matching helpers are reused by `flows_set_enabled` to bind/unbind dispatch.
+- `pub mod ops` (split `ops_part_01..12.rs`) — CRUD (`flows_create/get/list/update/delete/duplicate/import/validate`), revision history (`flows_get_history`, `flows_rollback`), run lifecycle (`flows_run`, `flows_run_detached`, `flows_resume`, `flows_cancel_run`, `flows_list_runs`, `flows_list_all_runs`, `flows_get_run`, `flows_prune_runs`), `flows_set_enabled` (only `schedule` triggers need an enable-time binding — `cron::add_flow_schedule_job` / `cron::remove_job`; `app_event` flows are matched at dispatch time against enabled flows, and `webhook` binding is logged as not implemented), builder (`flows_build`, `flows_build_cancel`, `flows_search_tool_catalog`, `flows_get_tool_contract`, `flows_list_connections`, `flows_required_connections`, `flows_approval_manifest`), discovery (`flows_discover`, `flows_list_suggestions`, `flows_dismiss_suggestion`, `flows_mark_suggestion_built`), drafts (`flows_draft_create/get/update/list/delete/promote`), and boot/periodic reconciliation (`sweep_orphaned_running_runs_on_boot`, `reconcile_schedule_triggers_on_boot`, `sweep_expired_parked_runs`).
+- `pub mod bus` (split `bus_part_01..02.rs`) — three subscribers, all constructed in `core/jsonrpc.rs`: `FlowTriggerSubscriber` (the trigger → run bridge: `DomainEvent::FlowScheduleTick` and `ComposioTriggerReceived` are matched against enabled flows' trigger nodes and spawn `ops::flows_run`; `WebhookIncomingRequest` is observed and logged only — webhook dispatch is not implemented), `FlowRunDigestSubscriber` (on a successful `FlowRunFinished`, writes a run digest into the flow's private memory namespace), and `DedupCommitSubscriber` (on `FlowRunFinished`, commits or rolls back every `dedup` node's tentative key set). `extract_trigger_kind` / `extract_trigger_config` are reused by `ops` to decide what `flows_set_enabled` and `flows_update` must bind or rebind.
 - `pub mod medulla_bridge` — backs the medulla harness protocol's workflow plane (`platform::socket::medulla::workflows::WorkflowBridge`) with this store: projects saved `Flow`s onto the wire `WorkflowDescriptor`, serves the three read RPCs, and runs a `workflow_builder` copilot turn with host-enforced approval guards (creates always `require_approval: true`, updates never lower it, automatic-trigger creates are saved disabled).
 - `pub mod catalogue` — lists saved flows as `Workflow` entries with `WorkflowScope::Flow` in the shared skill catalogue, so `skill_search` sees one list instead of skills and flows separately.
 - `pub mod node_contracts` — host overlay on `tinyflows::catalog`'s node-kind contracts: attaches host-specific facts (which `tool_call` slugs resolve to Composio vs. native `oh:` tools, which trigger kinds actually dispatch here) without touching the portable contracts. Re-exports `all_node_kind_contracts`, `node_kind_contract`, `NODE_KINDS`, `ConfigField`, `PortSpec`, `NodeKindContract`.
 - `mod store` / `mod draft_store` (private) — bind `tinyflows_sqlite::flows` / `tinyflows_sqlite::drafts` to `<workspace_dir>/flows`; `kv_get`, `kv_set`, and `upsert_flow_run_step` are re-exported from `store` for the `tinyflows::caps::FlowStateStore` seam and the run observer.
-- `mod schemas` (private, re-exported) — RPC/CLI controller surface under the `flows` namespace; handlers split across `schemas_handlers.rs`, `flows_schema_part_01.rs` (create/get/list/update/delete/run/resume/cancel_run/list_runs/get_run/prune_runs/build/build_cancel/discover/list_suggestions/dismiss_suggestion and more), and `flows_schema_part_02.rs` (mark_suggestion_built/approval_manifest/required_connections/search_tool_catalog/get_tool_contract/get_history/rollback/draft_create/draft_get/draft_update/draft_list/draft_delete/draft_promote) — 37 functions total.
-- `pub mod tools` — `ProposeWorkflowTool`, `RunFlowTool`.
+- `mod schemas` (private; `all_flows_controller_schemas` / `all_flows_registered_controllers` re-exported) — RPC/CLI controller surface under the `flows` namespace, 36 functions. The `ControllerSchema` lookups are split into `flows_schema_part_01.rs` (`create`, `duplicate`, `validate`, `import`, `get`, `list`, `list_connections`, `update`, `delete`, `set_enabled`, `run`, `run_detached`, `resume`, `cancel_run`, `list_runs`, `list_all_runs`, `get_run`, `prune_runs`, `build`, `build_cancel`, `discover`, `list_suggestions`, `dismiss_suggestion`) and `flows_schema_part_02.rs` (`mark_suggestion_built`, `approval_manifest`, `required_connections`, `search_tool_catalog`, `get_tool_contract`, `get_history`, `rollback`, `draft_create/get/update/list/delete/promote`); all 36 `handle_*` thin handlers live in `schemas_handlers.rs`.
+- `pub mod tools` — `ProposeWorkflowTool`, `RunFlowTool`. All 27 tool structs below are re-exported by glob from `crates/openhuman-core/src/tools/mod.rs` and pushed onto the agent tool list in `tools/ops.rs` under `#[cfg(feature = "flows")]`.
 - `pub mod builder_tools` (split `builder_tools_part_01..07.rs`) — the authoring toolset: `ReviseWorkflowTool`, `EditWorkflowTool`, `ValidateWorkflowTool`, `GetFlowHistoryTool`, `ListFlowRunsTool`, `ResumeFlowRunTool`, `CancelFlowRunTool`, `CreateWorkflowTool`, `DuplicateFlowTool`, `ListConnectableToolkitsTool`, `ListFlowsTool`, `GetFlowTool`, `GetFlowRunTool`, `ListFlowConnectionsTool`, `SearchToolCatalogTool`, `GetToolContractTool`, `GetToolOutputSampleTool`, `ListAgentProfilesTool`, `ListNodeKindsTool`, `GetNodeKindContractTool`, `DryRunWorkflowTool`, `SaveWorkflowTool`.
 - `pub mod discovery_tools` — `SuggestWorkflowsTool`.
 - `pub mod memory_tools` — `FlowMemoryRecallTool`, `FlowMemoryRememberTool`, plus `flow_namespace` / `FLOW_MEMORY_NAMESPACE_PREFIX` / `cross_flow_recall` (re-exported from `mod.rs` because the tinyflows `memory` node's `OpenHumanMemory` adapter needs byte-identical `scope: "flows"` results).
-- `pub mod agents` — first-class built-in sub-agents: `workflow_builder` (authoring copilot) and `flow_discovery` (read-only suggestion scout), registered as `BUILTINS` in `agent/registry/agents/loader.rs`.
+- `pub mod agents` — first-class built-in sub-agents: `workflow_builder` (authoring copilot) and `flow_discovery` (read-only suggestion scout); their `agent.toml` and `prompt::build` are referenced by path from the `BUILTINS` slice in `agent/registry/agents/loader.rs`.
 - `pub mod skills` (needs both `flows` and `skills` features) — bundles `skills/flow-authoring/WORKFLOW.md`, a skill teaching flows authoring.
-- `pub mod tinyflows` — the capability seam (`caps/`) implementing `tinyflows`'s traits over real OpenHuman services, plus `observability.rs` (`FlowRunObserver`), `memory_adapter.rs`, and `langfuse_export.rs`.
+- `pub mod tinyflows` — the capability seam (`caps/`) implementing `tinyflows`'s traits over real OpenHuman services, plus `observability.rs` (`FlowRunObserver`), `memory_adapter.rs` (`OpenHumanMemory`), and `langfuse_export.rs`. Has its own [README](tinyflows/README.md).
 - Re-exported model types (from `tinyflows_catalog`, not owned here): `Flow`, `FlowConnection`, `FlowDraft`, `FlowImport`, `FlowRevision`, `FlowRun`, `FlowRunStep`, `FlowRunTrigger`, `FlowSuggestion`, `FlowValidation`, `FlowValidationError`, `SuggestionStatus`, `DraftOrigin`, plus `types`, `run_registry`, `build_registry`, and `n8n_import` (the format importer).
 
 ## Calls into
@@ -51,21 +54,23 @@ from always-compiled code.
 - `crates/openhuman-core/src/agent/tinyagents/` — the state-graph engine both the agent harness and tinyflows lower onto.
 - `crates/openhuman-core/src/cron/` — `add_flow_schedule_job` arms a schedule-triggered flow as a `JobType::Flow` cron job; the scheduler fires it by publishing `DomainEvent::FlowScheduleTick`, which `bus::FlowTriggerSubscriber` picks up.
 - `crates/openhuman-core/src/platform/socket/medulla/workflows/` — `WorkflowBridge` trait implemented by `medulla_bridge`.
-- `crates/openhuman-core/src/skills/` — catalogue integration (`catalogue.rs`) and the shared skill-bundle mechanism used by `skills/flow-authoring/`.
+- `crates/openhuman-core/src/skills/` — the `Workflow` / `WorkflowScope` catalogue types used by `catalogue.rs`, and the `BundledSkill` mechanism used by `skills/flow-authoring/`.
 - `crates/openhuman-core/src/memory/` — `memory_tools`/`tinyflows::memory_adapter` read/write agent memory under the `flows` scope.
 
 ## Called by
 
 - `crates/openhuman-core/src/core/all.rs` — registers `all_flows_registered_controllers()` under `#[cfg(feature = "flows")]`.
-- `crates/openhuman-core/src/core/jsonrpc.rs` — constructs `flows::bus::FlowTriggerSubscriber` at startup.
-- `crates/openhuman-core/src/core/runtime/services.rs` — runs `sweep_orphaned_running_runs_on_boot` and `reconcile_schedule_triggers_on_boot` during core boot.
-- `crates/openhuman-core/src/tools/ops.rs` — registers `ProposeWorkflowTool` and `RunFlowTool` in the agent tool list.
+- `crates/openhuman-core/src/core/jsonrpc.rs` — constructs and subscribes `FlowTriggerSubscriber`, `FlowRunDigestSubscriber`, and `DedupCommitSubscriber` at startup.
+- `crates/openhuman-core/src/core/runtime/services.rs` — runs `sweep_orphaned_running_runs_on_boot` and `reconcile_schedule_triggers_on_boot` during core boot and calls `medulla_bridge::install`; `platform/socket/ops.rs` installs the bridge on the socket path as well.
+- `crates/openhuman-core/src/tools/ops.rs` — pushes all 27 flows tools onto the agent tool list (`tools/mod.rs` re-exports the four tool modules).
 - `crates/openhuman-core/src/agent/registry/agents/loader.rs` — registers `workflow_builder` and `flow_discovery` as built-in archetypes.
+- `crates/openhuman-core/src/agent/harness/session/` (`builder/factory.rs`, `turn/tools.rs`) — extends the skill catalogue with `catalogue::flow_entries`.
 
 ## Tests
 
-- Unit: `*_tests.rs` colocated with nearly every top-level file (`ops_tests*`, `bus_tests*`, `builder_tools_tests*`, `catalogue_tests.rs`, `discovery_tools_tests.rs`, `medulla_bridge_tests.rs`, `memory_tools_tests.rs`, `node_contracts_tests.rs`, `schemas_tests.rs`, `store_tests_part_01..03.rs`, `tools_tests.rs`, `types_tests.rs`), plus `import_tests.rs` for the n8n importer.
-- `tinyflows/` has its own suite: `checkpoint_compat_tests.rs`, `memory_adapter_tests.rs`, `memory_node_e2e_tests.rs`, `observability_tests.rs`, `tinyflows_tests.rs`.
+- Unit: `*_tests.rs` attached with `#[path]` to nearly every top-level file (`ops_tests*`, `bus_tests*`, `builder_tools_tests*`, `catalogue_tests.rs`, `discovery_tools_tests.rs`, `medulla_bridge_tests.rs`, `memory_tools_tests.rs`, `node_contracts_tests.rs`, `schemas_tests.rs`, `tools_tests.rs`), plus `import_tests.rs` for the n8n importer (declared in `mod.rs`).
+- `tinyflows/` has its own suite: `checkpoint_compat_tests.rs`, `memory_adapter_tests.rs`, `memory_node_e2e_tests.rs`, `observability_tests.rs`, `langfuse_export_tests.rs`, `tinyflows_tests.rs`, and `caps/*_tests.rs`.
+- Not compiled: `types.rs` / `types_tests.rs` and `store_tests_part_01..03.rs` are declared by no module (`flows::types` resolves to `tinyflows_catalog::types`, and `store.rs` has no test attachment). They are leftovers from moving the model and store into `tinyflows-catalog` / `tinyflows-sqlite`.
 
 ## Related docs
 
