@@ -87,7 +87,9 @@ No `store.rs`. The only durable side effect is the **MCP write-audit log**, writ
 ## Used by
 
 - `crates/openhuman-core/src/core/cli.rs` — dispatches `mcp` / `mcp-server` subcommands to `run_stdio_from_cli`; the only production entry point. (`crates/openhuman-core/src/core/legacy_aliases.rs` references the command surface; `about_app/catalog.rs` lists it in the capability catalog.)
-- The other `mcp/` members (`mcp::registry`, `mcp::config_servers`, `mcp::http_client`, `mcp::audit`) and `tool_registry` are **siblings** in the broader MCP feature set, not consumers of this server's code paths (except the test-only `McpHttpClient` round-trip).
+- `crates/openhuman-core/src/inference/provider/claude_code/driver.rs` — calls `ensure_local_http` on each Claude Code turn to hand the sandboxed `claude` subprocess a loopback MCP endpoint.
+- `crates/openhuman-core/src/tools/registry/ops.rs` — reads `McpToolSpec`/`tool_specs()` (via `crate::mcp::server::McpToolSpec`) to fold this server's advertised tools into the agent tool registry catalog.
+- The other `mcp/` members (`mcp::host`, `mcp::registry`, `mcp::audit`) are siblings in the broader MCP feature set, not consumers of this server's code paths. `mcp::http_client` is a re-export module of `tinymcp`, used here only by the test-only `McpHttpClient` HTTP round-trip.
 
 ## Notes / gotchas
 

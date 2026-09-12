@@ -132,8 +132,10 @@ Additive idempotent column migrations (`add_column_if_missing`) backfill `ingest
 ## Used by
 
 - `crates/openhuman-core/src/core/all.rs` — registers controllers + schemas into the global RPC registry.
-- `crates/openhuman-core/src/core/jsonrpc.rs` — at startup registers the connection subscriber and starts the periodic poll.
-- `crates/openhuman-core/src/core/event_bus/events.rs` — defines/classifies the three `TaskSource*` event variants under domain `"task_sources"`.
+- `crates/openhuman-core/src/core/jsonrpc.rs` — at startup registers the connection subscriber (bus.rs).
+- `crates/openhuman-core/src/core/runtime/services.rs` — at startup starts the periodic poll as part of the `proactive_task_pollers` bootstrap job.
+- `crates/openhuman-core/src/core/events.rs` — defines/classifies the three `TaskSource*` event variants under domain `"task_sources"`.
+- `crates/openhuman-core/src/tools/mod.rs` — re-exports `tools.rs`'s agent tools into the global tool registry.
 - `crates/openhuman-core/src/config/schema/` — `TaskSourcesConfig` block feeding domain defaults.
 
 ## Notes / gotchas

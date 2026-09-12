@@ -41,7 +41,7 @@ documented by this README and two with their own README each:
 `pub mod web3;` (declared in `crates/openhuman-core/src/lib.rs`) is ALWAYS
 compiled — it is a facade. The real swap/bridge/dapp implementation is gated
 behind the default-ON `web3` Cargo feature. When the feature is off,
-[`stub.rs`](mod.rs) takes its place and exposes
+`stub.rs` takes its place and exposes
 `all_web3_registered_controllers` / `all_web3_controller_schemas` /
 `all_web3_agent_tools` returning empty collections, so `core/all.rs` and
 `tools/ops.rs` need no per-call `#[cfg]`. `cargo check --no-default-features`
