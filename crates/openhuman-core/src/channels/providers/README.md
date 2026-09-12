@@ -1,6 +1,6 @@
 # Providers
 
-Implementations live in `vendor/tinychannels/crates/tinychannels/src/providers/`, not here. Every flat file in this directory except `mod.rs` is a one-line `pub use tinychannels::providers::<name>::*;` (or a narrower named re-export: `signal`, `slack`, `whatsapp`, `whatsapp_web`) that keeps the stable `crate::channels::providers::<name>` path — and, via `channels/mod.rs`, the shorter `crate::channels::<name>` path — resolving after the extraction. Verify with `grep -L 'tinychannels::providers' providers/*.rs`, which should print only `mod.rs`. Provider construction is upstream too: `runtime/startup.rs` calls `tinychannels::build_channels` with a credential-hydrated config and the `channels::host` capability surface.
+Implementations live in `vendor/tinychannels/src/providers/`, not here. Every flat file in this directory except `mod.rs` is a one-line `pub use tinychannels::providers::<name>::*;` (or a narrower named re-export: `signal`, `slack`, `whatsapp`, `whatsapp_web`) that keeps the stable `crate::channels::providers::<name>` path — and, via `channels/mod.rs`, the shorter `crate::channels::<name>` path — resolving after the extraction. Verify with `grep -L 'tinychannels::providers' providers/*.rs`, which should print only `mod.rs`. Provider construction is upstream too: `runtime/startup.rs` calls `tinychannels::build_channels` with a credential-hydrated config and the `channels::host` capability surface.
 
 ## Providers
 
