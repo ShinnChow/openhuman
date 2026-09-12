@@ -748,7 +748,6 @@ async fn main() -> anyhow::Result<()> {
     }
     Ok(())
 }
-
 #[cfg(test)]
 #[path = "fleet_tests.rs"]
 mod tests;
