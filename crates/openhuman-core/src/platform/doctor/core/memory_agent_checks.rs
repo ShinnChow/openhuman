@@ -316,7 +316,7 @@ pub(super) fn check_claude_agent_sdk(config: &Config, items: &mut Vec<Diagnostic
 
 // ── Helpers ──────────────────────────────────────────────────────
 
-fn model_matches(installed: &str, configured: &str) -> bool {
+pub(super) fn model_matches(installed: &str, configured: &str) -> bool {
     if installed == configured {
         return true;
     }
