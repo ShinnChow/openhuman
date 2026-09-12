@@ -82,7 +82,8 @@ The `goals/` and `todos/` submodules register their own controller namespaces fr
 
 ## Dependencies
 
-- `crate::memory` / `memory_conversations` — thread + message store types and CRUD (`ensure_thread`, `list_threads`, `get_messages`, `append_message`, `update_thread_*`, `ConversationStore`, etc.); also the `ApiEnvelope`/`ApiMeta`/request/response DTOs.
+- `crate::memory::conversations` — thread + message store types and CRUD (`ensure_thread`, `list_threads`, `get_messages`, `append_message`, `update_thread_*`, `ConversationStore`, etc.); also the `ApiEnvelope`/`ApiMeta`/request/response DTOs.
+- `tinyagents_graph::{goals, todos}` — the vendored goal and task-board domains that `goals/` and `todos/` adapt.
 - `crate::config::Config` — resolves `workspace_dir` and inference/runtime/secrets settings (`load_or_init`).
 - `crate::inference::provider` — builds the intelligent-routing provider used for AI title generation (`create_intelligent_routing_provider`, `ProviderRuntimeOptions`).
 - `crate::web_chat` — `invalidate_thread_sessions` on thread delete (so a deleted thread's live web session can't keep appending).
