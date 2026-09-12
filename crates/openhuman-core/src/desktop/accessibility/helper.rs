@@ -30,8 +30,10 @@ mod swift_overlay;
 mod swift_paste;
 mod swift_source;
 
+#[cfg(target_os = "macos")]
 #[allow(unused_imports)]
 pub(crate) use process::helper_send_receive;
+#[cfg(target_os = "macos")]
 #[allow(unused_imports)]
 pub(in crate::desktop::accessibility) use process::{helper_quit, helper_send_fire_and_forget};
 pub use process::precompile_helper_background;
