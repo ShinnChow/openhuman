@@ -70,7 +70,7 @@ impl BrowserTool {
         playwright_backend::PlaywrightBrowserState::is_available().await
     }
 
-    fn configured_backend(&self) -> anyhow::Result<BrowserBackendKind> {
+    pub(super) fn configured_backend(&self) -> anyhow::Result<BrowserBackendKind> {
         BrowserBackendKind::parse(&self.backend)
     }
 
