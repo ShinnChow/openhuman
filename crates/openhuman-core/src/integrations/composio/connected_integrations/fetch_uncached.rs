@@ -22,7 +22,7 @@ use super::fetch::{connectable_toolkit_slugs, resolve_toolkit_description};
 ///
 /// Returns `None` when we couldn't even build a client (no auth),
 /// signalling the caller should NOT cache this result.
-async fn fetch_connected_integrations_uncached(
+pub(super) async fn fetch_connected_integrations_uncached(
     config: &Config,
 ) -> Option<Vec<ConnectedIntegration>> {
     use super::super::client::{create_composio_client, direct_list_connections, ComposioClientKind};
