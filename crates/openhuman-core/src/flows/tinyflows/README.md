@@ -13,8 +13,8 @@ security model); this README covers only the host seam.
 
 ## Layout
 
-- `mod.rs` — export-focused. Re-exports [`caps::build_capabilities`] and
-  [`caps::open_flow_checkpointer`], the two entry points `flows::ops*.rs`
+- `mod.rs` — export-focused. Re-exports `caps::build_capabilities` and
+  `caps::open_flow_checkpointer`, the two entry points `flows::ops*.rs`
   calls to drive a run; re-exports `tinyflows_sqlite::checkpoint` as
   `checkpoint_sqlite` under its historical path.
 - `caps/` — every capability adapter except `memory`, plus construction,
