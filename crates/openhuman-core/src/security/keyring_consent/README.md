@@ -88,6 +88,16 @@ backend is active and whether the user consented to it. `active_mode_for`
 matches on `keyring::backend_name()`'s identifiers (`"os"`,
 `"encrypted_file"`, `"file"`, `"mock"`) to answer that question.
 
+## Used by
+
+- `credentials/profiles_impl_01_part_01.rs` and `credentials/credential_ref.rs`
+  — consent preflight before profile secrets and credential refs touch the
+  keyring.
+- `web3/wallet/ops_part_01.rs` — mnemonic goes to the keychain only on
+  `Proceed`.
+- `desktop/app_state/` — carries `keyring_consent` in the stored app state and
+  `keyring_status` in the snapshot; `policy::initialize` is fed from there.
+
 ## Tests
 
 - `types_tests.rs`, `policy_tests.rs`, `ops_tests.rs`, `schemas_tests.rs`.
