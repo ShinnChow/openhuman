@@ -20,8 +20,6 @@ use super::{from_bus, ModuleMemoryProvider, INGEST_BUS_GRACE, MODULE_ID};
 use crate::config::Config;
 use crate::modules::registry;
 
-use use crate::modules::memory::capabilities::ARTIFACT_CAPABILITIES_PIN;;
-use use crate::modules::memory::capabilities::capabilities_for;;
 fn provider() -> ModuleMemoryProvider {
     ModuleMemoryProvider::new(Arc::new(Config::default()))
 }
