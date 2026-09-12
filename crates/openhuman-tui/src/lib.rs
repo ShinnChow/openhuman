@@ -15,10 +15,11 @@
 //!
 //! Public surface: [`run_from_cli`] (the CLI entry point — see its doc for the
 //! flag list, or `README.md` for a rendered flag table), [`init_crash_reporting`],
-//! and the [`TranscriptState`] / [`Entry`] / [`EntryKind`] reducer types used by
-//! `state.rs` and its tests. RPC envelope decoding comes from
+//! and the [`TranscriptState`] / [`Entry`] / [`EntryKind`] reducer types defined
+//! in `state.rs`. RPC envelope decoding comes from
 //! [`openhuman_rpc::unwrap_rpc`](openhuman_rpc::unwrap_rpc), re-exported from
-//! `cockpit.rs`, the same shape the desktop app decodes over HTTP.
+//! `cockpit.rs`, which strips the optional `result`/`data` envelopes core RPC
+//! handlers wrap around their payloads.
 //!
 //! The `crash-reporting` feature (default on) pulls in `sentry` and `dotenvy`
 //! and forwards `openhuman-core/crash-reporting`. Without it,

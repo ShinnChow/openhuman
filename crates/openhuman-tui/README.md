@@ -28,10 +28,13 @@ cargo run -p openhuman-tui -- [OPTIONS] [PROMPT]
 | `--resume` | Open the saved-thread picker (starts on the latest thread). |
 | `--last` | Resume the most recent thread. |
 | `--no-alt-screen` | Draw in the current terminal buffer. |
-| `-p`, `--provider <id>` | Override the inference provider for this session. |
-| `-m`, `--model <id>` | Override the model for this session. |
-| `-v`, `--verbose` | Debug-level file logging (never the UI — the TUI owns the terminal, so logging is file-only). |
+| `-p`, `--provider <id>` | Override the inference provider for this session (also `--provider-id`, `--provider=<id>`). |
+| `-m`, `--model <id>` | Override the model for this session (also `--model-id`, `--model=<id>`). |
+| `-v`, `--verbose` | Debug-level logging, written to the log file and never the UI (the TUI owns the terminal). |
+| `-h`, `--help` | Print usage and exit. |
 | a positional prompt | Sent immediately after startup. |
+
+Any other `-`-prefixed argument is rejected before the core boots.
 
 `Ctrl+Tab`/`Alt+1-4` switch tabs, `/` opens the command picker (see
 `COMMANDS` in `src/composer.rs` for the full list), `Enter` sends,
@@ -50,8 +53,8 @@ cargo run -p openhuman-tui -- [OPTIONS] [PROMPT]
 - Depends on `openhuman-core` directly and runs it in-process — there is no
   need to spawn or connect to an `openhuman-core` binary.
 - Depends on `openhuman-rpc` only for `unwrap_rpc` (re-exported from
-  `src/cockpit.rs`) to decode the same RPC envelope shape the desktop app
-  handles over HTTP.
+  `src/cockpit.rs`), which strips the optional `result`/`data` envelopes core
+  RPC handlers wrap around their payloads before the TUI reads them.
 - The ratatui/crossterm terminal dependencies live only in this crate.
   `crates/openhuman-core/Cargo.toml` calls this out explicitly: "The
   terminal-specific ratatui/crossterm cohort lives in the separate
@@ -74,9 +77,10 @@ cargo run -p openhuman-tui -- [OPTIONS] [PROMPT]
 
 ## Tests
 
-`state.rs` reducer tests run without a terminal since `TranscriptState` has no
-ratatui/crossterm/IO dependencies. `tests/cli_e2e.rs` covers process-boundary
-behavior (e.g. `--help` output) by spawning the built binary.
+Unit tests sit beside each module. The `state.rs` reducer tests run without a
+terminal since `TranscriptState` has no ratatui/crossterm/IO dependencies.
+`tests/cli_e2e.rs` covers process-boundary behavior (`--help` output, flag
+validation before the core boots) by spawning the built binary.
 
 ```bash
 cargo test -p openhuman-tui
