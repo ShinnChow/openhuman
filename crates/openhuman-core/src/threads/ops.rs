@@ -33,3 +33,5 @@ use support::{
 };
 #[cfg(test)]
 use crate::memory::conversations::{ConversationMessage, ConversationThread, CreateConversationThread};
+#[cfg(test)]
+use crate::memory::ConversationMessageRecord;
