@@ -88,7 +88,7 @@ pub fn forget_current_user_caches() {
 }
 
 /// The sign-out generation a refresh must still be running under to publish.
-fn current_user_generation() -> u64 {
+pub(super) fn current_user_generation() -> u64 {
     CURRENT_USER_GENERATION.load(Ordering::SeqCst)
 }
 
@@ -98,7 +98,7 @@ fn current_user_generation() -> u64 {
 /// Checking before the lock would be a check-then-act: sign-out could land in
 /// the gap and this write would then restore the negative cache it had just
 /// cleared.
-fn record_current_user_failure_unless_stale(
+pub(super) fn record_current_user_failure_unless_stale(
     generation: u64,
     api_base: &str,
     token: &str,
@@ -118,7 +118,7 @@ fn record_current_user_failure_unless_stale(
 /// Stamp a refreshed user's freshness only if `generation` is still current,
 /// **checked while holding the success lock** — the same check-then-act the
 /// failure recorder avoids, for the same reason.
-fn note_current_user_success_unless_stale(generation: u64, api_base: &str, token: &str) -> bool {
+pub(super) fn note_current_user_success_unless_stale(generation: u64, api_base: &str, token: &str) -> bool {
     let mut success = LAST_CURRENT_USER_SUCCESS.lock();
     if current_user_generation() != generation {
         return false;
@@ -129,7 +129,7 @@ fn note_current_user_success_unless_stale(generation: u64, api_base: &str, token
 
 /// Clear the failure record only while the refresh still belongs to the
 /// current session generation.
-fn clear_current_user_failure_unless_stale(generation: u64) -> bool {
+pub(super) fn clear_current_user_failure_unless_stale(generation: u64) -> bool {
     let mut failure = CURRENT_USER_FAILURE.lock();
     if current_user_generation() != generation {
         return false;
