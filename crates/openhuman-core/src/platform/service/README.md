@@ -31,6 +31,7 @@ Service-management domain for the OpenHuman core daemon. It installs/uninstalls 
 | `crates/openhuman-core/src/platform/service/daemon_host.rs` | `DaemonHostConfig { show_tray }` + async `load_for_config_dir` / `save_for_config_dir` (JSON next to config, `daemon_host_config.json`). |
 | `crates/openhuman-core/src/platform/service/mock.rs` | File-backed deterministic mock backend gated on `OPENHUMAN_SERVICE_MOCK`; supports forced failures and an `agent_running` flag (`mock_agent_running`). |
 | `crates/openhuman-core/src/platform/service/mock_tests.rs` | Sibling test suite for `mock.rs`. |
+| `crates/openhuman-core/src/platform/service/tools.rs` | LLM-callable wrappers over the domain (`service_status` / `daemon_host_prefs_get` default-on; lifecycle mutators default-off via the `service_lifecycle` user-filter toggle). |
 
 ## Public surface
 
@@ -95,7 +96,8 @@ Both subscribers are registered idempotently from `crates/openhuman-core/src/cor
 - `crates/openhuman-core/src/core/all.rs` — registers the service controllers (`all_service_registered_controllers`).
 - `crates/openhuman-core/src/core/jsonrpc.rs` — registers the restart/shutdown event-bus subscribers at startup.
 - `crates/openhuman-core/src/platform/doctor/core.rs` — reads `service::daemon::state_file_path`.
-- `crates/openhuman-core/src/platform/update/ops.rs`, `crates/openhuman-core/src/config/ops/loader_part_01.rs` — reference `crate::platform::service` (restart/mock-agent-running paths).
+- `crates/openhuman-core/src/platform/update/ops.rs` (`rpc::service_restart` after a self-replace), `crates/openhuman-core/src/config/ops/loader_part_01.rs` (`mock::mock_agent_running`), `crates/openhuman-core/src/desktop/app_state/ops_part_01.rs` / `ops_part_02.rs` (`ServiceState`/`ServiceStatus`, `status`) — call into `crate::platform::service`.
+- `crates/openhuman-core/src/tools/mod.rs` — re-exports `platform::service::tools::*`.
 - `lib.rs` — module wiring.
 
 ## Notes / gotchas
