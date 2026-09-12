@@ -21,5 +21,5 @@ pub use output_language::{normalize_output_language, output_language_directive};
 use crate::config::schema::{CapabilityProviderTrustState, TeamModelConfig};
 
 #[cfg(test)]
-#[path = "types_model_pin_tests_tests.rs"]
+#[path = "types_model_pin_tests.rs"]
 mod model_pin_tests;

@@ -37,9 +37,9 @@ pub(crate) use crate::config::Config;
 pub(super) use load::seed_and_enrich_model_registry;
 
 #[cfg(test)]
-#[path = "loader_model_registry_seed_tests_tests.rs"]
+#[path = "loader_model_registry_seed_tests.rs"]
 mod model_registry_seed_tests;
 
 #[cfg(test)]
-#[path = "loader_loader_io_chain_tests_tests.rs"]
+#[path = "loader_io_chain_tests.rs"]
 mod loader_io_chain_tests;
