@@ -6,7 +6,7 @@ use crate::config::rpc as config_rpc;
 use crate::core::all::ControllerFuture;
 use crate::rpc::RpcOutcome;
 
-fn handle_composio_execute(params: Map<String, Value>) -> ControllerFuture {
+pub(super) fn handle_composio_execute(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let action = params
             .get("action")

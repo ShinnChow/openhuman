@@ -9,7 +9,7 @@ use crate::rpc::RpcOutcome;
 use crate::search::tools::SEARXNG_MAX_RESULTS;
 use crate::tools::traits::Tool;
 
-fn handle_web_search(params: Map<String, Value>) -> ControllerFuture {
+pub(super) fn handle_web_search(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let query = params
             .get("query")
@@ -79,7 +79,7 @@ fn handle_web_search(params: Map<String, Value>) -> ControllerFuture {
     })
 }
 
-fn handle_seltz_search(params: Map<String, Value>) -> ControllerFuture {
+pub(super) fn handle_seltz_search(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let query = params
             .get("query")
@@ -155,7 +155,7 @@ fn handle_seltz_search(params: Map<String, Value>) -> ControllerFuture {
     })
 }
 
-fn handle_querit_search(params: Map<String, Value>) -> ControllerFuture {
+pub(super) fn handle_querit_search(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let query = params
             .get("query")
@@ -237,7 +237,7 @@ fn handle_querit_search(params: Map<String, Value>) -> ControllerFuture {
 }
 
 
-fn handle_searxng_search(params: Map<String, Value>) -> ControllerFuture {
+pub(super) fn handle_searxng_search(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let query = params
             .get("query")
