@@ -9,11 +9,13 @@ use crate::config::{Config, DiscordConfig, IMessageConfig, TelegramConfig};
 use crate::rpc::RpcOutcome;
 use crate::security::credentials;
 
-use super::super::definitions::{find_channel_definition, ChannelAuthMode};
+use super::super::super::definitions::{find_channel_definition, ChannelAuthMode};
 use super::super::types::ChannelConnectionResult;
 use super::email::{build_email_config, persist_email_config, verify_email_credentials};
 use super::shared::{credential_provider, parse_allowed_users, parse_optional_bool};
-use super::yuanbao::{build_effective_yuanbao_config, require_yuanbao_field, verify_yuanbao_credentials};
+use super::super::yuanbao::{
+    build_effective_yuanbao_config, require_yuanbao_field, verify_yuanbao_credentials,
+};
 
 /// Initiate a channel connection.
 ///
