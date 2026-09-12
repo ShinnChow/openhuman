@@ -1,6 +1,6 @@
 # Skills
 
-Discovery and parsing of agentskills.io-style skills (a directory containing `SKILL.md`/`WORKFLOW.md` with YAML frontmatter and Markdown instructions). Owns scope resolution (Builtin / User / Project / Legacy / Profile), trust-marker enforcement, resource reading, create/install/uninstall, run logging, search, and the agent-tool wrappers over all of it. Skills are surfaced to agents via the compact `## Installed Skills` catalog and executed via `run_skill`/`run_workflow` in an isolated worker — bodies are no longer spliced into chat turns. Remote catalog browsing lives in [`catalog/`](catalog/README.md) and run execution lives in [`runtime/`](runtime/README.md); this module owns local metadata only.
+Discovery and parsing of agentskills.io-style skills (a directory containing `SKILL.md`/`WORKFLOW.md` with YAML frontmatter and Markdown instructions). Owns scope resolution (Builtin / User / Project / Legacy / Profile), trust-marker enforcement, resource reading, create/install/uninstall, run logging, search, and the agent-tool wrappers over all of it. Skills are surfaced to agents as a compact catalog (`## Installed Skills` in the orchestrator prompt) and launched through the `run_workflow` tool as a separate agent run; skill bodies are not spliced into chat turns. Remote catalog browsing lives in [`catalog/`](catalog/README.md) and run execution lives in [`runtime/`](runtime/README.md); this module owns local metadata only.
 
 ## Compile-time gate (`skills` feature, see `mod.rs`)
 
@@ -18,19 +18,19 @@ Stub signatures must match the real ones exactly; `cargo check --no-default-feat
 | --- | --- |
 | `ops.rs` | Facade re-exporting `ops_create`/`ops_discover`/`ops_install`/`ops_parse`/`bundled::install_bundled_skills`; the module doc explains scope precedence and the trust marker. |
 | `ops_create.rs` | Scaffolds new `WORKFLOW.md`/`SKILL.md` skills on disk from declared `[[inputs]]`. |
-| `ops_discover.rs` | Scans root directories, resolves scope precedence and collisions, initializes/prunes the skills directory. `load_workflow_metadata_for_profile` and `discover_workflows_with_profile` take a profile-local skills root and `include_skills` list so a profile can see its own private skills. |
+| `ops_discover.rs` | Scans root directories, resolves scope precedence and collisions, skips symlinked bundle entries, and `init_workflows_dir` creates the legacy `<workspace>/skills/` dir. `load_workflow_metadata_for_profile` and `discover_workflows_with_profile` take a profile-local skills root and `include_skills` list so a profile can see its own private skills. |
 | `ops_install.rs` | Facade over `ops_install_part_01.rs`/`ops_install_part_02.rs`: the hardened HTTPS skill-URL installer (size cap, timeout clamp, non-https/private-IP/non-SKILL.md rejection, GitHub blob→raw normalization). Localhost HTTP installs require `OPENHUMAN_SKILL_INSTALL_ALLOW_LOCAL_HTTP=1` and are for local fixtures only. |
 | `ops_parse.rs` | Splits `SKILL.md`/`WORKFLOW.md` into frontmatter + body, builds the resource inventory, reads a single resource. |
-| `ops_types.rs` | Ungated carve-out: `Workflow`, `WorkflowFrontmatter`, `WorkflowScope` (`Builtin` < `User`/`Project`/`Legacy`/`Profile` precedence), filename/size constants (`MAX_WORKFLOW_RESOURCE_BYTES = 128 KiB`). |
+| `ops_types.rs` | Ungated carve-out: `Workflow`, `WorkflowFrontmatter`, `WorkflowScope` (`Builtin`, `User`, `Project`, `Legacy`, `Profile`, `Flow`), filename/size constants (`MAX_WORKFLOW_RESOURCE_BYTES = 128 KiB`). |
 | `types.rs` | Ungated carve-out: `ToolResult`/`ToolContent`, the crate-wide tool-result content-block types re-exported through `tools::traits`. |
 | `preflight.rs` | Gates that must pass before the orchestrator boots for a `skills_run` (currently the GitHub gate: Composio GitHub connected, `git` on PATH, `user.name`/`user.email` configured, optional strict identity match). Failures surface as a plain `Err` instead of cryptic orchestrator output. |
 | `registry.rs` | A skill is an `AgentDefinition` plus declared `[[inputs]]`, flattened from the same `skill.toml`/`workflow.toml`; `render_inputs_block` renders them into the prompt. Also `prune_legacy_default_workflows`. |
 | `run_log.rs` | Per-run streaming logs at `<workspace>/skills/.runs/<skill>_<UTC-ts>_<run>.log`, written live off the agent's `AgentProgress` channel; read back by `read_run_log_slice`/`scan_runs`. |
 | `search.rs` | `skill_search` — return a capped projection (id, name, description, scope, tags) for one matching skill instead of serializing the whole catalog, mirroring `tool_search`'s deferred-schema bargain. |
-| `tools.rs` | LLM-callable wrappers: read tools (`list_workflows`, `read_workflow_resource`, recent runs/log) are default-enabled; write tools (`create_workflow`, `install_workflow_from_url`, `uninstall_workflow`) ship default-OFF via `tools/user_filter.rs`. Launching a run is a separate tool (`run_workflow`/`AwaitWorkflowTool`) under `agent/tools/`. |
+| `tools.rs` | LLM-callable wrappers: `WorkflowListTool` (`list_workflows`), `WorkflowDescribeTool` (`describe_workflow`), `WorkflowReadResourceTool` (`read_workflow_resource`), `WorkflowRecentRunsTool` (`list_workflow_runs`), `WorkflowReadRunLogTool` (`read_workflow_run_log`) are default-enabled; `WorkflowCreateTool` (`create_skill` — `create_workflow` belongs to the flows domain), `WorkflowInstallFromUrlTool` (`install_workflow_from_url`) and `WorkflowUninstallTool` (`uninstall_workflow`) form the default-OFF `workflow_manage` family in `tools/user_filter.rs`. Re-exported through `tools/mod.rs` behind `#[cfg(feature = "skills")]`. Launching a run is a separate tool (`RunWorkflowTool`/`AwaitWorkflowTool` in `agent/tools/run_workflow.rs`). |
 | `bundled/` | Skills shipped **inside the binary** (`include_str!`'d SKILL.md bundles, e.g. `flows/skills/flow-authoring`), materialised into the workspace at boot and discovered through the same code paths as a user-installed skill — lowest scope precedence, so a user/project skill of the same name always wins. |
-| `bus.rs` | `TriggeredWorkflowIndex` + `TriggeredSkillSubscriber`: indexes skills that declare a `triggers:` list in frontmatter and registers on the global event bus. Logs which skill(s) match a `DomainEvent`; the actual agent-session launch is out of scope here and wired by the channel runtime. |
-| `schemas/` | Controller schemas and thin handlers, split into `controller_schemas.rs`, `handlers.rs`, `helpers.rs`, `wire_types.rs`. All controllers resolve the workspace via `config::load_config_with_timeout`. |
+| `bus.rs` | `TriggeredWorkflowIndex` + `TriggeredSkillSubscriber`: indexes skills that declare a `triggers:` list in frontmatter; `ensure_triggered_workflow_subscriber` (called from `channels/runtime/startup_part_01.rs` and `core/jsonrpc.rs`) subscribes `skills::triggered_skill` on `BUS`. It only logs which skill(s) match a `DomainEvent`; launching an agent session for a match is not implemented here. |
+| `schemas/` | Controller schemas and thin handlers, split into `controller_schemas.rs`, `handlers.rs`, `helpers.rs`, `wire_types.rs`. Handlers resolve the workspace through `helpers.rs` (`resolve_workspace_dir`/`resolve_config`: `Config::load_or_init()` under a 30 s timeout, falling back to the default workspace). |
 | `stub.rs` | Disabled-feature facade; see above. |
 | `catalog/` | `skill_registry` — remote catalog fetch/cache/search, install/uninstall by entry id, the `skill_setup` agent. See [catalog/README.md](catalog/README.md). |
 | `runtime/` | `skill_runtime` — start/cancel runs, runtime resolution (Node/Python), the `skill_executor` agent. See [runtime/README.md](runtime/README.md). |
@@ -44,18 +44,18 @@ Plus the sub-domain namespaces: `skill_registry.*` (`browse`, `search`, `sources
 
 ## Calls into
 
-- `crates/openhuman-core/src/config/` — workspace path resolution and trust-marker location (`config::load_config_with_timeout`).
+- `crates/openhuman-core/src/config/` — `Config::load_or_init()` for workspace resolution in the RPC handlers; the trust marker is `<workspace>/.openhuman/trust` (`ops_types::TRUST_MARKER`).
 - `crates/openhuman-core/src/config/workspace/ops.rs` — calls `skills::init_workflows_dir` during workspace bootstrap.
 - `crates/openhuman-core/src/agent/registry/agents/orchestrator/prompt.rs` — renders the `## Installed Skills` catalog, fed by the skill list on `PromptContext` (`agent/harness/session/turn/context.rs`).
-- `crates/openhuman-core/src/agent/prompts/` — renders the `## Available Skills` catalog section.
-- `crates/openhuman-core/src/core/bus.rs` / `crates/openhuman-core/src/core/events.rs` — `bus.rs` subscribes to `DomainEvent` for triggered skills; `ops`/`bus` publish `WorkflowLoaded`/`WorkflowStopped`/`WorkflowStartFailed`/`WorkflowExecuted`/`WorkflowsChanged` on run and catalog changes.
+- `crates/openhuman-core/src/agent/context/channels_prompt.rs` — renders the `## Available Skills` list for channel-driven turns (`agent/prompts/` no longer emits a skills section).
+- `crates/openhuman-core/src/core/bus.rs` / `crates/openhuman-core/src/core/events.rs` — `bus.rs` subscribes to `DomainEvent` for triggered skills; `ops_create.rs` and `ops_install_part_01.rs` publish `DomainEvent::WorkflowsChanged` after create/install/uninstall so open sessions refresh their catalog. (`WorkflowLoaded`/`WorkflowStopped`/`WorkflowStartFailed`/`WorkflowExecuted` are declared in `events.rs` but nothing in this module publishes them.)
 - `crates/openhuman-core/src/agent/harness/definition.rs` — `registry.rs` flattens `AgentDefinition` fields from `skill.toml`.
 
 ## Called by
 
 - `crates/openhuman-core/src/tools/traits.rs` — re-exports `ToolResult`/`ToolContent` from `types.rs` as the shared tool-result shape.
 - `crates/openhuman-core/src/agent/harness/fork_context.rs` — fork context propagates injected skills.
-- `crates/openhuman-core/src/agent/harness/session/turn/context.rs` and `.../turn/tools.rs` — per-turn skill injection and tool wiring.
+- `crates/openhuman-core/src/agent/harness/session/turn/context.rs` and `.../turn/tools.rs` — the per-turn `workflows` list handed to `PromptContext`; `refresh_workflows` reloads it via `load_workflow_metadata_for_profile` when a `WorkflowsChanged` event is drained.
 - `crates/openhuman-core/src/agent/tools/run_workflow.rs` — the separate `run_workflow`/`AwaitWorkflowTool` launch path.
 - `crates/openhuman-core/src/core/all.rs` — controller registry wiring for `skills`, `skill_registry`, and `skill_runtime`.
 
@@ -65,9 +65,9 @@ Behavior tests live beside their modules as `*_tests.rs` (e.g. `ops_tests.rs` an
 
 `e2e_plumbing_tests.rs` and `e2e_run_tests.rs` are mock-LLM end-to-end tests: plumbing (create → registry round-trip, orchestrator turn calling `list_workflows`/`run_workflow`, `await_run_outcome` polling) and run execution (`spawn_workflow_run_background` → terminal `DONE` → `await_run_outcome`, `#[ignore]`d and serial because they set the process-global `OPENHUMAN_WORKSPACE`).
 
-Cross-cutting agent + skill behavior is covered indirectly by `crates/openhuman-core/src/agent/harness/session/turn_tests*.rs`.
+Catalog refresh in a live session (`refresh_workflows`) is covered by `crates/openhuman-core/src/agent/harness/session/turn_tests_part_04_tests.rs`.
 
 ## Notes
 
 - Per AGENTS.md, skill discovery rejects symlinked bundles — copy skills into the `Harness` workspace rather than symlinking them.
-- `WorkflowScope` precedence on name collision, lowest to highest: `Builtin` < `User`/`Project`/`Legacy` < `Profile` (profile-local skills are private to the active agent profile and shadow a same-named global one for its owner). `Flow` is a distinct, non-collision-checked scope: a Flows automation row from `flows.db` surfaced in the same catalogue rather than a `SKILL.md` bundle on disk.
+- `WorkflowScope` precedence on name collision (`ops_discover::precedence`), lowest to highest: `Builtin` < `Legacy` < `User` < `Project` < `Profile` (profile-local skills are private to the active agent profile and shadow a same-named global one for its owner). `Flow` is a distinct, non-collision-checked scope: a Flows automation row from `flows.db` surfaced in the same catalogue rather than a `SKILL.md` bundle on disk.

@@ -63,8 +63,8 @@ they are not redefined in this crate.
 
 | Binary | Path | Required features |
 | --- | --- | --- |
-| `openhuman-core` | `src/main.rs` | (default set) |
-| `test-mcp-stub` | `src/bin/test_mcp_stub.rs` | (default set) |
+| `openhuman-core` | `src/main.rs` | none |
+| `test-mcp-stub` | `src/bin/test_mcp_stub.rs` | none |
 | `openhuman-fleet` | `src/bin/fleet.rs` | `http-server`, `bin-tools` |
 | `rss-bench` | `src/bin/rss_bench.rs` | `rss-bench` |
 | `library-profile` | `src/bin/library_profile/main.rs` | `rss-bench` |
