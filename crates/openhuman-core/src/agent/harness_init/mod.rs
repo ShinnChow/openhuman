@@ -1,7 +1,8 @@
 //! `harness_init` — first-class orchestration of one-time, first-run setup.
 //!
 //! On a fresh install several provisioning steps (managed Python runtime,
-//! spaCy + model, managed Node runtime) used to run lazily on first use, with
+//! spaCy + model, Kompress/torch, managed Node runtime) used to run lazily on
+//! first use, with
 //! no user-visible feedback. This domain runs them eagerly at core startup
 //! (spawned non-blocking after the RPC server is ready), tracks per-step
 //! progress in an in-memory snapshot, and exposes it over
@@ -9,8 +10,9 @@
 //! frontend initialization screen.
 //!
 //! Steps delegate to the existing idempotent provisioning code
-//! (`runtime_python`, `memory_tree::nlp`, `runtime_node`) — this module
-//! orchestrates and reports, it does not reimplement downloads.
+//! (`crate::runtime::python`, `crate::runtime::python_server` for spaCy and
+//! Kompress, `crate::runtime::node`) — this module orchestrates and reports,
+//! it does not reimplement downloads.
 
 pub mod bus;
 pub mod ops;
