@@ -9,10 +9,14 @@ a remote operator. A single binary can be both at once; see `mod.rs` for the
 full split.
 
 Gated on the `medulla` Cargo feature and tagged
-`DomainGroup::Medulla` (`crate::core::all::DomainGroup`) at runtime. `contract`
-and `events` are ungated carve-outs: they are inert serde/std types with no
-runtime coupling, and `crates/openhuman-embed/src/` names them in public
-signatures, so gating them would take the embed facade down with them.
+`DomainGroup::Medulla` (`crate::core::all::DomainGroup`) at runtime. The
+feature is in the contributor `default` set of `crates/openhuman-core/Cargo.toml`
+and forwarded by `crates/openhuman-embed`, but it is not in
+`scripts/ci/product-features.txt`, so the shipped desktop app does not compile
+this domain. `contract` and `events` are ungated carve-outs: inert serde/std
+types with no coupling to their gated siblings, re-exported unconditionally
+from `mod.rs` so a feature-off build shares one definition instead of a
+drifting copy. Nothing outside `medulla/` currently imports them.
 
 The `medulla_local` engine (a supervised `medulla-serve` child process) has
 been removed; its `subconscious.engine = "medulla"` config keys are still
@@ -50,23 +54,37 @@ keep booting while that behaviour is re-ported onto this domain.
   session token already address it.
   `OPENHUMAN_MEDULLA_BASE_URL` overrides the base URL for pointing a dev host
   at a different Medulla deployment.
-- `ops.rs` / `schemas.rs` — the `medulla` RPC namespace: `medulla_status`,
-  `medulla_roster`, `medulla_create_session`, `medulla_get_session`,
-  `medulla_list_sessions`, `medulla_list_messages`, `medulla_send_message`,
-  `medulla_list_events`, `medulla_abort`. Handlers delegate straight to `ops`;
-  transport and client-construction failures become `StructuredRpcError`s so a
-  host can branch on a stable `data.kind`.
+- `ops.rs` / `schemas.rs` — the `medulla` RPC namespace (wire methods
+  `openhuman.medulla_<function>`): `medulla_status`, `medulla_roster`,
+  `medulla_create_session`, `medulla_get_session`, `medulla_list_sessions`,
+  `medulla_list_messages`, `medulla_send_message`, `medulla_list_events`,
+  `medulla_abort`. Handlers delegate straight to `ops`; a `NotConfigured`
+  client or a backend `errorCode` becomes a `StructuredRpcError` whose
+  `data.kind` a host can branch on. `medulla_status` never touches the network.
 
-## Called by
+## Wiring
 
-- `crates/openhuman-core/src/flows/medulla_bridge.rs` — bridges the
-  `platform::socket::medulla` worker's workflow events to this domain's
-  session/event surface; never talks to a runtime worker directly.
-- `crates/openhuman-core/src/api/product.rs` — `MedullaClient` is one of the
-  callers required to send `x-sdk-name` on every backend request, including
-  its separate SSE handshake (see AGENTS.md).
-- `crates/openhuman-core/src/desktop/app_state/` — reads the resolved config
-  snapshot `MedullaClient` uses per request.
+- `crates/openhuman-core/src/core/all.rs` registers
+  `all_medulla_registered_controllers()` under `DomainGroup::Medulla` behind
+  `#[cfg(feature = "medulla")]`; with the feature off the methods are absent
+  from `/schema`, not stubbed.
+- `crates/openhuman-embed/src/medulla.rs` — the `Core::medulla()` sub-facade.
+  It calls the `openhuman.medulla_*` methods through `CoreRuntime` and
+  re-exports `medulla::client` types plus `ops::MedullaStatus` rather than
+  mirroring them.
+- `tests/raw_coverage/medulla_session_e2e.rs` drives the namespace end to end
+  against a mock backend. Note the two `EventEnvelope`s: `events::EventEnvelope`
+  is the contract type; `medulla_list_events` returns
+  `client::types::WireEventEnvelope`, with `event` left as raw JSON.
+
+Outbound dependencies: `api::product::product_identity_header()` for
+`x-sdk-name` (AGENTS.md requires it on every `MedullaClient` request,
+including the SSE handshake — `client/sse/mod.rs` `StreamState::connect`),
+`api::config::effective_backend_api_url` and
+`security::credentials::session_support::get_session_token` in `resolve.rs`.
+`crates/openhuman-core/src/flows/medulla_bridge.rs` is not a caller: it backs
+the `platform::socket::medulla` worker's `WorkflowBridge` with the `flows::`
+store and never imports this domain.
 
 ## Tests
 
