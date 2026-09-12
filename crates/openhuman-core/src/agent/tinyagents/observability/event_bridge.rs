@@ -162,7 +162,8 @@ impl OpenhumanEventBridge {
     }
 
     /// Cumulative `(input_tokens, output_tokens, charged_usd)` observed so far.
-    fn totals(&self) -> (u64, u64, f64) {
+    #[cfg(test)]
+    pub(super) fn totals(&self) -> (u64, u64, f64) {
         let s = self.state.lock().unwrap();
         (s.input_tokens, s.output_tokens, s.charged_amount_usd)
     }
