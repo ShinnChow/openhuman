@@ -12,7 +12,7 @@
 //! The load-bearing detail is the `as_*` accessors. Every optional capability
 //! family (23 of the contract's 26; only `MemoryCore`, `MemoryRecall` and
 //! `MemoryPortability` are mandatory and implemented on the guard directly in
-//! [`mandatory`]) is reachable **only** through them, so an override that
+//! `mandatory.rs`) is reachable **only** through them, so an override that
 //! forwarded `self.inner.as_tree()` would hand out a raw driver handle and
 //! defeat the entire design with one method call. Each family therefore gets
 //! its own decorator, owned as a field on the guard (an accessor returns a
