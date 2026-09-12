@@ -26,8 +26,8 @@ use super::collect::{
     collect_spawn_parallel_results, project_spawn_parallel_result, SpawnParallelCollected,
     SpawnParallelGraphOutcome,
 };
+use super::dispatch::stage_spawn_parallel_workers_from_defs;
 use super::request::ParallelAgentTask;
-use super::staging::stage_spawn_parallel_workers_from_defs;
 use super::types::{ParallelAgentResult, SpawnParallelWorker};
 use super::workers::run_spawn_parallel_workers;
 
