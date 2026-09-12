@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use crate::agent::session_import::types::SourceKind;
+use crate::memory::sources::types::{MemorySourceEntry, SourceKind};
 use crate::memory::sources::rpc::registry_crud::filter_to_active_composio_sources;
 fn composio_entry(id: &str, connection_id: &str) -> MemorySourceEntry {
     MemorySourceEntry {
