@@ -52,3 +52,20 @@ pub use registry::all_composio_agent_tools;
 use crate::tools::traits::Tool;
 
 pub(crate) use visibility::{action_mutates_external_state, resolve_action_scope};
+
+#[cfg(test)]
+use authorize::ComposioAuthorizeTool;
+#[cfg(test)]
+use connect::{
+    parse_composio_connect_timeout, ComposioConnectTool, DEFAULT_COMPOSIO_CONNECT_TIMEOUT_SECS,
+};
+#[cfg(test)]
+use execute::ComposioExecuteTool;
+#[cfg(test)]
+use list_connections::ComposioListConnectionsTool;
+#[cfg(test)]
+use list_toolkits::ComposioListToolkitsTool;
+#[cfg(test)]
+use list_tools::ComposioListToolsTool;
+#[cfg(test)]
+use visibility::{empty_uncurated_toolkits_message, render_tools_markdown};
