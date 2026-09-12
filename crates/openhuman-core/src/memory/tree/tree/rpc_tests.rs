@@ -94,7 +94,7 @@ fn reported_failure(
     }
 }
 
-#[path = "rpc_tests_part_01_tests.rs"]
-mod part_01_tests;
-#[path = "rpc_tests_part_02_tests.rs"]
-mod part_02_tests;
+#[path = "rpc_ingest_and_chunk_tests.rs"]
+mod ingest_and_chunk_tests;
+#[path = "rpc_pipeline_status_tests.rs"]
+mod pipeline_status_tests;
