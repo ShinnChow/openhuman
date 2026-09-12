@@ -5,8 +5,8 @@
 //! `flows::bus::FlowTriggerSubscriber` via `DomainEvent::FlowScheduleTick`.
 //! See `README.md` for the full module map.
 
-// Host-condition policy for scheduled work (battery / AC / thermal). Lives
-// with cron because it exists to answer "may this scheduled job run now?".
+// Host-condition policy (battery / AC / CPU) that throttles background LLM
+// work such as memory digests. The cron poll loop itself does not consult it.
 pub mod scheduler_gate;
 
 pub mod bus;
