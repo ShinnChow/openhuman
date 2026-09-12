@@ -1,18 +1,22 @@
 //! Controller schemas and thin RPC handlers for the `config` namespace.
 //!
 //! `all_controller_schemas` / `all_registered_controllers` are re-exported from
-//! `config::mod` as `all_config_controller_schemas` / `all_config_registered_controllers`
-//! and wired into the global registry in `core/all.rs`. Handlers here are thin:
-//! they deserialize params, delegate to `config::ops` (re-exported as `config::rpc`)
-//! for the actual mutation/read, and shape the `RpcOutcome` response.
+//! `config::mod` as `all_config_controller_schemas` / `all_config_registered_controllers`;
+//! `core/all.rs` registers the latter under `DomainGroup::Config` (the schema-only
+//! list is consumed by tests). Handlers here are thin: they deserialize params,
+//! delegate to `config::ops` (re-exported as `config::rpc`) for the actual
+//! mutation/read, and shape the `RpcOutcome` response.
 //!
 //! - `controllers.rs` — `include!`s `controllers_part_01.rs` / `controllers_part_02.rs`
 //!   (split for file-size only; together they define every handler and the
 //!   `all_controller_schemas` / `all_registered_controllers` lists).
 //! - `helpers.rs` — param-deserialization update structs (`*SettingsUpdate`,
 //!   `*Params`) and small JSON helpers (`deserialize_params`, `to_json`, etc.).
-//! - `schema_defs.rs` — the `ControllerSchema` definitions looked up by name
-//!   via `schemas(function)`.
+//! - `schema_defs.rs` — `schemas(function)`, the by-name `ControllerSchema`
+//!   lookup, dispatching to the `schemas_schema_part_01.rs` /
+//!   `schemas_schema_part_02.rs` `#[path]` submodules that hold the definitions.
+//!
+//! Tests: `../schemas_tests.rs` (mounted below) and `controllers_tests.rs`.
 //!
 //! Methods exposed under `config.*`: `get_config`, `get_client_config`,
 //! `update_model_settings`, `update_memory_settings`, `update_runtime_settings`,

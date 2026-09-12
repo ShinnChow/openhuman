@@ -1,7 +1,7 @@
 # `scripts/ci/`
 
-Merge-gate scripts run by `.github/workflows/ci-lite.yml` and `ci-full.yml`,
-plus the data files some of them read. Each script's header comment is the
+Merge-gate scripts run by `.github/workflows/ci-lite.yml` (the PR lane), plus
+the data files some of them read. Each script's header comment is the
 authoritative spec; this is an index so a CI failure log points somewhere.
 
 | File | Checks |
@@ -15,7 +15,7 @@ authoritative spec; this is an index so a CI failure log points somewhere.
 | `rust-coverage-changed.sh` | PR fast-lane: runs `cargo-llvm-cov` scoped to only the domains/tests a PR touched instead of the full suite, and escalates to the full suite when scoping selects zero tests. |
 | `vitest-changed-coverage.sh` | Frontend counterpart — runs `vitest related` against changed files instead of the full unit suite. |
 | `assert-coverage-presence.sh` + `coverage-presence-allowlist.txt` | Fails when a changed Rust file produced no lcov records at all, meaning no lane even compiled it (openhuman#5593). Allowlist entries must document, inline, which gate excludes the file and why that's intended. |
-| `list-feature-gated-rust-tests.mjs` | Enumerates tests under `crates/openhuman-core/src` gated behind a Cargo feature, for cross-checking against what the coverage lanes actually exercise. |
+| `list-feature-gated-rust-tests.mjs` | Prints every file under `crates/openhuman-core/src` that carries tests behind a product feature gate (`voice`, `media`, `web3`, `meet`, `mcp`, `skills`, `flows`, `channels`, `contacts`). `ci-lite.yml`'s feature-gate smoke lane diffs the output against a checked-in EXPECTED list so a new gated test file forces the scoped `cargo test` filter to be extended (#5022). |
 | `orch-ip-gate.sh` | Blocks the server-side orchestration "brain" (reasoning/wake graph, its prompts, per-agent model-selection metadata) from re-entering this open client repo. |
 
 `rust-coverage-changed.sh` and `vitest-changed-coverage.sh` both feed the PR
@@ -26,10 +26,12 @@ CI Gate's changed-line diff-cover check (>= 80%) in `ci-lite.yml`.
 Only `check-openhuman-rust-layout.mjs` is wired to a pnpm script
 (`pnpm rust:layout`); the rest are invoked directly, e.g.
 `node scripts/ci/check-feature-forwarding.mjs` or
-`bash scripts/ci/orch-ip-gate.sh`, and can be run the same way locally. All of
-them are invoked from `.github/workflows/ci-lite.yml` and, for the full
-suites, `ci-full.yml` — grep those workflows for a script's name to see its
-exact invocation and any required environment.
+`bash scripts/ci/orch-ip-gate.sh`, and can be run the same way locally. Every
+gate here runs from `.github/workflows/ci-lite.yml`; `ci-full.yml` does not
+call any of them, and only reaches `product-features.sh` indirectly through
+`test-reusable.yml`. Grep `ci-lite.yml` for a script's name to see its exact
+invocation and any required environment (the coverage scripts read `FULL` and
+`CHANGED_FILES` from the workflow's paths-filter step).
 
 Long-running CI commands (the coverage lanes) go through
 `scripts/ci-cancel-aware.sh`, which lives directly under `scripts/`, not here.
