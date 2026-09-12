@@ -114,9 +114,9 @@ winget install Rustlang.Rustup
 Close and reopen your terminal, then run:
 
 ```powershell
-rustup toolchain install 1.93.0 --profile minimal
-rustup component add rustfmt clippy --toolchain 1.93.0
-rustc --version    # should be 1.93.0
+rustup toolchain install --profile minimal
+rustup component add rustfmt clippy
+rustc --version    # should match rust-toolchain.toml
 ```
 
 Install CMake:
