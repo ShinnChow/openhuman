@@ -45,7 +45,7 @@ impl ComposioTool {
         }
     }
 
-    fn build_execute_action_v3_request(
+    pub(crate) fn build_execute_action_v3_request(
         action_slug: &str,
         params: serde_json::Value,
         entity_id: Option<&str>,
