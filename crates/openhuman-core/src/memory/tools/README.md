@@ -58,19 +58,28 @@ list for a session: `MemoryStoreTool`, `MemoryRecallTool`,
 `MemoryVectorSearchTool`, `MemoryChunkContextTool`, `MemoryHybridSearchTool`,
 `MemoryStoreRawSearchTool`, `MemoryStoreRawChunksTool`,
 `MemoryStoreKindsTool`, and `GoalsTool` are all boxed and pushed there (grep
-`ops.rs` for each name to find the call site and any capability gate next to
-it). `MemoryToolsListTool` and `MemoryToolsPutTool` are exported and
-unit-tested but have no registration call site in `ops.rs` as of this
-writing — flagged here rather than assumed wired.
+`ops.rs` for each name to find the call site; the name-to-`Capability` match
+further down the same file decides which of them disappear when the bound
+driver does not advertise a family). Three exported structs have no
+registration call site anywhere in the crate as of this writing:
+`MemoryTool` (the collapsed `memory` action-dispatcher over the eleven
+`memory_*` tools, which `ops.rs` still registers individually),
+`MemoryToolsListTool`, and `MemoryToolsPutTool` — flagged here rather than
+assumed wired.
 
-As `security/README.md` notes, `store.rs`'s `MemoryStoreTool` and
-`forget.rs`'s `MemoryForgetTool` both take an `Arc<SecurityPolicy>`
-constructor argument and route their writes through it for sensitive-content
-tracking; the other tools in this directory do not.
+`store.rs`'s `MemoryStoreTool` and `forget.rs`'s `MemoryForgetTool` take an
+`Arc<SecurityPolicy>` and call
+`enforce_tool_operation(ToolOperation::Act, "<tool name>")` before writing:
+that is the autonomy read-only tier check plus the hourly action budget,
+nothing content-specific. Neither overrides `permission_level`, so both
+still declare the `ReadOnly` default to the approval gate — `collapsed.rs`'s
+module doc records that as pre-existing and deliberately left alone. The
+read tools in this directory take no policy handle.
 
 ## Tests
 
-Every file has a colocated `*_tests.rs` (e.g. `collapsed_tests.rs`,
-`doctor_tests.rs`, `goals_tests.rs`, and one per file under `raw_store/`,
-`search/`, `tool_memory/`), plus `tool_memory/mod_tests.rs` for
-cross-tool assertions (e.g. both tools' `name()` values).
+Every tool file except `search/chunk_context.rs` has a colocated
+`*_tests.rs` (`collapsed_tests.rs`, `doctor_tests.rs`, `goals_tests.rs`, …,
+and one per file under `raw_store/` and `tool_memory/`);
+`raw_store/mod_tests.rs` and `tool_memory/mod_tests.rs` pin each exported
+struct's `name()` string.
