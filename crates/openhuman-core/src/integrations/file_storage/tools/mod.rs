@@ -15,7 +15,28 @@
 //! plans. Public files get a stable public URL.
 
 #[cfg(test)]
-#[path = "tools_tests.rs"]
+#[path = "../tools_tests.rs"]
 mod tools_tests;
-include!("tools_part_01.rs");
-include!("tools_part_02.rs");
+
+mod delete;
+mod download;
+mod helpers;
+mod link;
+mod list;
+mod registry;
+mod upload;
+mod visibility;
+
+pub use delete::StorageDeleteFileTool;
+pub use download::StorageDownloadFileTool;
+pub use link::StorageGetLinkTool;
+pub use list::StorageListFilesTool;
+pub use registry::build_file_storage_tools;
+pub use upload::StorageUploadFileTool;
+pub use visibility::StorageSetVisibilityTool;
+
+// Test-only bridges: `tools_tests.rs` (kept as-is; not part of the unsplit
+// batch) reaches these through `use super::{...}`, mirroring the flat scope
+// it had when `include!` spliced everything into one file.
+#[cfg(test)]
+use helpers::{resolve_upload_path, sanitize_filename};
