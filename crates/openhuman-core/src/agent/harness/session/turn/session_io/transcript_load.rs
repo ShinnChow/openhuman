@@ -45,7 +45,7 @@ impl Agent {
     /// [`seed_resume_from_thread_transcript`][Agent::seed_resume_from_thread_transcript]
     /// keys off `_meta.thread_id`. Neither is a stem, and `ChatHistory` has no
     /// discovery concept at all.
-    pub(in super::super) fn try_load_session_transcript(&mut self) {
+    pub(crate) fn try_load_session_transcript(&mut self) {
         let Some(handle) = self
             .session_locator()
             .latest_for_agent(&self.agent_definition_name)
