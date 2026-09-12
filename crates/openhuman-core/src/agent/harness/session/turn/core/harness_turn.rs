@@ -4,13 +4,13 @@
 //! the agent's tools, applies the deterministic cap / final-answer fallbacks,
 //! persists the transcript, and fires post-turn hooks.
 
-use crate::agent::harness::session::types::Agent;
 use super::{
     checkpoint_results_from_conversation, is_empty_assistant_chat, replace_last_assistant_reply,
     stamp_tool_failures, tool_records_from_conversation,
 };
 use crate::agent::harness::session::turn::graph;
 use crate::agent::harness::session::turn_checkpoint;
+use crate::agent::harness::session::types::Agent;
 use crate::agent::hooks::{self, TurnContext};
 use crate::agent::messages::{ChatMessage, ConversationMessage};
 use crate::agent::progress::AgentProgress;
@@ -184,10 +184,11 @@ impl Agent {
                     // Scope direct Master-Agent calls under its declared
                     // sandbox. `agent_definition_name` can carry a thread
                     // suffix, so resolve with the stable definition id.
-                    sandbox_mode: crate::agent::harness::definition::AgentDefinitionRegistry::global()
-                        .and_then(|registry| registry.get(&self.agent_definition_id))
-                        .map(|definition| definition.sandbox_mode)
-                        .unwrap_or(crate::agent::harness::definition::SandboxMode::None),
+                    sandbox_mode:
+                        crate::agent::harness::definition::AgentDefinitionRegistry::global()
+                            .and_then(|registry| registry.get(&self.agent_definition_id))
+                            .map(|definition| definition.sandbox_mode)
+                            .unwrap_or(crate::agent::harness::definition::SandboxMode::None),
                 }),
             ),
         );
@@ -224,7 +225,9 @@ impl Agent {
         let mut cached_input_tokens = outcome.cached_input_tokens;
         let mut charged_amount_usd = outcome.charged_amount_usd;
 
-        let reply = if outcome.hit_cap && outcome.wrap_up_injected && !outcome.text.trim().is_empty()
+        let reply = if outcome.hit_cap
+            && outcome.wrap_up_injected
+            && !outcome.text.trim().is_empty()
         {
             // The conclusion was produced INSIDE the loop (issue #6014):
             // `FinalCallWrapUpMiddleware` withdrew the tools on the last
@@ -350,9 +353,10 @@ impl Agent {
                 charged_amount_usd += u.charged_amount_usd;
             }
             let final_answer = if summary.trim().is_empty() {
-                turn_checkpoint::build_deterministic_final_summary(
-                    &tool_records_from_conversation(&outcome.conversation, &outcome.tool_outcomes),
-                )
+                turn_checkpoint::build_deterministic_final_summary(&tool_records_from_conversation(
+                    &outcome.conversation,
+                    &outcome.tool_outcomes,
+                ))
             } else {
                 summary
             };
@@ -468,16 +472,15 @@ impl Agent {
                 cached_input_tokens.saturating_add(entry.usage.cached_input_tokens);
             charged_amount_usd += entry.usage.charged_amount_usd;
         }
-        self.last_turn_usage_totals = Some(
-            crate::agent::harness::turn_subagent_usage::LastTurnUsage {
+        self.last_turn_usage_totals =
+            Some(crate::agent::harness::turn_subagent_usage::LastTurnUsage {
                 input_tokens,
                 output_tokens,
                 cached_input_tokens,
                 cost_usd: charged_amount_usd,
                 context_window: context_window.unwrap_or(0),
                 subagents: subagent_usage_entries,
-            },
-        );
+            });
 
         let mut persisted = self.tool_dispatcher.to_provider_messages(&self.history);
         // Re-attach per-call failure outcomes (dropped when the engine folded

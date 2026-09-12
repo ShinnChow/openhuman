@@ -9,7 +9,6 @@ mod model_ids;
 mod output_language;
 mod resolvers;
 
-pub(crate) use config::DEFAULT_TEMPERATURE;
 pub use config::{Config, CustomEmbeddingsConfig, ModelRegistryEntry};
 pub use model_ids::{
     DEFAULT_MEMORY_SYNC_INTERVAL_SECS, DEFAULT_MODEL, MEMORY_SYNC_INTERVAL_PRESETS_SECS,
@@ -17,6 +16,9 @@ pub use model_ids::{
     MODEL_REASONING_V1, MODEL_SUMMARIZATION_V1, MODEL_VISION_V1,
 };
 pub use output_language::{normalize_output_language, output_language_directive};
+
+#[cfg(test)]
+use crate::config::schema::{CapabilityProviderTrustState, TeamModelConfig};
 
 #[cfg(test)]
 #[path = "types_model_pin_tests_tests.rs"]

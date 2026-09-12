@@ -8,7 +8,6 @@ use crate::agent::harness::session::transcript_history::{
 use crate::agent::harness::session::types::Agent;
 
 impl Agent {
-
     // ─────────────────────────────────────────────────────────────────
     // Session transcript helpers
     // ─────────────────────────────────────────────────────────────────
@@ -119,5 +118,4 @@ impl Agent {
             )),
         }
     }
-
 }
