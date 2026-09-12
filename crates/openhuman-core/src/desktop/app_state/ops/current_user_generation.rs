@@ -9,8 +9,13 @@
 //! read when the token is read and re-checked under each cache's own lock,
 //! is what closes that window (#5758).
 
-use super::current_user::{CurrentUserFailure, CurrentUserFetchError, CURRENT_USER_CACHE, CURRENT_USER_FAILURE};
-use super::staleness::{clear_current_user_success, note_current_user_success_locked};
+use super::current_user::{
+    clear_current_user_failure, CachedCurrentUser, CurrentUserFailure, CurrentUserFetchError,
+    CURRENT_USER_CACHE, CURRENT_USER_FAILURE,
+};
+use super::staleness::{
+    clear_current_user_success, note_current_user_success_locked, LAST_CURRENT_USER_SUCCESS,
+};
 use super::LOG_PREFIX;
 use log::debug;
 use once_cell::sync::Lazy;
