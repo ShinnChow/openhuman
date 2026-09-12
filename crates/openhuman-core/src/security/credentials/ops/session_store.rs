@@ -8,7 +8,10 @@ use crate::api::config::effective_backend_api_url;
 use crate::api::jwt::decode_jwt_exp;
 use crate::api::rest::{user_id_from_profile_payload, BackendOAuthClient};
 use crate::config::Config;
-use crate::config::{default_root_openhuman_dir, pre_login_user_dir, read_active_user_id, user_openhuman_dir, write_active_user_id};
+use crate::config::{
+    default_root_openhuman_dir, pre_login_user_dir, read_active_user_id, user_openhuman_dir,
+    write_active_user_id,
+};
 use crate::memory::conversations;
 use crate::rpc::RpcOutcome;
 use crate::security::credentials::session_support::{

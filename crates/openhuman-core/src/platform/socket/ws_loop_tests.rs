@@ -193,7 +193,7 @@ async fn spawn_mock_invalid_token_server() -> std::net::SocketAddr {
     addr
 }
 
-#[path = "ws_loop_tests_part_01_tests.rs"]
-mod part_01_tests;
-#[path = "ws_loop_tests_part_02_tests.rs"]
-mod part_02_tests;
+#[path = "ws_loop_dispatch_and_redirect_tests.rs"]
+mod dispatch_and_redirect_tests;
+#[path = "ws_loop_reconnect_tests.rs"]
+mod reconnect_tests;
