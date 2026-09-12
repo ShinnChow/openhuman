@@ -119,7 +119,7 @@ clang -v
 #### Platform notes
 
 - **Web-only development** needs Node, pnpm, and the Rust toolchain present in the repo. You can usually ignore desktop-only system packages.
-- **Desktop development** needs the vendored Tauri/CEF setup. Use `pnpm --filter openhuman-app dev:app` on macOS and `pnpm dev:app:win` on native Windows; both entrypoints configure the platform-specific CEF environment.
+- **Desktop development** uses Tauri with Wry as its webview on macOS and Linux. Windows additionally requires the CEF toolchain staged by `scripts/run-dev-win.sh`. Use `pnpm --filter openhuman-app dev:app` on macOS and `pnpm dev:app:win` on native Windows.
 - **Linux desktop builds** require extra system packages beyond Node/Rust. Follow the distro-specific Tauri dependency list before running desktop commands, then use the OpenHuman scripts below. For deeper platform troubleshooting, see [`gitbooks/developing/getting-set-up.md`](gitbooks/developing/getting-set-up.md).
 - **Windows 10 WSL + classic X11 forwarding** is unsupported for the desktop app. The Tauri/CEF stack can hang, render blank windows, or crash before useful app logs are available. Use native Windows development, or Windows 11 WSLg if you need a Linux GUI workflow. OpenHuman logs a startup warning when it detects WSL with `DISPLAY` set but no `WAYLAND_DISPLAY`/WSLg markers.
 - **Windows desktop builds** additionally require Visual Studio C++ Build Tools (MSVC v143), LLVM/Clang, CMake, and Ninja. See [Windows-specific setup](#windows-specific-setup) for the full list and install order.
