@@ -118,7 +118,9 @@ impl ComposioClient {
             .await?;
         if !resp.successful {
             if let Some(ref err) = resp.error {
-                resp.error = Some(super::super::error_mapping::format_provider_error(tool, err));
+                resp.error = Some(super::super::error_mapping::format_provider_error(
+                    tool, err,
+                ));
             }
         }
         Ok(resp)
