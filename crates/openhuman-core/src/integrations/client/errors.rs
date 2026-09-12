@@ -201,7 +201,12 @@ impl IntegrationClient {
         anyhow::anyhow!("{} {} failed: {}", method.to_uppercase(), url, chain)
     }
 
-    pub(super) fn map_sdk_error(error: SdkError, method: &str, path: &str, url: &str) -> anyhow::Error {
+    pub(super) fn map_sdk_error(
+        error: SdkError,
+        method: &str,
+        path: &str,
+        url: &str,
+    ) -> anyhow::Error {
         let method_upper = method.to_uppercase();
         match error {
             SdkError::Http(error) => Self::report_transport_error(error, method, path, url),

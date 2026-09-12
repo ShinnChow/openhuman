@@ -344,16 +344,6 @@ pub(super) fn assemble_turn_harness(
     // follow-up once the `[tool-exposure]` divergence logs show parity. Tags encode
     // the OpenHuman run context (agent id / channel / scope) for the flip; the
     // name-based `inheriting` predicate does not consult them yet.
-    let candidate_names: Vec<String> = tool_sets
-        .iter()
-        .flat_map(|set| set.iter())
-        .map(|tool| tool.name().to_string())
-        .collect();
-    let mut seen_candidates: HashSet<String> = HashSet::new();
-    let candidate_names: Vec<String> = candidate_names
-        .into_iter()
-        .filter(|name| seen_candidates.insert(name.clone()))
-        .collect();
     let exposure_tags: Vec<String> = {
         let mut tags = vec![if subagent_scope.is_some() {
             "scope:subagent".to_string()
