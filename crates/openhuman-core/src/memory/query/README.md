@@ -28,21 +28,30 @@ the engine crate cannot name the `Tool` trait — a tool that dispatches by
 
 `mod.rs` dispatches on `mode` in `MemoryTreeTool::execute`: every mode except
 `walk`/`smart_walk` delegates to the matching struct's own `execute`; `walk`
-and `smart_walk` both go to `fast_walk::run_fast_walk`. All seven per-mode
+and `smart_walk` both go to `fast_walk::run_fast_walk`. All six per-mode
 structs are re-exported from this module (and re-exported again, flat,
 through [`memory/tools.rs`](../tools.rs) via `pub use crate::memory::query::*`)
 so callers that want a single mode directly — rather than going through the
 `mode`-dispatching wrapper — can still register or call them individually.
+Each per-mode struct has its own `name()` (`memory_tree_search_entities`,
+`memory_tree_ingest_document`, …), which is why the capability match in
+`tools/ops.rs` has a `starts_with("memory_tree_")` fallback arm.
 
-`backend.rs` holds the shared read primitives most modes call into
-(`query_source_scope`, `query_source_kind`, …). It resolves the bound driver
-through `crate::memory::ops::guard::active_memory_guard()` and calls the
+`backend.rs` holds the shared read primitives `query_source`, `drill_down`
+and `fetch_leaves` call into (`query_source_scope`, `query_source_kind`,
+`drill_down`, `fetch_leaves`). It resolves the bound driver through
+`crate::memory::ops::guard::active_memory_guard()` and calls the
 `MemoryRetrieval` family on the returned `MemoryGuard`, rather than reaching
 into `tinymemory_core::tree::retrieval` directly — see the module doc in
 `backend.rs` and `docs/specs/2026-08-13-memory-module-port.md` §2.1. Every
 `scope` argument passed to the guard is `None`; the guard intersects that with
 the ambient per-turn allowlist, so this can only narrow what a turn may see,
-never widen it.
+never widen it. `search_entities`, `cover_window` and `fast_walk` call
+`active_memory_guard()` themselves; `ingest_document` is the one write mode
+and goes through `crate::memory::tree::tree::rpc::ingest_rpc` instead. The
+request DTOs (`QuerySourceRequest`, `CoverWindowRequest`, …) are borrowed from
+[`memory/tree/retrieval/rpc.rs`](../tree/retrieval/rpc.rs); the RPC handlers
+there are not called.
 
 ## Wiring
 
@@ -52,7 +61,7 @@ never widen it.
   `crate::tools::MemoryQueryTool` etc. from anywhere in the crate.
 - Registration is in `tools/ops.rs`: `Box::new(MemoryQueryTool)` registers the
   single consolidated tool; the per-mode structs are not separately
-  registered there today (the comment at `tools/ops.rs:1457` calls
+  registered there today (the capability match in the same file calls
   `MemoryQueryTool` "the one registered tree tool").
 - The `memory_tree` name gates on `Capability::Tree` in the same file's
   capability-to-tool-name match, alongside `memory_flavour`.
