@@ -56,8 +56,9 @@ npm install -g pnpm@10.10.0
 
 # Rust (the backend language)
 brew install rustup-init
-rustup toolchain install --profile minimal
-rustup component add rustfmt clippy
+# The exact Rust version (plus rustfmt and clippy) is pinned in the repo's
+# rust-toolchain.toml; rustup installs it automatically the first time you run
+# cargo inside the checkout, so there is nothing to pick by hand here.
 
 # CMake (required by Rust dependencies)
 brew install cmake
@@ -71,7 +72,7 @@ Verify everything is installed:
 ```bash
 node --version     # should be v24.x.x or higher
 pnpm --version     # should be 10.10.0
-rustc --version    # should match rust-toolchain.toml
+rustc --version    # run inside the repo after Step 2: should print the version pinned in rust-toolchain.toml
 cmake --version    # any recent version
 ```
 
@@ -114,9 +115,10 @@ winget install Rustlang.Rustup
 Close and reopen your terminal, then run:
 
 ```powershell
-rustup toolchain install --profile minimal
-rustup component add rustfmt clippy
-rustc --version    # should match rust-toolchain.toml
+# The exact Rust version (plus rustfmt and clippy) is pinned in the repo's
+# rust-toolchain.toml; rustup installs it automatically the first time you run
+# cargo inside the checkout, so there is nothing to pick by hand here.
+rustc --version    # run inside the repo after Step 2: should print the version pinned in rust-toolchain.toml
 ```
 
 Install CMake:
@@ -152,8 +154,9 @@ npm install -g pnpm@10.10.0
 
 # Rust via rustup
 sudo pacman -S --needed rustup
-rustup toolchain install --profile minimal
-rustup component add rustfmt clippy
+# The exact Rust version (plus rustfmt and clippy) is pinned in the repo's
+# rust-toolchain.toml; rustup installs it automatically the first time you run
+# cargo inside the checkout, so there is nothing to pick by hand here.
 
 # Build tools required by native Rust crates (whisper-rs, cpal, enigo, etc.)
 sudo pacman -S --needed base-devel cmake pkgconf clang openssl \
@@ -174,7 +177,7 @@ Verify everything is installed:
 ```bash
 node --version     # should be v24.x.x or higher
 pnpm --version     # should be 10.10.0
-rustc --version    # should match rust-toolchain.toml
+rustc --version    # run inside the repo after Step 2: should print the version pinned in rust-toolchain.toml
 cmake --version    # any recent version
 ```
 
@@ -205,8 +208,9 @@ Install Rust:
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-rustup toolchain install --profile minimal
-rustup component add rustfmt clippy
+# The exact Rust version (plus rustfmt and clippy) is pinned in the repo's
+# rust-toolchain.toml; rustup installs it automatically the first time you run
+# cargo inside the checkout, so there is nothing to pick by hand here.
 ```
 
 Install native build dependencies:
@@ -234,7 +238,7 @@ Verify everything is installed:
 ```bash
 node --version     # should be v24.x.x or higher
 pnpm --version     # should be 10.10.0
-rustc --version    # should match rust-toolchain.toml
+rustc --version    # run inside the repo after Step 2: should print the version pinned in rust-toolchain.toml
 cmake --version    # any recent version
 ```
 
