@@ -15,7 +15,9 @@ domain.
   provider-string grammar (`openhuman`, `cloud`, `ollama:<model>`,
   `lmstudio:<model>`, `mlx:<model>`, `omlx:<model>`, `local-openai:<model>`,
   `claude_agent_sdk[:<model>]`, `claude-code:<model>`, `<slug>:<model>[@<temp>]`)
-  and applies BYOK/access gates before building a model.
+  and applies the BYOK sentinel, Privacy-Mode `LocalOnly`
+  (`enforce_local_only_inference`), and managed-session (`verify_session_active`)
+  gates before building a model.
 - **Models** — `OpenHumanBackendModel` + `PROVIDER_LABEL`
   (`openhuman_backend_model.rs`), plus the OpenAI-compatible and Anthropic
   crate-native builders (`crate_openai.rs`, `crate_anthropic.rs`).
@@ -33,8 +35,8 @@ domain.
 | --- | --- | --- |
 | Managed OpenHuman backend | `openhuman_backend_model.rs` | `openhuman` / `cloud` (session JWT + billing metadata) |
 | OpenAI-compatible (BYOK cloud slugs, local runtimes) | `crate_openai.rs` | `<slug>:<model>`, `ollama:<model>`, `lmstudio:<model>`, `mlx:<model>`, `omlx:<model>`, `local-openai:<model>` |
-| Anthropic Messages API (prompt caching) | `crate_anthropic.rs` | `<anthropic-slug>:<model>` |
-| Codex OAuth / Responses API | `openai_codex.rs` (`pub(crate)`) | resolved from the `openai` cloud slug once Codex OAuth is connected |
+| Anthropic Messages API (prompt caching) | `crate_anthropic.rs` | `<slug>:<model>` whose endpoint is the first-party Messages API (`endpoint_is_anthropic_messages`) and native tool calling is on; other Anthropic-keyed endpoints stay on Chat Completions |
+| Codex OAuth / Responses API | `openai_codex.rs` (`pub(crate)`, routing metadata only — `OpenAiCodexRouting` applied by the `crate_openai.rs` builder) | the `openai` cloud slug once Codex OAuth tokens exist in the auth-profile store |
 | Claude Agent SDK subprocess | `claude_agent_sdk/` (`protocol.rs`, `subprocess.rs`) | `claude_agent_sdk` / `claude_agent_sdk:<model>` |
 | Claude Code CLI subprocess | `claude_code/` — see its own [README](claude_code/README.md) | `claude-code:<model>` |
 
@@ -48,12 +50,19 @@ domain.
   tokens.
 - `crate::agent::tinyagents::{routes, thread_context}` — workload routing and
   ambient thread-context plumbing consumed while building a model.
+- `crate::security::live_policy` + `crate::security::egress` — Privacy-Mode
+  `LocalOnly` refusal and `EgressDescriptor` emission at the factory chokepoint
+  (`factory_part_01.rs`).
+- `crate::inference::local` — `profile::is_local_provider_string`, Ollama /
+  LM Studio base-url resolution for local provider strings.
 - `crate::inference::auth_error_registry` — surfaces per-provider auth errors
   back to the UI.
 - `crate::core::bus` (`BUS.publish`) / `crate::core::events::DomainEvent` —
-  `ops/http_error_part_02.rs::publish_backend_session_expired` publishes
-  `DomainEvent::SessionExpired` when the managed backend reports an auth
-  failure, so the credentials layer can clear/refresh the session.
+  `ops/http_error_part_02.rs::publish_backend_session_expired` and
+  `openhuman_backend_model.rs` publish `DomainEvent::SessionExpired` when the
+  managed backend reports an auth failure, so the credentials layer can
+  clear/refresh the session; `ops/http_error_part_02.rs` also publishes
+  `DomainEvent::ProviderApiKeyRejected` the first time a BYO key is rejected.
 - `crate::mcp::server::local` (via `claude_code/driver.rs`) — the Claude Code
   provider points the sandboxed `claude` subprocess at the in-process MCP
   server so it can reach OpenHuman's memory/tools over loopback without the
@@ -63,21 +72,28 @@ domain.
 
 `grep -rn 'inference::provider::' crates/openhuman-core/src` shows the main
 consumers: the agent harness (`agent/harness/session/builder/factory.rs`,
-`agent/harness/session/runtime*.rs`, `agent/harness/subagent_runner/ops/*`),
-`web_chat/session.rs`, `voice/factory/{helpers,mod}.rs`,
-`inference/ops.rs`/`inference/schemas_part_0{1,2}.rs`, and
-`inference/embeddings` (through the shared model-resolution helpers).
+`agent/harness/session/runtime*.rs`, `agent/harness/subagent_runner/ops/*`,
+`agent/tinyagents/host/model_resolver.rs`), `web_chat/session.rs` and
+`web_chat/web_errors_part_0*.rs`, `voice/factory/{helpers,mod}.rs`,
+`inference/ops.rs` / `inference/schemas_part_0{1,2}.rs` /
+`inference/http/server.rs`, `memory/tree/tree_runtime/ops.rs`,
+`flows/tinyflows/caps/{llm,prompt,agent}.rs`, `cron/scheduler_part_0{1,2}.rs`
+(`is_budget_exhausted_message`), and `threads/ops_part_02.rs` (`UsageInfo`).
 
-## Sub-modules with their own docs
+## Sub-modules
 
-- [`ops/`](ops) — `sanitize` (secret scrubbing), `http_error` (HTTP error
+- `ops/` — `sanitize` (secret scrubbing), `http_error` (HTTP error
   classification, Sentry routing, `api_error`), `models`
   (`list_configured_models`), `provider_factory` (`ProviderRuntimeOptions`,
-  `list_providers`, China-provider alias helpers). Preserves the original
-  `pub use ops::*` contract split out of a single `ops.rs`.
+  `list_providers`, `is_qwen_alias`-style China-provider alias helpers).
+  Preserves the original `pub use ops::*` contract split out of a single `ops.rs`.
 - [`claude_code/`](claude_code/README.md) — Claude Code CLI provider.
-- `claude_agent_sdk/` — Claude Agent SDK subprocess provider
-  (`protocol.rs` wire types, `subprocess.rs` process management).
+- `claude_agent_sdk/` — `ClaudeAgentSdkProvider` (`subprocess.rs`, configured
+  from `Config::claude_agent_sdk`; `protocol.rs` wire types).
+- `schemas.rs` — a `providers.list_models` controller that is **not**
+  registered in `core/all.rs`; the live method is `inference.list_models`
+  (`openhuman.providers_list_models` survives only as a legacy alias in
+  `core/legacy_aliases.rs`).
 
 ## Tests
 
@@ -90,8 +106,8 @@ consumers: the agent harness (`agent/harness/session/builder/factory.rs`,
   `billing_error_tests.rs`, `fallback_diagnostics_tests.rs` — per-classifier
   behavior.
 - `claude_code/*_tests.rs` — per-file coverage of the CC provider (auth,
-  driver, event mapper, stream parser, session store, settings, version
-  check).
+  auth status, driver, event mapper, input builder, stream parser, session
+  store, settings, version check) plus `mod_tests.rs`.
 - `crate_openai_tests.rs`, `crate_anthropic_tests.rs`,
   `openhuman_backend_model_tests.rs`, `openai_codex_tests.rs` — per-transport
   model builders.
