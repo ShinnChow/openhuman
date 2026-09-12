@@ -47,7 +47,7 @@ pub(super) const FAIL_ESCALATE_THRESHOLD: u32 = 5;
 /// fails with "Invalid token") the loop escalates immediately — it does
 /// **not** waste the remaining back-off attempts on a provably dead token.
 /// This is the fix for TAURI-RUST-9C (#2892).
-pub(super) async fn ws_loop(
+pub(crate) async fn ws_loop(
     url: String,
     token_provider: TokenProvider,
     shared: Arc<SharedState>,
