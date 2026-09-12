@@ -154,7 +154,7 @@ impl RepeatedToolFailureMiddleware {
 /// escalate with a concrete next step instead of looping or reporting a generic
 /// dead-end. Returns `None` for failures that are not user-actionable, leaving
 /// the crate's summary in place.
-pub(super) fn user_actionable_escalation(tool: &str, error: &str) -> Option<String> {
+pub(crate) fn user_actionable_escalation(tool: &str, error: &str) -> Option<String> {
     let lower = error.to_lowercase();
     let permission_or_scope_failure = lower.contains("[composio:error:insufficient_scope]")
         || lower.contains("[composio:error:trigger_permission]")
@@ -208,7 +208,7 @@ fn args_fingerprint(arguments: &serde_json::Value) -> String {
 /// tool's JSON body may be legitimate data (not a failure signal), so this must
 /// not reinterpret arbitrary tool output. Tolerant of non-JSON or missing `ok`
 /// content — returns `false` rather than guessing.
-pub(super) fn is_body_level_failure(name: &str, content: &str) -> bool {
+pub(crate) fn is_body_level_failure(name: &str, content: &str) -> bool {
     if name != "validate_workflow" && name != "dry_run_workflow" {
         return false;
     }

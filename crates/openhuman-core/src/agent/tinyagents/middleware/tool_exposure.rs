@@ -43,7 +43,7 @@ use tinyinference::tool::ToolSchema;
 /// Ownership flip (making this crate selection the sole authority + deleting
 /// `agent/harness/tool_filter.rs` and `subagent_runner/tool_prep.rs`) is the
 /// GATED follow-up, once the `[tool-exposure]` divergence logs show parity.
-pub(super) struct OpenHumanToolExposureShadowMiddleware {
+pub(crate) struct OpenHumanToolExposureShadowMiddleware {
     /// Static allow guard (crate). Held for the fail-closed parity cross-check;
     /// NOT installed as a live `before_tool` execution guard this slice —
     /// OpenHuman already registers only the `allowed` set, so the model can never
@@ -77,7 +77,7 @@ impl OpenHumanToolExposureShadowMiddleware {
     /// named tools", so `Some(empty)` is a genuine deny-all. This mirrors the
     /// registration loop in `assemble_turn_harness`, keeping the shadow divergence
     /// reference in step with what OpenHuman actually registers as callable.
-    pub(super) fn new(
+    pub(crate) fn new(
         candidate_names: &[String],
         allowed: Option<&std::collections::HashSet<String>>,
         tags: Vec<String>,

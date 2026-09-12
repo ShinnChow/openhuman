@@ -23,7 +23,7 @@ use crate::tools::Tool;
 /// blocking decision short-circuits with a model-consumable result carrying the
 /// same `"Tool '<name>' <denied|requires approval> by policy '<policy>': <reason>"`
 /// wording the engine produced.
-pub(super) struct ToolPolicyMiddleware {
+pub(crate) struct ToolPolicyMiddleware {
     policy: Arc<dyn crate::agent::tool_policy::ToolPolicy>,
     /// The session's channel-permission snapshot — enforces the per-channel deny
     /// + per-call permission-level ceiling the engine ran in `agent_tool_exec`.
@@ -38,7 +38,7 @@ pub(super) struct ToolPolicyMiddleware {
 }
 
 impl ToolPolicyMiddleware {
-    pub(super) fn new(
+    pub(crate) fn new(
         policy: Arc<dyn crate::agent::tool_policy::ToolPolicy>,
         session: crate::tools::agent_policy::ToolPolicySession,
         tool_sets: Vec<Arc<Vec<Box<dyn Tool>>>>,
@@ -116,7 +116,7 @@ impl ToolPolicyMiddleware {
     }
 
     /// The route sentence for a pack, resolved against THIS session.
-    pub(super) fn route_for_pack(&self, pack: &crate::tools::toolpacks::ToolPack) -> String {
+    pub(crate) fn route_for_pack(&self, pack: &crate::tools::toolpacks::ToolPack) -> String {
         crate::tools::toolpacks::route_sentence(
             &self.callable_delegates_for(pack.owners),
             pack.owners,
@@ -133,7 +133,7 @@ impl ToolPolicyMiddleware {
     /// `execute` dispatches. Returns `None` when there is nothing to scope (a
     /// tool named, no `skill` argument, no pack handle), so the call falls
     /// through to the tool's own `execute` unchanged.
-    pub(super) fn render_skill_for_session(&self, call: &TaToolCall) -> Option<TaToolResult> {
+    pub(crate) fn render_skill_for_session(&self, call: &TaToolCall) -> Option<TaToolResult> {
         if crate::tools::toolpacks::named_tool(&call.arguments).is_some() {
             return None;
         }
@@ -172,7 +172,7 @@ impl ToolPolicyMiddleware {
     /// The channel-permission gate the engine ran before the builder policy: a
     /// session-level deny, then a per-call permission-level ceiling check. Returns
     /// the blocking message when the call must not execute.
-    pub(super) fn channel_permission_block(&self, call: &TaToolCall) -> Option<String> {
+    pub(crate) fn channel_permission_block(&self, call: &TaToolCall) -> Option<String> {
         let decision = self.session.decision_for(&call.name);
         if decision.is_denied() {
             return Some(

@@ -1,4 +1,4 @@
-// Imported here rather than in `middleware_part_01.rs` since #6014: the
+// Imported here rather than in the middleware module since #6014: the
 // production install site moved to `assemble_turn_harness` (which names it
 // fully-qualified), so the module itself no longer references the type.
 use super::*;

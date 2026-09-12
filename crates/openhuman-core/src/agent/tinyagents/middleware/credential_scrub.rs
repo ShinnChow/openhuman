@@ -44,10 +44,10 @@ fn scrub_json_credentials(value: serde_json::Value) -> serde_json::Value {
 /// parent chat path, sub-agent paths, the persisted transcript, and
 /// `ToolCallOutcome` records by construction, since every path runs the same
 /// `assemble_turn_harness` seam.
-pub(super) struct CredentialScrubMiddleware;
+pub(crate) struct CredentialScrubMiddleware;
 
 impl CredentialScrubMiddleware {
-    pub(super) fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Self
     }
 }

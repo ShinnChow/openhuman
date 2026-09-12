@@ -17,16 +17,16 @@
 /// deterministic default: a flaky network call or a timeout can succeed on a
 /// later attempt once the model adapts (longer timeout, smaller batch, retry).
 /// Mirrors the legacy `RECOVERABLE_REPEAT_FAILURE_THRESHOLD`.
-pub(super) const RECOVERABLE_REPEAT_FAILURE_THRESHOLD: u32 = 8;
+pub(crate) const RECOVERABLE_REPEAT_FAILURE_THRESHOLD: u32 = 8;
 /// Recoverable failures also get a larger *consecutive* (varied-args) no-progress
 /// headroom before the breaker halts. Mirrors the legacy
 /// `RECOVERABLE_NO_PROGRESS_FAILURE_THRESHOLD`.
-pub(super) const RECOVERABLE_NO_PROGRESS_FAILURE_THRESHOLD: u32 = 12;
+pub(crate) const RECOVERABLE_NO_PROGRESS_FAILURE_THRESHOLD: u32 = 12;
 
 /// Clamp the last-error text embedded in a circuit-breaker halt summary so a huge
 /// tool error (already capped at 1MB upstream) can't blow up the agent's result.
 /// Mirrors the legacy `tool_loop::truncate_for_halt`.
-pub(super) fn truncate_for_halt(s: &str) -> String {
+pub(crate) fn truncate_for_halt(s: &str) -> String {
     const MAX: usize = 600;
     if s.chars().count() <= MAX {
         return s.to_string();
@@ -40,7 +40,7 @@ pub(super) fn truncate_for_halt(s: &str) -> String {
 /// rather than by abandoning the turn. Deliberately marker-based and
 /// conservative: it only controls breaker headroom, never converts a failure
 /// into success. Ported verbatim from legacy `tool_loop::is_recoverable_tool_failure`.
-pub(super) fn is_recoverable_tool_failure(result: &str) -> bool {
+pub(crate) fn is_recoverable_tool_failure(result: &str) -> bool {
     let lower = result.to_ascii_lowercase();
     [
         "timed out",
@@ -130,7 +130,7 @@ pub(crate) fn terminal_inference_failure_kind(result: &str) -> Option<TerminalIn
 
 /// The actionable root-cause halt summary for a terminal delegated-inference
 /// failure. Ported verbatim from the legacy loop.
-pub(super) fn terminal_inference_halt_summary(
+pub(crate) fn terminal_inference_halt_summary(
     kind: TerminalInferenceFailure,
     tool: &str,
     result: &str,
@@ -155,7 +155,7 @@ pub(super) fn terminal_inference_halt_summary(
 
 /// Halt summary when a single recoverable `(tool, args)` call exhausts its
 /// extended identical-retry headroom. Ported from the legacy loop.
-pub(super) fn recoverable_identical_halt_summary(tool: &str, count: u32, result: &str) -> String {
+pub(crate) fn recoverable_identical_halt_summary(tool: &str, count: u32, result: &str) -> String {
     format!(
         "Stopping: the `{tool}` call was retried {count} times with identical arguments and kept \
          failing — repeating it will not help. Last error:\n{}\n\nThis looked recoverable at \
@@ -167,7 +167,7 @@ pub(super) fn recoverable_identical_halt_summary(tool: &str, count: u32, result:
 
 /// Halt summary when many recoverable-looking failures pile up with no progress.
 /// Ported from the legacy loop.
-pub(super) fn recoverable_no_progress_halt_summary(consecutive: u32, tool: &str, result: &str) -> String {
+pub(crate) fn recoverable_no_progress_halt_summary(consecutive: u32, tool: &str, result: &str) -> String {
     format!(
         "Stopping: {consecutive} recoverable-looking tool failures happened in a row with no \
          successful progress. Last error (from `{tool}`):\n{}\n\nThe turn is still bounded by the \

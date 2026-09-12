@@ -41,7 +41,7 @@ fn estimate_output_tokens(bytes: usize) -> u64 {
 /// end in a silent `proposal: None` and a blank canvas. A ≥10-node graph
 /// routinely clears the ~16 KiB shared budget, so the truncation exemption
 /// matters just as much as the compaction one.
-pub(super) const COMPACTION_EXEMPT_TOOLS: &[&str] = &[
+pub(crate) const COMPACTION_EXEMPT_TOOLS: &[&str] = &[
     "propose_workflow",
     "revise_workflow",
     "edit_workflow",
@@ -65,13 +65,13 @@ pub(super) const COMPACTION_EXEMPT_TOOLS: &[&str] = &[
 /// ([`is_truncation_exempt`] returns `false` for them): a truncated-but-not-
 /// tabulated sample is still a usable (if partial) real response, and the
 /// backstop keeps these calls from blowing the context budget.
-pub(super) const SAMPLING_TOOLS: &[&str] = &["get_tool_output_sample", "get_tool_contract"];
+pub(crate) const SAMPLING_TOOLS: &[&str] = &["get_tool_output_sample", "get_tool_contract"];
 
 /// Steps 1 (payload summarizer) + 2 (tokenjuice compaction) exemption:
 /// proposal tools (final-output contract, see [`COMPACTION_EXEMPT_TOOLS`])
 /// plus sampling tools (tabulation would corrupt the schema they exist to
 /// reveal, see [`SAMPLING_TOOLS`]).
-pub(super) fn is_compaction_exempt(name: &str) -> bool {
+pub(crate) fn is_compaction_exempt(name: &str) -> bool {
     COMPACTION_EXEMPT_TOOLS.contains(&name) || SAMPLING_TOOLS.contains(&name)
 }
 
@@ -80,7 +80,7 @@ pub(super) fn is_compaction_exempt(name: &str) -> bool {
 /// document downstream, so any truncation — not just tokenjuice tabulation —
 /// breaks the parse. Sampling tools are deliberately *not* in this set: see
 /// [`SAMPLING_TOOLS`] for why the byte cap stays in force for them.
-pub(super) fn is_truncation_exempt(name: &str) -> bool {
+pub(crate) fn is_truncation_exempt(name: &str) -> bool {
     COMPACTION_EXEMPT_TOOLS.contains(&name)
 }
 
@@ -88,24 +88,24 @@ pub(super) fn is_truncation_exempt(name: &str) -> bool {
 /// then the hard per-tool-result byte cap to each tool result's model-facing
 /// content, before it enters the transcript. The graph analogue of the byte cap
 /// + `payload_summarizer` interception the in-house `agent_tool_exec` ran.
-pub(super) struct ToolOutputMiddleware {
+pub(crate) struct ToolOutputMiddleware {
     /// Fallback per-tool-result byte cap for tools that don't declare their own.
-    pub(super) budget_bytes: usize,
-    pub(super) payload_summarizer: Option<Arc<dyn PayloadSummarizer>>,
-    pub(super) artifact_store: Option<ToolResultArtifactStore>,
-    pub(super) tokenjuice_compaction_enabled: bool,
-    pub(super) tokenjuice_compression: AgentTokenjuiceCompression,
+    pub(crate) budget_bytes: usize,
+    pub(crate) payload_summarizer: Option<Arc<dyn PayloadSummarizer>>,
+    pub(crate) artifact_store: Option<ToolResultArtifactStore>,
+    pub(crate) tokenjuice_compaction_enabled: bool,
+    pub(crate) tokenjuice_compression: AgentTokenjuiceCompression,
     /// SDK policy snapshot keyed by tool name. Used to honor the adapter-mapped
     /// `max_result_size_chars()` cap without re-querying the OpenHuman tool
     /// trait from `after_tool`.
-    pub(super) tool_policies: HashMap<String, TaToolPolicy>,
+    pub(crate) tool_policies: HashMap<String, TaToolPolicy>,
 }
 
 impl ToolOutputMiddleware {
     /// The tool's own declared cap, if any. The adapter maps OpenHuman's
     /// `max_result_size_chars()` into `ToolRuntime.max_result_bytes`; preserving
     /// char-based truncation here keeps the existing model-facing marker stable.
-    pub(super) fn tool_char_cap(&self, name: &str) -> Option<usize> {
+    pub(crate) fn tool_char_cap(&self, name: &str) -> Option<usize> {
         self.tool_policies
             .get(name)
             .and_then(|policy| policy.runtime.max_result_bytes)

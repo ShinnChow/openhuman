@@ -20,12 +20,12 @@ use crate::tools::Tool;
 /// (e.g. phone calls) would execute from the model loop. Applies on every path
 /// (channel, session, sub-agent) since the restriction is intrinsic to the tool,
 /// not the session — installed unconditionally.
-pub(super) struct CliRpcOnlyMiddleware {
+pub(crate) struct CliRpcOnlyMiddleware {
     tool_sets: Vec<Arc<Vec<Box<dyn Tool>>>>,
 }
 
 impl CliRpcOnlyMiddleware {
-    pub(super) fn new(tool_sets: Vec<Arc<Vec<Box<dyn Tool>>>>) -> Self {
+    pub(crate) fn new(tool_sets: Vec<Arc<Vec<Box<dyn Tool>>>>) -> Self {
         Self { tool_sets }
     }
 

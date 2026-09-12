@@ -36,7 +36,7 @@ const INVALID_COMPOSIO_APPROVAL_NAME: &str = "composio_execute:<invalid-action>"
 /// `composio_execute` multiplexes every Composio action through one outer tool
 /// name. Keying "Always allow" by that name would let approval for one action
 /// authorize every later action, so use the namespaced action slug instead.
-pub(super) fn approval_tool_name<'a>(
+pub(crate) fn approval_tool_name<'a>(
     tool_name: &'a str,
     args: &'a serde_json::Value,
 ) -> std::borrow::Cow<'a, str> {
@@ -54,7 +54,7 @@ pub(super) fn approval_tool_name<'a>(
     }
 }
 
-pub(super) struct ApprovalSecurityMiddleware {
+pub(crate) struct ApprovalSecurityMiddleware {
     /// The same `Arc`-shared tool sets the runner registers, used to resolve a
     /// call's OpenHuman `Tool` by name so `external_effect_with_args` can gate.
     tool_sets: Vec<Arc<Vec<Box<dyn Tool>>>>,
@@ -62,12 +62,12 @@ pub(super) struct ApprovalSecurityMiddleware {
 
 impl ApprovalSecurityMiddleware {
     /// Build the middleware over the runner's shared tool sets.
-    pub(super) fn new(tool_sets: Vec<Arc<Vec<Box<dyn Tool>>>>) -> Self {
+    pub(crate) fn new(tool_sets: Vec<Arc<Vec<Box<dyn Tool>>>>) -> Self {
         Self { tool_sets }
     }
 
     /// Whether the named tool declares an external effect for these args.
-    pub(super) fn has_external_effect(&self, name: &str, args: &serde_json::Value) -> bool {
+    pub(crate) fn has_external_effect(&self, name: &str, args: &serde_json::Value) -> bool {
         self.tool_sets
             .iter()
             .flat_map(|set| set.iter())

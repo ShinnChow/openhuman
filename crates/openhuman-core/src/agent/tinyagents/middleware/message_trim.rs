@@ -19,7 +19,7 @@ use tinyinference::model::ModelRequest;
 /// budget, evicting the whole transcript (system messages included). Providers
 /// bill an image at ≈85–1100 tokens by detail; 1200 is a conservative upper
 /// bound that keeps the budget realistic without the base64 payload inflating it.
-pub(super) const IMAGE_MARKER_TOKEN_COST: u64 = 1_200;
+pub(crate) const IMAGE_MARKER_TOKEN_COST: u64 = 1_200;
 
 /// Inline image-marker prefix produced by the multimodal composer
 /// (`agent/multimodal.rs`, `compose_multimodal_message`). Priced at
@@ -37,7 +37,7 @@ const DEFAULT_OUTPUT_RESERVE_TOKENS: u64 = 8_192;
 /// markers charged a flat [`IMAGE_MARKER_TOKEN_COST`] instead of their base64
 /// length. Mirrors the deleted `token_budget::estimate_tokens` (issue #4462).
 /// Markerless text takes the fast char/4 path.
-pub(super) fn estimate_text_tokens(text: &str) -> u64 {
+pub(crate) fn estimate_text_tokens(text: &str) -> u64 {
     if !text.contains(IMAGE_MARKER_PREFIX) {
         return (text.len() as u64).saturating_add(3) / 4;
     }
@@ -86,7 +86,7 @@ fn count_native_image_blocks(msg: &TaMessage) -> u64 {
 /// [`IMAGE_MARKER_TOKEN_COST`] per native image block, and the assistant's
 /// tool-call name/arguments (which `Message::text()` drops). Mirrors the legacy
 /// `estimate_conversation_message_tokens` (issue #4462).
-pub(super) fn estimate_message_tokens(msg: &TaMessage) -> u64 {
+pub(crate) fn estimate_message_tokens(msg: &TaMessage) -> u64 {
     let mut total = estimate_text_tokens(&msg.text());
     total = total
         .saturating_add(count_native_image_blocks(msg).saturating_mul(IMAGE_MARKER_TOKEN_COST));
@@ -113,7 +113,7 @@ fn legacy_output_reserve_tokens(window: u64) -> u64 {
 /// Input-prompt token budget after reserving room for the reply. Public to the
 /// seam so the install site (and tests) can assert the legacy proportional
 /// formula (issue #4462).
-pub(super) fn legacy_max_input_tokens(window: u64) -> u64 {
+pub(crate) fn legacy_max_input_tokens(window: u64) -> u64 {
     window.saturating_sub(legacy_output_reserve_tokens(window))
 }
 

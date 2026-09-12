@@ -23,7 +23,7 @@ use super::tool_output::ToolOutputMiddleware;
 /// Default per-tool-result byte cap for the channel / sub-agent paths, which do
 /// not carry a session `ContextManager` to source the configured budget from.
 /// Mirrors the `ContextConfig::tool_result_budget_bytes` default (16 KiB).
-pub(super) const DEFAULT_TOOL_RESULT_BUDGET_BYTES: usize = 16 * 1024;
+pub(crate) const DEFAULT_TOOL_RESULT_BUDGET_BYTES: usize = 16 * 1024;
 
 /// Config bundle for the openhuman context middlewares installed on a turn.
 ///

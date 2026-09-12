@@ -26,7 +26,7 @@ const ARTIFACT_INDEX_NAMESPACE: &str = "tool_results";
 /// downstream can shrink, on the one configuration where nothing downstream is
 /// watching. Sized so the contents list's tenth lands on the 512 tokens a
 /// realistic handful of artifacts needs.
-pub(super) const NO_WINDOW_ALLOWANCE: u64 = 5_120;
+pub(crate) const NO_WINDOW_ALLOWANCE: u64 = 5_120;
 
 /// The floor under the contents list's proportional share, so a small window
 /// still yields a cap rather than collapsing to `0` — which both middlewares
@@ -35,7 +35,7 @@ const TOC_ALLOWANCE_MIN: u64 = 64;
 
 /// Reserved for the omitted-count line, which cannot be measured before the
 /// row cap decides how many rows were dropped. One short sentence.
-pub(super) const FOOTER_ALLOWANCE: u64 = 48;
+pub(crate) const FOOTER_ALLOWANCE: u64 = 48;
 
 /// Split a turn's input allowance between the two things that add to the
 /// request: the artifact contents list and the wrap-up's result restoration.
