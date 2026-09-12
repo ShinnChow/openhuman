@@ -281,15 +281,15 @@ pub fn default_workspace_file_content(filename: &str) -> &'static str {
     // This module is under `crates/openhuman-core/src/agent/context/`, so the relative path
     // walks up one level and back into `agent/prompts/`.
     match filename {
-        "SOUL.md" => include_str!("SOUL.md"),
-        "IDENTITY.md" => include_str!("IDENTITY.md"),
+        "SOUL.md" => include_str!("../SOUL.md"),
+        "IDENTITY.md" => include_str!("../IDENTITY.md"),
         // The user-facing agent's role brief and writing style, moved out of
         // the compiled `orchestrator/prompt.md` so both are tunable on disk
         // without a rebuild (#5701). Same sync-and-inject contract as
         // SOUL.md / IDENTITY.md: the bundled copy seeds the workspace, and a
         // user edit wins from the next session on.
-        "ROLE.md" => include_str!("ROLE.md"),
-        "STYLE.md" => include_str!("STYLE.md"),
+        "ROLE.md" => include_str!("../ROLE.md"),
+        "STYLE.md" => include_str!("../STYLE.md"),
 
         _ => "",
     }

@@ -235,7 +235,3 @@ fn empty_prompt_context_for_static_sections() -> PromptContext<'static> {
         agents_md_local: None,
     }
 }
-
-/// Build a P-Format signature line (`name[a|b|c]`) from a `&dyn Tool`.
-/// Used by `render_subagent_system_prompt` which operates on `Box<dyn Tool>`
-/// directly (no intermediate `PromptTool`). Mirrors the `PromptTool` variant
