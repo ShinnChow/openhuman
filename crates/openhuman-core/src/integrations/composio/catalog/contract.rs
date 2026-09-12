@@ -84,7 +84,7 @@ pub(super) struct CacheEntry<T> {
 }
 
 impl<T> CacheEntry<T> {
-    fn fresh(value: T) -> Self {
+    pub(super) fn fresh(value: T) -> Self {
         Self {
             value,
             cached_at: std::time::Instant::now(),
@@ -94,7 +94,7 @@ impl<T> CacheEntry<T> {
     /// `Some(&value)` while still within [`COMPOSIO_CATALOG_CACHE_TTL`],
     /// `None` once expired — callers treat an expired entry as a cache miss
     /// and re-fetch, same as no entry at all.
-    fn if_fresh(&self) -> Option<&T> {
+    pub(super) fn if_fresh(&self) -> Option<&T> {
         (self.cached_at.elapsed() < COMPOSIO_CATALOG_CACHE_TTL).then_some(&self.value)
     }
 
@@ -102,7 +102,7 @@ impl<T> CacheEntry<T> {
     /// expiry deterministically, without a mockable clock or a real 30-minute
     /// sleep (E-m8).
     #[cfg(test)]
-    fn backdated_by(mut self, age: std::time::Duration) -> Self {
+    pub(super) fn backdated_by(mut self, age: std::time::Duration) -> Self {
         self.cached_at -= age;
         self
     }
@@ -121,7 +121,7 @@ impl<T> CacheEntry<T> {
 /// worth of repeat lookups (the reason these are caches at all) while
 /// keeping "add a Composio action, come back later today" working without a
 /// restart.
-const COMPOSIO_CATALOG_CACHE_TTL: std::time::Duration = std::time::Duration::from_secs(30 * 60);
+pub(super) const COMPOSIO_CATALOG_CACHE_TTL: std::time::Duration = std::time::Duration::from_secs(30 * 60);
 
 /// Process-level cache backing [`fetch_live_toolkit_catalog`]: lowercase
 /// toolkit slug → every [`ToolContract`] the LIVE Composio catalog published
