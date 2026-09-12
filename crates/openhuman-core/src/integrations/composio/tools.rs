@@ -69,4 +69,7 @@ use list_toolkits::ComposioListToolkitsTool;
 #[cfg(test)]
 use list_tools::ComposioListToolsTool;
 #[cfg(test)]
-use visibility::{empty_uncurated_toolkits_message, render_tools_markdown};
+use visibility::{
+    empty_uncurated_toolkits_message, normalized_scope_toolkits, render_tools_markdown,
+    retain_connected_tools,
+};
