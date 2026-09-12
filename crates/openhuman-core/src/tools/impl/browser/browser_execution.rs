@@ -3,6 +3,7 @@
 use super::*;
 
 impl BrowserTool {
+    /// Execute an agent-browser command
     async fn run_command(&self, args: &[&str]) -> anyhow::Result<AgentBrowserResponse> {
         let mut cmd = Command::new("agent-browser");
 
