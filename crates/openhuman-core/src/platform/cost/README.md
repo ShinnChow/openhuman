@@ -72,7 +72,7 @@ None. The module has no `bus.rs` and no `DomainEvent` publishers/subscribers.
 
 - `crates/openhuman-core/src/core/all.rs` — registers `all_cost_registered_controllers` / `all_cost_controller_schemas`.
 - `crates/openhuman-core/src/core/jsonrpc.rs` — calls `cost::init_global(cfg.cost.clone(), &workspace_dir)` at bootstrap.
-- `crates/openhuman-core/src/agent/harness/session/turn.rs` — calls `cost::record_provider_usage` after provider calls to log per-turn usage.
+- `crates/openhuman-core/src/agent/tinyagents/mod_part_05.rs` and `crates/openhuman-core/src/agent/tinyagents/observability_part_01.rs` — call `cost::record_provider_usage` after provider calls to log per-turn usage.
 - `crates/openhuman-core/src/config/schema/identity_cost.rs` — `CostConfig` definition references `check_budget` / `record_provider_usage` semantics in docs.
 
 ## Notes / gotchas

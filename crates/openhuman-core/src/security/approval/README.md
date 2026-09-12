@@ -57,10 +57,11 @@ None. This module gates other domains' tools; it owns no tools of its own (no `t
 
 ## Events
 
-Published via `publish_global` (domain `approval`, defined in `crates/openhuman-core/src/core/event_bus/events.rs`):
+Published via `crate::core::bus::BUS.publish` with variants from `crate::core::events::DomainEvent` (`crates/openhuman-core/src/core/events.rs`):
 
-- `DomainEvent::ApprovalRequested { request_id, tool_name, action_summary, args_redacted, session_id, thread_id, client_id }` — emitted when a call is parked. Bridged to the `approval_request` web-channel socket event by `ApprovalSurfaceSubscriber` (defined in `crates/openhuman-core/src/web_chat/`).
-- `DomainEvent::ApprovalDecided { request_id, tool_name, decision }` — emitted when a decision is applied.
+- `DomainEvent::ApprovalRequested { request_id, tool_name, action_summary, args_redacted, session_id, thread_id, client_id }` — emitted (`gate_intercept.rs`) when a call is parked. Bridged to the `approval_request` web-channel socket event by `ApprovalSurfaceSubscriber` (defined in `crates/openhuman-core/src/web_chat/`).
+- `DomainEvent::ApprovalDecided { request_id, tool_name, decision }` — emitted (`gate_state.rs`) when a decision is applied.
+- `DomainEvent::FlowApprovalRequested { .. }` — emitted (`gate_intercept.rs`) for the Flow Canvas copilot's bounded-park variant of the same flow.
 
 No `bus.rs` in this module — it only publishes; the subscriber lives in the `channels` web provider.
 
@@ -70,7 +71,7 @@ SQLite DB at `{workspace_dir}/approval/approval.db`, table `pending_approvals` (
 
 ## Dependencies
 
-- `crate::core::event_bus` — `publish_global` + `DomainEvent` to surface approval prompts/decisions.
+- `crate::core::bus::BUS` + `crate::core::events::DomainEvent` to surface approval prompts/decisions.
 - `crate::core::all` — `ControllerFuture` / `RegisteredController` for the controller registry.
 - `crate::core` (`ControllerSchema`, `FieldSchema`, `TypeSchema`) — schema definitions.
 - `crate::rpc::RpcOutcome` — RPC return contract.
@@ -88,6 +89,11 @@ SQLite DB at `{workspace_dir}/approval/approval.db`, table `pending_approvals` (
 
 ## Notes / gotchas
 
+- **Fail-closed 10-minute TTL is an invariant, not a tunable.** `gate.rs`'s
+  `DEFAULT_APPROVAL_TTL` (`Duration::from_secs(60 * 10)`, ~line 66) matches the
+  default `expires_at` written into the persisted row; a parked call that
+  times out resolves to `Deny`. Do not weaken this default or the fail-closed
+  timeout behavior to make a feature work.
 - **Interactive only.** With no `ApprovalChatContext` task-local in scope, `intercept` returns `Allow` immediately (no row, no event) so autonomous turns don't stall on a prompt nobody can answer.
 - **Fail-closed everywhere.** Persist failure, channel drop, and TTL timeout all return `Deny` (with a `POLICY_DENIED_MARKER`-prefixed reason). The TTL path re-reads the persisted decision to honor an approve that committed in the timeout race (PR #2367).
 - **Waiter registered before persist** so a fast `approval_decide` can't mark a request approved while no waiter exists (PR #2149).
