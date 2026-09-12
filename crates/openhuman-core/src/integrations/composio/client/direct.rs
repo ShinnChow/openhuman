@@ -27,7 +27,7 @@ use super::super::types::{
 /// `list_connections` poll (now live in direct mode too — see
 /// [`direct_list_connections`]) is what ultimately surfaces the new
 /// row to the UI.
-pub(super) async fn direct_authorize(
+pub(crate) async fn direct_authorize(
     direct: &Arc<crate::tools::ComposioTool>,
     toolkit: &str,
     entity_id: &str,
