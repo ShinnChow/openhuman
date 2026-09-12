@@ -59,7 +59,7 @@ fn auth_fetch_timeout_override(raw: Option<&str>) -> Option<u64> {
 /// too tight" has an answer that does not need a rebuild. Every caller — the
 /// `tokio::time::timeout` wrapper, the timeout log line, and the recorded
 /// timeout error's message — reads the same value, so they cannot drift.
-fn auth_fetch_timeout() -> Duration {
+pub(super) fn auth_fetch_timeout() -> Duration {
     static RESOLVED: Lazy<Duration> = Lazy::new(|| {
         let raw = std::env::var(AUTH_FETCH_TIMEOUT_ENV_VAR).ok();
         match (raw.as_deref(), auth_fetch_timeout_override(raw.as_deref())) {
@@ -92,6 +92,6 @@ fn current_user_backoff_base_for(fetch_timeout: Duration) -> Duration {
 }
 
 /// [`current_user_backoff_base_for`] applied to the effective timeout.
-fn current_user_backoff_base() -> Duration {
+pub(super) fn current_user_backoff_base() -> Duration {
     current_user_backoff_base_for(auth_fetch_timeout())
 }
