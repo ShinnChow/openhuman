@@ -332,7 +332,7 @@ impl ModuleMemoryProvider {
     /// `operation` identifies the forwarded call (e.g. `"store"`, `"recall"`)
     /// for the diagnostic below. Never `namespace`, `key`, `content`, or any
     /// record value — those are user memory content, not correlation fields.
-    async fn proxy(&self, operation: &str) -> Result<tinybus::Proxy, MemoryError> {
+    pub(crate) async fn proxy(&self, operation: &str) -> Result<tinybus::Proxy, MemoryError> {
         log::debug!(
             "[modules:memory] driver_id={} operation={operation} resolving module proxy",
             self.driver_id,
