@@ -23,13 +23,13 @@ use std::sync::Arc;
 use serde_json::json;
 
 use crate::config::Config;
-use crate::tools::traits::{PermissionLevel, Tool, ToolResult};
+use crate::tools::traits::{PermissionLevel, Tool};
 
 mod helpers;
 mod read;
 mod write;
 
-pub(super) use helpers::{is_builtin_skill, skill_allowed, SkillAllowlist};
+pub(super) use helpers::{skill_allowed, SkillAllowlist};
 pub use read::{
     WorkflowDescribeTool, WorkflowListTool, WorkflowReadResourceTool, WorkflowReadRunLogTool,
     WorkflowRecentRunsTool,
