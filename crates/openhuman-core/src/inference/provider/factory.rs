@@ -127,6 +127,7 @@ pub mod test_provider_override;
 
 #[cfg(test)]
 #[path = "factory_tests.rs"]
+mod factory_tests;
 
 use crate::config::schema::cloud_providers::AuthStyle;
 use crate::config::Config;
