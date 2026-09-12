@@ -41,8 +41,8 @@ const AUTH_ME_STORE_TRANSIENT_STATUSES: &[u16] = &[408, 429, 500, 502, 503, 504,
 /// live-`exp` JWT), so the user lands in the app with deferred revalidation
 /// instead of being bounced. Overridable via `OPENHUMAN_AUTH_ME_STORE_TIMEOUT_MS`
 /// for ops tuning and tests.
-const AUTH_ME_STORE_VALIDATION_BUDGET: Duration = Duration::from_secs(12);
-const AUTH_ME_STORE_VALIDATION_BUDGET_ENV: &str = "OPENHUMAN_AUTH_ME_STORE_TIMEOUT_MS";
+pub(crate) const AUTH_ME_STORE_VALIDATION_BUDGET: Duration = Duration::from_secs(12);
+pub(crate) const AUTH_ME_STORE_VALIDATION_BUDGET_ENV: &str = "OPENHUMAN_AUTH_ME_STORE_TIMEOUT_MS";
 
 /// Whether this dispatch is running under an embedder-hosted core (the library
 /// `Harness`) rather than the desktop shell or CLI.
@@ -214,7 +214,7 @@ pub async fn stop_login_gated_services(config: &Config) {
     log::info!("[services] all login-gated services stopped");
 }
 
-fn secret_store_for_config(config: &Config) -> SecretStore {
+pub(crate) fn secret_store_for_config(config: &Config) -> SecretStore {
     let data_dir = config
         .config_path
         .parent()
@@ -632,7 +632,7 @@ async fn store_session_inner(
 /// Store-time `GET /auth/me` budget resolver. Reads the
 /// `OPENHUMAN_AUTH_ME_STORE_TIMEOUT_MS` override (positive integer milliseconds),
 /// otherwise the `AUTH_ME_STORE_VALIDATION_BUDGET` default.
-fn auth_me_store_validation_budget() -> Duration {
+pub(crate) fn auth_me_store_validation_budget() -> Duration {
     std::env::var(AUTH_ME_STORE_VALIDATION_BUDGET_ENV)
         .ok()
         .and_then(|raw| raw.trim().parse::<u64>().ok())
@@ -704,7 +704,7 @@ async fn fetch_current_user_for_session_store_inner(
     }
 }
 
-fn auth_me_store_failure_is_transient(reason: &str) -> bool {
+pub(crate) fn auth_me_store_failure_is_transient(reason: &str) -> bool {
     if let Some(status) = auth_me_failure_status(reason) {
         return AUTH_ME_STORE_TRANSIENT_STATUSES.contains(&status);
     }
@@ -735,7 +735,7 @@ fn fallback_session_user_for_deferred_validation() -> Value {
     json!({ "pendingBackendValidation": true })
 }
 
-fn sanitize_stored_session_user(user: Option<serde_json::Value>) -> Option<serde_json::Value> {
+pub(crate) fn sanitize_stored_session_user(user: Option<serde_json::Value>) -> Option<serde_json::Value> {
     match user {
         Some(serde_json::Value::Object(map)) if map.is_empty() => None,
         Some(serde_json::Value::Null) => None,
@@ -743,7 +743,7 @@ fn sanitize_stored_session_user(user: Option<serde_json::Value>) -> Option<serde
     }
 }
 
-fn normalize_local_session_user(user: serde_json::Value, local_user_id: &str) -> serde_json::Value {
+pub(crate) fn normalize_local_session_user(user: serde_json::Value, local_user_id: &str) -> serde_json::Value {
     let mut map = match user {
         serde_json::Value::Object(map) => map,
         other => return other,
