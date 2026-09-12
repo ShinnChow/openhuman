@@ -2,7 +2,9 @@
 
 use crate::rpc::RpcOutcome;
 
-use super::super::definitions::{all_channel_definitions, find_channel_definition, ChannelDefinition};
+use super::super::super::definitions::{
+    all_channel_definitions, find_channel_definition, ChannelDefinition,
+};
 
 /// List all available channel definitions.
 pub async fn list_channels() -> Result<RpcOutcome<Vec<ChannelDefinition>>, String> {
