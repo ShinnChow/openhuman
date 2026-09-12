@@ -10,7 +10,7 @@ use crate::integrations::IntegrationClient;
 use crate::security::SecurityPolicy;
 use crate::tools::traits::{PermissionLevel, Tool, ToolCategory, ToolResult};
 
-use super::types::FileMeta;
+use crate::integrations::file_storage::types::FileMeta;
 
 pub struct StorageSetVisibilityTool {
     client: Arc<IntegrationClient>,

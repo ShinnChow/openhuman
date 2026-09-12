@@ -13,7 +13,7 @@ use crate::tools::traits::{PermissionLevel, Tool, ToolCallOptions, ToolCategory,
 use tinytools::ToolRunContext;
 
 use super::helpers::{action_dir_for_context, FILES_PATH};
-use super::types::UploadResponse;
+use crate::integrations::file_storage::types::UploadResponse;
 
 pub struct StorageUploadFileTool {
     client: Arc<IntegrationClient>,

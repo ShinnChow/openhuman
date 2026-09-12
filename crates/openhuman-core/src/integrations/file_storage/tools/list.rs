@@ -9,7 +9,7 @@ use super::helpers::FILES_PATH;
 use crate::integrations::IntegrationClient;
 use crate::tools::traits::{Tool, ToolCategory, ToolResult};
 
-use super::types::{FileMeta, ListFilesResponse};
+use crate::integrations::file_storage::types::{FileMeta, ListFilesResponse};
 
 pub struct StorageListFilesTool {
     client: Arc<IntegrationClient>,

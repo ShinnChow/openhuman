@@ -10,7 +10,7 @@ use crate::integrations::IntegrationClient;
 use crate::security::SecurityPolicy;
 use crate::tools::traits::{PermissionLevel, Tool, ToolCategory, ToolResult};
 
-use super::types::DeleteResponse;
+use crate::integrations::file_storage::types::DeleteResponse;
 
 pub struct StorageDeleteFileTool {
     client: Arc<IntegrationClient>,

@@ -10,7 +10,7 @@ use crate::integrations::IntegrationClient;
 use crate::security::SecurityPolicy;
 use crate::tools::traits::{PermissionLevel, Tool, ToolCategory, ToolResult};
 
-use super::types::LinkResponse;
+use crate::integrations::file_storage::types::LinkResponse;
 
 pub struct StorageGetLinkTool {
     client: Arc<IntegrationClient>,
