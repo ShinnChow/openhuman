@@ -3,5 +3,12 @@
 #[cfg(test)]
 #[path = "schemas_tests.rs"]
 mod tests;
-include!("schemas_part_01.rs");
-include!("schemas_part_02.rs");
+
+mod handlers;
+mod registry;
+mod schema_defs;
+
+pub use registry::{all_controller_schemas, all_registered_controllers};
+
+#[cfg(test)]
+pub(crate) use schema_defs::schemas;

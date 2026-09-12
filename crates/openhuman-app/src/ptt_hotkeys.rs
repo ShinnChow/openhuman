@@ -114,7 +114,6 @@ pub(crate) fn expand_ptt_shortcuts(shortcut: &str) -> Result<Vec<String>, PttErr
     Ok(vec![trimmed.to_string()])
 }
 
-
 /// Returns `Some(conflicting_variant)` if any expanded PTT variant overlaps
 /// any expanded dictation variant. Comparison is case-insensitive.
 pub(crate) fn first_conflict_with(ptt: &[String], dictation: &[String]) -> Option<String> {
@@ -128,8 +127,6 @@ pub(crate) fn first_conflict_with(ptt: &[String], dictation: &[String]) -> Optio
     }
     None
 }
-
-
 
 #[cfg(test)]
 #[path = "ptt_hotkeys_tests.rs"]

@@ -131,4 +131,3 @@ fn cas_false_to_true_succeeds_then_repeat_fails() {
         "stale swap should return false"
     );
 }
-
