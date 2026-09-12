@@ -2,7 +2,9 @@ use super::*;
 
 use crate::platform::socket::token_provider::TokenProvider;
 use std::sync::Arc;
+use futures_util::StreamExt;
 use tokio::sync::mpsc;
+use tokio::sync::watch;
 use tokio_tungstenite::tungstenite::Error as WsError;
 use crate::platform::socket::types::ConnectionStatus;
 /// Driver-level proof: when the configured URL responds with a 301 pointing
