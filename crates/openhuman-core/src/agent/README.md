@@ -42,7 +42,7 @@ Multi-agent orchestration domain. Owns the LLM tool-calling loop, sub-agent disp
 | `task_dispatcher/` | Background board poller that turns queued tasks into agent runs |
 | `tinyagents/` | Integration with the vendored `tinyagents` loop/replay crate; owns `tinyagents/replay/schemas.rs` |
 | `tools/` | Agent-domain tool implementations (`spawn_subagent`, dispatch helpers, etc.) |
-| `triage/` | Classifies external `TriggerEnvelope`s and escalates to sub-agents |
+| `triage/` | Classifies external `TriggerEnvelope`s and escalates to sub-agents ([README](triage/README.md)) |
 
 Flat files: `bus.rs` (event subscribers), `cost.rs` (`pub(crate)`, token/cost accounting), `dispatcher.rs` (tool-call format dispatch), `error.rs`, `hooks.rs`, `host_runtime.rs` (native shell execution backend), `messages.rs` (transcript types), `multimodal.rs`, `pformat.rs`, `platform_shell.rs` (cross-platform shell selection shared with `host_runtime` and `sandbox::ops`), `progress.rs` (`AgentProgress` channel), `progress_sink.rs` (task-local progress sink for in-process embedders), `stop_hooks.rs`, `task_board.rs`, `task_session.rs` (`pub(crate)`), `tool_policy.rs`, `turn_origin.rs` (task-local trust/routing label read by the approval gate), `turn_workspace.rs` (task-local per-turn filesystem root).
 
