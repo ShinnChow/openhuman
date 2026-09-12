@@ -237,9 +237,7 @@ impl ComposioClient {
             .post::<ComposioExecuteResponse>("/agent-integrations/composio/execute", body)
             .await
     }
-
-    /// `GET /agent-integrations/composio/github/repos` — list repositories
-    /// available via the user's authorized GitHub connected account.
+}
 
 fn is_post_oauth_auth_readiness_error(resp: &ComposioExecuteResponse) -> bool {
     if resp.successful {
