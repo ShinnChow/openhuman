@@ -36,8 +36,10 @@ as distinct Rust types.
 - **`openhuman-rpc`** (`http-client` feature): `core_rpc.rs` re-exports
   `bearer_header` (as `relay_bearer_header`), `redact_url_for_log`, and
   `HttpRpcResponse` (as `RelayHttpResponse`) crate-wide, and wraps
-  `openhuman_rpc::post_json_rpc` for the `relay_http_rpc` command that the
-  frontend's `coreRpcClient` goes through.
+  `openhuman_rpc::post_json_rpc` for the `relay_http_rpc` command, which the
+  frontend's `coreRpcClient` uses only when `rpcUrlNeedsShellRelay()` says a
+  non-loopback plain-`http://` runtime would be blocked as mixed content
+  (#3865); loopback and `https://` URLs are fetched directly from the webview.
 - **`openhuman_core`** (path dependency, package `openhuman`,
   `default-features = false`): the embedded core does not inherit the core
   crate's default feature set, so every product gate

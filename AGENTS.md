@@ -155,8 +155,9 @@ generated documentation blocks.
   `app/src/store/index.ts`.
 - Persist user state through `userScopedStorage`, not ad hoc
   `localStorage`.
-- Use `coreRpcClient` for core RPC. It delegates to the
-  `relay_http_rpc` Tauri command.
+- Use `coreRpcClient` for core RPC. It `fetch()`es the loopback core
+  directly and routes only non-loopback plain-`http://` runtimes (blocked as
+  mixed content, #3865) through the `relay_http_rpc` Tauri command.
 - Auth state comes from `CoreStateProvider` and
   `fetchCoreAppSnapshot()`.
 - Routes are defined in `AppRoutes.tsx`. Check that file before adding links
