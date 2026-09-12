@@ -46,14 +46,14 @@ Skipping this step produces shallow reviews that miss architectural/consistency 
 
 **Correctness** — logic bugs, off-by-one, null/undefined, async/await misuse, race conditions, error propagation (`Result<T>` / `RpcOutcome<T>` / thrown errors).
 
-**Project standards** (from `CLAUDE.md`)
+**Project standards** (from `AGENTS.md`; `CLAUDE.md` is a symlink to it)
 - New Rust functionality lives in a subdirectory under `crates/openhuman-core/src/<domain>/`, not flat `crates/openhuman-core/src/*.rs` files or `crates/openhuman-core/src/core/`.
 - Controllers exposed via `schemas.rs` + registry, not ad-hoc branches in `core/cli.rs` / `core/jsonrpc.rs`.
 - No dynamic `import()` in production `app/src` code.
 - Frontend reads `VITE_*` via `app/src/utils/config.ts`, not `import.meta.env` directly.
 - `crates/openhuman-app` is desktop-only; no Android/iOS branches there.
 - Domain `mod.rs` is export-focused; operational code in `ops.rs` / `store.rs` / `types.rs`.
-- Event bus via `publish_global` / `subscribe_global` / `register_native_global` / `request_native_global` — never construct `EventBus` / `NativeRegistry` directly.
+- Event bus via the `BUS` singleton in `crates/openhuman-core/src/core/bus.rs` (`BUS.publish` / `BUS.subscribe` for domain events, `BUS.native()` for typed in-process requests); subscribers live in the domain's `bus.rs`, and new events bump `EVENTS_VERSION`.
 - Files under ~500 lines preferred.
 
 **Testing** — new behavior ships with tests (Vitest / `cargo test` / `tests/json_rpc_e2e.rs`). Behavior over implementation. No real network, no time flakes. Coverage on branches/error paths.
@@ -185,7 +185,7 @@ Run in parallel where independent. Skip suites clearly unrelated to the diff; al
 
 ```
 # Frontend (if app/ changed)
-cd app && pnpm typecheck
+cd app && pnpm compile      # typecheck
 cd app && pnpm lint
 cd app && pnpm format       # auto-fix
 cd app && pnpm test:unit
