@@ -222,7 +222,7 @@ pub async fn resume_workflow_run(config: &Config, id: &str) -> Result<WorkflowRu
 /// Separated from [`start_workflow_run`] so it can run on the spawned task with
 /// an owned [`Config`]. Errors are recorded on the run row (status `Failed`)
 /// rather than propagated — there is no caller to receive them.
-pub(super) async fn run_engine_loop(config: &Config, run_id: &str, definition: WorkflowDefinition) {
+pub(crate) async fn run_engine_loop(config: &Config, run_id: &str, definition: WorkflowDefinition) {
     let cancel = lookup_cancel_flag(run_id).unwrap_or_else(|| register_cancel_flag(run_id));
 
     let outcome = with_root_parent(config, "workflow_engine", "workflow", "workflow", async {

@@ -20,7 +20,7 @@ pub(super) const PHASE_FAILED: &str = "failed";
 
 /// Initialise `phase_states` to one `pending` entry per phase, preserving
 /// declaration order via an object keyed by phase name.
-pub(super) fn init_phase_states(definition: &WorkflowDefinition) -> Value {
+pub(crate) fn init_phase_states(definition: &WorkflowDefinition) -> Value {
     let mut map = serde_json::Map::new();
     for phase in &definition.phases {
         map.insert(
