@@ -1,12 +1,14 @@
-// How stale the `current_user` the snapshot is serving has become.
-//
-// Split out of `ops_part_01.rs` (layout gate) and kept together because the
-// three pieces are one contract: the stamp is written on every successful
-// `auth_get_me`, cleared when the identity goes away, and read back keyed on
-// the same `(api_base, token)` both caches use — so one identity's freshness
-// is never reported as another's (#5930).
-//
-// `include!`d into `ops.rs`, so everything here shares that module's scope.
+//! How stale the `current_user` the snapshot is serving has become.
+//!
+//! Kept together because the three pieces are one contract: the stamp is
+//! written on every successful `auth_get_me`, cleared when the identity goes
+//! away, and read back keyed on the same `(api_base, token)` both caches use
+//! — so one identity's freshness is never reported as another's (#5930).
+
+use super::current_user::CURRENT_USER_FAILURE;
+use once_cell::sync::Lazy;
+use parking_lot::Mutex;
+use std::time::Instant;
 
 /// When the backend last returned an actual user for `auth_get_me` in this
 // process — i.e. when the data the snapshot displays was last replaced.
