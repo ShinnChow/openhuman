@@ -2,10 +2,12 @@
 
 Shared JSON-RPC / CLI wire contracts for OpenHuman: response envelopes,
 structured error encoding, and the authenticated HTTP client used to reach a
-core's `/rpc` endpoint. It exists as its own crate because the Tauri shell
-(`crates/openhuman-app`) is a separate Cargo world that must not link the
-whole core — it still needs to speak the same wire format, so the format
-itself lives here instead of in `openhuman-core`.
+core's `/rpc` endpoint. It is its own crate so the side that produces
+envelopes (`openhuman-core`, via `crate::rpc`) and the sides that decode them
+(the Tauri shell's HTTP relay in `crates/openhuman-app`, the TUI in
+`crates/openhuman-tui`) compile the same definition, and so that definition
+depends on nothing in the core — only `serde`/`serde_json`, plus the optional
+HTTP client.
 
 ## Public surface
 
