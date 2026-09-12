@@ -1,15 +1,20 @@
 # skills/catalog
 
 Module path: `crate::skills::catalog`. RPC namespace: `skill_registry` — a
-stable wire contract left unchanged by the module rename (JSON-RPC method
-names and CLI subcommands still read `skill_registry_*`).
+stable wire contract left unchanged by the module rename (JSON-RPC methods are
+still `openhuman.skill_registry_<function>`, the CLI namespace is still
+`skill_registry`; see `tests/skill_registry_e2e.rs`).
 
 Owns remote skill catalogs and installed-skill lifecycle:
 
 - Fetch and cache registry catalogs.
 - Refresh the remote catalog asynchronously on core load.
 - Browse/search registry entries.
-- Derive install URLs for Hermes bundled and optional skills.
+- Derive `SKILL.md` download URLs: Hermes bundled/optional skills from
+  `docsPath`, GitHub-hosted community skills from `sourceUrl` (blob/tree
+  rewritten to `raw.githubusercontent.com`); portal-only sources
+  (ClawHub/LobeHub/skills.sh) get no URL and `install` returns an actionable
+  error instead of a 404.
 - Install catalog entries into the user skills directory.
 - Uninstall user-scope skills.
 - Host the built-in `skill_setup` agent.
@@ -19,10 +24,10 @@ Owns remote skill catalogs and installed-skill lifecycle:
 | File | Purpose |
 | --- | --- |
 | `mod.rs` | Feature gate (`skills` Cargo feature) and module wiring; re-exports the controller aggregators |
-| `ops.rs` | Catalog fetch/cache, browse/search/install/uninstall business logic |
-| `store.rs` | On-disk catalog cache persistence |
-| `tools.rs` | LLM-callable tools: `skill_registry_browse`, `skill_registry_search`, `skill_registry_install`, and friends |
-| `types.rs` | Catalog entry and wire types |
+| `ops.rs` | Catalog fetch/cache, boot refresh, browse/search/sources/categories, download-URL derivation, `install_from_catalog` |
+| `store.rs` | Catalog cache at `~/.openhuman/skill-registry/cache.json`, 1-hour TTL, kept past TTL for stale-while-revalidate; `OPENHUMAN_SKILL_REGISTRY_CACHE_DIR` relocates it (tests) |
+| `tools.rs` | LLM-callable tools `skill_registry_browse`, `skill_registry_search`, `skill_registry_sources`, `skill_registry_install`, `skill_registry_uninstall` |
+| `types.rs` | `CatalogEntry` |
 | `schemas/controller_schemas.rs` | `skill_registry_*` `ControllerSchema` definitions and the registered-controller table |
 | `schemas/handlers.rs` | Thin RPC handlers dispatching into `ops.rs` |
 | `schemas/wire_types.rs` | Request/response payload types for the handlers |
@@ -44,15 +49,20 @@ all under the `skill_registry` namespace:
 
 ## Agent tools and the `skill_setup` agent
 
-`tools.rs` exposes the browse/search/install/uninstall operations as
-LLM-callable tools (`SkillRegistryBrowseTool`, `SkillRegistrySearchTool`, and
-so on) so agents can discover and manage skills directly.
+`tools.rs` exposes the browse/search/sources/install/uninstall operations as
+LLM-callable tools (`SkillRegistryBrowseTool`, `SkillRegistrySearchTool`,
+`SkillRegistrySourcesTool`, `SkillRegistryInstallTool`,
+`SkillRegistryUninstallTool`), re-exported through the
+`#[cfg(feature = "skills")]` glob in `crates/openhuman-core/src/tools/mod.rs`.
 
-`agent/skill_setup/` is a built-in agent specializing in skill discovery and
-installation; it is registered in
-`crates/openhuman-core/src/agent/registry/agents/loader.rs`, which embeds
-`agent/skill_setup/agent.toml` and wires `agent/skill_setup/prompt.rs::build`
-as its prompt builder.
+`agent/skill_setup/` is a built-in agent (id `skill_setup`, delegate name
+`setup_skills`) whose tool belt is the five tools above plus
+`list_workflows`, `describe_workflow`, `install_workflow_from_url`,
+`uninstall_workflow`, and `ask_user_clarification`. It is registered in
+`crates/openhuman-core/src/agent/registry/agents/loader.rs` behind
+`#[cfg(feature = "skills")]`, which embeds `agent/skill_setup/agent.toml` via
+`include_str!` and wires `agent/skill_setup/prompt.rs::build` as its prompt
+builder.
 
 ## Disabled build
 
@@ -93,6 +103,10 @@ openhuman-core skill_registry uninstall --name git-helper
 
 Security notes:
 
-- Production installs still go through `skills::ops_install` (the hardened
-  URL installer shared with the `workflows` domain).
+- `install` and `uninstall` do not implement their own file handling:
+  `ops::install_from_catalog` calls
+  `skills::ops_install::install_workflow_from_url` and the uninstall handler
+  calls `skills::ops_install::uninstall_workflow`, so the parent module's
+  hardened URL installer (HTTPS-only, size cap, private-IP rejection,
+  `SKILL.md` requirement) applies to catalog installs too.
 - HTTP localhost installs require `OPENHUMAN_SKILL_INSTALL_ALLOW_LOCAL_HTTP=1` and are intended for local fixtures only.
