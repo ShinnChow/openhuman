@@ -14,7 +14,7 @@
 //! # Gate shape — leaf, not facade
 //!
 //! The whole family (this module plus [`tinyflows`]) is gated at
-//! `pub mod flows;` in `crates/openhuman-core/src/mod.rs` on `#[cfg(feature = "flows")]`,
+//! `pub mod flows;` in `crates/openhuman-core/src/lib.rs` on `#[cfg(feature = "flows")]`,
 //! and the submodules below inherit that gate. There is **no `stub.rs`**:
 //! every symbol reached from outside is a *registration site* (`core::all`,
 //! `core::jsonrpc`'s `FlowTriggerSubscriber`, `core::runtime::services`' boot
