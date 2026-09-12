@@ -291,7 +291,7 @@ pub async fn messages_list(
 
 /// Search messages across **every** thread in the workspace for a query,
 /// returning up to `limit` of the most-recent matches (newest first). Backed
-/// by the trigram/CJK-bigram inverted index in `memory_conversations` — the
+/// by the trigram/CJK-bigram inverted index in `memory::conversations` — the
 /// same cross-chat reader the durable-context pipeline uses (issue #1505).
 ///
 /// Read-only and workspace-scoped. `exclude_thread_id` lets a caller drop the
