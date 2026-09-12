@@ -197,31 +197,30 @@ pub fn render_subagent_system_prompt_with_format(
     //   `extra_tools` — or the model has no way to know they exist.
     if !matches!(tool_call_format, ToolCallFormat::Native) {
         out.push_str("## Tools\n\n");
-        let render_one =
-            |out: &mut String, tool: &dyn crate::tools::Tool| match tool_call_format {
-                ToolCallFormat::PFormat => {
-                    let sig = render_pformat_signature_for_box_tool(tool);
-                    let _ = writeln!(
-                        out,
-                        "- **{}**: {}\n  Call as: `{}`",
-                        tool.name(),
-                        tool.description(),
-                        sig
-                    );
-                }
-                ToolCallFormat::Json => {
-                    let _ = writeln!(
-                        out,
-                        "- **{}**: {}\n  Parameters: `{}`",
-                        tool.name(),
-                        tool.description(),
-                        tool.parameters_schema()
-                    );
-                }
-                ToolCallFormat::Native => {
-                    // Unreachable — outer guard skips Native entirely.
-                }
-            };
+        let render_one = |out: &mut String, tool: &dyn crate::tools::Tool| match tool_call_format {
+            ToolCallFormat::PFormat => {
+                let sig = render_pformat_signature_for_box_tool(tool);
+                let _ = writeln!(
+                    out,
+                    "- **{}**: {}\n  Call as: `{}`",
+                    tool.name(),
+                    tool.description(),
+                    sig
+                );
+            }
+            ToolCallFormat::Json => {
+                let _ = writeln!(
+                    out,
+                    "- **{}**: {}\n  Parameters: `{}`",
+                    tool.name(),
+                    tool.description(),
+                    tool.parameters_schema()
+                );
+            }
+            ToolCallFormat::Native => {
+                // Unreachable — outer guard skips Native entirely.
+            }
+        };
         for &i in allowed_indices {
             let Some(tool) = parent_tools.get(i) else {
                 tracing::warn!(

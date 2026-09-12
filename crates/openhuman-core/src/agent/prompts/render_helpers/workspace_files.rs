@@ -147,7 +147,7 @@ pub fn inject_inline_content(prompt: &mut String, label: &str, content: &str, ma
 ///
 /// Used by both [`crate::agent::prompts::sections::AgentsInstructionsSection`] (the default /
 /// sub-agent builder chains) and the narrow sub-agent renderer
-/// ([`render_subagent_system_prompt_with_format`]) so the two paths never
+/// ([`super::subagent::render_subagent_system_prompt_with_format`]) so the two paths never
 /// drift. The heading is emitted only when at least one layer carries content;
 /// the global layer renders first, then the local/project layer. Each layer is
 /// injected via [`inject_inline_content`] under its own `###` sub-heading and
@@ -228,7 +228,7 @@ pub fn inject_snapshot_content(prompt: &mut String, label: &str, content: &str, 
 /// file bytes at call time, and `max_chars`. Callers must invoke this
 /// once per session — re-reading mid-session breaks the inference
 /// backend's automatic prefix cache. See the byte-stability note on
-/// [`render_subagent_system_prompt`].
+/// [`super::subagent::render_subagent_system_prompt`].
 pub fn inject_workspace_file_capped(
     prompt: &mut String,
     workspace_dir: &Path,

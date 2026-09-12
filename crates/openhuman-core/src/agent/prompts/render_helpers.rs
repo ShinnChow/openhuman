@@ -23,8 +23,8 @@ pub use section_renderers::{
     render_user_reflections, render_workspace,
 };
 pub use subagent::{render_subagent_system_prompt, render_subagent_system_prompt_with_format};
+pub(crate) use workspace_files::write_agents_md_blocks;
 pub use workspace_files::{
     default_workspace_file_content, inject_inline_content, inject_snapshot_content,
     inject_workspace_file, inject_workspace_file_capped, sync_workspace_file,
 };
-pub(crate) use workspace_files::write_agents_md_blocks;
