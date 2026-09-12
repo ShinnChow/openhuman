@@ -8,9 +8,61 @@
 //! - EVM (Ethereum + Base/Arbitrum/Optimism/Polygon L2s), Bitcoin (P2WPKH),
 //!   Solana (native + SPL), and Tron (native + TRC20) all sign and broadcast.
 //!   Swap broadcast is still quote-only on every chain.
+//!
+//! ## Module layout
+//!
+//! - [`types`] — wire types: chain/asset/balance snapshots, the quote
+//!   lifecycle, transaction lookups, and RPC param shapes.
+//! - [`quotes`] — the prepare→execute quote store and its chat-thread
+//!   ownership check.
+//! - [`validate`] — address/amount/calldata validation, formatting, and hex
+//!   conversions.
+//! - [`accounts`] — resolving a derived wallet account for a chain.
+//! - [`queries`] — the read-only surface: defaults, supported assets, chain
+//!   status, balances.
+//! - [`transfer`] — preparing a transfer quote.
+//! - [`tx_lookup`] — transaction status / receipt / raw lookup.
+//! - [`broadcast`] — signing, broadcasting, and `execute_prepared`.
+
+mod accounts;
+mod broadcast;
+mod quotes;
+mod queries;
+mod transfer;
+mod tx_lookup;
+mod types;
+mod validate;
+
+pub use accounts::require_evm_account;
+pub(crate) use broadcast::{sign_and_broadcast_evm, sign_and_broadcast_solana};
+pub use broadcast::execute_prepared;
+pub use quotes::prepared_quotes_for_test;
+pub(crate) use quotes::{current_owner, now_ms};
+#[cfg(test)]
+pub(crate) use quotes::{insert_quote_for_test, reset_quote_store_for_tests};
+pub use queries::{balances, chain_status, network_defaults, supported_assets, EVM_BALANCE_NETWORKS};
+pub use transfer::prepare_transfer;
+pub use tx_lookup::{lookup_tx, tx_receipt, tx_status};
+pub use types::{
+    BalanceInfo, ChainStatus, ExecutePreparedParams, ExecutionResult, PrepareTransferParams,
+    PreparedKind, PreparedStatus, PreparedTransaction, ProviderStatus, SupportedAsset, TxLookupInfo,
+    TxReceiptInfo, TxState, TxStatusInfo,
+};
+pub(crate) use types::{QuoteOwner, RawBroadcastResult};
+pub use validate::{hex_to_bytes, hex_to_u128, u128_to_hex};
+pub(crate) use validate::{chain_str, format_amount, validate_amount, validate_calldata};
+#[cfg(test)]
+pub(crate) use validate::compressed_public_key;
+
+#[cfg(test)]
+use quotes::{next_quote_id, store_quote, take_quote_for};
+#[cfg(test)]
+use validate::estimated_fee_raw;
+#[cfg(test)]
+use parking_lot::Mutex;
+
+const LOG_PREFIX: &str = "[wallet]";
 
 #[cfg(test)]
 #[path = "execution_tests.rs"]
 mod tests;
-include!("execution_part_01.rs");
-include!("execution_part_02.rs");
