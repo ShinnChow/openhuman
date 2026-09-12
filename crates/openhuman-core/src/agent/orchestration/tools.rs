@@ -2,16 +2,20 @@
 //! `#[path]`, since this file lives in `orchestration/` rather than a
 //! `tools/mod.rs`).
 //!
-//! Split by role:
+//! Tools, by role:
 //! - **Spawn**: `spawn_subagent`, `spawn_async_subagent`,
 //!   `spawn_parallel_agents`, `spawn_worker_thread`.
 //! - **Control**: `steer_subagent`, `continue_subagent`, `close_subagent`,
-//!   `wait_subagent`, `wait`, `list_subagents`.
-//! - **Delegation**: `delegate_graph`, `archetype_delegation`,
-//!   `skill_delegation`, `collapsed_delegation`, `dispatch`,
-//!   `agent_prepare_context`, `awaiting_user`, `worker_thread`.
+//!   `wait_subagent`, `wait` / `wait_loop`, `list_subagents`.
+//! - **Delegation**: `DelegateGraphTool`, `ArchetypeDelegationTool`,
+//!   `SkillDelegationTool`, `CollapsedDelegationTool` (`delegate_to`), and
+//!   `agent_prepare_context`.
 //!
-//! All of them are re-exported through `crate::tools` (`tools/mod.rs`:
+//! `dispatch.rs`, `awaiting_user.rs`, and `worker_thread.rs` are `pub(crate)`
+//! helpers shared by the tools above (the common spawn path, the awaiting-user
+//! envelope, and worker thread creation), not tools themselves.
+//!
+//! All tools are re-exported through `crate::tools` (`tools/mod.rs`:
 //! `pub use crate::agent::orchestration::tools::*`), which is how the agent
 //! tool-calling loop discovers them. Execution itself goes through
 //! `agent::harness::run_subagent`; this module only owns the tool-call
