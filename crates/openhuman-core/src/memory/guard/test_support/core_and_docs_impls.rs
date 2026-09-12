@@ -9,8 +9,8 @@ use crate::memory::api::chunks::Chunk;
 use crate::memory::api::error::MemoryError;
 use crate::memory::api::goals::GoalsDoc;
 use crate::memory::api::provider::types::{
-    DiffReport, EntityHit, ExportPage, ImportOutcome, IngestItem, IngestOutcome, SnapshotRef,
-    SourceScope,
+    DiffReport, EntityHit, ExportPage, ExportRecord, ImportOutcome, IngestItem, IngestOutcome,
+    SnapshotRef, SourceScope,
 };
 use crate::memory::api::provider::{
     MemoryCore, MemoryDiff, MemoryDocuments, MemoryEntities, MemoryGoals, MemoryGraph,
