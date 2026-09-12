@@ -211,16 +211,16 @@ struct ComposioAuthConfigsResponse {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-struct ComposioAuthConfig {
-    id: String,
+pub(super) struct ComposioAuthConfig {
+    pub(super) id: String,
     #[serde(default)]
-    status: Option<String>,
+    pub(super) status: Option<String>,
     #[serde(default)]
-    enabled: Option<bool>,
+    pub(super) enabled: Option<bool>,
 }
 
 impl ComposioAuthConfig {
-    fn is_enabled(&self) -> bool {
+    pub(super) fn is_enabled(&self) -> bool {
         self.enabled.unwrap_or(false)
             || self
                 .status
