@@ -34,12 +34,11 @@
 //! would have been wrong against this tree; each departure is argued at its own
 //! call site:
 //!
-//! - **Step 2 is not applied to `recall`.** The embedded driver *refuses* a
-//!   scoped recall (`SCOPE_UNAPPLIED` in `driver/embedded/recall.rs`), so
-//!   filling the parameter from the task-local would turn every recall inside a
-//!   `with_source_scope` into a hard error. The scope is filled on
-//!   `MemoryTree::query_source`, which is the one method that pushes it into
-//!   SQL before `LIMIT`.
+//! - **Step 2 is not applied to `recall`.** The bound driver *refuses* a
+//!   scoped recall (`SCOPE_UNAPPLIED`), so filling the parameter from the
+//!   task-local would turn every recall inside a `with_source_scope` into a
+//!   hard error. The scope is filled on `MemoryTree::query_source`, which is
+//!   the one method that pushes it into SQL before `LIMIT`.
 //! - **Step 3 raises, it never overrides.** A plain override would rewrite a
 //!   caller's `ExternalSync` down to `Internal` outside a scope, which is the
 //!   laundering step the contract says the guard exists to prevent.
@@ -59,12 +58,12 @@
 //! ## Honesty clause: "the guard is the only path" is NOT yet true
 //!
 //! `MemoryClient::profile_conn` no longer leaves the memory family: it is
-//! `pub(in crate::memory)` with one caller,
-//! [`MemoryClient::profile_store`](tinymemory_core::store::MemoryClient::profile_store),
-//! which wraps it in a typed
-//! [`ProfileStore`](tinymemory_core::store::ProfileStore). Every SQL
-//! statement against `user_profile` is now inside the family, and the compiler
-//! enforces that.
+//! `pub(in crate::memory)` with one caller, `MemoryClient::profile_store`,
+//! which wraps it in a typed `ProfileStore`. Every SQL statement against
+//! `user_profile` is now inside the family, and the compiler enforces that.
+//! (`MemoryClient` and `ProfileStore` are the extracted engine's, not named
+//! here as intra-doc links since this crate no longer depends on that crate
+//! — see `crates/openhuman-core/src/memory/README.md` for the split.)
 //!
 //! **That is confinement, not policy** — for the callers listed below, which
 //! still reach `ProfileStore` directly and so run beneath every one of the

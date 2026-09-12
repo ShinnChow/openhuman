@@ -14,13 +14,38 @@ the unsigned transaction to the wallet's crate-internal signing primitives —
 `wallet::sign_and_broadcast_solana` (a hex `VersionedTransaction`) — so private
 keys never leave the wallet.
 
-## Three sub-modules (three RPC namespaces + tool families)
+## Five family members
+
+The `web3` family has five members, three of them (`swap`, `bridge`, `dapp`)
+documented by this README and two with their own README each:
 
 | Module | Namespace | Purpose |
 | --- | --- | --- |
 | `swap/` | `web3_swap` | Single-chain swaps via deBridge. Cross-chain requests are rejected with a pointer to `web3_bridge`. |
 | `bridge/` | `web3_bridge` | Cross-chain bridges via deBridge DLN. Same-chain requests rejected. Signs+broadcasts on the **source** chain. |
 | `dapp/` | `web3_dapp` | Generic EVM contract calls from caller-supplied calldata (no backend). |
+| [`wallet/`](wallet/README.md) | `wallet` | Basic multi-chain key/account management and primitive on-chain operations. |
+| [`x402/`](x402/README.md) | `x402` | HTTP-402 payment protocol: intercept, pay, retry, ledger. |
+
+`wallet` and `x402` are declared *ungated* in `mod.rs`, unlike `swap`/`bridge`/
+`dapp`/`ops`/etc., which are `#[cfg(feature = "web3")]`. As `mod.rs` puts it:
+
+> Ungated family members: `wallet` and `x402` are facades in their own
+> right — each keeps its own `stub.rs` and gates its real submodules on the
+> same default-ON `web3` feature. Always-compiled callers resolve through
+> those stubs (`tools/impl/network/http_request.rs` -> `x402`), so these
+> declarations must NOT carry a `#[cfg]`.
+
+## Compile-time gate (`web3` feature)
+
+`pub mod web3;` (declared in `crates/openhuman-core/src/lib.rs`) is ALWAYS
+compiled — it is a facade. The real swap/bridge/dapp implementation is gated
+behind the default-ON `web3` Cargo feature. When the feature is off,
+[`stub.rs`](mod.rs) takes its place and exposes
+`all_web3_registered_controllers` / `all_web3_controller_schemas` /
+`all_web3_agent_tools` returning empty collections, so `core/all.rs` and
+`tools/ops.rs` need no per-call `#[cfg]`. `cargo check --no-default-features`
+is the only thing that catches drift between the real and stub signatures.
 
 ## Key files
 
@@ -31,6 +56,9 @@ keys never leave the wallet.
 | `client.rs` | `CryptoClient` — thin wrapper over the shared `IntegrationClient` for `/agent-integrations/crypto/*` (Bearer JWT auth, envelope unwrap). |
 | `store.rs` | In-memory prepared-quote store (TTL'd, capped, chat-thread owner-bound like the wallet) + the shared confirm→execute path. |
 | `ops.rs` | Shared op logic: `routes`, `quote_swap`, `quote_bridge`, `prepare_dapp_call` (address defaulting, backend call, unsigned-tx extraction). |
+| `stub.rs` | Disabled facade compiled when `web3` is off; empty `all_web3_registered_controllers` / `all_web3_controller_schemas` / `all_web3_agent_tools`. See Compile-time gate above. |
+| `web3_tests.rs` | `#[cfg(all(test, feature = "web3"))]` behavior tests for the swap/bridge/dapp aggregation logic in `mod.rs`. |
+| `ops_tests.rs` | Tests for the shared op logic in `ops.rs`. |
 | `{swap,bridge,dapp}/schemas.rs` | Per-namespace RPC controllers + handlers. |
 | `{swap,bridge,dapp}/tools.rs` | Per-namespace agent tools. |
 
