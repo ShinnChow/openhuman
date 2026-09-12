@@ -21,12 +21,12 @@ use std::time::{Duration, Instant};
 /// of a single-flight gate, pegged ~2 cores and starved the shared tokio runtime
 /// the agent harness runs on — the agent's turns stalled 50-100s between model
 /// calls even though inference itself was idle).
-const RUNTIME_SNAPSHOT_TTL: Duration = Duration::from_secs(10);
+pub(super) const RUNTIME_SNAPSHOT_TTL: Duration = Duration::from_secs(10);
 pub(super) const RUNTIME_SNAPSHOT_TIMEOUT: Duration = Duration::from_secs(10);
-const SNAPSHOT_SUB_OP_TIMEOUT: Duration = Duration::from_secs(5);
+pub(super) const SNAPSHOT_SUB_OP_TIMEOUT: Duration = Duration::from_secs(5);
 
 #[derive(Debug, Clone)]
-struct CachedRuntimeSnapshot {
+pub(super) struct CachedRuntimeSnapshot {
     snapshot: RuntimeSnapshot,
     fetched_at: Instant,
     /// Config identity (`workspace_dir`) the snapshot was built for. The cache
@@ -36,7 +36,7 @@ struct CachedRuntimeSnapshot {
     config_key: PathBuf,
 }
 
-static RUNTIME_SNAPSHOT_CACHE: Lazy<Mutex<Option<CachedRuntimeSnapshot>>> =
+pub(super) static RUNTIME_SNAPSHOT_CACHE: Lazy<Mutex<Option<CachedRuntimeSnapshot>>> =
     Lazy::new(|| Mutex::new(None));
 /// Single-flight gate for the runtime-snapshot rebuild. Concurrent callers whose
 /// cache read missed serialize here so only ONE runs the expensive sub-op
@@ -45,7 +45,7 @@ static RUNTIME_SNAPSHOT_CACHE: Lazy<Mutex<Option<CachedRuntimeSnapshot>>> =
 /// guard is held across `.await` points (the sub-op `join`). Without it, every
 /// overlapping `app_state_snapshot` poll launched its own build — the rebuild
 /// stampede described on `RUNTIME_SNAPSHOT_TTL`.
-static RUNTIME_SNAPSHOT_REBUILD: Lazy<tokio::sync::Mutex<()>> =
+pub(super) static RUNTIME_SNAPSHOT_REBUILD: Lazy<tokio::sync::Mutex<()>> =
     Lazy::new(|| tokio::sync::Mutex::new(()));
 
 /// Return the cached runtime snapshot when it is still within
@@ -56,11 +56,11 @@ static RUNTIME_SNAPSHOT_REBUILD: Lazy<tokio::sync::Mutex<()>> =
 /// runtime snapshot must never be served from — or written to — the process-
 /// global cache: the mock's state changes between calls, so caching it would
 /// both mask the freshly-injected value and poison later (non-mocked) reads.
-fn service_status_mock_active() -> bool {
+pub(super) fn service_status_mock_active() -> bool {
     std::env::var_os("OPENHUMAN_SERVICE_MOCK").is_some()
 }
 
-fn fresh_cached_runtime_snapshot(config: &Config, req_id: u64) -> Option<RuntimeSnapshot> {
+pub(super) fn fresh_cached_runtime_snapshot(config: &Config, req_id: u64) -> Option<RuntimeSnapshot> {
     if service_status_mock_active() {
         return None;
     }

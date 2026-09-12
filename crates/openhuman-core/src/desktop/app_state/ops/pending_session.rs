@@ -53,7 +53,7 @@ pub(super) fn pending_session_user_id_for_cleanup(
         })
 }
 
-fn config_state_dir(config: &Config) -> Option<PathBuf> {
+pub(super) fn config_state_dir(config: &Config) -> Option<PathBuf> {
     config.config_path.parent().map(Path::to_path_buf)
 }
 
@@ -61,7 +61,7 @@ pub(super) fn same_config_state_dir(a: &Config, b: &Config) -> bool {
     config_state_dir(a) == config_state_dir(b)
 }
 
-fn config_dir_for_workspace_env() -> Option<PathBuf> {
+pub(super) fn config_dir_for_workspace_env() -> Option<PathBuf> {
     let workspace = std::env::var_os("OPENHUMAN_WORKSPACE")?;
     if workspace.as_os_str().is_empty() {
         return None;
@@ -81,7 +81,7 @@ fn config_dir_for_workspace_env() -> Option<PathBuf> {
     Some(config_dir)
 }
 
-fn config_is_workspace_env_scoped(config: &Config) -> bool {
+pub(super) fn config_is_workspace_env_scoped(config: &Config) -> bool {
     let Some(config_dir) = config_state_dir(config) else {
         return false;
     };
@@ -90,7 +90,7 @@ fn config_is_workspace_env_scoped(config: &Config) -> bool {
         .is_some_and(|env_config_dir| env_config_dir == config_dir)
 }
 
-async fn activate_revalidated_user_dir(user_id: &str) -> Result<Config, String> {
+pub(super) async fn activate_revalidated_user_dir(user_id: &str) -> Result<Config, String> {
     let root_dir = crate::config::default_root_openhuman_dir()
         .map_err(|error| format!("failed to locate default root: {error}"))?;
     let previous_active = crate::config::read_active_user_id(&root_dir);
@@ -136,7 +136,7 @@ async fn activate_revalidated_user_dir(user_id: &str) -> Result<Config, String> 
     Ok(config)
 }
 
-async fn finish_revalidated_user_activation(
+pub(super) async fn finish_revalidated_user_activation(
     target_config: &Config,
     user_id: &str,
     service_rebind_source: Option<&Config>,
@@ -195,7 +195,7 @@ async fn finish_revalidated_user_activation(
     crate::security::credentials::sentry_scope::bind(user_id);
 }
 
-async fn remove_revalidated_source_profile(config: &Config) -> Result<(), String> {
+pub(super) async fn remove_revalidated_source_profile(config: &Config) -> Result<(), String> {
     let config = config.clone();
     tokio::task::spawn_blocking(move || {
         AuthService::from_config(&config)

@@ -29,7 +29,7 @@ use std::time::Instant;
 ///
 /// Counting rather than flagging keeps two overlapping sign-outs from
 /// cancelling each other out.
-static CURRENT_USER_GENERATION: AtomicU64 = AtomicU64::new(0);
+pub(super) static CURRENT_USER_GENERATION: AtomicU64 = AtomicU64::new(0);
 
 /// Serializes session-profile mutation with pending-session persistence. The
 /// generation check must cover the profile write itself, not only the work
@@ -148,7 +148,7 @@ pub(super) fn clear_current_user_failure_unless_stale(generation: u64) -> bool {
 /// under the lock that guards the record it gates.
 ///
 /// Returns `false` when sign-out won, in which case nothing was written.
-fn publish_current_user_unless_stale(
+pub(super) fn publish_current_user_unless_stale(
     generation: u64,
     api_base: &str,
     token: &str,

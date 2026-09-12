@@ -13,7 +13,7 @@ use reqwest::{header::AUTHORIZATION, Client, Method, Url};
 use serde_json::Value;
 use std::time::Duration;
 
-const AUTH_ME_REVALIDATION_TRANSIENT_STATUSES: &[u16] = &[408, 429, 500, 502, 503, 504, 520];
+pub(super) const AUTH_ME_REVALIDATION_TRANSIENT_STATUSES: &[u16] = &[408, 429, 500, 502, 503, 504, 520];
 
 /// One process-wide client for `GET /auth/me`, so its pooled TCP+TLS
 /// connection survives between snapshot polls instead of being handshaken
@@ -34,7 +34,7 @@ const AUTH_ME_REVALIDATION_TRANSIENT_STATUSES: &[u16] = &[408, 429, 500, 502, 50
 /// [`crate::api::product::set_product_identity`] — baking the header in here
 /// would pin whichever identity happened to be installed when the first
 /// snapshot ran. `MedullaClient` reads it per request for the same reason.
-static CURRENT_USER_CLIENT: Lazy<Result<Client, String>> = Lazy::new(|| {
+pub(super) static CURRENT_USER_CLIENT: Lazy<Result<Client, String>> = Lazy::new(|| {
     // Platform-appropriate TLS backend — see [`crate::util::tls`].
     crate::util::tls::tls_client_builder()
         .http1_only()
@@ -44,7 +44,7 @@ static CURRENT_USER_CLIENT: Lazy<Result<Client, String>> = Lazy::new(|| {
         .map_err(|e| format!("failed to build HTTP client: {e}"))
 });
 
-fn resolve_base(config: &Config) -> Result<Url, String> {
+pub(super) fn resolve_base(config: &Config) -> Result<Url, String> {
     let base = effective_backend_api_url(&config.api_url);
     let mut parsed =
         Url::parse(base.trim()).map_err(|e| format!("invalid api_url '{}': {e}", base))?;

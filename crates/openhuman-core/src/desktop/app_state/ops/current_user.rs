@@ -24,13 +24,13 @@ use std::time::{Duration, Instant};
 
 /// How long a positive `/auth/me` answer is served without asking the
 /// backend again.
-const CURRENT_USER_REFRESH_TTL: Duration = Duration::from_secs(5);
+pub(super) const CURRENT_USER_REFRESH_TTL: Duration = Duration::from_secs(5);
 /// Ceiling on the negative-cache backoff. Modest on purpose: this window is
 /// time during which a recovered backend still will not be noticed, so it
 /// trades a bounded amount of staleness for not stalling every poll. At the
 /// cap a 5s poll loop attempts roughly one live fetch per twelve polls
 /// instead of one per poll.
-const CURRENT_USER_BACKOFF_MAX: Duration = Duration::from_secs(60);
+pub(super) const CURRENT_USER_BACKOFF_MAX: Duration = Duration::from_secs(60);
 
 /// The positive cache: the last successful `/auth/me` answer, keyed on
 /// `(api_base, token)`.
@@ -135,7 +135,7 @@ pub(super) struct CurrentUserFailure {
 /// Doubles from [`current_user_backoff_base`] and saturates at
 /// [`CURRENT_USER_BACKOFF_MAX`]. `consecutive` is 1-based; 0 is treated as 1 so
 /// the function has no surprising zero-length window.
-fn current_user_backoff(consecutive: u32) -> Duration {
+pub(super) fn current_user_backoff(consecutive: u32) -> Duration {
     let steps = consecutive.saturating_sub(1).min(16);
     current_user_backoff_base()
         .saturating_mul(2u32.saturating_pow(steps))
@@ -145,7 +145,7 @@ fn current_user_backoff(consecutive: u32) -> Duration {
 /// The recorded failure for `(api_base, token)` if its backoff window is still
 /// open, in which case the caller should return it instead of going to the
 /// network.
-fn suppressed_current_user_failure(
+pub(super) fn suppressed_current_user_failure(
     api_base: &str,
     token: &str,
 ) -> Option<(CurrentUserFetchError, u32, Duration)> {
@@ -164,7 +164,7 @@ fn suppressed_current_user_failure(
 ///
 /// A [`CurrentUserFetchError::Rejected`] is ignored — see
 /// [`CurrentUserFetchError::is_availability_failure`].
-fn record_current_user_failure(api_base: &str, token: &str, error: CurrentUserFetchError) {
+pub(super) fn record_current_user_failure(api_base: &str, token: &str, error: CurrentUserFetchError) {
     if !error.is_availability_failure() {
         return;
     }
@@ -295,7 +295,7 @@ pub(super) async fn fetch_current_user_cached(
 /// Reads under one lock and hands back an owned copy, so no caller holds
 /// `CURRENT_USER_CACHE` across a decision — the freshness test and the
 /// stale-while-revalidate branch below both need the same read.
-fn cached_current_user(api_base: &str, token: &str) -> Option<(Value, Duration)> {
+pub(super) fn cached_current_user(api_base: &str, token: &str) -> Option<(Value, Duration)> {
     let cache = CURRENT_USER_CACHE.lock();
     let entry = cache.as_ref()?;
     (entry.api_base == api_base && entry.token == token)
@@ -310,7 +310,7 @@ fn cached_current_user(api_base: &str, token: &str) -> Option<(Value, Duration)>
 /// [`RUNTIME_SNAPSHOT_REBUILD`]: without it every overlapping poll launches its
 /// own fetch. Using a guard rather than a flag means a panicking refresh
 /// releases the gate instead of wedging it shut for the life of the process.
-static CURRENT_USER_REFRESH_INFLIGHT: Lazy<tokio::sync::Mutex<()>> =
+pub(super) static CURRENT_USER_REFRESH_INFLIGHT: Lazy<tokio::sync::Mutex<()>> =
     Lazy::new(|| tokio::sync::Mutex::new(()));
 
 /// Refresh the cached current user without making the caller wait for it.
@@ -319,7 +319,7 @@ static CURRENT_USER_REFRESH_INFLIGHT: Lazy<tokio::sync::Mutex<()>> =
 /// open — a background refresh would re-pay exactly the timeout that window
 /// exists to avoid (#5624) — and when a previous poll's refresh is still in
 /// flight.
-fn spawn_current_user_refresh(config: &Config, token: &str, generation: u64) {
+pub(super) fn spawn_current_user_refresh(config: &Config, token: &str, generation: u64) {
     if let Some((error, consecutive, remaining)) =
         suppressed_current_user_failure(&current_user_api_base(config), token)
     {
@@ -378,7 +378,7 @@ fn spawn_current_user_refresh(config: &Config, token: &str, generation: u64) {
 /// Where a refresh was started from, which decides whether its answer may still
 /// be committed by the time it lands.
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
-enum RefreshOrigin {
+pub(super) enum RefreshOrigin {
     /// The caller is still awaiting this refresh and still holds the identity
     /// it asked for, so the answer is authoritative by construction.
     Blocking,
@@ -392,7 +392,7 @@ enum RefreshOrigin {
 /// came back. The blocking half of [`fetch_current_user_cached`], split out so
 /// the background refresh runs exactly the same path rather than a parallel
 /// copy of it that could drift.
-async fn refresh_current_user_now(
+pub(super) async fn refresh_current_user_now(
     config: &Config,
     token: &str,
     generation: u64,

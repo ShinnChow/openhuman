@@ -16,10 +16,10 @@ use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 use tempfile::NamedTempFile;
 
-const APP_STATE_FILENAME: &str = "app-state.json";
+pub(super) const APP_STATE_FILENAME: &str = "app-state.json";
 pub(super) static APP_STATE_FILE_LOCK: Lazy<Mutex<()>> = Lazy::new(|| Mutex::new(()));
 
-fn app_state_path(config: &Config) -> Result<PathBuf, String> {
+pub(super) fn app_state_path(config: &Config) -> Result<PathBuf, String> {
     let state_dir = config.workspace_dir.join("state");
     fs::create_dir_all(&state_dir).map_err(|e| {
         format!(
@@ -30,7 +30,7 @@ fn app_state_path(config: &Config) -> Result<PathBuf, String> {
     Ok(state_dir.join(APP_STATE_FILENAME))
 }
 
-fn corrupted_app_state_path(path: &Path) -> PathBuf {
+pub(super) fn corrupted_app_state_path(path: &Path) -> PathBuf {
     let timestamp = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map(|value| value.as_millis())
@@ -38,7 +38,7 @@ fn corrupted_app_state_path(path: &Path) -> PathBuf {
     path.with_extension(format!("json.corrupted.{timestamp}"))
 }
 
-fn quarantine_corrupted_app_state(path: &Path, reason: &str) {
+pub(super) fn quarantine_corrupted_app_state(path: &Path, reason: &str) {
     let quarantine_path = corrupted_app_state_path(path);
     warn!(
         "{LOG_PREFIX} quarantining corrupted app state {} -> {} ({reason})",
@@ -100,7 +100,7 @@ pub(crate) fn load_stored_app_state(config: &Config) -> Result<StoredAppState, S
     load_stored_app_state_unlocked(config)
 }
 
-fn sync_parent_dir(path: &Path) -> Result<(), String> {
+pub(super) fn sync_parent_dir(path: &Path) -> Result<(), String> {
     // Directory fsync is a POSIX-only durability guarantee — on Unix we
     // open the parent dir and call `sync_all()` so the rename of the
     // temp file into place is persisted even if the host crashes before

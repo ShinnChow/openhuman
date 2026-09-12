@@ -35,7 +35,7 @@ pub(super) static LAST_CURRENT_USER_SUCCESS: Lazy<Mutex<Option<CurrentUserSucces
 
 /// The last successful `auth_get_me`, with the identity it belongs to.
 #[derive(Debug, Clone)]
-struct CurrentUserSuccess {
+pub(super) struct CurrentUserSuccess {
     api_base: String,
     token: String,
     at: Instant,
@@ -44,7 +44,7 @@ struct CurrentUserSuccess {
 /// Stamp a refreshed user, so the snapshot can report how old the data it is
 /// serving has become. Callers must not invoke this for an answer that carried
 /// no user — see [`LAST_CURRENT_USER_SUCCESS`].
-fn note_current_user_success(api_base: &str, token: &str) {
+pub(super) fn note_current_user_success(api_base: &str, token: &str) {
     note_current_user_success_locked(&mut LAST_CURRENT_USER_SUCCESS.lock(), api_base, token);
 }
 
