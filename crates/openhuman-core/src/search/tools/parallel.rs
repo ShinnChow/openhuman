@@ -39,15 +39,15 @@ pub use search::{ParallelSearchTool, SearchResponse, SearchResultItem};
 // Re-exported only for the test module (`super::*`), which asserts on the
 // raw backend response shapes and formatting helpers directly.
 #[cfg(test)]
+use crate::integrations::IntegrationClient;
+#[cfg(test)]
+use crate::tools::traits::Tool;
+#[cfg(test)]
 use enrich::{enrich_payload, format_enrich_response, EnrichResponse};
 #[cfg(test)]
 use extract::ExtractResponse;
 #[cfg(test)]
 use research::{format_research_response, research_payload, ResearchResponse};
-#[cfg(test)]
-use crate::integrations::IntegrationClient;
-#[cfg(test)]
-use crate::tools::traits::Tool;
 #[cfg(test)]
 use serde_json::json;
 #[cfg(test)]
