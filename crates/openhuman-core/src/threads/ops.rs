@@ -23,3 +23,8 @@ pub use turn_state_ops::{
     turn_state_clear, turn_state_get, turn_state_get_turn, turn_state_history, turn_state_list,
 };
 pub use usage::{token_usage, SubagentUsageDto, ThreadTokenUsageRequest, ThreadTokenUsageResponse};
+
+// Test-only re-exports so `use super::*;` in the split-out test modules below
+// keeps resolving the shared helpers that now live in `support`.
+#[cfg(test)]
+use support::{counts, envelope, message_to_record, record_to_message, request_id, run_to_completion, thread_to_summary};
