@@ -18,10 +18,10 @@ Interactive approval workflow for supervised mode (issue #1339). `ApprovalGate` 
 | File | Role |
 | --- | --- |
 | `crates/openhuman-core/src/security/approval/mod.rs` | Export-focused: module docstring, `pub mod` decls, `pub use` re-exports including the controller-schema pair. |
-| `crates/openhuman-core/src/security/approval/gate.rs` | `ApprovalGate` struct + `DecideMiss`, `DEFAULT_APPROVAL_TTL` (10 minutes), `decide`/`classify_decide_miss`, `list_pending`/`list_recent_decisions`, the thread→request routing map, `ApprovalChatContext` task-local, and `parse_approval_reply`. |
+| `crates/openhuman-core/src/security/approval/gate.rs` | `ApprovalGate` struct + `DecideMiss`, `DEFAULT_APPROVAL_TTL` (10 minutes) and the shorter `COPILOT_APPROVAL_TTL`, the `ApprovalChatContext` / `FlowRunContext` task-locals, `parse_approval_reply`, and the `ApprovalGateBootState` record. |
 | `crates/openhuman-core/src/security/approval/gate_setup.rs` | `ApprovalGate::init_global`/`try_global` (process-global install, re-install-safe) and the private constructor. |
 | `crates/openhuman-core/src/security/approval/gate_intercept.rs` | `intercept`/`intercept_audited`/`intercept_audited_bounded` — the origin check, allowlist short-circuit, persist-and-park flow, and cancellation-safe bounded park used by the Flow Canvas copilot live-run path. |
-| `crates/openhuman-core/src/security/approval/gate_state.rs` | `record_execution` — writes the terminal execution outcome onto a decided approval's audit row (best-effort, never propagates a write failure into the tool result). |
+| `crates/openhuman-core/src/security/approval/gate_state.rs` | `decide` (resolves the parked future, emits `ApprovalDecided`), `classify_decide_miss`, `record_execution` (best-effort terminal audit row), `list_pending`/`list_recent_decisions`, the flow-trust helpers, and the thread→request routing lookups. |
 | `crates/openhuman-core/src/security/approval/store.rs` | SQLite persistence (`pending_approvals` table). `insert_pending`, `decide`, `get_decision`, `record_execution`, `list_pending`, `list_recent_decisions`, `purge_session`, `expire_stale`, plus idempotent column migration for the v1 schema. |
 | `crates/openhuman-core/src/security/approval/types.rs` | Serde domain types: `PendingApproval`, `ApprovalAuditEntry`, `ApprovalDecision`, `GateOutcome`, `ExecutionOutcome`. |
 | `crates/openhuman-core/src/security/approval/redact.rs` | `redact_args` (PII/chat-content key scrubbing + home-path stripping) and `summarize_action` (safe-field summary). |
@@ -90,7 +90,7 @@ SQLite DB at `{workspace_dir}/approval/approval.db`, table `pending_approvals` (
 ## Notes / gotchas
 
 - **Fail-closed 10-minute TTL is an invariant, not a tunable.** `gate.rs`'s
-  `DEFAULT_APPROVAL_TTL` (`Duration::from_secs(60 * 10)`, ~line 66) matches the
+  `DEFAULT_APPROVAL_TTL` (`Duration::from_secs(60 * 10)`) matches the
   default `expires_at` written into the persisted row; a parked call that
   times out resolves to `Deny`. Do not weaken this default or the fail-closed
   timeout behavior to make a feature work.
@@ -99,5 +99,5 @@ SQLite DB at `{workspace_dir}/approval/approval.db`, table `pending_approvals` (
 - **Waiter registered before persist** so a fast `approval_decide` can't mark a request approved while no waiter exists (PR #2149).
 - **Orphan rows are intentionally preserved** across launches (issue #1339); deciding one is a DB-only audit update — no side effect can fire across processes, so the security invariant holds.
 - **`approve_always_for_tool` persistence is the RPC handler's job**, not the gate's — `gate.decide` only resolves the parked future and emits the audit event; `rpc::approval_decide` appends to `autonomy.auto_approve` + reloads the live policy (best-effort; failure degrades to prompting again).
-- `OPENHUMAN_APPROVAL_GATE=0`/`false` skips installing the gate (handled in `crates/openhuman-core/src/core/jsonrpc.rs`), in which case `Prompt`-class calls run unprompted.
+- `OPENHUMAN_APPROVAL_GATE=0`/`false` skips installing the gate for CLI, Docker, and library hosts only (`approval_gate_boot_decision` in `crates/openhuman-core/src/core/types.rs`, applied in `core/jsonrpc.rs`); the Tauri shell always installs it and ignores the override. Where honored, `Prompt`-class calls run unprompted.
 - A prior list-based `ApprovalManager` was removed; the gate is now the sole control reading the `autonomy.auto_approve` allowlist.
