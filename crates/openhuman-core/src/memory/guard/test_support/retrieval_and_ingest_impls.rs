@@ -9,7 +9,7 @@
 //! [`super::core_and_docs_impls`].
 
 
-use crate::memory::sources::sync::SourceScope;
+use crate::memory::api::provider::types::SourceScope;
 use crate::memory::api::chunks::Chunk;
 use crate::memory::api::error::MemoryError;
 use crate::memory::api::provider::chunks::{
