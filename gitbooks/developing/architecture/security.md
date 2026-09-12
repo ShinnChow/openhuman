@@ -71,7 +71,7 @@ The agent never sees the choice; it just calls into `Sandbox::run(...)` and the 
 
 ## Secret store
 
-`SecretStore` (in `secrets.rs`) persists per-key secrets with at-rest encryption. On supported platforms the encryption key comes from the OS keychain; otherwise it falls back to a workspace-local XOR scheme (which is **obfuscation, not security**, and is documented as such in the source).
+`SecretStore` (implemented in `keyring/encrypted_store.rs`, re-exported through `secrets.rs`) encrypts config-field secrets with ChaCha20-Poly1305 (`enc2:` prefix) under a keychain-backed master key, migrating the legacy XOR `enc:` format on decrypt. Backend selection and the encrypted-file fallback are described in `crates/openhuman-core/src/security/keyring/README.md`.
 
 ## `redact()`
 
