@@ -25,6 +25,42 @@ mod staleness;
 mod state_file;
 mod types;
 
+#[cfg(test)]
+#[path = "ops_current_user_backoff_tests.rs"]
+mod current_user_backoff_tests;
+#[cfg(test)]
+#[path = "ops_snapshot_latency_tests.rs"]
+mod snapshot_latency_tests;
+#[cfg(test)]
+#[path = "ops_tests.rs"]
+mod tests;
+
+// Test-only flat re-import of every submodule's internals, so the test
+// files below — written against this module's pre-split flat scope — keep
+// working unmodified via `use super::*;`. Each submodule marks the items
+// these tests reach into as `pub(super)` (visible to `ops` and, therefore,
+// to these test descendants) for exactly this purpose.
+#[cfg(test)]
+use auth_timeout::*;
+#[cfg(test)]
+use current_user::*;
+#[cfg(test)]
+use current_user_fetch::*;
+#[cfg(test)]
+use current_user_generation::*;
+#[cfg(test)]
+use pending_session::*;
+#[cfg(test)]
+use runtime_snapshot::*;
+#[cfg(test)]
+use snapshot::*;
+#[cfg(test)]
+use staleness::*;
+#[cfg(test)]
+use state_file::*;
+#[cfg(test)]
+use types::*;
+
 /// Shared log prefix for every `[app_state]`-tagged debug/warn line across
 /// these submodules.
 pub(super) const LOG_PREFIX: &str = "[app_state]";
