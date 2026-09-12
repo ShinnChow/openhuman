@@ -44,7 +44,7 @@ fn seed_root_transcript(workspace: &std::path::Path, thread_id: &str) -> std::pa
     path
 }
 
-#[path = "mirror_observe_tests.rs"]
-mod observe_tests;
 #[path = "mirror_finish_and_subagent_args_tests.rs"]
 mod finish_and_subagent_args_tests;
+#[path = "mirror_observe_tests.rs"]
+mod observe_tests;

@@ -36,9 +36,9 @@ fn make_legacy_skill(ws: &Path, name: &str) -> PathBuf {
     skill_dir
 }
 
-#[path = "ops_discovery_tests.rs"]
-mod discovery_tests;
 #[path = "ops_create_and_url_tests.rs"]
 mod create_and_url_tests;
+#[path = "ops_discovery_tests.rs"]
+mod discovery_tests;
 #[path = "ops_uninstall_tests.rs"]
 mod uninstall_tests;

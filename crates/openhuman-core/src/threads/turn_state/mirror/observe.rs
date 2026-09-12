@@ -526,7 +526,13 @@ impl TurnStateMirror {
     /// one entry (mirrors the frontend `appendSubagentStreamDelta`). Mutate-
     /// only (no flush) — high-frequency like the parent's `TextDelta`; the
     /// accumulated prose is persisted at the next sub-agent tool boundary.
-    fn push_subagent_prose(&mut self, task_id: &str, iteration: u32, delta: &str, is_thinking: bool) {
+    fn push_subagent_prose(
+        &mut self,
+        task_id: &str,
+        iteration: u32,
+        delta: &str,
+        is_thinking: bool,
+    ) {
         let Some(entry) = self.find_subagent_entry_mut(task_id) else {
             return;
         };

@@ -8,10 +8,10 @@ use serde::{Deserialize, Serialize};
 use super::super::ops_discover::{discover_workflows_inner, is_workspace_trusted};
 use super::super::ops_parse::parse_workflow_md_str;
 use super::super::ops_types::SKILL_MD;
+use super::url_validation::{is_loopback_http_url, read_allow_local_http_env};
 use super::url_validation::{
     normalize_install_url, validate_install_url_with_config, validate_resolved_host,
 };
-use super::url_validation::{is_loopback_http_url, read_allow_local_http_env};
 
 /// Strip userinfo, query, and fragment from a URL for safe inclusion in
 /// observability tags. Returns `<scheme>://<host>[:<port>]<path>` on success,

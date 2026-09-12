@@ -5,7 +5,9 @@ use super::support::{counts, envelope, thread_to_summary, update_thread_with_fal
 use crate::config::Config;
 use crate::inference::provider;
 use crate::memory::conversations;
-use crate::memory::{ApiEnvelope, ConversationThreadSummary, GenerateConversationThreadTitleRequest};
+use crate::memory::{
+    ApiEnvelope, ConversationThreadSummary, GenerateConversationThreadTitleRequest,
+};
 use crate::rpc::RpcOutcome;
 use crate::threads::title::{
     build_title_request, is_auto_generated_thread_title, sanitize_generated_title,
