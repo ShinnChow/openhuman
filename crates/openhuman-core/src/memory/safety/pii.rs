@@ -21,7 +21,7 @@ mod checksums;
 mod normalize;
 mod patterns;
 
-pub(super) use patterns::{has_likely_email, has_likely_pii, redact_pii};
+pub use patterns::{has_likely_email, has_likely_pii, redact_pii};
 
 // Flattened test-only re-exports so `safety_tests.rs` and its own submodules
 // can exercise the internals directly (checksum validators, the
