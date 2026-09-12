@@ -21,13 +21,13 @@ pub enum TavilyImage {
 }
 
 impl TavilyImage {
-    fn url(&self) -> &str {
+    pub(super) fn url(&self) -> &str {
         match self {
             Self::Url(url) | Self::Detailed { url, .. } => url,
         }
     }
 
-    fn description(&self) -> Option<String> {
+    pub(super) fn description(&self) -> Option<String> {
         let description = match self {
             Self::Url(_) => None,
             Self::Detailed { description, .. } => non_empty(description.as_deref()),
@@ -61,11 +61,11 @@ impl TavilyResultItem {
     /// Best available excerpt: the chunked `content` first, then the full
     /// cleaned page (`raw_content`), only present when `include_raw_content`
     /// was requested.
-    fn excerpt(&self) -> Option<String> {
+    pub(super) fn excerpt(&self) -> Option<String> {
         non_empty(self.content.as_deref()).or_else(|| non_empty(self.raw_content.as_deref()))
     }
 
-    fn display_title(&self) -> &str {
+    pub(super) fn display_title(&self) -> &str {
         self.title
             .as_deref()
             .map(str::trim)

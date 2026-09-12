@@ -15,5 +15,9 @@ mod quoting;
 
 pub(super) use classification::{classify_segment, has_hidden_execution};
 pub(super) use command_name::{command_basename, is_command_executor, normalized_command_name};
-pub(super) use env_guard::{has_dangerous_env_prefix, has_leading_env_assignment, skip_env_assignments};
-pub(super) use quoting::{contains_unquoted_char, contains_unquoted_single_ampersand, split_unquoted_segments};
+pub(super) use env_guard::{
+    has_dangerous_env_prefix, has_leading_env_assignment, skip_env_assignments,
+};
+pub(super) use quoting::{
+    contains_unquoted_char, contains_unquoted_single_ampersand, split_unquoted_segments,
+};
