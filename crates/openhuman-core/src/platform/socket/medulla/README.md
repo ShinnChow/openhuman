@@ -36,7 +36,7 @@ Down (backend → OpenHuman), matched by name in `event_handlers::handle_sio_eve
 | `medulla:task_send` | `TaskSend { task_id, input }` | `MedullaTaskManager::steer_task` |
 | `medulla:task_abort` | `TaskAbort { task_id }` | `MedullaTaskManager::abort_task` |
 | `medulla:capabilities_request` | `CapabilitiesRequest { probe_id, agent_id }` | `handle_capabilities_request` |
-| `medulla:workflow_request` | `WorkflowRequest { request_id, op, workflow_id?, kind?, instruction? }` | `workflows::handle_workflow_request` |
+| `medulla:workflow_request` | `WorkflowRequest { request_id, op, workflow_id?, kind?, instruction?, agent_id? }` | `workflows::handle_workflow_request` |
 
 Up (OpenHuman → backend):
 
@@ -47,7 +47,7 @@ Up (OpenHuman → backend):
 | `medulla:register_agents` | `RegisterAgents { agents }` | On every socket `ready` (`agent::registry::default_agents`); the backend drops the roster on disconnect. |
 | `medulla:register_workflows` | `RegisterWorkflows` | On every `ready` and whenever a `WorkflowBridge` is (re)installed or the flows store changes; same lifetime as the roster. |
 | `medulla:capabilities_result` | `CapabilitiesResult { probe_id, capabilities }` | Answer to a probe: `ready`, `summary`, `cwd` (bridge `action_dir`), advertised `workflows`. |
-| `medulla:workflow_result` | `WorkflowResult` | Answer to a workflow round trip, `ok: false` with a readable message on any failure. |
+| `medulla:workflow_result` | `WorkflowResult { request_id, ok, data?, error? }` | Answer to a workflow round trip, `ok: false` with a readable message on any failure. |
 
 Every down event is request/response against a server-side deadline (ten
 seconds for a probe or workflow read, ten minutes for a `copilot` turn), so
