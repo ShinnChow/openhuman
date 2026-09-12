@@ -1,25 +1,30 @@
 //! Built-in agent archetypes.
 //!
 //! Each submodule below is one shipped agent and owns the same three
-//! files, so none of the 30 leaf `mod.rs` files need their own doc
+//! files, so none of the 29 leaf `mod.rs` files need their own doc
 //! comment:
 //!
-//! * `agent.toml`  — id, `when_to_use`, model, tool allowlist, sandbox,
-//!   iteration cap, and `omit_*` flags. Parsed directly into
-//!   [`crate::agent::harness::definition::AgentDefinition`].
-//! * `prompt.md`   — legacy static prompt body, kept for reference and as
-//!   the workspace-override target.
+//! * `agent.toml`  — id, `when_to_use`, model, tool scope, sandbox mode,
+//!   iteration cap, tier, and `omit_*` flags. Parsed directly into
+//!   [`crate::agent::harness::definition::AgentDefinition`]; ships without
+//!   a `system_prompt`.
+//! * `prompt.md`   — the static archetype body. `prompt.rs` embeds it with
+//!   `include_str!`; nothing else reads it.
 //! * `prompt.rs`   — exposes `pub fn build(&PromptContext) ->
-//!   anyhow::Result<String>`, wired into `PromptSource::Dynamic` by
-//!   [`loader::BUILTINS`] so the prompt can branch on runtime state
-//!   (available tools, user profile, connected integrations, model hint).
+//!   anyhow::Result<String>`, which appends runtime-dependent sections
+//!   (rendered tool list, user files, workspace) to the `prompt.md` body.
+//!   [`BUILTINS`] installs it as `PromptSource::Dynamic` on the parsed
+//!   definition. Most archetypes keep a `prompt_tests.rs` beside it.
 //!
-//! A handful of archetypes (currently only `researcher`) additionally own a
-//! `graph.rs` exposing `fn graph() -> AgentGraph` for a bespoke turn graph;
-//! see [`loader::BuiltinAgent::graph_fn`].
+//! `researcher` additionally owns a `graph.rs` exposing
+//! `fn graph() -> AgentGraph` for a bespoke turn graph; see
+//! [`BuiltinAgent::graph_fn`].
 //!
-//! See the [package README](../README.md) for what each archetype does and
-//! [`loader`] for how this list turns into the running registry.
+//! `loader.rs` holds [`BUILTINS`], [`load_builtins`] and
+//! [`validate_tier_hierarchy`]. The slice also registers archetypes that
+//! live with other domains (`memory/agent/agent/`, `skills/*/agent/`,
+//! `flows/agents/`), so this directory is not the full built-in set. The
+//! package `README.md` one level up describes what each archetype does.
 
 mod loader;
 

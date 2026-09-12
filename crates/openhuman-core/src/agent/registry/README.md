@@ -60,8 +60,8 @@ Each built-in agent owns a subfolder with an `agent.toml` (id, `when_to_use`,
 model, tool scope, sandbox mode, iteration cap, tier, `omit_*` flags —
 parsed directly into `AgentDefinition`), a `prompt.md` holding the static
 archetype body, and a `prompt.rs` that `include_str!`s that body and exposes
-`pub fn build(&PromptContext) -> anyhow::Result<String>`, appending runtime
-sections (tools, user files, workspace) to it. `researcher` additionally
+`pub fn build(&PromptContext) -> anyhow::Result<String>`, appending
+runtime-dependent sections (rendered tool list, user files, workspace) to it. `researcher` additionally
 owns a `graph.rs` for a bespoke `AgentGraph`; every other archetype uses
 `AgentGraph::Default`. The per-archetype contract is documented on
 [`agents/mod.rs`](agents/mod.rs).
@@ -143,8 +143,7 @@ orchestrator tool synthesis in `tools/orchestrator_tools.rs` and
   enumerate `load_builtins()`.
 - `flows/` (`ops_part_02.rs`, `ops_part_03.rs`, `builder_tools_part_04.rs`,
   `tinyflows/caps/agent.rs`) — resolve a flow `agent` node's `agent_ref`
-  through `list_agents`/`get_agent`/`find_custom_in_config`, honouring the
-  enabled flag.
+  through `list_agents`/`get_agent`/`find_custom_in_config`.
 
 ## Tests
 
