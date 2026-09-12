@@ -1,6 +1,14 @@
 use super::*;
 use serde_json::json;
 
+// `pii`'s internals (checksum validators, the normalization pass) are test-only
+// re-exports at the `pii` module level; pull them in here so the nested test
+// submodules below can reach them through their own `use super::*;`.
+use super::pii::{
+    digits, scan_candidates, valid_cnpj, valid_cpf, valid_cuit, valid_dni_es, valid_iban,
+    valid_luhn, valid_nie_es, valid_nino, valid_ssn, valid_verhoeff, NormalizedView,
+};
+
 /// Assembled rather than written out so a repository secret scanner does
 /// not read the fixture as a real key block.
 fn private_key_fixture(kind: &str, body: &str) -> String {
