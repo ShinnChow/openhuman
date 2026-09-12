@@ -10,7 +10,7 @@
 /// the tool validates via the exact same [`validate_and_migrate_graph`] path
 /// `flows_create` uses and echoes an optional `revision` note. It NEVER
 /// persists — identical human-in-the-loop invariant to
-/// [`super::tools::ProposeWorkflowTool`].
+/// [`crate::flows::tools::ProposeWorkflowTool`].
 pub struct ReviseWorkflowTool {
     config: Arc<Config>,
 }
