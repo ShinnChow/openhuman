@@ -55,7 +55,5 @@ pub use probe::{
 // implementation details they exercise via a plain `use super::*;`, exactly
 // as when this was one un-split file. See each item's `pub(super)` in its
 // owning submodule.
-use contract::{compute_composio_array_path, live_catalog_fetch_lock, CacheEntry};
+use contract::{compute_composio_array_path, live_catalog_fetch_lock};
 use probe::{cache_probe_result, resolve_composio_action_scope};
-#[allow(unused_imports)]
-use contract::COMPOSIO_CATALOG_CACHE_TTL;
