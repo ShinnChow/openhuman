@@ -26,15 +26,21 @@ pub use types::{ServerState, VoiceServerConfig, VoiceServerStatus};
 
 #[cfg(test)]
 use pipeline::{
-    build_initial_prompt, capture_expected_app_name, process_recording_bg, truncate_for_log,
-    update_state_if_current,
+    build_initial_prompt, capture_expected_app_name, process_recording_bg, push_recent_transcript,
+    truncate_for_log, update_state_if_current,
 };
-#[cfg(test)]
-use pipeline::push_recent_transcript;
 #[cfg(test)]
 use types::DEFAULT_SILENCE_THRESHOLD;
 #[cfg(test)]
+use crate::config::Config;
+#[cfg(test)]
+use crate::voice::audio_capture::RecordingHandle;
+#[cfg(test)]
 use crate::voice::hotkey::ActivationMode;
+#[cfg(test)]
+use std::sync::Arc;
+#[cfg(test)]
+use tokio::sync::Mutex;
 
 const LOG_PREFIX: &str = "[voice_server]";
 
