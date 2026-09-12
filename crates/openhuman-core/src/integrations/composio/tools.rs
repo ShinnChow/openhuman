@@ -49,7 +49,6 @@ pub use registry::all_composio_agent_tools;
 // — can still reach these via a plain `use super::*;`, exactly as when
 // this was one un-split file. See each item's `pub(super)` in its owning
 // submodule.
-pub(super) use visibility::{action_mutates_external_state, resolve_action_scope};
 use authorize::ComposioAuthorizeTool;
 use connect::{
     canonicalize_toolkit_slug, composio_connect_timeout, connection_is_active,
@@ -57,8 +56,9 @@ use connect::{
 };
 use execute::ComposioExecuteTool;
 use list_connections::ComposioListConnectionsTool;
-use list_tools::ComposioListToolsTool;
 use list_toolkits::ComposioListToolkitsTool;
+use list_tools::ComposioListToolsTool;
+pub(super) use visibility::{action_mutates_external_state, resolve_action_scope};
 use visibility::{
     empty_uncurated_toolkits_message, evaluate_tool_visibility, normalized_scope_toolkits,
     render_tools_markdown, retain_connected_tools, scope_error_message, uncatalogued_toolkits,

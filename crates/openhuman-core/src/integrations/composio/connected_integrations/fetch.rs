@@ -171,10 +171,9 @@ pub(super) fn resolve_toolkit_description(
     catalog_descriptions: &std::collections::HashMap<String, String>,
     slug: &str,
 ) -> String {
-    catalog_descriptions
-        .get(slug)
-        .cloned()
-        .unwrap_or_else(|| crate::integrations::composio::providers::toolkit_description(slug).to_string())
+    catalog_descriptions.get(slug).cloned().unwrap_or_else(|| {
+        crate::integrations::composio::providers::toolkit_description(slug).to_string()
+    })
 }
 
 /// Just-in-time fetch of every available action for a single Composio
@@ -227,7 +226,12 @@ pub async fn fetch_toolkit_actions(
         .tools
         .into_iter()
         .filter(|t| t.function.name.starts_with(&action_prefix))
-        .filter(|t| crate::integrations::composio::providers::is_action_visible_with_pref(&t.function.name, &pref))
+        .filter(|t| {
+            crate::integrations::composio::providers::is_action_visible_with_pref(
+                &t.function.name,
+                &pref,
+            )
+        })
         .map(|t| ConnectedIntegrationTool {
             name: t.function.name,
             description: t.function.description.unwrap_or_default(),

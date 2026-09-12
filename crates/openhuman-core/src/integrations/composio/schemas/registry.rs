@@ -3,8 +3,8 @@
 //! [`super::definitions::schemas`] entry to its handler and register it
 //! with the shared controller registry.
 
-use crate::core::ControllerSchema;
 use crate::core::all::RegisteredController;
+use crate::core::ControllerSchema;
 
 use super::definitions::schemas;
 use super::handlers_connections::{
@@ -13,8 +13,8 @@ use super::handlers_connections::{
     handle_list_toolkits, handle_set_api_key,
 };
 use super::handlers_identity::{
-    handle_get_user_profile, handle_get_user_scopes, handle_refresh_all_identities, handle_sync,
-    handle_set_user_scopes,
+    handle_get_user_profile, handle_get_user_scopes, handle_refresh_all_identities,
+    handle_set_user_scopes, handle_sync,
 };
 use super::handlers_tools::{handle_execute, handle_list_tools};
 use super::handlers_triggers::{

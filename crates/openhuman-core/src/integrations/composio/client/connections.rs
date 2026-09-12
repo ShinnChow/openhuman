@@ -118,7 +118,6 @@ impl ComposioClient {
         .await
     }
 
-
     // ── Raw DELETE ──────────────────────────────────────────────────
 
     /// Perform an HTTP DELETE and parse the standard backend envelope.
@@ -172,8 +171,7 @@ impl ComposioClient {
             // Use the same UTF-8-safe truncation for the debug-log preview
             // — direct byte-slicing (`&body_text[..len.min(300)]`) panics
             // when the cutoff lands inside a multibyte codepoint.
-            let logged_body =
-                crate::integrations::client::extract_error_detail(&body_text, 300);
+            let logged_body = crate::integrations::client::extract_error_detail(&body_text, 300);
             tracing::debug!(
                 "[composio] DELETE {} → {} body={}",
                 url,

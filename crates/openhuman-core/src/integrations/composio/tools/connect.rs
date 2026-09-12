@@ -14,7 +14,6 @@ use crate::tools::traits::{PermissionLevel, Tool, ToolCategory, ToolResult};
 
 use super::super::client::{create_composio_client, direct_list_connections, ComposioClientKind};
 
-
 // ── composio_connect (inline approval card, #3993) ──────────────────
 
 /// Canonicalize an agent/user-supplied toolkit slug to the form Composio's
@@ -49,7 +48,6 @@ pub(super) fn canonicalize_toolkit_slug(slug: &str) -> String {
 /// hanging. Generous by design; env-overridable, `0` restores the full gate TTL.
 pub(super) const DEFAULT_COMPOSIO_CONNECT_TIMEOUT_SECS: u64 = 120;
 
-
 /// Resolve the connect-card park bound. Reads
 /// `OPENHUMAN_COMPOSIO_CONNECT_TIMEOUT_SECS`; `0` means "no composio-side bound"
 /// (`None`) → fall back to the gate's own TTL.
@@ -65,7 +63,9 @@ pub(super) fn composio_connect_timeout() -> Option<std::time::Duration> {
 /// deterministically unit-testable. An absent/unparseable value falls back to
 /// [`DEFAULT_COMPOSIO_CONNECT_TIMEOUT_SECS`]; `0` yields `None` (opt out of the
 /// composio-side bound).
-pub(super) fn parse_composio_connect_timeout(env_value: Option<&str>) -> Option<std::time::Duration> {
+pub(super) fn parse_composio_connect_timeout(
+    env_value: Option<&str>,
+) -> Option<std::time::Duration> {
     let secs = env_value
         .and_then(|v| v.trim().parse::<u64>().ok())
         .unwrap_or(DEFAULT_COMPOSIO_CONNECT_TIMEOUT_SECS);

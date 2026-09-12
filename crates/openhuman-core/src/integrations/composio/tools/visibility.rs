@@ -249,7 +249,8 @@ pub(super) fn render_tools_markdown(resp: &super::super::types::ComposioToolsRes
 
     // Group by toolkit slug (lowercase prefix). Use BTreeMap for stable
     // ordering so the agent sees the same shape across calls.
-    let mut by_toolkit: BTreeMap<String, Vec<&super::super::types::ComposioToolSchema>> = BTreeMap::new();
+    let mut by_toolkit: BTreeMap<String, Vec<&super::super::types::ComposioToolSchema>> =
+        BTreeMap::new();
     for t in &resp.tools {
         let toolkit = toolkit_from_slug(&t.function.name).unwrap_or_else(|| "other".to_string());
         by_toolkit.entry(toolkit).or_default().push(t);
@@ -317,4 +318,3 @@ pub(super) fn scope_error_message(slug: &str, scope: ToolScope, pref: UserScopeP
         pref.read, pref.write, pref.admin,
     )
 }
-

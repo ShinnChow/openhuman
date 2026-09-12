@@ -6,7 +6,9 @@
 use serde_json::Value;
 
 use crate::config::Config;
-use crate::integrations::composio::client::{create_composio_client, direct_list_tools, ComposioClientKind};
+use crate::integrations::composio::client::{
+    create_composio_client, direct_list_tools, ComposioClientKind,
+};
 use crate::json_schema::{compute_primary_array_path, response_fields_from_schema};
 
 /// One Composio action's LIVE, ground-truth contract — the source of truth
@@ -121,7 +123,8 @@ impl<T> CacheEntry<T> {
 /// worth of repeat lookups (the reason these are caches at all) while
 /// keeping "add a Composio action, come back later today" working without a
 /// restart.
-pub(super) const COMPOSIO_CATALOG_CACHE_TTL: std::time::Duration = std::time::Duration::from_secs(30 * 60);
+pub(super) const COMPOSIO_CATALOG_CACHE_TTL: std::time::Duration =
+    std::time::Duration::from_secs(30 * 60);
 
 /// Process-level cache backing [`fetch_live_toolkit_catalog`]: lowercase
 /// toolkit slug → every [`ToolContract`] the LIVE Composio catalog published
@@ -144,7 +147,9 @@ static LIVE_CATALOG_IN_FLIGHT: std::sync::OnceLock<
     std::sync::Mutex<std::collections::HashMap<String, std::sync::Arc<tokio::sync::Mutex<()>>>>,
 > = std::sync::OnceLock::new();
 
-pub(super) fn live_catalog_fetch_lock(toolkit: &str) -> Option<std::sync::Arc<tokio::sync::Mutex<()>>> {
+pub(super) fn live_catalog_fetch_lock(
+    toolkit: &str,
+) -> Option<std::sync::Arc<tokio::sync::Mutex<()>>> {
     let mut in_flight = LIVE_CATALOG_IN_FLIGHT
         .get_or_init(Default::default)
         .lock()

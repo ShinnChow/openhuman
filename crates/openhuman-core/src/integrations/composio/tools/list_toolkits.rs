@@ -11,7 +11,6 @@ use crate::tools::traits::{PermissionLevel, Tool, ToolCategory, ToolResult};
 
 use super::super::client::{create_composio_client, ComposioClientKind};
 
-
 pub struct ComposioListToolkitsTool {
     /// Held instead of a pre-baked `ComposioClient` so the
     /// [`crate::config::ComposioConfig::mode`] toggle is

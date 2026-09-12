@@ -131,7 +131,7 @@ fn direct_mode_config() -> crate::config::Config {
     config
 }
 
-#[path = "tools_metadata_and_sandbox_tests.rs"]
-mod metadata_and_sandbox_tests;
 #[path = "tools_direct_mode_routing_tests.rs"]
 mod direct_mode_routing_tests;
+#[path = "tools_metadata_and_sandbox_tests.rs"]
+mod metadata_and_sandbox_tests;

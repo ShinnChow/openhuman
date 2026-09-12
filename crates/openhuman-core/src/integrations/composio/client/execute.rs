@@ -7,8 +7,8 @@ use std::time::Duration;
 use anyhow::Result;
 use serde_json::{json, Value};
 
-use super::connections::ComposioClient;
 use super::super::types::{ComposioExecuteResponse, ComposioToolsResponse};
+use super::connections::ComposioClient;
 
 const POST_OAUTH_ACTION_RETRY_DELAY: Duration = Duration::from_secs(10);
 /// Literal error fragments Composio's gateway emits during the post-OAuth

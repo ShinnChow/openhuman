@@ -254,7 +254,9 @@ fn connected_toolkit_set(integrations: &[ConnectedIntegration]) -> HashSet<Strin
 /// in chat in sync with the badge the user sees in Settings, even when
 /// the primary event-bus invalidation path misses (e.g. Windows OAuth
 /// flows that overrun the 60 s readiness poll).
-pub(crate) fn sync_cache_with_connections(connections: &[crate::integrations::composio::types::ComposioConnection]) {
+pub(crate) fn sync_cache_with_connections(
+    connections: &[crate::integrations::composio::types::ComposioConnection],
+) {
     let live_active: HashSet<String> = connections
         .iter()
         .filter(|c| c.is_active())

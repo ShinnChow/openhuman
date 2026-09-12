@@ -25,7 +25,9 @@ use super::fetch::{connectable_toolkit_slugs, resolve_toolkit_description};
 pub(super) async fn fetch_connected_integrations_uncached(
     config: &Config,
 ) -> Option<Vec<ConnectedIntegration>> {
-    use super::super::client::{create_composio_client, direct_list_connections, ComposioClientKind};
+    use super::super::client::{
+        create_composio_client, direct_list_connections, ComposioClientKind,
+    };
 
     // Route via the mode-aware factory so the chat-agent's
     // "connected_integrations" view reflects the live tenant — backend
@@ -383,7 +385,8 @@ pub(super) async fn fetch_connected_integrations_uncached(
                     .iter()
                     .filter(|t| t.function.name.starts_with(&action_prefix))
                 {
-                    if super::super::providers::is_action_visible_with_pref(&t.function.name, &pref) {
+                    if super::super::providers::is_action_visible_with_pref(&t.function.name, &pref)
+                    {
                         visible.push(ConnectedIntegrationTool {
                             name: t.function.name.clone(),
                             description: t.function.description.clone().unwrap_or_default(),
@@ -433,38 +436,37 @@ pub(super) async fn fetch_connected_integrations_uncached(
                 (Vec::new(), Vec::new())
             };
 
-        let integration_connections: Vec<
-            crate::agent::context::prompt::IntegrationConnection,
-        > = if connected {
-            let mut conns: Vec<_> = connections
-                .iter()
-                .filter(|c| c.is_active() && c.normalized_toolkit() == *slug)
-                .collect();
-            conns.sort_by(|a, b| a.created_at.cmp(&b.created_at));
-            conns
-                .iter()
-                .enumerate()
-                .map(|(idx, c)| {
-                    let label = [
-                        c.account_email.as_deref(),
-                        c.workspace.as_deref(),
-                        c.username.as_deref(),
-                    ]
-                    .into_iter()
-                    .flatten()
-                    .map(str::trim)
-                    .find(|s| !s.is_empty())
-                    .map(str::to_string);
-                    crate::agent::context::prompt::IntegrationConnection {
-                        connection_id: c.id.clone(),
-                        label,
-                        is_default: idx == 0,
-                    }
-                })
-                .collect()
-        } else {
-            Vec::new()
-        };
+        let integration_connections: Vec<crate::agent::context::prompt::IntegrationConnection> =
+            if connected {
+                let mut conns: Vec<_> = connections
+                    .iter()
+                    .filter(|c| c.is_active() && c.normalized_toolkit() == *slug)
+                    .collect();
+                conns.sort_by(|a, b| a.created_at.cmp(&b.created_at));
+                conns
+                    .iter()
+                    .enumerate()
+                    .map(|(idx, c)| {
+                        let label = [
+                            c.account_email.as_deref(),
+                            c.workspace.as_deref(),
+                            c.username.as_deref(),
+                        ]
+                        .into_iter()
+                        .flatten()
+                        .map(str::trim)
+                        .find(|s| !s.is_empty())
+                        .map(str::to_string);
+                        crate::agent::context::prompt::IntegrationConnection {
+                            connection_id: c.id.clone(),
+                            label,
+                            is_default: idx == 0,
+                        }
+                    })
+                    .collect()
+            } else {
+                Vec::new()
+            };
 
         integrations.push(ConnectedIntegration {
             toolkit: slug.clone(),

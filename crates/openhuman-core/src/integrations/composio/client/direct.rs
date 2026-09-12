@@ -7,11 +7,11 @@
 
 use std::sync::Arc;
 
+use super::super::direct_auth;
 use super::super::types::{
     ComposioAuthorizeResponse, ComposioConnection, ComposioConnectionsResponse,
     ComposioExecuteResponse, ComposioToolsResponse,
 };
-use super::super::direct_auth;
 
 /// Direct-mode counterpart to [`ComposioClient::authorize`]. Calls
 /// Composio v3 `/connected_accounts/link` via

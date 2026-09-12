@@ -8,8 +8,10 @@ use serde_json::Value;
 
 use super::contract::{CacheEntry, ToolContract, COMPOSIO_CATALOG_CACHE_TTL};
 use crate::config::Config;
+use crate::integrations::composio::client::{
+    create_composio_client, direct_execute, ComposioClientKind,
+};
 use crate::json_schema::compute_primary_array_path_from_value;
-use crate::integrations::composio::client::{create_composio_client, direct_execute, ComposioClientKind};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Real-output probe (systemic tool-contract fix, Part 3 / B12)
@@ -280,17 +282,14 @@ pub(crate) async fn probe_tool_output_sample(
         }
     }
 
-    let Some(toolkit) =
-        crate::integrations::composio::providers::toolkit_from_slug(slug)
-    else {
+    let Some(toolkit) = crate::integrations::composio::providers::toolkit_from_slug(slug) else {
         return Err(format!(
             "get_tool_output_sample: could not extract a toolkit from slug '{slug}' — it must \
              look like '<TOOLKIT>_<ACTION>'."
         ));
     };
 
-    let integrations =
-        crate::integrations::composio::fetch_connected_integrations(config).await;
+    let integrations = crate::integrations::composio::fetch_connected_integrations(config).await;
     let connected = integrations
         .iter()
         .any(|i| i.connected && i.toolkit.eq_ignore_ascii_case(&toolkit));

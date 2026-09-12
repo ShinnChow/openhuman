@@ -7,7 +7,6 @@ use std::sync::Arc;
 
 use super::connections::ComposioClient;
 
-
 /// Backend-mode [`ComposioClient`] constructor. **Internal to the
 /// composio module** — external callers should use
 /// [`create_composio_client`] (factory) or
@@ -30,9 +29,7 @@ use super::connections::ComposioClient;
 /// this returns `None` is that the user isn't signed in to the backend
 /// (no JWT). Direct-mode availability is orthogonal — see
 /// [`create_composio_client`].
-pub(super) fn build_composio_client(
-    config: &crate::config::Config,
-) -> Option<ComposioClient> {
+pub(super) fn build_composio_client(config: &crate::config::Config) -> Option<ComposioClient> {
     let inner = crate::integrations::build_client(config)?;
     Some(ComposioClient::new(inner))
 }

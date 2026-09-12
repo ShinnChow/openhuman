@@ -9,8 +9,8 @@ use super::authorize::ComposioAuthorizeTool;
 use super::connect::ComposioConnectTool;
 use super::execute::ComposioExecuteTool;
 use super::list_connections::ComposioListConnectionsTool;
-use super::list_tools::ComposioListToolsTool;
 use super::list_toolkits::ComposioListToolkitsTool;
+use super::list_tools::ComposioListToolsTool;
 
 pub fn all_composio_agent_tools(config: &crate::config::Config) -> Vec<Box<dyn Tool>> {
     // Registration gate: ask the mode-aware probe "can this user call

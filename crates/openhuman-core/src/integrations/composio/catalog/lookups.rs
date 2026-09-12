@@ -5,7 +5,6 @@
 use super::contract::fetch_live_toolkit_catalog;
 use crate::config::Config;
 
-
 /// Best-effort lookup of a Composio action's **required** top-level parameter
 /// names — a thin projection over [`fetch_live_toolkit_catalog`]'s
 /// [`ToolContract`]s (this used to run its own independent

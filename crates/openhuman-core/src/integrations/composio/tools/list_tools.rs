@@ -17,7 +17,6 @@ use super::visibility::{
     render_tools_markdown, retain_connected_tools,
 };
 
-
 pub struct ComposioListToolsTool {
     /// Held instead of a pre-baked `ComposioClient` so the
     /// [`crate::config::ComposioConfig::mode`] toggle is

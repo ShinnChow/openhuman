@@ -33,8 +33,13 @@ pub(super) fn handle_create_trigger(params: Map<String, Value>) -> ControllerFut
             return Err("invalid params: 'slug' must not be empty".to_string());
         }
         to_json(
-            ops::composio_create_trigger(&config, slug, payload.connection_id, payload.trigger_config)
-                .await?,
+            ops::composio_create_trigger(
+                &config,
+                slug,
+                payload.connection_id,
+                payload.trigger_config,
+            )
+            .await?,
         )
     })
 }

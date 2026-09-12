@@ -5,12 +5,12 @@
 
 use anyhow::Result;
 
-use super::connections::ComposioClient;
 use super::super::types::{
     ComposioActiveTriggersResponse, ComposioAvailableTriggersResponse,
     ComposioCreateTriggerResponse, ComposioDisableTriggerResponse, ComposioEnableTriggerResponse,
     ComposioGithubReposResponse,
 };
+use super::connections::ComposioClient;
 
 impl ComposioClient {
     pub async fn list_github_repos(
