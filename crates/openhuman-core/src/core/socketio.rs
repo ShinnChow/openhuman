@@ -1,3 +1,29 @@
+//! Socket.IO live-event bridge to the desktop shell.
+//!
+//! `spawn_web_channel_bridge` subscribes to a handful of domain broadcast
+//! channels — web-chat events, dictation hotkeys, overlay attention bubbles
+//! (`crate::desktop::overlay::subscribe_attention_events`, see
+//! `desktop/overlay/README.md`), core notifications, transcription results,
+//! and shell companion state — and fans each one out to every connected
+//! Socket.IO client, emitting both a colon- and an underscore-separated event
+//! name for frontend compatibility. `COMPANION_STATE_BUS` is a broadcast
+//! channel dedicated to shell-originated companion lifecycle events: the
+//! companion implementation itself lives in the Tauri shell, but the native
+//! macOS notch WKWebView has no Tauri IPC bridge and connects to the
+//! embedded core's Socket.IO endpoint directly, so this module keeps a
+//! transport-only seam for it rather than reintroducing a core-side
+//! companion domain.
+//!
+//! The socketioxide/axum transport bodies (the actual `SocketIo` server,
+//! connection handlers, and `spawn_web_channel_bridge`) are gated behind the
+//! `http-server` feature (#5048). The event payload types further down
+//! (`WebChannelEvent`, `TurnUsagePayload`, `SubagentUsagePayload`,
+//! `SubagentProgressDetail`) stay compiled in every build regardless — around
+//! ten always-on domains (`web_chat`, `cron`, `channels`, `agent`, …)
+//! construct them — so only the transport surface is gated, not the types
+//! (a "type carve-out"; see AGENTS.md). `pub mod socketio;` in `core::mod` is
+//! intentionally NOT gated for the same reason.
+
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;

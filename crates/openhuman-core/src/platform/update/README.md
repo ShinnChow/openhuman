@@ -58,7 +58,7 @@ None. No `store.rs` — staged binaries are written to the filesystem (current-e
 - `crate::platform::service` — `service::rpc::service_restart` to publish the self-restart for `SelfReplace`.
 - `crate::platform::health` — `health::bus::register_health_subscriber` in the scheduler.
 - `crate::util` — `utf8_safe_prefix_at_byte_boundary` for safe error-body truncation.
-- `crate::core::event_bus` — `publish_global`, `DomainEvent`, `init_global`, `DEFAULT_CAPACITY`.
+- `crate::core::bus` — `BUS.publish`, `crate::core::events::DomainEvent`, and `bus::init()` to bring up the in-process broker.
 - `crate::core::observability` — Sentry reporting + transient-failure classifiers (`report_error`, `is_updater_transient_message`, `is_updater_transient_http_status`).
 - `crate::core::all` — `ControllerFuture`, `RegisteredController` (schemas wiring); `crate::core::{ControllerSchema, FieldSchema, TypeSchema}`.
 - `crate::rpc::RpcOutcome` — RPC return contract.
