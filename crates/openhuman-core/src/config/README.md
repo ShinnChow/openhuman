@@ -44,5 +44,5 @@ Authoritative TOML-backed configuration layer. Owns the `Config` schema (every d
 
 ## Tests
 
-- Unit: `ops_tests.rs` (+ `ops_tests_part_0N_tests.rs`), `schemas_tests.rs`, plus per-section `*_tests.rs` under `schema/` (`channels_tests.rs`, `proxy_tests.rs`, etc.) and `load_tests.rs` (+ `load_tests_part_0N_tests.rs`).
+- Unit: `ops_tests.rs` (+ `ops_tests_part_0N_tests.rs`, mounted from `ops/mod.rs`) and `ops/privacy_tests.rs` / `ops/loader_*_tests.rs`; `schemas_tests.rs` (mounted from `schemas/mod.rs`) and `schemas/controllers_tests.rs`; per-section `*_tests.rs` under `schema/` (`channels_tests.rs`, `proxy_tests.rs`, etc.) and `load_tests.rs` (+ `load_tests_part_0N_tests.rs`, mounted from `schema/load/mod.rs`); `daemon_tests.rs`, `settings_cli_tests.rs`, `tools_tests.rs`, `workspace_handle_tests.rs`, `mod_tests.rs` beside their sources.
 - `TEST_ENV_LOCK` (`mod.rs`) is shared with sibling test modules that mutate `OPENHUMAN_WORKSPACE`.
