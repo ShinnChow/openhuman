@@ -59,8 +59,9 @@ The recursive submodules under repo-root `vendor/` are required for the core
 build too, not just the desktop shell: `crates/openhuman-core/Cargo.toml`
 path-depends on `vendor/tinyagents`, `vendor/tinymemory`, `vendor/tinymcp`,
 and the rest of the `tiny*` family, and the root `Cargo.toml` `[patch]`
-entries point into `vendor/tinyagents`, `vendor/tinyflows`,
-`vendor/tinychannels`, and `vendor/motosan-ai-oauth`.
+tables point into `vendor/tinymemory`, `vendor/tinyflows`,
+`vendor/tinychannels`, `vendor/motosan-ai-oauth`, and the `tinyinference`
+copy nested under `vendor/tinyagents/`.
 
 ```bash
 git submodule update --init --recursive vendor/
