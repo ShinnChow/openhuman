@@ -1,7 +1,7 @@
 //! Embedded Swift source fragment: imports, the thread-safe stdout writer, and
 //! the accessibility focus-query logic (`queryFocusedElement` and its helpers).
 #[cfg(target_os = "macos")]
-pub(super) const SWIFT_HEADER_AND_FOCUS: &str = r##"    r##"import Cocoa
+pub(super) const SWIFT_HEADER_AND_FOCUS: &str = r##"import Cocoa
 import Foundation
 import ApplicationServices
 

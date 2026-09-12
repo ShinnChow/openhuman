@@ -27,6 +27,10 @@
 //! for its primary array and its field names) is in
 //! [`crate::json_schema`], owned by neither side.
 
+mod contract;
+mod lookups;
+mod probe;
+
 #[cfg(test)]
 #[path = "catalog_in_flight_tests_tests.rs"]
 mod in_flight_tests;
@@ -34,5 +38,24 @@ mod in_flight_tests;
 #[cfg(test)]
 #[path = "catalog_tests.rs"]
 mod tests;
-include!("catalog_part_01.rs");
-include!("catalog_part_02.rs");
+
+pub use contract::{
+    fetch_live_toolkit_catalog, seed_live_catalog_cache, seed_live_catalog_cache_expired,
+    ToolContract,
+};
+pub use lookups::{composio_required_args, composio_response_fields};
+pub use probe::{
+    apply_probe_override, probe_tool_output_sample, probed_output_sample, seed_probe_cache,
+    seed_probe_cache_expired, ProbedOutputSample, COMPOSIO_ENVELOPE_META_KEYS_AT_ROOT,
+};
+
+// Brought into this module's own namespace (private `use`, not `pub use`) so
+// `catalog_tests.rs` / `catalog_in_flight_tests_tests.rs` — declared as
+// direct child modules of `catalog` above — can still reach the
+// implementation details they exercise via a plain `use super::*;`, exactly
+// as when this was one un-split file. See each item's `pub(super)` in its
+// owning submodule.
+use contract::{compute_composio_array_path, live_catalog_fetch_lock, CacheEntry};
+use probe::{cache_probe_result, resolve_composio_action_scope};
+#[allow(unused_imports)]
+use contract::COMPOSIO_CATALOG_CACHE_TTL;
