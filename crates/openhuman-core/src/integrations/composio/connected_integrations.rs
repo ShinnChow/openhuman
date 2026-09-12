@@ -16,9 +16,11 @@ mod catalog_description_tests;
 
 pub(crate) use cache::{
     cache_key, cached_active_integrations, cached_active_integrations_including_expired,
-    composio_cache_test_lock, connected_set_hash, invalidate_connected_integrations_cache,
-    sync_cache_with_connections, CachedIntegrations, CACHE_TTL, INTEGRATIONS_CACHE,
+    connected_set_hash, invalidate_connected_integrations_cache, sync_cache_with_connections,
+    CachedIntegrations, CACHE_TTL, INTEGRATIONS_CACHE,
 };
+#[cfg(test)]
+pub(crate) use cache::composio_cache_test_lock;
 pub(crate) use fetch::{
     fetch_connected_integrations, fetch_connected_integrations_status, fetch_toolkit_actions,
     FetchConnectedIntegrationsStatus,
