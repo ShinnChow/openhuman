@@ -70,8 +70,11 @@ For local development instead of production build:
 # Web-only UI development
 pnpm dev
 
-# Desktop app development (Tauri CLI from app/node_modules): run from the workspace root
+# Desktop app development: runs scripts/run-dev-macos.sh (`cargo tauri dev` with a dev config override)
 pnpm dev:app
+
+# Other Tauri CLI commands (from app/node_modules) run against crates/openhuman-app/
+pnpm tauri build
 ```
 
 ## Install latest stable release (macOS/Linux x64)
