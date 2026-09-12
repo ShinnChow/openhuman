@@ -20,7 +20,7 @@ use crate::memory::api::recall::OwnedRecallOpts;
 use crate::memory::api::tool_memory::ToolMemoryRule;
 use crate::memory::api::tree::{IngestRequest, QueryResult, TreeStatus};
 use crate::memory::api::types::{
-    ExportRecord, GraphRelationRecord, MemoryCategory, MemoryEntry, MemoryKvRecord, MemoryTaint,
+    GraphRelationRecord, MemoryCategory, MemoryEntry, MemoryKvRecord, MemoryTaint,
     NamespaceDocumentInput, NamespaceRetrievalContext, NamespaceSummary, StoredMemoryDocument,
 };
 use async_trait::async_trait;
