@@ -20,11 +20,10 @@ mod triggers;
 mod tests;
 
 pub use connections::ComposioClient;
-pub use direct::{direct_authorize, direct_execute, direct_list_connections, direct_list_tools};
-pub use factory::{
-    build_composio_client, create_composio_client, create_direct_composio_tool_for_api_key,
-    ComposioClientKind,
-};
+pub use direct::{direct_execute, direct_list_connections};
+pub(crate) use direct::{direct_authorize, direct_list_tools};
+pub use factory::{create_composio_client, ComposioClientKind};
+pub(crate) use factory::{build_composio_client, create_direct_composio_tool_for_api_key};
 
 // Brought into this module's own namespace (private `use`, not `pub use`)
 // so `client_tests.rs` — declared as a direct child module of `client`
