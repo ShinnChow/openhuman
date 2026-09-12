@@ -226,5 +226,3 @@ pub fn render_profile_markdown(url: &str, data: &serde_json::Value) -> String {
 
     md
 }
-
-// ── Internal helpers ─────────────────────────────────────────────────

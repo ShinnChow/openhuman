@@ -32,19 +32,19 @@ pub use profile_markdown::{render_profile_markdown, summarise_profile_with_llm};
 mod tests;
 
 /// Apify actor slug for the LinkedIn profile scraper.
-pub(super) const LINKEDIN_SCRAPER_ACTOR: &str = "dev_fusion/linkedin-profile-scraper";
+const LINKEDIN_SCRAPER_ACTOR: &str = "dev_fusion/linkedin-profile-scraper";
 
 /// Regex that captures a LinkedIn username from profile URLs.
 ///
 /// Matches both the canonical form (`linkedin.com/in/<slug>`) and the
 /// notification-email form (`linkedin.com/comm/in/<slug>`). The username
 /// is captured in group 1 so we can reconstruct a clean canonical URL.
-pub(super) static LINKEDIN_USERNAME_RE: LazyLock<Regex> = LazyLock::new(|| {
+static LINKEDIN_USERNAME_RE: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"https?://(?:www\.)?linkedin\.com/(?:comm/)?in/([a-zA-Z0-9_-]+)").unwrap()
 });
 
 /// Build the canonical profile URL from a username slug.
-pub(super) fn canonical_linkedin_url(username: &str) -> String {
+fn canonical_linkedin_url(username: &str) -> String {
     format!("https://www.linkedin.com/in/{username}")
 }
 
