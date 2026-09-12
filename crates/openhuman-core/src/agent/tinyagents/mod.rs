@@ -81,7 +81,7 @@ pub(crate) use run_cancellation_context::{current_run_cancellation, with_run_can
 pub(crate) use topology::all_graph_topologies;
 pub use turn_models::TurnModelSource;
 pub(crate) use turn_models::TurnModels;
-pub(crate) use turn_outcome::{TinyagentsTurnOutcome, ToolCallOutcome};
+pub(crate) use turn_outcome::{HaltSummarySlot, TinyagentsTurnOutcome, ToolCallOutcome, ToolOutcomeSink};
 pub(crate) use turn_policy::{agent_turn_wall_clock_ms, ToolPolicyEnforcement};
 #[cfg(test)]
 pub(crate) use turn_runner::run_turn_via_tinyagents;
