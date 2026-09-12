@@ -174,10 +174,8 @@ impl TavilyClient {
                 lines.push(format!("   Score: {score:.3}"));
             }
             if let Some(excerpt) = item.excerpt() {
-                let truncated = crate::util::truncate_with_ellipsis(
-                    &excerpt,
-                    SEARCH_EXCERPT_MAX_CHARS,
-                );
+                let truncated =
+                    crate::util::truncate_with_ellipsis(&excerpt, SEARCH_EXCERPT_MAX_CHARS);
                 lines.push(format!("   {truncated}"));
             }
             if include_raw_content {
@@ -247,11 +245,8 @@ impl TavilyClient {
                 escape_link_destination(&item.url)
             ));
             if let Some(excerpt) = item.excerpt() {
-                let truncated = crate::util::truncate_with_suffix(
-                    &excerpt,
-                    SEARCH_EXCERPT_MAX_CHARS,
-                    "...",
-                );
+                let truncated =
+                    crate::util::truncate_with_suffix(&excerpt, SEARCH_EXCERPT_MAX_CHARS, "...");
                 out.push_str(&format!("> {truncated}\n"));
             }
             if include_raw_content {

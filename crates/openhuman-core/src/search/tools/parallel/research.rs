@@ -170,4 +170,3 @@ impl Tool for ParallelResearchTool {
         }
     }
 }
-

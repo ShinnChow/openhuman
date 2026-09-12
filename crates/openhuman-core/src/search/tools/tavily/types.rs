@@ -6,7 +6,6 @@ use serde_json::{json, Value};
 
 const IMAGE_DESCRIPTION_MAX_CHARS: usize = 300;
 
-
 /// Tavily may return image entries as a bare URL or as an object with an
 /// optional description, depending on the endpoint options and API version.
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -141,7 +140,6 @@ pub(super) fn escape_link_destination(raw: &str) -> String {
         .collect();
     format!("<{cleaned}>")
 }
-
 
 /// Copy a string array argument onto the Tavily request body.
 /// Copy a string array argument onto the Tavily request body.

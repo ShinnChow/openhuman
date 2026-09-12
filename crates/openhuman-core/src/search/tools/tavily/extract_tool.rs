@@ -85,8 +85,7 @@ impl TavilyExtractTool {
             ));
             match non_empty(item.raw_content.as_deref()) {
                 Some(content) => {
-                    let truncated =
-                        crate::util::truncate_with_suffix(&content, 8_000, "...");
+                    let truncated = crate::util::truncate_with_suffix(&content, 8_000, "...");
                     out.push_str(&truncated);
                     out.push('\n');
                 }

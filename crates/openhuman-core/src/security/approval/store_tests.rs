@@ -105,7 +105,7 @@ fn flow_sample(request_id: &str, flow_id: &str, run_id: &str) -> PendingApproval
     })
 }
 
-#[path = "store_persistence_tests.rs"]
-mod persistence_tests;
 #[path = "store_flow_trust_tests.rs"]
 mod flow_trust_tests;
+#[path = "store_persistence_tests.rs"]
+mod persistence_tests;

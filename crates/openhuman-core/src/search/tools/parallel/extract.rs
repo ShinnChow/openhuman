@@ -40,7 +40,6 @@ struct ExtractError {
     error: String,
 }
 
-
 // ── ParallelExtractTool ─────────────────────────────────────────────
 
 /// Extract content from web pages via the Parallel API.
@@ -209,4 +208,3 @@ impl Tool for ParallelExtractTool {
         }
     }
 }
-

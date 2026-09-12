@@ -133,4 +133,3 @@ impl Tool for ParallelChatTool {
         }
     }
 }
-

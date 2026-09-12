@@ -205,7 +205,7 @@ async fn find_flow_gate_notification(
 
 #[path = "gate_core_flow_tests.rs"]
 mod core_flow_tests;
-#[path = "gate_ttl_and_triage_tests.rs"]
-mod ttl_and_triage_tests;
 #[path = "gate_origin_intercept_tests.rs"]
 mod origin_intercept_tests;
+#[path = "gate_ttl_and_triage_tests.rs"]
+mod ttl_and_triage_tests;
