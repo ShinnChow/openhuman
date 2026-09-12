@@ -23,9 +23,16 @@
 //! Take the values verbatim from the release's `checksum.toml`. Do not compute
 //! them from a local build — the point is to pin what the release publishes, and
 //! a locally recomputed digest would agree with itself no matter what was served.
+//!
+//! # Module layout
+//!
+//! Records are grouped into one file per module family rather than by line
+//! count — see `registry/records_*.rs`. This file only wires them into
+//! [`ALL`] and answers [`find`].
 
 #[cfg(test)]
 #[path = "registry_tests.rs"]
 mod tests;
-include!("registry_part_01.rs");
-include!("registry_part_02.rs");
+
+mod records_docs_wallet;
+mod records_マcp_connectors_placeholder; // removed below
