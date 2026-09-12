@@ -1,6 +1,6 @@
 # inference
 
-Unified inference domain: the canonical home for everything LLM/STT/TTS/embedding-related. It owns the local-runtime manager (Ollama / LM Studio / Piper), native TinyAgents `ChatModel` construction for managed/cloud/local/CLI routes, host credential and access policy, voice transcription and TTS inference, OpenAI/Codex subscription OAuth, and an OpenAI-compatible `/v1/chat/completions` HTTP endpoint. It consolidates the previously separate `local_ai/`, `providers/`, and inference parts of `voice/` (all from the pre-crates `src/openhuman/` layout) under one domain root. The RPC surface is `inference.*`; older `local_ai_*` method names are compatibility aliases in `crates/openhuman-core/src/core/legacy_aliases.rs`.
+Unified inference domain: the canonical home for everything LLM/STT/TTS/embedding-related. It owns the local-runtime manager (Ollama / LM Studio / Piper), native TinyAgents `ChatModel` construction for managed/cloud/local/CLI routes, host credential and access policy, voice transcription and TTS inference, OpenAI/Codex subscription OAuth, and an OpenAI-compatible `/v1/chat/completions` HTTP endpoint. It consolidates the previously separate `local_ai/`, `providers/`, and inference parts of `voice/` (all from the pre-crates single-crate layout) under one domain root. The RPC surface is `inference.*`; older `local_ai_*` method names are compatibility aliases in `crates/openhuman-core/src/core/legacy_aliases.rs`.
 
 ## Responsibilities
 

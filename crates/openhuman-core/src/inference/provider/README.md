@@ -2,7 +2,7 @@
 
 Native TinyAgents `ChatModel` construction plus cloud/local inference policy,
 auth, error taxonomy, and RPC helpers for every chat-model transport OpenHuman
-supports. Was previously `providers/` (pre-consolidation `src/openhuman/`
+supports. Was previously `providers/` (pre-consolidation single-crate
 layout); see `../README.md` for how this fits into the wider `inference`
 domain.
 

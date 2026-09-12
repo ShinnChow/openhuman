@@ -3,7 +3,7 @@
 Local AI runtime manager: `ollama serve` and Piper sub-process lifecycle,
 LM Studio reachability over HTTP (LM Studio is never spawned), plus the RPC
 surface used to prompt/summarize/embed against the active local model. Was previously `local_ai/` (pre-consolidation
-`src/openhuman/` layout); see `../README.md` for the wider `inference` domain.
+single-crate layout); see `../README.md` for the wider `inference` domain.
 
 ## Key files
 
