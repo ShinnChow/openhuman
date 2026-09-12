@@ -217,4 +217,3 @@ impl Tool for TavilySearchTool {
     }
 }
 
-/// Retrieve full page contents for a list of URLs (`POST /extract`).
