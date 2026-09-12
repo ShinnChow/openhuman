@@ -239,7 +239,7 @@ impl ComposioClient {
     }
 }
 
-fn is_post_oauth_auth_readiness_error(resp: &ComposioExecuteResponse) -> bool {
+pub(super) fn is_post_oauth_auth_readiness_error(resp: &ComposioExecuteResponse) -> bool {
     if resp.successful {
         return false;
     }
