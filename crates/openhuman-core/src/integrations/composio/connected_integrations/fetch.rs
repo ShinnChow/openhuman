@@ -146,7 +146,7 @@ pub async fn fetch_connected_integrations_status(
 /// because the gate would reject them — advertising them would only invite
 /// failed delegations. Slugs are trimmed + lowercased to match downstream
 /// canonicalisation.
-fn connectable_toolkit_slugs(
+pub(super) fn connectable_toolkit_slugs(
     toolkits: &[String],
     catalog: &[crate::integrations::composio::types::ComposioToolkitCatalogEntry],
 ) -> Vec<String> {
@@ -178,7 +178,7 @@ fn connectable_toolkit_slugs(
 /// empty description — i.e. older backends that predate the dynamic catalog,
 /// or project toolkits whose Composio metadata join produced no blurb. Keyed
 /// by lowercased slug to match the canonicalised allowlist.
-fn resolve_toolkit_description(
+pub(super) fn resolve_toolkit_description(
     catalog_descriptions: &std::collections::HashMap<String, String>,
     slug: &str,
 ) -> String {
