@@ -65,8 +65,10 @@ above.
   `tauri android init` wrappers (`pnpm tauri:ios:init`, `pnpm tauri:android:init`)
   for the experimental mobile clients; **`ios-appstore-*`** build, export, and
   upload the iOS IPA and its App Store Connect assets/metadata.
-- **`install.sh` / `install.ps1`** — the public installer scripts referenced
-  from the README/download flow; exercised by `docs/RELEASE-MANUAL-SMOKE.md`.
+- **`install.sh` / `install.ps1`** — the public `curl | bash` / `irm | iex`
+  installers documented in `gitbooks/developing/getting-set-up.md`; tested by
+  `test_install.sh` / `tests/OpenHumanWindowsInstall.Tests.ps1` and smoke-checked
+  by `docs/RELEASE-MANUAL-SMOKE.md`.
 - **`ci-cancel-aware.sh`** — wraps a long-running CI command, polling the
   workflow run's status (via `GH_TOKEN`) and killing the command's process tree
   when the run is cancelled — needed because `docker exec` swallows the
