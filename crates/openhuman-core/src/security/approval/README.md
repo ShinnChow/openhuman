@@ -63,9 +63,9 @@ Published via `crate::core::bus::BUS.publish` with variants from `crate::core::e
 
 - `DomainEvent::ApprovalRequested { request_id, tool_name, action_summary, args_redacted, session_id, thread_id, client_id }` — emitted (`gate_intercept.rs`) when a call is parked. Bridged to the `approval_request` web-channel socket event by `ApprovalSurfaceSubscriber` (defined in `crates/openhuman-core/src/web_chat/`).
 - `DomainEvent::ApprovalDecided { request_id, tool_name, decision }` — emitted (`gate_state.rs`) when a decision is applied.
-- `DomainEvent::FlowApprovalRequested { .. }` — emitted (`gate_intercept.rs`) for the Flow Canvas copilot's bounded-park variant of the same flow.
+- `DomainEvent::FlowApprovalRequested { request_id, flow_id, run_id, tool_name, summary }` — emitted (`gate_intercept.rs`) alongside `ApprovalRequested` when the parked call has a `Workflow` origin. It carries no thread/client id, so `ApprovalSurfaceSubscriber` drops it; `core::socketio` broadcasts it as `flow_approval_request` for the Workflows UI.
 
-No `bus.rs` in this module — it only publishes; the subscriber lives in the `channels` web provider.
+No `bus.rs` in this module — it only publishes; the subscriber (`ApprovalSurfaceSubscriber`) lives in `crates/openhuman-core/src/web_chat/event_bus.rs`.
 
 ## Persistence
 
