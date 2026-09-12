@@ -1,3 +1,19 @@
+//! Persistence of the scraped profile into the user-profile memory
+//! namespace through the guarded documents family.
+
+use crate::memory::api::provider::MemoryProvider;
+use crate::memory::api::types::{MemoryTaint, NamespaceDocumentInput};
+use serde_json::json;
+
+use super::LINKEDIN_SCRAPER_ACTOR;
+
+/// The namespace scraped LinkedIn profiles are persisted into.
+///
+/// `MemoryClient::store_skill_sync("user-profile", ...)` derived this by
+/// prefixing the skill id with `skill-`; that derivation is one line of host
+/// policy, so it moves here rather than needing a contract member (#5560). The
+/// literal must not drift — it is what onboarding RAG recalls against.
+const PROFILE_MEMORY_NAMESPACE: &str = "skill-user-profile";
 
 /// The guarded memory driver's documents family, for profile persistence.
 ///
@@ -20,7 +36,7 @@
 ///
 /// The caller still treats an error as "skip persistence and warn", for the
 /// genuine failures that remain.
-async fn profile_memory_writer(
+pub(super) async fn profile_memory_writer(
 ) -> anyhow::Result<std::sync::Arc<crate::memory::guard::MemoryGuard>> {
     let guard = crate::memory::ops::guard::active_memory_guard()
         .await
@@ -87,7 +103,7 @@ async fn put_profile_document(
 
 /// Persist the full scraped LinkedIn profile to the user-profile memory
 /// namespace so the agent has rich context about the user.
-async fn persist_linkedin_profile(
+pub(super) async fn persist_linkedin_profile(
     memory: &crate::memory::guard::MemoryGuard,
     url: &str,
     data: &serde_json::Value,
@@ -113,7 +129,7 @@ async fn persist_linkedin_profile(
 }
 
 /// Fallback: persist just the LinkedIn URL when the full scrape fails.
-async fn persist_linkedin_url_only(
+pub(super) async fn persist_linkedin_url_only(
     memory: &crate::memory::guard::MemoryGuard,
     url: &str,
 ) -> anyhow::Result<()> {
