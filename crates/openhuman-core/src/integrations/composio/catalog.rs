@@ -64,6 +64,6 @@ use contract::{compute_composio_array_path, live_catalog_fetch_lock};
 use lookups::composio_response_fields;
 #[cfg(test)]
 use probe::{
-    cache_probe_result, probed_output_sample, resolve_composio_action_scope, ProbedOutputSample,
+    cache_probe_result, probed_output_sample, resolve_composio_action_scope,
     COMPOSIO_ENVELOPE_META_KEYS_AT_ROOT,
 };
