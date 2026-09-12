@@ -85,16 +85,19 @@ println!("{}", second.reply);
 `config()`, `auth()`, `agent()`, and, behind the `medulla` feature,
 `medulla()`.
 
-Both share the same process-scoped core state, so **only one `Harness` (or
-`Core::from_runtime`) may run per process**: the keyring master key, the RPC
-bearer, the global event bus, and the `Once`-guarded domain subscribers are
-process-scoped, and a second one would silently share them. `Harness::builder().build()`
-returns `HarnessError::AlreadyRunning` rather than letting that happen.
+Only one `Harness` may run per process. The keyring master key, the RPC
+bearer, the global event bus and the `Once`-guarded domain subscribers are
+process-scoped (`openhuman_core::core::runtime::context::CoreContext::init`
+runs that sequence), so a second harness would silently share them while
+believing it had a separate workspace. `HarnessBuilder::build` returns
+`HarnessError::AlreadyRunning` instead. `Core::from_runtime` is not guarded —
+it only wraps a runtime the host already built — but the same constraint
+applies to the `CoreRuntime` beneath it.
 
 Build the tokio runtime yourself — a turn is a large async state machine that
 overflows tokio's default 2 MiB worker stack once a sub-agent nests inside it —
 using `AGENT_WORKER_STACK_BYTES` and `MAX_BLOCKING_THREADS` from
-[`openhuman_core::core::runtime`](../openhuman-core/src/core/runtime):
+[`openhuman_core::core::runtime`](../openhuman-core/src/core/runtime/README.md):
 
 ```rust,no_run
 use openhuman_core::core::runtime::{AGENT_WORKER_STACK_BYTES, MAX_BLOCKING_THREADS};
@@ -109,11 +112,18 @@ let runtime = tokio::runtime::Builder::new_multi_thread()
 
 Other invariants worth knowing before wiring either entry point:
 
-- Set `config_path` together with `workspace_dir`.
-- Set a turn origin with its access tier; `Access::full()` configures both
-  access fields at once.
-- Copy skills into the harness's workspace rather than symlinking them — skill
-  discovery rejects symlinked bundles.
+- When building a `CoreRuntime` yourself, set `config_path` together with
+  `workspace_dir` (`CoreBuilder::workspace(dir)` does both). Credentials,
+  auth profiles and the keyring file resolve beside `config_path`, so a
+  workspace-only override reads the operator's real credentials. `Harness`
+  sets both for `Workspace::Ephemeral` and `Workspace::Dir`.
+- A turn runs under the access tier *and* the turn origin. `Access::full()`
+  sets both (`AutonomyLevel::Full` plus a `TrustedAutomation` origin);
+  `Access::readonly()` and `Access::supervised()` set no origin, so their
+  turns stay behind the approval gate.
+- Supply skills through `HarnessBuilder::skills_dir`, which copies the
+  bundles into the workspace. Skill discovery rejects symlinked bundles, so
+  linking them in does not work.
 
 ## Feature flags
 
@@ -127,10 +137,13 @@ Every feature on this crate is a pass-through to the same-named feature on
 
 Three of them also gate items on this crate's own public surface:
 
-- `medulla` — `Core::medulla()` and the `Medulla*` types.
-- `mcp` — `HttpHeader`, `McpAuthConfig`, `McpServer` (harness MCP server
-  configuration).
-- `skills` — harness skill loading.
+- `medulla` — `Core::medulla()`, `HarnessCore::medulla()`, and the Medulla
+  session types (`Medulla`, `MedullaStatus`, `SessionSummary`,
+  `SessionDetail`, `SessionCreated`, `Message`, `SendResult`, `AbortResult`,
+  `RosterWorker`, `WireEventEnvelope`).
+- `mcp` — `HttpHeader`, `McpAuthConfig`, `McpServer` and
+  `HarnessBuilder::mcp_server`.
+- `skills` — `HarnessBuilder::skills_dir`.
 
 See [`docs/library-minimal-recipe.md`](../../docs/library-minimal-recipe.md)
 for a measured minimal-footprint feature set.
@@ -151,16 +164,24 @@ OPENHUMAN_EXAMPLE_INHERIT=1 cargo run -p openhuman-embed --example run_turn -- "
 Optional: `OPENHUMAN_EXAMPLE_BACKEND_URL` points non-inference backend calls
 somewhere specific, and `OPENHUMAN_EXAMPLE_SKILLS_DIR` supplies skill bundles.
 
-The repository root also has `examples/embed_headless.rs` (build a core and
-call plumbing methods without a harness) and `examples/embed_kernel.rs`.
+The repository-root `examples/embed_headless.rs` (`DomainSet::harness()`,
+`ServiceSet::none()`, RPC through `CoreRuntime::invoke`) and
+`examples/embed_kernel.rs` (`DomainSet::kernel()`, then opt one family back
+in) drive `CoreBuilder` from `openhuman_core` directly, without this crate;
+they are `[[example]]` entries of the `openhuman` package, so run them with
+`cargo run --example embed_headless`.
+
 `tests/harness_embed.rs` is the end-to-end proof that `Harness` runs a real
-turn; `tests/public_api.rs` pins the host-facing embedding contract at compile
-time. Run both with `cargo test -p openhuman-embed`.
+turn against a `wiremock` provider with nothing bound; `tests/public_api.rs`
+pins the host-facing embedding contract at compile time. Run them with
+`cargo test -p openhuman-embed`.
 
 ## Relationship to other crates
 
-`openhuman-embed` depends only on `openhuman-core` (package `openhuman`) with
+Its only in-repo dependency is `openhuman-core` (package `openhuman`) with
 `default-features = false` — every capability comes from a feature forwarded
-above. It does not depend on `openhuman-rpc`; that crate is for out-of-process
-callers (the TUI and, over the desktop shell's HTTP relay, the frontend), and
-the Tauri shell does not use `openhuman-embed`.
+above. It does not depend on `openhuman-rpc` directly; the shared
+`RpcOutcome` and `StructuredRpcError` types reach it through
+`openhuman_core::rpc`. `openhuman-app` and `openhuman-tui` depend on
+`openhuman-rpc` for its HTTP client and on `openhuman-core`; neither uses
+`openhuman-embed`.
