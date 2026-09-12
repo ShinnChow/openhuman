@@ -391,7 +391,7 @@ impl Agent {
             // would be missing from the next request's prefix and the model would
             // have to infer that it asked anything from its own tool result.
             // The sub-agent path makes the same substitution when it persists a
-            // paused child's transcript (`subagent_runner/ops/graph_part_01.rs`).
+            // paused child's transcript (`subagent_runner/ops/graph/dispatch.rs`).
             self.history
                 .push(ConversationMessage::Chat(ChatMessage::assistant(
                     outcome.text.clone(),
