@@ -17,7 +17,7 @@ use super::state_file::{
     load_stored_app_state, load_stored_app_state_unlocked, save_stored_app_state_unlocked,
     APP_STATE_FILE_LOCK,
 };
-use super::types::{AppStateSnapshot, RuntimeSnapshot, StoredAppState, StoredAppStatePatch};
+use super::types::{AppStateSnapshot, StoredAppState, StoredAppStatePatch};
 use super::LOG_PREFIX;
 use crate::api::rest::user_id_from_profile_payload;
 use crate::config::rpc as config_rpc;
