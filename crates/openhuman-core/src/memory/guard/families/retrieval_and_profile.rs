@@ -1,10 +1,11 @@
-use crate::memory::sources::sync::SourceScope;
 //! Guarded `Retrieval`, `Episodic`, `Profile`, `SourceSync`, `Scoring`, and
 //! `CodingSessions` — the read/query families.
 //!
 //! Split out of `families.rs`; see [`super::types`] for the shared decorator
 //! scaffolding these `impl` blocks build on.
 
+
+use crate::memory::sources::sync::SourceScope;
 use crate::memory::api::capabilities::Capability;
 use crate::memory::api::error::MemoryError;
 use crate::memory::api::provider::episodic::{ConversationSegment, EpisodicTurn};

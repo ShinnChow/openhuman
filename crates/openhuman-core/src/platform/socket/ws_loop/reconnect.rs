@@ -1,7 +1,8 @@
-use crate::platform::socket::medulla::workflows;
 //! The reconnect loop: [`ws_loop`], its failure-escalation logging, the
 //! invalid-token retry decision, and the emit-queue drain used on shutdown.
 
+
+use crate::platform::socket::medulla::workflows;
 use std::sync::Arc;
 
 use parking_lot::Mutex;

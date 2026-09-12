@@ -1,4 +1,3 @@
-use std::sync::Arc;
 //! Tests for the shared integrations HTTP client.
 //!
 //! Focus: backend error body propagation. Pre-fix, non-2xx responses
@@ -8,6 +7,8 @@ use std::sync::Arc;
 //! envelope's `error` field (or falls back to truncated raw text) and
 //! the bail message includes it.
 
+
+use std::sync::Arc;
 use super::*;
 use axum::{
     http::StatusCode,

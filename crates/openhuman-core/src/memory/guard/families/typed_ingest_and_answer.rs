@@ -1,4 +1,3 @@
-use crate::memory::sources::sync::SourceScope;
 //! Guarded `DocumentIngest`, `ConversationIngest`, `LearningIngest`,
 //! `EventIngest`, `Answer`, and `Chunks` — the typed-ingestion round the
 //! v1.13.7 contract release added, plus the sibling `Chunks` family wired
@@ -7,6 +6,8 @@ use crate::memory::sources::sync::SourceScope;
 //! Split out of `families.rs`; see [`super::types`] for the shared decorator
 //! scaffolding these `impl` blocks build on.
 
+
+use crate::memory::sources::sync::SourceScope;
 use crate::memory::api::capabilities::Capability;
 use crate::memory::api::chunks::Chunk;
 use crate::memory::api::error::MemoryError;
