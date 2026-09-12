@@ -112,9 +112,9 @@ These are subscriber registrations rather than a single `bus.rs`; subscriptions 
 ## Used by
 
 - `crates/openhuman-core/src/core/all.rs` — registers the `learning.*` controllers + schemas.
-- `crates/openhuman-core/src/agent/harness/session/{builder,turn}.rs` and `agent_memory/memory_loader.rs` — wire the post-turn hooks, prompt sections, and learned-context loading into the agent loop.
-- `crates/openhuman-core/src/channels/runtime/startup.rs` — likely registers schedulers/subscribers at startup.
-- `crates/openhuman-core/src/memory/store/namespace_store/profile.rs`, `memory_sync/composio/providers/profile.rs`, `memory_tools/{capture,mod}.rs`, `tools/impl/system/tool_stats.rs`, `tools/schemas.rs` — consume facet/learning types.
+- `crates/openhuman-core/src/agent/harness/session/{builder,turn}/` and `memory/agent/memory_loader.rs` — wire the post-turn hooks, prompt sections, and learned-context loading into the agent loop.
+- `learning::startup::register_learning_subscribers` is the entry point that wires the Phase 2/3/4 subscribers; it is invoked from `crates/openhuman-core/src/core/jsonrpc.rs` (`register_domain_subscribers`, the unconditional `DomainGroup::Platform` boot block), not from the (skippable) `channels::runtime::startup` path — see the "why" note in `startup.rs` (#5003).
+- `crates/openhuman-core/src/modules/memory_part_01.rs` / `memory_part_03.rs` (the loadable memory module's `MemoryProfile` impl backing `FacetCache`), `integrations/composio/profile_md.rs` (`replace_managed_block`, used by `profile_md_renderer.rs`), `tools/impl/system/tool_stats.rs`, `tools/schemas.rs` — consume facet/learning types.
 
 ## Notes / gotchas
 
