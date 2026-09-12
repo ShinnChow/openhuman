@@ -33,14 +33,18 @@ engine behavior stays behind the loadable module boundary.
 
 ## Wiring
 
-- `mod.rs::proxy` loads the module via `crate::modules::ensure_loaded(config,
-  "tinyjuice")` and looks it up with `crate::modules::registry::find("tinyjuice")`
-  before calling through `crate::modules::host::runtime()`.
+- `mod.rs::proxy` (behind the `modules` feature) loads the module via
+  `crate::modules::ensure_loaded(config, "tinyjuice")`, looks it up with
+  `crate::modules::registry::find("tinyjuice")`, and calls through
+  `crate::modules::host::runtime()`; without the feature `proxy` errors and the
+  pass-through fallback applies.
 - Controllers are registered from `crate::inference::tokenjuice::all_tokenjuice_registered_controllers()`,
   called by `core/all.rs`.
-- `crate::tools::mod` re-exports `TokenjuiceRetrieveTool`; its registered tool
-  name is `RETRIEVE_TOOL_NAME` (`"tinyjuice_retrieve"`), not
-  `"tokenjuice_retrieve"` — confirm against `tools/ops.rs`'s tool-name table
-  before assuming otherwise.
+- `tools/ops.rs` registers `crate::inference::tokenjuice::TokenjuiceRetrieveTool::new()`
+  in the agent tool catalog (it is not re-exported through `tools/mod.rs`) and
+  treats every `RECOVERY_TOOL_NAMES` entry as a recovery tool. The registered
+  tool name is `RETRIEVE_TOOL_NAME` (`"tinyjuice_retrieve"`);
+  `"tokenjuice_retrieve"` and `LEGACY_RETRIEVE_TOOL_NAME`
+  (`"retrieve_tool_output"`) are recognized aliases only.
 - Contract crate: `tinyjuice-bus` (`vendor/tinyjuice/crates/tinyjuice-bus`,
   path dependency in `crates/openhuman-core/Cargo.toml`).
