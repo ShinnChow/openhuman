@@ -28,7 +28,7 @@ Multi-agent orchestration domain. Owns the LLM tool-calling loop, sub-agent disp
 | `file_state/` | Tracks files an agent has read/written within a turn |
 | `git_attribution/` (`pub(crate)`) | Attributes agent-authored commits/diffs to the acting agent |
 | `harness/` | `Agent`/`AgentBuilder`, session lifecycle, sub-agent runner, fork context — the tool-calling loop itself |
-| `harness_init/` | One-time first-run provisioning (Python/spaCy/Node) before the harness can run |
+| `harness_init/` | One-time first-run provisioning (Python/spaCy/Kompress/Node) before the harness can run ([README](harness_init/README.md)) |
 | `learning/` | Reflection, tool-outcome tracking, user-profile inference from transcripts ([README](learning/README.md)) |
 | `library/` | Shared agent-authored content library |
 | `orchestration/` | Command center, workflow runs, agent teams, worktrees, subagent control ([README](orchestration/README.md)) |
