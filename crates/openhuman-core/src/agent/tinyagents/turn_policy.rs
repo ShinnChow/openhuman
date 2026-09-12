@@ -34,7 +34,7 @@ pub(crate) struct ToolPolicyEnforcement {
 /// legitimately spent ~543s across many successful calls handed its next model
 /// call a 56s budget and died. A turn's real bounds are the model/tool call
 /// caps times the per-call ceiling; this only catches what escapes those.
-const DEFAULT_AGENT_TURN_TIMEOUT_SECS: u64 = 3_600;
+pub(super) const DEFAULT_AGENT_TURN_TIMEOUT_SECS: u64 = 3_600;
 
 /// Default wall-clock ceiling for a **single model call** within a turn, in
 /// seconds (#5766). Applied as the harness `RunLimits::max_model_call_ms`, so
@@ -49,7 +49,7 @@ const DEFAULT_AGENT_TURN_TIMEOUT_SECS: u64 = 3_600;
 /// sub-agent delegations, which wrap entire child turns) are exempt by design
 /// in the harness and stay bounded by the turn remainder plus their own
 /// per-tool timeouts.
-const DEFAULT_MODEL_CALL_TIMEOUT_SECS: u64 = 900;
+pub(super) const DEFAULT_MODEL_CALL_TIMEOUT_SECS: u64 = 900;
 
 /// Resolve the per-turn wall-clock ceiling in milliseconds for the harness
 /// policy. Reads `OPENHUMAN_AGENT_TURN_TIMEOUT_SECS` (falling back to
@@ -69,7 +69,7 @@ pub(crate) fn agent_turn_wall_clock_ms() -> Option<u64> {
 /// milliseconds. An absent/unparseable value falls back to
 /// [`DEFAULT_AGENT_TURN_TIMEOUT_SECS`]; `0` yields `None` (unbounded opt-out).
 /// Kept env-free so it is deterministically unit-testable.
-fn parse_agent_turn_wall_clock_ms(env_value: Option<&str>) -> Option<u64> {
+pub(super) fn parse_agent_turn_wall_clock_ms(env_value: Option<&str>) -> Option<u64> {
     let secs = env_value
         .and_then(|v| v.trim().parse::<u64>().ok())
         .unwrap_or(DEFAULT_AGENT_TURN_TIMEOUT_SECS);
@@ -81,7 +81,7 @@ fn parse_agent_turn_wall_clock_ms(env_value: Option<&str>) -> Option<u64> {
 /// [`DEFAULT_MODEL_CALL_TIMEOUT_SECS`]); `0` means "no per-call ceiling" →
 /// `None`, leaving calls bounded only by the turn's remaining wall clock as
 /// before #5766.
-fn model_call_wall_clock_ms() -> Option<u64> {
+pub(super) fn model_call_wall_clock_ms() -> Option<u64> {
     parse_model_call_wall_clock_ms(
         std::env::var("OPENHUMAN_MODEL_CALL_TIMEOUT_SECS")
             .ok()
@@ -95,7 +95,7 @@ fn model_call_wall_clock_ms() -> Option<u64> {
 /// [`DEFAULT_MODEL_CALL_TIMEOUT_SECS`]; `0` yields `None` (opt-out). Kept
 /// env-free so it is deterministically unit-testable — the same shape as
 /// [`parse_agent_turn_wall_clock_ms`].
-fn parse_model_call_wall_clock_ms(env_value: Option<&str>) -> Option<u64> {
+pub(super) fn parse_model_call_wall_clock_ms(env_value: Option<&str>) -> Option<u64> {
     let secs = env_value
         .and_then(|v| v.trim().parse::<u64>().ok())
         .unwrap_or(DEFAULT_MODEL_CALL_TIMEOUT_SECS);
