@@ -24,9 +24,9 @@ Owns the `channels.*` RPC namespace: provider metadata, connect/disconnect lifec
 | `messaging.rs` | `channel_send_message`, `channel_send_reaction`, `channel_create_thread`, `channel_update_thread`, `channel_list_threads` — all call the TinyHumans backend REST API (`crate::api::rest::BackendOAuthClient`); the only path that reaches `relay_runtime` is `OpenHumanChannelBackend::send_outbound_intent` in `backend.rs` |
 | `telegram.rs` | `telegram_login_start`/`telegram_login_check` |
 | `yuanbao.rs` | `pub(super)` Yuanbao connect helpers: required-field checks, effective config assembly, credential verification |
-| `types.rs` | Shared request/response types for the ops layer |
+| `types.rs` | Re-exports of `tinychannels::controllers` result/snapshot types used by the ops layer |
 
-`connected_channel_slugs` (from `connect.rs`) is re-exported at `channels::controllers::connected_channel_slugs` for callers outside the controller registry, e.g. the welcome agent's onboarding status snapshot.
+`connected_channel_slugs` (from `connect.rs`) is re-exported at `channels::controllers::connected_channel_slugs` for callers outside the controller registry; the `ops/mod.rs` comment cites the welcome agent's onboarding snapshot, but nothing outside `channels/controllers/` calls it today. `types.rs` re-exports the `tinychannels::controllers` result types (`ChannelStatusEntry`, `ChannelSendMessageResult`, …) rather than defining its own.
 
 ## Wiring
 
