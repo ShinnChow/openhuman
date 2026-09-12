@@ -26,5 +26,12 @@ pub use session_lifecycle::{
 };
 
 #[cfg(test)]
+pub(crate) use session_lifecycle::{
+    auth_me_store_failure_is_transient, auth_me_store_validation_budget,
+    normalize_local_session_user, sanitize_stored_session_user, secret_store_for_config,
+    AUTH_ME_STORE_VALIDATION_BUDGET, AUTH_ME_STORE_VALIDATION_BUDGET_ENV,
+};
+
+#[cfg(test)]
 #[path = "ops_tests.rs"]
 mod tests;
