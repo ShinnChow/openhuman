@@ -66,7 +66,7 @@ None. No `store.rs` — staged binaries are written to the filesystem (current-e
 
 ## Used by
 - `crates/openhuman-core/src/core/all.rs` — registers `all_update_registered_controllers()` / `all_update_controller_schemas()` into the controller registry.
-- `crates/openhuman-core/src/core/jsonrpc.rs` — spawns `update::scheduler::run(config.update)` at server start.
+- `crates/openhuman-core/src/core/runtime/services.rs` — spawns `update::scheduler::run(config.update)` as a background service at core start.
 - `crates/openhuman-core/src/tools/impl/system/update_check.rs` and `update_apply.rs` — agent tools wrapping the RPC layer.
 
 ## Notes / gotchas
