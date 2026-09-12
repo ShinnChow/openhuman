@@ -13,7 +13,7 @@
 // keeping a byte map back to the original string, so matches found on the
 // normalized view can be spliced onto the exact original bytes.
 
-pub(super) struct NormalizedView {
+pub(crate) struct NormalizedView {
     pub(super) normalized: String,
     // For each byte offset i in `normalized`, `byte_map[i]` is the byte offset
     // in the original string where the corresponding char *starts*.
@@ -192,7 +192,7 @@ const MYNUMBER_JP_KEYWORDS: &[&[u8]] = &["マイナンバー".as_bytes(), "個�
 /// continuation bytes are all `>= 0x80`, so scanning `as_bytes()` for ASCII
 /// digits/punctuation/letters is boundary-safe. Keyword probes run over the
 /// same byte slice so the non-Latin needles match verbatim.
-pub(super) fn scan_candidates(text: &str) -> Candidates {
+pub(crate) fn scan_candidates(text: &str) -> Candidates {
     let bytes = text.as_bytes();
 
     let mut total_digits: usize = 0;
