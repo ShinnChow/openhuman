@@ -569,10 +569,10 @@ async fn check_app_update(app: tauri::AppHandle<AppRuntime>) -> Result<AppUpdate
 
 /// Download and install the latest shell update, then relaunch.
 ///
-/// Shuts the core sidecar down before download begins so the install step
+/// Shuts the in-process core down before download begins so the install step
 /// (which on macOS replaces the entire `.app` bundle) does not race against
-/// a live sidecar holding file handles inside `Contents/Resources/`. The
-/// new bundled sidecar is launched fresh after `app.restart()`.
+/// a live core holding file handles inside `Contents/Resources/`. The core
+/// starts fresh in the new process after `app.restart()`.
 ///
 /// Emits Tauri events `app-update:status` and `app-update:progress` so the
 /// frontend can show a snackbar / progress bar.
@@ -614,9 +614,9 @@ async fn apply_app_update(
     );
     let _ = app.emit("app-update:status", "downloading");
 
-    // Shut the core sidecar down before the install step replaces the .app.
+    // Shut the in-process core down before the install step replaces the .app.
     // We hold the restart lock until app.restart() so nothing tries to
-    // respawn the sidecar from the in-flight (or freshly-replaced) bundle.
+    // respawn the core from the in-flight (or freshly-replaced) bundle.
     let _guard = state.inner().restart_lock().await;
     log::debug!("[app-update] acquired core restart lock");
     state.inner().shutdown().await;
