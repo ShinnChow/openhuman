@@ -218,4 +218,5 @@ func queryFocusedElement(id: String?) -> [String: Any] {
 
     return result
 }
+
 "##;
