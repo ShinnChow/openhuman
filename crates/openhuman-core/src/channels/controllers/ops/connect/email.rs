@@ -31,7 +31,7 @@ fn optional_cred_str(creds: &serde_json::Map<String, Value>, key: &str) -> Optio
 /// Parse a `u16` port from a string/number credential field, falling back to
 /// `default` when the field is absent or blank. Non-numeric values are a hard
 /// error so a typo surfaces at connect time rather than silently reverting.
-fn parse_port_field(
+pub(crate) fn parse_port_field(
     creds: &serde_json::Map<String, Value>,
     key: &str,
     default: u16,
