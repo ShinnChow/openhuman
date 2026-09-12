@@ -84,5 +84,5 @@ Flat files: `bus.rs` (event subscribers), `cost.rs` (`pub(crate)`, token/cost ac
 
 ## Related docs
 
-- [gitbooks/developing/architecture/agent-harness.md](../../../../../gitbooks/developing/architecture/agent-harness.md)
-- [gitbooks/developing/agent-observability.md](../../../../../gitbooks/developing/agent-observability.md)
+- [gitbooks/developing/architecture/agent-harness.md](../../../../gitbooks/developing/architecture/agent-harness.md)
+- [gitbooks/developing/agent-observability.md](../../../../gitbooks/developing/agent-observability.md)
