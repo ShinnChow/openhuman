@@ -44,7 +44,7 @@ pub(crate) use contract::fetch_live_toolkit_catalog;
 #[cfg(test)]
 pub(crate) use contract::{seed_live_catalog_cache, seed_live_catalog_cache_expired};
 pub(crate) use lookups::composio_required_args;
-pub(crate) use probe::{apply_probe_override, probe_tool_output_sample};
+pub(crate) use probe::{apply_probe_override, probe_tool_output_sample, ProbedOutputSample};
 #[cfg(test)]
 pub(crate) use probe::{seed_probe_cache, seed_probe_cache_expired};
 
