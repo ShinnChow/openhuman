@@ -64,7 +64,13 @@ mod people_chunks_retrieval;
 mod provider;
 mod sync_sessions_episodic;
 
-pub(crate) use capabilities::ARTIFACT_CAPABILITIES;
+pub(crate) use capabilities::{capabilities_for, ARTIFACT_CAPABILITIES, ARTIFACT_CAPABILITIES_PIN};
 pub use provider::{install_host_callbacks, publish_cli_boot_policy, set_modules_policy};
 pub(crate) use provider::policy;
 pub use provider::{ModuleMemoryProvider, MODULE_ID};
+use provider::from_bus;
+use sync_sessions_episodic::INGEST_BUS_GRACE;
+
+#[cfg(test)]
+#[allow(unused_imports)]
+use {from_bus as _, INGEST_BUS_GRACE as _};
