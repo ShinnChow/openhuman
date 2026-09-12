@@ -12,7 +12,7 @@ use super::construct::IntegrationClient;
 /// Maximum length (in bytes) of backend error body included in propagated
 /// errors. Keep this bounded — error messages flow through tracing/Sentry and
 /// are surfaced in user-facing toasts, neither of which want a 100KB blob.
-pub(super) const MAX_ERROR_BODY_LEN: usize = 500;
+pub(crate) const MAX_ERROR_BODY_LEN: usize = 500;
 
 /// Extract a human-readable failure detail from a backend error response body.
 ///
@@ -26,7 +26,7 @@ pub(super) const MAX_ERROR_BODY_LEN: usize = 500;
 /// Otherwise (non-JSON body, missing `error` field) fall back to the raw
 /// text truncated to `max_bytes` at a UTF-8 char boundary so callers always
 /// get *something* to grep for, without unbounded memory in error paths.
-pub(super) fn extract_error_detail(body: &str, max_bytes: usize) -> String {
+pub(crate) fn extract_error_detail(body: &str, max_bytes: usize) -> String {
     if body.is_empty() {
         return "<empty body>".to_string();
     }
