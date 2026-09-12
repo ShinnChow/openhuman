@@ -55,9 +55,12 @@ Each of these must not be weakened to make a feature work:
 
 - **`action_dir` vs `workspace_dir`.** `action_dir` is the agent's action
   sandbox root — tools resolve relative paths and default their cwd there.
-  `workspace_dir` holds core-internal state (memory DBs, sessions, tokens) and
-  is never reachable from an agent tool call. Kept as two separate fields on
-  `SecurityPolicy` (`types.rs`) specifically so the two roots can diverge.
+  `workspace_dir` holds core-internal state (memory DBs, sessions, tokens);
+  the workspace root itself is a permitted containment root
+  (`is_resolved_path_allowed_for`), but its internal-state subtree is refused
+  by `check_resolved_against_forbidden` before any trusted-root grant is
+  consulted. Kept as two separate fields on `SecurityPolicy` (`types.rs`) so
+  the two roots can diverge.
 - **`is_workspace_internal_path`** (`path_checks.rs`) — true for any path
   whose first component under `workspace_dir` is in `WORKSPACE_INTERNAL_DIRS`
   or `WORKSPACE_INTERNAL_FILES` (`types.rs`), or starts
