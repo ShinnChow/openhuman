@@ -7,6 +7,40 @@ use async_trait::async_trait;
 use serde::Deserialize;
 use std::sync::Arc;
 
+#[derive(Debug, Deserialize)]
+pub(super) struct ExtractResponse {
+    #[serde(rename = "extractId", default)]
+    #[allow(dead_code)]
+    extract_id: String,
+    #[serde(default)]
+    results: Vec<ExtractResultItem>,
+    #[serde(default)]
+    errors: Vec<ExtractError>,
+    #[serde(rename = "costUsd", default)]
+    cost_usd: f64,
+}
+
+#[derive(Debug, Deserialize)]
+struct ExtractResultItem {
+    #[serde(default)]
+    url: String,
+    #[serde(default)]
+    title: Option<String>,
+    #[serde(default)]
+    excerpts: Vec<String>,
+    #[serde(default)]
+    full_content: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ExtractError {
+    #[serde(default)]
+    url: String,
+    #[serde(default)]
+    error: String,
+}
+
+
 // ── ParallelExtractTool ─────────────────────────────────────────────
 
 /// Extract content from web pages via the Parallel API.

@@ -322,15 +322,16 @@ pub(super) fn assemble_turn_harness(
         .map(|h| EarlyExitHook::new(h.clone()));
 
     let is_subagent_run = subagent_scope.is_some();
-    let (tool_count, registry_diagnostics, registry_snapshot) = register_turn_tools_and_agents(
-        &mut harness,
-        &mut capability_registry,
-        &tool_sets,
-        &allowed,
-        &early_exit_set,
-        early_exit_hook.as_ref(),
-        is_subagent_run,
-    );
+    let (tool_count, candidate_names, registry_diagnostics, registry_snapshot) =
+        register_turn_tools_and_agents(
+            &mut harness,
+            &mut capability_registry,
+            &tool_sets,
+            &allowed,
+            &early_exit_set,
+            early_exit_hook.as_ref(),
+            is_subagent_run,
+        );
 
     // SHADOW tool-exposure layer (issue #4249, 01.3 — dynamic exposure). Compose
     // the OpenHuman exposure policy as a crate-native selection layer

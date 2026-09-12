@@ -34,7 +34,7 @@ pub(super) fn register_turn_tools_and_agents(
     early_exit_set: &HashSet<&str>,
     early_exit_hook: Option<&EarlyExitHook>,
     is_subagent_run: bool,
-) -> (usize, Vec<RegistryDiagnostic>, RegistrySnapshot) {
+) -> (usize, Vec<String>, Vec<RegistryDiagnostic>, RegistrySnapshot) {
     if let Some(set) = allowed {
         if set.is_empty() {
             tracing::warn!(
@@ -174,5 +174,5 @@ pub(super) fn register_turn_tools_and_agents(
         "[registry] per-turn capability projection summary"
     );
 
-    (tool_count, registry_diagnostics, registry_snapshot)
+    (tool_count, candidate_names, registry_diagnostics, registry_snapshot)
 }
