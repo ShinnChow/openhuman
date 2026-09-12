@@ -4,6 +4,22 @@ Core-owned local multi-chain crypto wallet, deliberately **basic**: key/account 
 
 Higher-level DeFi affordances (swaps, bridges, generic dapp/contract calls) live in the separate [`web3`](../README.md) module, which builds on the wallet's **crate-internal** `sign_and_broadcast_evm` / `sign_and_broadcast_solana` primitives. They are not part of the wallet's agent / RPC surface.
 
+## Compile-time gate (`web3` feature)
+
+`pub mod wallet;` in `web3/mod.rs` is ALWAYS compiled — it is a facade. The real
+implementation (`ops`, `execution`, `defaults`, `abi`, `chains`, `schemas`,
+`tools`, `transport`) is gated behind the default-ON `web3` Cargo feature
+(shared with `web3` and `web3::x402`). When the feature is off, `stub` takes
+its place and mirrors the subset of the public surface that always-on / other-
+gated callers depend on — `WALLET_NOT_CONFIGURED_MESSAGE`, `status`,
+`secret_material`, `WalletChain`, `prepare_transfer`, `execute_prepared`, the
+prepare/execute param + result types, `solana_cluster` / `SolanaCluster`,
+`prepared_quotes_for_test`, and the controller-registration entry points
+(`all_wallet_registered_controllers`, `all_wallet_controller_schemas`) —
+with no-op / disabled-error bodies. Signatures must match the real ones
+exactly; `cargo check --no-default-features` is the only thing that catches
+drift.
+
 ## Responsibilities
 
 - Persist wallet onboarding state (consent flag, mnemonic word count, setup source, exactly one derived account per supported chain) and the encrypted recovery phrase.
