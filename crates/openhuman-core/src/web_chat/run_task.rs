@@ -1,6 +1,8 @@
-//! `run_chat_task` — builds the session agent, runs a turn through the agent
-//! harness, and spawns the progress bridge alongside it. Called from
-//! `ops::start_chat` once validation and cache-lookup are done.
+//! `run_chat_task` — resolves or builds the cached session agent
+//! (`session.rs`), spawns the progress bridge alongside the turn, runs it
+//! through the agent harness, and applies the per-thread budget correlation
+//! to a failed turn. Called from `start_chat` and `spawn_parallel_turn`
+//! (`ops_part_02.rs`/`ops_part_03.rs`) once the message has been validated.
 
 use std::sync::Arc;
 
