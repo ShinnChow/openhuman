@@ -20,19 +20,19 @@ use super::cap_pauser::{
 };
 
 #[derive(Default)]
-struct BridgeState {
-    input_tokens: u64,
-    output_tokens: u64,
-    cached_input_tokens: u64,
-    charged_amount_usd: f64,
+pub(super) struct BridgeState {
+    pub(super) input_tokens: u64,
+    pub(super) output_tokens: u64,
+    pub(super) cached_input_tokens: u64,
+    pub(super) charged_amount_usd: f64,
     /// Local response-cache hits observed on this turn (issue #4249, 03.2). A hit
     /// means the harness served a model call from its [`ResponseCache`] without
     /// invoking the provider. Additive counters — a follow-up (coordinated with
     /// workstream 06) wires these into the cost-footer DTO; today they are logged
     /// with a grep-friendly `[cache]` prefix and exposed via [`OpenhumanEventBridge::cache_counts`].
-    cache_hits: u64,
+    pub(super) cache_hits: u64,
     /// Local response-cache misses observed on this turn (provider *was* invoked).
-    cache_misses: u64,
+    pub(super) cache_misses: u64,
 }
 
 /// Per-model-call figures `record_usage` resolved from the provider-usage
