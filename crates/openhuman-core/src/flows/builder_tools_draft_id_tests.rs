@@ -227,13 +227,18 @@ async fn revise_workflow_proposal_is_marked_unpersisted() {
 fn module_doc_tool_table_matches_registered_tools() {
     const SOURCE: &str = concat!(
         include_str!("builder_tools.rs"),
-        include_str!("builder_tools_part_01.rs"),
-        include_str!("builder_tools_part_02.rs"),
-        include_str!("builder_tools_part_03.rs"),
-        include_str!("builder_tools_part_04.rs"),
-        include_str!("builder_tools_part_05.rs"),
-        include_str!("builder_tools_part_06.rs"),
-        include_str!("builder_tools_part_07.rs"),
+        include_str!("builder_tools/catalog_search.rs"),
+        include_str!("builder_tools/connection_reads.rs"),
+        include_str!("builder_tools/draft_edit.rs"),
+        include_str!("builder_tools/draft_revise.rs"),
+        include_str!("builder_tools/draft_validate.rs"),
+        include_str!("builder_tools/dry_run.rs"),
+        include_str!("builder_tools/dry_run_diagnostics.rs"),
+        include_str!("builder_tools/flow_reads.rs"),
+        include_str!("builder_tools/kind_reads.rs"),
+        include_str!("builder_tools/persistence.rs"),
+        include_str!("builder_tools/run_control.rs"),
+        include_str!("builder_tools/tool_contract.rs"),
     );
 
     let module_doc: String = SOURCE

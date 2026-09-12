@@ -181,9 +181,9 @@ fn only_library_hosts_are_exempt_from_app_login() {
     }
 }
 
-#[path = "factory_tests_part_01_tests.rs"]
-mod part_01_tests;
-#[path = "factory_tests_part_02_tests.rs"]
-mod part_02_tests;
-#[path = "factory_tests_part_03_tests.rs"]
-mod part_03_tests;
+#[path = "factory_route_resolution_tests.rs"]
+mod route_resolution_tests;
+#[path = "factory_crate_native_tests.rs"]
+mod crate_native_tests;
+#[path = "factory_egress_fallback_tests.rs"]
+mod egress_fallback_tests;
