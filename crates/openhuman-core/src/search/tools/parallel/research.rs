@@ -12,13 +12,13 @@ use std::sync::Arc;
 #[derive(Debug, Deserialize)]
 pub(super) struct ResearchResponse {
     #[serde(default, rename = "runId")]
-    run_id: Option<String>,
+    pub(super) run_id: Option<String>,
     #[serde(default)]
-    status: Option<String>,
+    pub(super) status: Option<String>,
     #[serde(default)]
-    result: Option<serde_json::Value>,
+    pub(super) result: Option<serde_json::Value>,
     #[serde(rename = "costUsd", default)]
-    cost_usd: f64,
+    pub(super) cost_usd: f64,
 }
 
 pub(super) fn format_research_response(resp: ResearchResponse) -> Result<String, String> {
@@ -58,7 +58,7 @@ pub(super) fn format_research_response(resp: ResearchResponse) -> Result<String,
     Ok(out)
 }
 
-fn research_payload(resp: &ResearchResponse, display: &str) -> serde_json::Value {
+pub(super) fn research_payload(resp: &ResearchResponse, display: &str) -> serde_json::Value {
     json!({
         "display": display,
         "status": resp.status,

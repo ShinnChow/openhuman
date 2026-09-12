@@ -12,13 +12,13 @@ use std::sync::Arc;
 #[derive(Debug, Deserialize)]
 pub(super) struct EnrichResponse {
     #[serde(default, rename = "runId")]
-    run_id: Option<String>,
+    pub(super) run_id: Option<String>,
     #[serde(default)]
-    status: Option<String>,
+    pub(super) status: Option<String>,
     #[serde(default)]
-    output: Option<serde_json::Value>,
+    pub(super) output: Option<serde_json::Value>,
     #[serde(rename = "costUsd", default)]
-    cost_usd: f64,
+    pub(super) cost_usd: f64,
 }
 
 pub(super) fn format_enrich_response(resp: EnrichResponse) -> Result<String, String> {
@@ -58,7 +58,7 @@ pub(super) fn format_enrich_response(resp: EnrichResponse) -> Result<String, Str
     Ok(out)
 }
 
-fn enrich_payload(resp: &EnrichResponse, display: &str) -> serde_json::Value {
+pub(super) fn enrich_payload(resp: &EnrichResponse, display: &str) -> serde_json::Value {
     json!({
         "display": display,
         "status": resp.status,

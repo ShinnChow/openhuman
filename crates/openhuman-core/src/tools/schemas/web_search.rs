@@ -307,3 +307,23 @@ fn handle_searxng_search(params: Map<String, Value>) -> ControllerFuture {
 
 
 fn optional_string_array(params: &Map<String, Value>, key: &str) -> Result<Vec<String>, String> {
+    let Some(value) = params.get(key) else {
+        return Ok(Vec::new());
+    };
+    if value.is_null() {
+        return Ok(Vec::new());
+    }
+    let items = value
+        .as_array()
+        .ok_or_else(|| format!("`{key}` must be an array of strings"))?;
+    items
+        .iter()
+        .filter_map(|item| match item.as_str() {
+            Some(value) => {
+                let trimmed = value.trim();
+                (!trimmed.is_empty()).then(|| Ok(trimmed.to_string()))
+            }
+            None => Some(Err(format!("`{key}` must contain only strings"))),
+        })
+        .collect()
+}
