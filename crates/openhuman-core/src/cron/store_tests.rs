@@ -2,6 +2,7 @@ use super::*;
 use crate::config::Config;
 use crate::cron::ActiveHours;
 use chrono::Duration as ChronoDuration;
+use chrono::Utc;
 use tempfile::TempDir;
 
 use crate::cron::CronJobPatch;
