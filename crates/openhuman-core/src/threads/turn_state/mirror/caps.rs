@@ -19,7 +19,7 @@ const TRUNCATION_MARKER_BUDGET: usize = 80;
 /// stream would otherwise grow one item without bound and bloat every
 /// full-file snapshot rewrite. Tighter than [`MAX_PERSISTED_TOOL_OUTPUT`]
 /// because a turn can accumulate many prose items.
-pub(super) const MAX_PERSISTED_TRANSCRIPT_ITEM: usize = 16 * 1024;
+pub(crate) const MAX_PERSISTED_TRANSCRIPT_ITEM: usize = 16 * 1024;
 
 /// Marker appended once when a transcript prose item is truncated at its cap.
 pub(super) const TRANSCRIPT_TRUNCATION_MARKER: &str = "\n…[truncated]";
