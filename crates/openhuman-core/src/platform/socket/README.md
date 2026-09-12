@@ -73,7 +73,7 @@ None of its own. State (`status`, `socket_id`, `error`, attached `WebhookRouter`
 - `crate::api::socket::websocket_url`, `crate::api::config::effective_backend_api_url`, `crate::api::jwt::get_session_token` — URL derivation and session-token lookup.
 - `crate::core::all` — `ControllerFuture`, `RegisteredController` for the controller registry.
 - `crate::core::{ControllerSchema, FieldSchema, TypeSchema}` — RPC schema types.
-- `crate::core::event_bus` — `publish_global` / `DomainEvent` for routing inbound events.
+- `crate::core::bus::BUS.publish` / `crate::core::events::DomainEvent` — for routing inbound events.
 - `crate::core::observability::report_error_or_expected` — one-shot sustained-outage classification at the failure threshold.
 - `crate::skills::webhooks` — `WebhookRouter` (attached for parse-error logging / response emission) and `WebhookRequest`.
 - `crate::integrations::composio` — `ComposioTriggerEvent` DTO for `composio:trigger` deserialization.
