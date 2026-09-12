@@ -25,6 +25,7 @@ pub struct ComposioClient {
 }
 
 impl ComposioClient {
+    pub fn new(inner: Arc<IntegrationClient>) -> Self {
         Self { inner }
     }
 
