@@ -3,10 +3,9 @@
 
 use serde::{Deserialize, Deserializer, Serialize};
 
-use super::agent_definition::AgentDefinition;
 
 
-/// One entry in [`AgentDefinition::subagents`]. Parses from TOML as either
+/// One entry in [`super::AgentDefinition::subagents`]. Parses from TOML as either
 /// a bare string (agent id) or an inline table (`{ skills = "*" }`) thanks
 /// to `#[serde(untagged)]`.
 ///

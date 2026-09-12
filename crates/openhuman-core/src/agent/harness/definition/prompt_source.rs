@@ -25,7 +25,7 @@ pub enum PromptSource {
     /// at spawn time.
     File { path: String },
     /// Function-driven prompt: the builder is invoked at spawn time with
-    /// a [`PromptContext`] so the returned body can depend on runtime
+    /// a [`crate::agent::context::prompt::PromptContext`] so the returned body can depend on runtime
     /// state (available tools, user profile, connected skills, etc.).
     ///
     /// Only constructed in-process (by built-in agent loaders). Not

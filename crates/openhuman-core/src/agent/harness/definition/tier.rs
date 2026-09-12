@@ -3,12 +3,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use super::agent_definition::AgentDefinition;
 
 
 /// Role an agent plays in the spawn hierarchy.
 ///
-/// See [`AgentDefinition::agent_tier`] for the full contract. In short:
+/// See [`super::AgentDefinition::agent_tier`] for the full contract. In short:
 ///
 /// ```text
 /// Chat (fast, UX-focused)

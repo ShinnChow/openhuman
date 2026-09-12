@@ -17,7 +17,7 @@ pub enum DefinitionSource {
     /// Synthesized at lookup time from a user-authored
     /// [`AgentRegistryEntry`](crate::agent::registry::AgentRegistryEntry)
     /// (`AgentRegistrySource::Custom`) by `agent_registry::defaults::definition_from_registry_entry`.
-    /// Never persisted in the [`AgentDefinitionRegistry`] — built fresh per
+    /// Never persisted in the [`super::AgentDefinitionRegistry`] — built fresh per
     /// factory call so config edits take effect immediately (closes the gap
     /// where custom agents ran persona-only instead of with their real tool
     /// belt).
