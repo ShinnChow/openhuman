@@ -16,7 +16,6 @@ Aggregator that the React shell polls every few seconds to render the OS-level c
 ## Calls into
 
 - `crates/openhuman-core/src/config/` — `config_rpc::*` for `Config` reads and the workspace dir resolver.
-- `crates/openhuman-core/src/autocomplete/` — `AutocompleteStatus` snapshot.
 - `crates/openhuman-core/src/inference/local/` — `LocalAiStatus` snapshot.
 - `crates/openhuman-core/src/platform/service/` — `ServiceState` / `ServiceStatus` runtime info.
 - `crates/openhuman-core/src/security/credentials/` — `session_support::build_session_state` for the auth slice.
