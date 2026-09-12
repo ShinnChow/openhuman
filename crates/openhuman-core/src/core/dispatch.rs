@@ -266,7 +266,6 @@ fn type_name(value: &Value) -> &'static str {
     }
 }
 
-
 #[cfg(test)]
 #[path = "dispatch_tests.rs"]
 mod tests;

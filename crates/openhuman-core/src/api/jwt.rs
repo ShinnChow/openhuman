@@ -36,7 +36,6 @@ pub fn decode_jwt_exp(token: &str) -> Option<DateTime<Utc>> {
     DateTime::<Utc>::from_timestamp(tinyhumans_sdk::jwt::decode_jwt_exp_unix(token)?, 0)
 }
 
-
 #[cfg(test)]
 #[path = "jwt_tests.rs"]
 mod tests;

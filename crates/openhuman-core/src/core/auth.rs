@@ -483,7 +483,6 @@ fn write_token_file(path: &Path, token: &str) -> anyhow::Result<()> {
     Ok(())
 }
 
-
 #[cfg(test)]
 #[path = "auth_tests.rs"]
 mod tests;

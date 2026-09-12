@@ -52,8 +52,7 @@ fn ttl_override_is_clamped_to_max() {
     // Any caller asking for more than `MAX_TTL` collapses to the cap;
     // confirm the issue path does not panic and the resulting token
     // still validates.
-    let issued =
-        issue("cli-test-clamp", Some(Duration::from_secs(60 * 60 * 24))).expect("issue");
+    let issued = issue("cli-test-clamp", Some(Duration::from_secs(60 * 60 * 24))).expect("issue");
     assert!(issued.valid_until <= Instant::now() + MAX_TTL + Duration::from_secs(1));
     assert!(consume("cli-test-clamp", &issued.token));
 }

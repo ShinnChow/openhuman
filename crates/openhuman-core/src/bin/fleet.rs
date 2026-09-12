@@ -23,10 +23,6 @@
 //! core's bound port from a ready file / `EmbeddedReadySignal` and reconcile
 //! membership against `tinyhumansai/backend`). Limitations are logged, never
 //! silently swallowed.
-use std::collections::HashMap;
-use std::net::SocketAddr;
-use std::path::{Path, PathBuf};
-use std::sync::Arc;
 use anyhow::Context as _;
 use axum::{
     body::Bytes,
@@ -39,6 +35,10 @@ use axum::{
     Router,
 };
 use clap::Parser;
+use std::collections::HashMap;
+use std::net::SocketAddr;
+use std::path::{Path, PathBuf};
+use std::sync::Arc;
 use tokio::sync::RwLock;
 // ---------------------------------------------------------------------------
 // Edge auth — maps opaque client-facing tokens to a user id.

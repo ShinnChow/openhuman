@@ -166,7 +166,6 @@ impl tinybus::EventHandler<DomainEvent> for TracingSubscriber {
     }
 }
 
-
 #[cfg(test)]
 #[path = "bus_tests.rs"]
 mod tests;

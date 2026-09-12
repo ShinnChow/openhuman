@@ -47,9 +47,8 @@ impl Drop for EnvSnapshot {
 /// The URL that should be used as the backend base when no config override
 /// is present and the runtime env has been cleared for the test.
 fn fallback_backend_base_for_current_build() -> String {
-    api_base_from_env().unwrap_or_else(|| {
-        default_api_base_url_for_env(app_env_from_env().as_deref()).to_string()
-    })
+    api_base_from_env()
+        .unwrap_or_else(|| default_api_base_url_for_env(app_env_from_env().as_deref()).to_string())
 }
 
 // ── api_url ───────────────────────────────────────────────────────────────

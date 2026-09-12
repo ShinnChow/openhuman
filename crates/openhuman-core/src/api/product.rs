@@ -175,7 +175,6 @@ pub(crate) fn reset_product_identity_for_test() {
     set_product_identity(ProductIdentity::default());
 }
 
-
 #[cfg(test)]
 #[path = "product_tests.rs"]
 mod tests;

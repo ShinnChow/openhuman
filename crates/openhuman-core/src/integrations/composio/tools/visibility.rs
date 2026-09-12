@@ -69,7 +69,7 @@ pub(super) fn action_mutates_external_state(slug: &str) -> bool {
 /// Decide whether a Composio action slug should be visible / executable
 /// for the current user, given the registered provider's curated list
 /// (if any) and the user's stored scope preference.
-async fn evaluate_tool_visibility(config: &Config, slug: &str) -> ToolDecision {
+pub(super) async fn evaluate_tool_visibility(config: &Config, slug: &str) -> ToolDecision {
     let Some(toolkit) = toolkit_from_slug(slug) else {
         // Unparseable slug — let the backend return its own error.
         return ToolDecision::Allow;
@@ -103,7 +103,7 @@ async fn evaluate_tool_visibility(config: &Config, slug: &str) -> ToolDecision {
 /// Returns the number of dropped tools so callers can log it.
 /// `toolkit_from_slug` already lowercases its result, so the comparison
 /// is direct against entries the caller has already lowercased.
-fn retain_connected_tools(
+pub(super) fn retain_connected_tools(
     resp: &mut super::super::types::ComposioToolsResponse,
     connected: &HashSet<String>,
 ) -> usize {
@@ -116,7 +116,7 @@ fn retain_connected_tools(
     before - resp.tools.len()
 }
 
-fn normalized_scope_toolkits(
+pub(super) fn normalized_scope_toolkits(
     requested: Option<&[String]>,
     connected: Option<&HashSet<String>>,
 ) -> Vec<String> {
@@ -142,7 +142,7 @@ fn uncatalogued_toolkits(toolkits: &[String]) -> Vec<String> {
         .collect()
 }
 
-fn empty_uncurated_toolkits_message(toolkits: &[String]) -> Option<String> {
+pub(super) fn empty_uncurated_toolkits_message(toolkits: &[String]) -> Option<String> {
     let unsupported = uncatalogued_toolkits(toolkits);
     if unsupported.is_empty() {
         return None;
@@ -163,7 +163,7 @@ fn empty_uncurated_toolkits_message(toolkits: &[String]) -> Option<String> {
 /// Filter a freshly-fetched [`super::super::types::ComposioToolsResponse`] in
 /// place: drop tools that aren't curated for their toolkit and tools
 /// whose scope is disabled in the user's pref.
-async fn filter_list_tools_response(
+pub(super) async fn filter_list_tools_response(
     config: &Config,
     resp: &mut super::super::types::ComposioToolsResponse,
 ) {
@@ -239,7 +239,7 @@ fn split_arg_names(parameters: Option<&Value>) -> (Vec<String>, Vec<String>) {
 /// only what the agent needs to pick a slug and call `composio_execute`:
 /// the slug, a one-line description, and the names of required +
 /// optional top-level arguments. Tools are grouped by toolkit prefix.
-fn render_tools_markdown(resp: &super::super::types::ComposioToolsResponse) -> String {
+pub(super) fn render_tools_markdown(resp: &super::super::types::ComposioToolsResponse) -> String {
     use std::collections::BTreeMap;
     use std::fmt::Write as _;
 
@@ -304,7 +304,7 @@ fn render_tools_markdown(resp: &super::super::types::ComposioToolsResponse) -> S
 /// toggles the scope in the Connections UI. The agent has no tool to
 /// flip scopes (see the note above the removed `ComposioEnableScopeTool`
 /// for why) — it can only describe the gate and point at the UI.
-fn scope_error_message(slug: &str, scope: ToolScope, pref: UserScopePref) -> String {
+pub(super) fn scope_error_message(slug: &str, scope: ToolScope, pref: UserScopePref) -> String {
     let toolkit = toolkit_from_slug(slug).unwrap_or_default();
     let scope_str = scope.as_str();
     format!(

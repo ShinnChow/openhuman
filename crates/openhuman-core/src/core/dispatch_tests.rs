@@ -234,8 +234,7 @@ async fn dispatch_legacy_alias_routes_to_registry() {
     // This alias targets a controller registered in the domain registry.
     // Do not invoke it here: its implementation can persist default config,
     // which makes this routing test depend on a filesystem workspace.
-    let method =
-        crate::core::legacy_aliases::resolve_legacy("openhuman.get_analytics_settings");
+    let method = crate::core::legacy_aliases::resolve_legacy("openhuman.get_analytics_settings");
     assert!(
         crate::core::all::schema_for_rpc_method(method).is_some(),
         "legacy alias must resolve to a registered controller: {method}"

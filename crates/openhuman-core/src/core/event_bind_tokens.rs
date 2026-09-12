@@ -141,7 +141,6 @@ fn generate_token() -> String {
     hex::encode(bytes)
 }
 
-
 #[cfg(test)]
 #[path = "event_bind_tokens_tests.rs"]
 mod tests;
