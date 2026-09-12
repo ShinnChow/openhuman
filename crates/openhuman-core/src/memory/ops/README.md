@@ -12,13 +12,13 @@ rpc;`) kept for call sites that predate the tinymemory-core extraction.
 | Module | RPC family |
 | ------ | ---------- |
 | `envelope.rs` | `ApiEnvelope`/`ApiError` wrapping shared by every envelope-style handler (init, list_documents, query_namespace, recall_*, ai_*_memory_file). |
-| `helpers.rs` | Formatting, default constants, path validators, and `active_memory_client` — the unguarded driver lookup used where no typed contract twin exists yet. |
-| `guard.rs` | `active_memory_guard` — the guarded-driver lookup handlers use instead of `helpers::active_memory_client` when the operation has a typed contract twin (`docs/specs/memory-guard-allowlist.md`). |
+| `helpers.rs` | Formatting, default constants, path validators, and `current_workspace_dir`. It used to own `active_memory_client`, the unguarded engine lookup; that is gone (#5560) and the file carries a note where it stood. |
+| `guard.rs` | `active_memory_guard` — how a handler reaches the guarded driver (`CoreContext::memory()` under dispatch, a `binding::for_workspace` fallback for pre-context tests). Handlers that need the binding itself use `memory::binding::for_config`. |
 | `documents.rs` | Document/namespace direct API and the envelope-style façade (`memory_init`, `memory_list_documents`, `memory_query_namespace`, `recall_*`). |
 | `kv_graph.rs` | Key-value and knowledge-graph handlers. |
 | `sync.rs` | `memory_sync_*` and `memory_ingestion_status`. |
 | `learn.rs` | `memory_learn_all`. |
-| `provider.rs` | `memory_provider_status` / `memory_subsystem_status` — reports what the memory driver slot is bound to; deliberately bypasses the guard (a liveness probe is not product code). |
+| `provider.rs` | `memory_provider_status` / `memory_subsystem_status` — reports what the memory driver slot is bound to; its health probe deliberately uses `unguarded_provider()` (a liveness probe is not product code; allowlisted in `../bypass_allowlist_tests.rs`). |
 | `files.rs` | `ai_*_memory_file` handlers (`tokio::fs`). |
 | `maintenance.rs` | Scheduler-driven housekeeping against the `Maintenance` capability family. |
 | `tool_memory.rs` | Tool-scoped rule read/write handlers. |
@@ -26,22 +26,23 @@ rpc;`) kept for call sites that predate the tinymemory-core extraction.
 
 ## The ops ↔ schemas mirror
 
-`memory::ops` and [`memory::schemas`](../schemas/) mirror each other
-one-to-one by RPC family (`documents`, `kv_graph`, `sync`, `learn`,
-`provider`, `files`, `tool_memory`, plus `core_recall`/`ingest` split out of
-`documents`' schema side). `schemas` defines the wire-facing
-`ControllerSchema`s and thin handler glue; `ops` holds the actual business
-logic each handler calls into. Each schema family publishes its own
+The seven handler families (`documents`, `kv_graph`, `sync`, `learn`,
+`provider`, `files`, `tool_memory`) each have a twin in
+[`memory::schemas`](../schemas/); `envelope`, `helpers`, `guard` and
+`maintenance` are ops-only. `schemas` defines the wire-facing
+`ControllerSchema`s and thin handler glue; `ops` holds the logic each handler
+calls into. On the schema side `documents` is partitioned three ways
+(`core_recall` / `documents` / `ingest`), which is why nine
 `all_<family>_controller_schemas()` / `all_<family>_registered_controllers()`
-pair so `core::all` can register one capability family at a time rather than
-the namespace as a whole.
+pairs come out of seven files — so `core::all` can register one capability
+family at a time rather than the namespace as a whole.
 
-Do not confuse `memory::schemas/` (this mirror, one submodule per `ops`
-family) with `memory::schema/` (singular) — that is a different module: the
-controller-schema *definitions* (`definitions.rs`), handler glue
-(`handlers.rs`) and registry (`registry.rs`) that stayed host-side from
-before the family split, exposing its own `all_controller_schemas` /
-`all_registered_controllers`.
+Do not confuse `memory/schemas/` (this mirror) with `memory/schema/`
+(singular) — that is the `memory_tree` namespace's controller schemas
+(`definitions.rs` / `handlers.rs` / `registry.rs`: chunk store, entities,
+graph and maintenance methods), deliberately kept as one registry and
+re-exported through `memory::tree::all_memory_tree_*`, which `core/all.rs`
+registers from the tree domain's own push site.
 
 ## Wiring
 
@@ -54,11 +55,12 @@ family behind its own alias re-exported from `memory::mod`:
 `all_memory_kv_graph_registered_controllers`,
 `all_memory_sync_registered_controllers`,
 `all_memory_learn_registered_controllers`,
-`all_memory_provider_registered_controllers` (never capability-gated — it is
-what *reports* the bound driver's capabilities), and
-`all_memory_tool_memory_registered_controllers`. Registering a subset (or
-none) is how a build can turn a capability family off without losing the
-`memory.provider_status` surface that explains why.
+`all_memory_provider_registered_controllers`, and
+`all_memory_tool_memory_registered_controllers`. Each push is tagged with the
+`Capability` the family needs (`Core`, `Documents`, `Ingest`, `Graph`,
+`Sources`, `Tree`, `ToolMemory`) so dispatch drops it when the bound driver
+does not advertise that capability; `files` (host file I/O) and `provider`
+(the RPC that *reports* the capability set) are pushed untagged.
 
 ## Tests
 
@@ -68,5 +70,5 @@ Each family has a `*_tests.rs` sibling (`documents_tests.rs`,
 `provider_tests.rs`, `sync_tests.rs`, `tool_memory_tests.rs`), plus the
 legacy `../ops_tests.rs` (gated on `feature = "modules"`) that predates the
 per-family split and exercises private helpers via `super::*`. Tests that
-drive the process-wide memory client serialize on
-`GLOBAL_MEMORY_TEST_LOCK` to avoid racing on one SQLite connection.
+touch the shared workspace serialize on `GLOBAL_MEMORY_TEST_LOCK` (lock order
+is that lock first, then `documents_tests.rs`'s env-var lock).

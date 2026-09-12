@@ -41,7 +41,7 @@ logic; every controller it exposes is implemented by a domain module under
 | `legacy_aliases.rs` | `resolve_legacy` — rewrites retired method names before dispatch; mirrors `app/src/services/rpcMethods.ts`'s `LEGACY_METHOD_ALIASES`. |
 | `observability.rs` | `report_error` + Sentry `before_send` filters that drop deterministic provider/updater noise. |
 | `log_redaction.rs` | `scrub_secrets` — regex secret scrubbing shared by the Sentry path and always-on log path. |
-| `rpc_log.rs` | `format_request_id` / `redact_params_for_log` — per-line RPC log formatting used by `dispatch.rs` and `jsonrpc.rs`. |
+| `rpc_log.rs` | `redact_params_for_log` (key-name redaction for the `[rpc:dispatch]` trace log in `dispatch.rs`) plus `format_request_id` / `summarize_rpc_result` / `redact_result_for_trace` helpers with no caller yet. |
 | `logging.rs` | `init_for_cli_run` / `init_for_embedded` — logger setup for each host kind. |
 | `shutdown.rs` | Graceful shutdown signal plumbing. |
 | `sentry_transport.rs` | Sentry client setup, gated by the `crash-reporting` feature. |
@@ -128,16 +128,17 @@ Each subscribing domain owns a `bus.rs`; subscriber names use
 `jsonrpc.rs` builds the Axum router (`build_core_http_router`) behind the
 `http-server` feature: `POST /rpc`, `GET /health`, `GET /schema`,
 `GET /events` (SSE), `GET /events/webhooks`, `GET /events/domain`,
-`GET /ws/dictation`, and the desktop/Telegram OAuth callback routes. The
+`GET /ws/dictation`, the `/auth`, `/auth/telegram`, and
+`/oauth/mcp/callback` callback routes, and a nested `/v1` OpenAI-compatible
+inference router (`inference::http`). The
 dispatch surface itself (`invoke_method`, `parse_json_params`,
 `default_state`, the `run_server*` `CoreBuilder` shims,
 `register_domain_subscribers`, `bootstrap_core_runtime`) stays compiled in a
 slim build with no listener bound, so the CLI and `CoreRuntime::invoke` keep
 working without the HTTP feature.
 
-`socketio.rs` bridges live domain events (web-chat, dictation, overlay
-attention, core notifications, transcription, companion state) onto
-Socket.IO for the desktop shell's webviews. The socketioxide/axum transport
+`socketio.rs` bridges live domain events onto Socket.IO for the desktop
+shell's webviews. The socketioxide/axum transport
 bodies are gated on `http-server`, but the payload types
 (`WebChannelEvent`, `TurnUsagePayload`, `SubagentUsagePayload`,
 `SubagentProgressDetail`) stay compiled in every build because roughly ten
@@ -146,9 +147,17 @@ mod socketio;` in `mod.rs` is deliberately ungated for the same reason.
 `COMPANION_STATE_BUS` is a broadcast channel for shell-originated companion
 lifecycle events that still need to reach the native macOS notch WKWebView,
 which has no Tauri IPC bridge and connects to the core's Socket.IO endpoint
-directly. `spawn_web_channel_bridge` fans a handful of domain broadcast
-channels — including `desktop::overlay::subscribe_attention_events` (see
-`desktop/overlay/README.md`) — out to every connected Socket.IO client.
+directly. `spawn_web_channel_bridge` spawns one forwarding task per source:
+web-chat events (`web_chat::subscribe_web_channel_events`, delivered to the
+initiating client's room and the `thread:<id>` room, not broadcast),
+dictation hotkeys and transcription results (`voice::dictation_listener`),
+overlay attention bubbles (`desktop::overlay::subscribe_attention_events`,
+see `desktop/overlay/README.md`), core notifications
+(`desktop::notifications`), companion state, and — read off `BUS` as
+`DomainEvent`s — session expiry, MCP setup secret requests, memory sync and
+tree-build progress, channel listener health, and active-workspace changes.
+Everything except web-chat is broadcast to every connected client, most under
+both a colon- and an underscore-separated event name.
 
 ## Auth
 
@@ -170,9 +179,14 @@ header.
 prints the banner, resolves controller schemas grouped by namespace, and
 dispatches through the same registry RPC uses. `agent_cli.rs`,
 `memory_cli.rs`, and `subsystems_cli.rs` are domain-specific CLI subcommand
-trees; `cli_capability.rs` is the one CLI-only exception to "wire through the
-registry" — it answers build/config facts (e.g. which features this binary
-was compiled with) that have no RPC analog.
+trees. `cli_capability.rs` is the one CLI-only exception to "degradation is
+absence": over `/rpc` and in the agent tool list an unadvertised memory
+capability family is simply unregistered, but the CLI keeps its subcommand
+arm and reports the build/config fact (`capability_unavailable_message`:
+which bound memory driver does not advertise which family) so a human does
+not mistake silence for a typo. It resolves the binding itself because plain
+CLI invocations never build a `CoreContext`, so the ambient gate would
+answer "everything allowed".
 
 ## `runtime/` and `subsystem/`
 

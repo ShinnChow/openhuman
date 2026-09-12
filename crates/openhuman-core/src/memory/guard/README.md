@@ -26,9 +26,9 @@ raw driver, and there is no second, unguarded shape to reach for instead.
 - Family decorators (`families.rs` + `families_part_0{1..4}.rs`) — one
   `decorator!`-generated struct per optional capability family (`GuardedTree`,
   `GuardedProfile`, `GuardedGraph`, … — 23 of the contract's 26 families),
-  each present exactly when the bound driver advertises that family. The
-  "ten decorators" / "thirteen families" figures in the rustdoc predate the
-  contract growing.
+  each present exactly when the bound driver advertises that family. (The
+  "ten decorators" / "thirteen families" figures still in `families.rs`,
+  `policy.rs` and `test_support.rs` predate the contract growing.)
 - `mandatory.rs` — the three families every driver has (`MemoryCore`,
   `MemoryRecall`, `MemoryPortability`), where steps 3, 4 and 6 land for the
   always-present surface.
