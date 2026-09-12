@@ -4,10 +4,12 @@
 //! on a miss) and the just-in-time [`fetch_toolkit_actions`], plus their
 //! small toolkit-membership/description helpers.
 
+use std::time::Instant;
+
 use crate::agent::context::prompt::{ConnectedIntegration, ConnectedIntegrationTool};
 use crate::config::Config;
 
-use super::cache::{cache_key, CachedIntegrations, INTEGRATIONS_CACHE};
+use super::cache::{cache_key, CachedIntegrations, CACHE_TTL, INTEGRATIONS_CACHE};
 use super::fetch_uncached::fetch_connected_integrations_uncached;
 use crate::integrations::composio::client::ComposioClient;
 use crate::integrations::composio::ops::should_forward_tags;
