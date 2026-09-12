@@ -7,6 +7,10 @@ icon: chrome
 
 # Chromium Embedded Framework
 
+{% hint style="warning" %}
+**Historical.** The desktop shell no longer ships CEF. `crates/openhuman-app/` builds on upstream Tauri's native webview runtime (Wry: WKWebView / WebView2 / WebKitGTK), and `AGENTS.md` forbids restoring CEF or CDP-scanner assumptions. The native iMessage scanner remains separate because it reads `chat.db` directly. Everything below describes the retired runtime and is kept only as design background; the file paths it cites (`crates/openhuman-app/src/webview_accounts/`, `scripts/ensure-tauri-cli.sh`, `vendor/tauri-cef`) no longer exist.
+{% endhint %}
+
 OpenHuman doesn't run on the platform's built-in webview. It ships its own **Chromium Embedded Framework (CEF) runtime** via a fork of `tauri-runtime`, and that single decision is load-bearing for almost every "OpenHuman knows what's happening in your tools" feature in the product.
 
 This page explains why CEF is in the bundle, what the codebase uses it for today, and where the same surface could go.

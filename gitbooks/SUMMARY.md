@@ -78,7 +78,7 @@
 - [E2E Testing](developing/e2e-testing.md)
 - [Release Policy](developing/release-policy.md)
 - [Polymarket Integration (v1 Read + Trading)](developing/integrations/polymarket.md)
-- [Chromium Embedded Framework](developing/cef.md)
+- [Chromium Embedded Framework (historical)](developing/cef.md)
 - [Theming (Token System)](developing/theming.md)
 - [Agent Observability](developing/agent-observability.md)
 - [Hooks](developing/hooks.md)
