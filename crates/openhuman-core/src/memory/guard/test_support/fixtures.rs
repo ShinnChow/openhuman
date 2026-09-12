@@ -78,6 +78,7 @@ impl Default for RecordingProvider {
     fn default() -> Self {
         Self::new()
     }
+}
 
 /// A [`GuardPolicy`](super::GuardPolicy) over an embedded driver with default
 /// budgets — the shipped configuration.
