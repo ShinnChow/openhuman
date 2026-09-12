@@ -5,7 +5,7 @@
 //! zero-width-character bypasses while keeping a byte map back to the
 //! original string; [`scan_candidates`] is a single linear pass deciding,
 //! per PII class, whether it is even worth running the (comparatively
-//! expensive) regex/checksum pass in [`super::pii_patterns`].
+//! expensive) regex/checksum pass in [`super::patterns`].
 
 // ---------- Unicode normalization for matching ----------
 //
