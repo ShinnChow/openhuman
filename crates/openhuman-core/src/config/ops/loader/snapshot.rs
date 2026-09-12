@@ -144,7 +144,6 @@ pub async fn load_and_get_config_snapshot() -> Result<RpcOutcome<serde_json::Val
     get_config_snapshot(&config).await
 }
 
-
 /// Reads dashboard settings exposed to the desktop UI.
 pub async fn get_dashboard_settings() -> Result<RpcOutcome<serde_json::Value>, String> {
     let request_id = uuid::Uuid::new_v4().to_string();

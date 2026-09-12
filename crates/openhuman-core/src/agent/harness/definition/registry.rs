@@ -55,15 +55,13 @@ impl AgentDefinitionRegistry {
         // as the bundled set. See
         // [`crate::agent::registry::agents::loader::validate_tier_hierarchy`].
         let snapshot: Vec<AgentDefinition> = reg.list().into_iter().cloned().collect();
-        crate::agent::registry::agents::validate_tier_hierarchy(&snapshot).map_err(
-            |e| {
-                anyhow::anyhow!(
-                    "agent registry rejected after merging workspace overrides from {}: {}",
-                    workspace.display(),
-                    e
-                )
-            },
-        )?;
+        crate::agent::registry::agents::validate_tier_hierarchy(&snapshot).map_err(|e| {
+            anyhow::anyhow!(
+                "agent registry rejected after merging workspace overrides from {}: {}",
+                workspace.display(),
+                e
+            )
+        })?;
 
         Ok(reg)
     }

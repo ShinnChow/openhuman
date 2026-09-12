@@ -275,7 +275,6 @@ pub struct AgentDefinition {
     pub graph: crate::agent::harness::agent_graph::AgentGraph,
 }
 
-
 impl AgentDefinition {
     /// Display name with fallback to id.
     pub fn display_name(&self) -> &str {
@@ -307,7 +306,6 @@ impl AgentDefinition {
         }
     }
 }
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Defaults module — referenced by `#[serde(default = ...)]`

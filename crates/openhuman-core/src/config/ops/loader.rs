@@ -10,21 +10,21 @@ pub use load::{
     load_config_for_workspace_with_timeout, load_config_with_timeout, reload_config_from_paths,
     reload_config_snapshot_with_timeout,
 };
-pub(crate) use paths::{
-    active_workspace_marker_path, config_openhuman_dir, default_openhuman_dir,
-    env_scoped_fallback_root_dir, fallback_workspace_dir,
-};
+pub(crate) use paths::fallback_workspace_dir;
+#[cfg(test)]
+pub(crate) use paths::{active_workspace_marker_path, config_openhuman_dir, default_openhuman_dir};
+#[cfg(test)]
+pub(crate) use reset_local_data::reset_local_data_for_paths;
+#[cfg(all(test, windows))]
+pub(crate) use reset_local_data::reset_local_data_remove_error;
 pub use reset_local_data::{get_data_paths, get_data_paths_for_user, reset_local_data};
-pub(crate) use reset_local_data::{
-    is_windows_file_lock_error, reset_local_data_for_paths, reset_local_data_marker_remove_error,
-    reset_local_data_remove_error,
-};
 pub use runtime_flags::{
     agent_server_status, core_rpc_url_from_env, get_runtime_flags, set_browser_allow_all,
     RuntimeFlagsOut,
 };
+#[cfg(test)]
 pub(crate) use runtime_flags::{
-    env_flag_enabled, runtime_flags, BROWSER_ALLOW_ALL_ENV, BROWSER_ALLOW_ALL_RPC_ENABLE_ENV,
+    env_flag_enabled, BROWSER_ALLOW_ALL_ENV, BROWSER_ALLOW_ALL_RPC_ENABLE_ENV,
 };
 pub use snapshot::{
     client_config_json, get_config_snapshot, get_dashboard_settings,

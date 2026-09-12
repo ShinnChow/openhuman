@@ -5,7 +5,7 @@ use std::path::Path;
 
 use crate::config::Config;
 
-pub(crate) const CONFIG_LOAD_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(30);
+const CONFIG_LOAD_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(30);
 
 /// Loads persisted config with a 30s timeout.
 ///
@@ -198,4 +198,3 @@ pub(super) fn seed_and_enrich_model_registry(config: &mut Config) {
         log::debug!("[config] backfilled pricing on {filled} model_registry entries from catalog");
     }
 }
-

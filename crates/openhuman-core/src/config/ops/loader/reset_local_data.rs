@@ -10,7 +10,6 @@ use super::load::load_config_with_timeout;
 use super::paths::{active_workspace_marker_path, config_openhuman_dir, default_openhuman_dir};
 use crate::rpc::RpcOutcome;
 
-
 pub(crate) fn is_windows_file_lock_error(error: &std::io::Error) -> bool {
     cfg!(windows) && matches!(error.raw_os_error(), Some(32 | 33))
 }
@@ -75,8 +74,7 @@ pub(crate) async fn reset_local_data_for_paths(
     default_openhuman_dir: &Path,
 ) -> Result<RpcOutcome<serde_json::Value>, String> {
     let active_workspace_marker = active_workspace_marker_path(default_openhuman_dir);
-    let active_user_marker =
-        crate::config::active_user_marker_path(default_openhuman_dir);
+    let active_user_marker = crate::config::active_user_marker_path(default_openhuman_dir);
     tracing::debug!(
         current_dir = %current_openhuman_dir.display(),
         default_dir = %default_openhuman_dir.display(),
@@ -135,7 +133,6 @@ pub(crate) async fn reset_local_data_for_paths(
     ))
 }
 
-
 /// Deletes all local data directories and workspace markers.
 ///
 /// Runs **inside the core's tokio task**, which means the running core
@@ -176,8 +173,7 @@ pub async fn get_data_paths() -> Result<RpcOutcome<serde_json::Value>, String> {
     // inside the per-user dir. A clear removes it (to sign the current user
     // out) but must leave the sibling `users/<other>` dirs and the root
     // itself intact — see `reset_local_data_for_paths`.
-    let active_user_marker =
-        crate::config::active_user_marker_path(&default_openhuman_dir);
+    let active_user_marker = crate::config::active_user_marker_path(&default_openhuman_dir);
     Ok(RpcOutcome::new(
         json!({
             "current_openhuman_dir": current_openhuman_dir.display().to_string(),
@@ -226,8 +222,7 @@ pub async fn get_data_paths_for_user(
         ));
     }
     let default_openhuman_dir = default_openhuman_dir();
-    let current_openhuman_dir =
-        crate::config::user_openhuman_dir(&default_openhuman_dir, user_id);
+    let current_openhuman_dir = crate::config::user_openhuman_dir(&default_openhuman_dir, user_id);
     // Defense in depth: the resolved user dir MUST be a direct child of
     // `<root>/users`. Catches any platform-specific `join` quirk (e.g. a
     // Windows drive-relative id) that slipped past the string check above,
@@ -241,8 +236,7 @@ pub async fn get_data_paths_for_user(
         ));
     }
     let active_workspace_marker = active_workspace_marker_path(&default_openhuman_dir);
-    let active_user_marker =
-        crate::config::active_user_marker_path(&default_openhuman_dir);
+    let active_user_marker = crate::config::active_user_marker_path(&default_openhuman_dir);
     // Content-free logging only: the user id and the user-scoped paths are PII
     // (AGENTS.md: never log secrets/PII), so emit a boolean indicator instead of
     // the id or the resolved dirs. The paths are still returned in the JSON

@@ -3,7 +3,7 @@
 
 use serde::{Deserialize, Serialize};
 
-/// Where an [`AgentDefinition`] was loaded from. Used for telemetry and
+/// Where an [`super::AgentDefinition`] was loaded from. Used for telemetry and
 /// the `agent::list_definitions` RPC reply.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Default)]
 #[serde(tag = "kind", content = "path")]
@@ -23,4 +23,3 @@ pub enum DefinitionSource {
     /// belt).
     CustomRegistry,
 }
-

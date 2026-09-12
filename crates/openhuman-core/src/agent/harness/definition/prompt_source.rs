@@ -4,7 +4,6 @@
 use serde::ser::SerializeMap;
 use serde::{Deserialize, Serialize};
 
-
 /// Builder function signature for [`PromptSource::Dynamic`]. Takes the
 /// full runtime [`crate::agent::context::prompt::PromptContext`]
 /// (tools, skills, memory, connected integrations, dispatcher, model,
@@ -80,4 +79,3 @@ impl<'de> Deserialize<'de> for PromptSource {
         })
     }
 }
-

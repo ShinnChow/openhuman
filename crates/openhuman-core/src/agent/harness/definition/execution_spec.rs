@@ -4,7 +4,6 @@
 
 use serde::{Deserialize, Serialize};
 
-
 /// Model selection for a sub-agent.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "snake_case")]
@@ -37,8 +36,6 @@ impl ModelSpec {
     }
 }
 
-
-
 /// Which tools a sub-agent is allowed to call.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "snake_case")]
@@ -51,8 +48,6 @@ pub enum ToolScope {
     /// registry at spawn time are silently dropped (logged at debug).
     Named(Vec<String>),
 }
-
-
 
 /// Sandbox mode for a sub-agent's tool execution. Serialises as a simple
 /// `snake_case` string in TOML (`none` / `read_only` / `sandboxed`). In
@@ -68,4 +63,3 @@ pub enum SandboxMode {
     /// Drop privileges, restrict filesystem (Landlock / Bubblewrap).
     Sandboxed,
 }
-

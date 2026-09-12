@@ -3,8 +3,6 @@
 
 use serde::{Deserialize, Deserializer, Serialize};
 
-
-
 /// One entry in [`super::AgentDefinition::subagents`]. Parses from TOML as either
 /// a bare string (agent id) or an inline table (`{ skills = "*" }`) thanks
 /// to `#[serde(untagged)]`.
@@ -67,4 +65,3 @@ impl SkillsWildcard {
         self.skills == "*"
     }
 }
-

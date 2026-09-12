@@ -13,8 +13,7 @@ pub(crate) fn fallback_workspace_dir() -> PathBuf {
 
 /// Returns the default OpenHuman configuration directory (~/.openhuman).
 pub(crate) fn default_openhuman_dir() -> PathBuf {
-    crate::config::default_root_openhuman_dir()
-        .unwrap_or_else(|_| env_scoped_fallback_root_dir())
+    crate::config::default_root_openhuman_dir().unwrap_or_else(|_| env_scoped_fallback_root_dir())
 }
 
 pub(crate) fn env_scoped_fallback_root_dir() -> PathBuf {

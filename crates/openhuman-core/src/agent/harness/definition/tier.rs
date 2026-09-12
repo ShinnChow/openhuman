@@ -3,8 +3,6 @@
 
 use serde::{Deserialize, Serialize};
 
-
-
 /// Role an agent plays in the spawn hierarchy.
 ///
 /// See [`super::AgentDefinition::agent_tier`] for the full contract. In short:
@@ -102,4 +100,3 @@ pub fn validate_tier_transition(parent: AgentTier, child: AgentTier) -> Result<(
         _ => Ok(()),
     }
 }
-
