@@ -39,12 +39,12 @@ mod in_flight_tests;
 #[path = "catalog_tests.rs"]
 mod tests;
 
-pub use contract::{
+pub use contract::ToolContract;
+pub(crate) use contract::{
     fetch_live_toolkit_catalog, seed_live_catalog_cache, seed_live_catalog_cache_expired,
-    ToolContract,
 };
-pub use lookups::composio_required_args;
-pub use probe::{
+pub(crate) use lookups::composio_required_args;
+pub(crate) use probe::{
     apply_probe_override, probe_tool_output_sample, seed_probe_cache,
     seed_probe_cache_expired,
 };
