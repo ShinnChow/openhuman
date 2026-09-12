@@ -36,9 +36,9 @@ pub(super) static LAST_CURRENT_USER_SUCCESS: Lazy<Mutex<Option<CurrentUserSucces
 /// The last successful `auth_get_me`, with the identity it belongs to.
 #[derive(Debug, Clone)]
 pub(super) struct CurrentUserSuccess {
-    api_base: String,
-    token: String,
-    at: Instant,
+    pub(super) api_base: String,
+    pub(super) token: String,
+    pub(super) at: Instant,
 }
 
 /// Stamp a refreshed user, so the snapshot can report how old the data it is

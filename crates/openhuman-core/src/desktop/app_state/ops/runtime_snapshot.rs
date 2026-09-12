@@ -27,13 +27,13 @@ pub(super) const SNAPSHOT_SUB_OP_TIMEOUT: Duration = Duration::from_secs(5);
 
 #[derive(Debug, Clone)]
 pub(super) struct CachedRuntimeSnapshot {
-    snapshot: RuntimeSnapshot,
-    fetched_at: Instant,
+    pub(super) snapshot: RuntimeSnapshot,
+    pub(super) fetched_at: Instant,
     /// Config identity (`workspace_dir`) the snapshot was built for. The cache
     /// holds one entry process-wide, so a snapshot built for one config must
     /// never be served to another — otherwise a different user/workspace (or an
     /// E2E test with an injected service mock) reads a stale, foreign runtime.
-    config_key: PathBuf,
+    pub(super) config_key: PathBuf,
 }
 
 pub(super) static RUNTIME_SNAPSHOT_CACHE: Lazy<Mutex<Option<CachedRuntimeSnapshot>>> =
