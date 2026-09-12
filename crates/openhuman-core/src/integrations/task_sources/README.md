@@ -1,17 +1,17 @@
 # task_sources
 
-Proactive ingestion of work items from external tools. A **task source** is a user-configured pull from a Composio-backed provider (GitHub, Notion, Linear, ClickUp) with a per-provider filter. A periodic poll fetches matching items through the providers' `fetch_tasks` surface; a fetch → dedup → enrich → route pipeline drops a todo card onto the dedicated `task-sources` thread board and, for proactive sources, dispatches a triage turn so an agent can start working immediately. The domain mirrors the `cron` layering: `mod.rs` is export-only, business logic lives in sibling modules, persistence is SQLite, and the RPC surface is wired through `schemas.rs`.
+Proactive ingestion of work items from external tools. A **task source** is a user-configured pull from a Composio-backed provider (GitHub, Notion, Linear, ClickUp) with a per-provider filter. A periodic poll runs a fetch → dedup → enrich → route pipeline that drops a todo card onto the dedicated `task-sources` thread board and, for proactive sources, dispatches a triage turn so an agent can start working immediately. **The fetch stage is currently a stub**: `ComposioProvider::fetch_tasks` was deleted upstream (tinymemory v1.13.4) with no replacement, so `pipeline::fetch_tasks_unavailable` refuses every toolkit and only the surrounding stages (dedup, enrichment, routing, storage, reconciliation) are live — see [Notes](#notes--gotchas). The domain mirrors the `cron` layering: `mod.rs` is export-only, business logic lives in sibling modules, persistence is SQLite, and the RPC surface is wired through `schemas.rs`.
 
 ## Responsibilities
 
 - Persist per-source configs (provider + filter + schedule + routing target + optional pinned connection / static executor).
 - Periodically poll enabled sources (`periodic.rs`) on a global 10-minute tick honoring per-source `interval_secs` (floored to 60s).
-- Translate a typed `FilterSpec` into the provider-agnostic `TaskFetchFilter` (`filter.rs`) and fetch via the registered Composio provider.
+- Translate a typed `FilterSpec` into the provider-agnostic `TaskFetchFilter` (`filter.rs`); the fetch itself is stubbed (`pipeline::fetch_tasks_unavailable`) until a task-fetch surface exists again.
 - Dedup ingested items with an edit-aware SHA-256 content hash; re-ingest only when the upstream task changed (`store.rs` + `pipeline.rs`).
 - Deterministically enrich raw tasks into agent-ready ones — urgency heuristic, summary, linked assignee, templated agent prompt (`enrich.rs`).
 - Route enriched tasks onto the `task-sources` thread board as todo cards and, for proactive sources, dispatch a triage turn through the same path Composio webhooks use (`route.rs`).
 - Fire a one-shot fetch when a matching Composio connection is created (`bus.rs`).
-- Expose an `openhuman.task_sources_*` RPC surface for CRUD, manual fetch, filter preview, ingested-task listing, and status (`schemas.rs` + `ops.rs`).
+- Expose an `openhuman.task_sources_*` RPC surface for CRUD, manual fetch/sync, filter preview, container listing, ingested-task listing, and status (`schemas.rs` + `ops.rs`).
 
 ## Key files
 
@@ -20,9 +20,9 @@ Proactive ingestion of work items from external tools. A **task source** is a us
 | `crates/openhuman-core/src/integrations/task_sources/mod.rs` | Export-only: module docstring, `mod`/`pub mod` decls, `pub use` re-exports, and the `all_task_sources_*` controller registry pair. |
 | `crates/openhuman-core/src/integrations/task_sources/types.rs` | Serde domain types: `ProviderSlug`, `FilterSpec` (provider-tagged enum), `SourceTarget`, `FetchReason`, `TaskSource`, `TaskSourcePatch`, `EnrichedTask`, `FetchOutcome`. |
 | `crates/openhuman-core/src/integrations/task_sources/store.rs` | SQLite persistence (`<workspace>/task_sources/sources.db`): `task_sources` + `ingested_tasks` tables, dedup `content_hash`, card-id ledger, migrate-on-open. |
-| `crates/openhuman-core/src/integrations/task_sources/ops.rs` | RPC-facing business logic returning `RpcOutcome<T>`: `list`/`get`/`add`/`update`/`remove`/`fetch`/`list_tasks`/`preview_filter`/`status`. |
+| `crates/openhuman-core/src/integrations/task_sources/ops.rs` | RPC-facing business logic returning `RpcOutcome<T>`: `list`/`get`/`add`/`update`/`remove`/`fetch`/`sync`/`list_tasks`/`preview_filter`/`list_databases`/`status`. |
 | `crates/openhuman-core/src/integrations/task_sources/schemas.rs` | `task_sources` controller schemas + `all_controller_schemas` / `all_registered_controllers` + thin `handle_*` param parsers delegating to `ops.rs`. |
-| `crates/openhuman-core/src/integrations/task_sources/pipeline.rs` | `run_source_once` — the infallible fetch → dedup → enrich → route pass shared by poll, manual RPC, and connection hook; publishes domain events. |
+| `crates/openhuman-core/src/integrations/task_sources/pipeline.rs` | `run_source_once` — the infallible fetch → dedup → enrich → route pass shared by poll, manual RPC, and connection hook; publishes domain events. Holds the `fetch_tasks_unavailable` stub and its rationale doc comment. |
 | `crates/openhuman-core/src/integrations/task_sources/filter.rs` | `to_fetch_filter` — flattens a `FilterSpec` variant into the shared `TaskFetchFilter`. |
 | `crates/openhuman-core/src/integrations/task_sources/enrich.rs` | Deterministic, dependency-free `enrich_task`: urgency heuristic, summary, linked assignee, agent prompt. No LLM call. |
 | `crates/openhuman-core/src/integrations/task_sources/route.rs` | `route_enriched` / `add_card` / `board_cards` — appends todo cards to the `task-sources` board (`TASK_SOURCES_THREAD_ID`), removes stale cards on re-ingest, and dispatches a scheduler-gated triage turn for proactive sources. |
@@ -54,8 +54,10 @@ Namespace `task_sources` (methods `openhuman.task_sources_<function>`):
 | `update` | Apply a partial `TaskSourcePatch`. |
 | `remove` | Delete a source by id (cascades `ingested_tasks`). |
 | `fetch` | Fetch one source now (`FetchReason::Manual`) and route new tasks. |
+| `sync` | Run `fetch` for every enabled source; returns one `FetchOutcome` per source. |
 | `list_tasks` | List recently ingested tasks for a source (newest first, default limit 50). |
-| `preview_filter` | Dry-run a filter — fetch matching tasks WITHOUT routing/recording. |
+| `preview_filter` | Dry-run a filter — fetch matching tasks WITHOUT routing/recording. Currently always errors (fetch stub). |
+| `list_databases` | List selectable containers (Notion databases) for a provider. Currently always errors (fetch stub). |
 | `status` | Domain master switch + default interval + source counts. |
 
 Handlers parse params and delegate to `ops.rs`; schemas reference `FilterSpec`, `TaskSource`, `TaskSourcePatch`, `FetchOutcome`, `NormalizedTask`. Registered into the global registry via `crates/openhuman-core/src/core/all.rs`.
@@ -84,14 +86,14 @@ Re-exported into the global agent tool registry via
 `crates/openhuman-core/src/tools/mod.rs`
 (`pub use crate::integrations::task_sources::tools::*;`).
 
-`task_source_fetch` and `task_source_preview_filter` currently advertise
-themselves as **UNAVAILABLE** in their tool descriptions: the underlying
-`ComposioProvider::fetch_tasks` path was removed upstream (tinymemory
-v1.13.4), so calling either always fails until it is restored.
+`task_source_fetch` and `task_source_preview_filter` advertise themselves
+as **UNAVAILABLE** in their tool descriptions for the same reason the fetch
+stage is stubbed; calling either always fails until a task-fetch surface is
+restored.
 
 ## Events
 
-Publishes (via `publish_global`, domain `"task_sources"`):
+Publishes (via `BUS.publish`, domain `"task_sources"` in `core/events.rs`):
 
 - `DomainEvent::TaskSourceFetched` — after a successful fetch pass (counts: fetched/routed/skipped).
 - `DomainEvent::TaskSourceTaskIngested` — per newly routed task (provider, external_id, title, urgency).
@@ -124,7 +126,7 @@ Additive idempotent column migrations (`add_column_if_missing`) backfill `ingest
 - `crate::core::all` — `ControllerFuture`, `RegisteredController` for the RPC registry.
 - `crate::core::bus` (`BUS`) + `crate::core::events::DomainEvent` — `BUS.publish`/`BUS.subscribe` for event publish/subscribe.
 - `crate::config` (+ `config::rpc`) — `Config`, `load_config_with_timeout`; reads the `[task_sources]` block for defaults and the master switch.
-- `crate::integrations::composio::providers` — `get_provider`, `ProviderContext`, `NormalizedTask`, `TaskFetchFilter`, `ComposioProvider::fetch_tasks`; the actual external fetch + normalized task shape.
+- `crate::integrations::composio::providers` — `NormalizedTask`, `TaskContainer`, `TaskFetchFilter`, `TaskKind` (contract types re-exported from `tinymemory_api::composio::tasks`). The old `get_provider` / `ProviderContext` / `ComposioProvider::fetch_tasks` registry no longer exists; `mod.rs`'s intra-doc link to `fetch_tasks` is stale.
 - `crate::agent::triage` — `run_triage`, `apply_decision`, `TriageOutcome`, `TriggerEnvelope`; dispatches the proactive agent turn for `AgentTodoProactive` sources.
 - `crate::threads::todos` (`todos::ops`) — `add`/`remove`, `BoardLocation`, `CardPatch`; the thread-scoped board cards are stored here. Also references `agent::task_board::TaskBoardCard` for `board_cards`.
 - `crate::cron::scheduler_gate` — `wait_for_capacity` capacity semaphore; gates proactive triage turns behind background-AI throttling.
@@ -140,6 +142,7 @@ Additive idempotent column migrations (`add_column_if_missing`) backfill `ingest
 
 ## Notes / gotchas
 
+- **Fetch is stubbed (tinymemory v1.13.4).** `pipeline::fetch_tasks_unavailable` and `ops::preview_filter` / `ops::list_databases` return an error for every toolkit: the engine's in-process Composio pipeline was deleted upstream and the `tinyconnectors` module exposes only `Execute` and `Sync`, no structured task-fetch member. Re-deriving each toolkit's action selection and response parsing over `Execute` is per-provider work, so the domain refuses cleanly rather than half-porting. Periodic passes therefore record a failed fetch and publish `TaskSourceFetchFailed`.
 - **Periodic cadence is coarse.** `TICK_SECONDS = 600` is the effective lower bound: any `interval_secs` shorter than 10 minutes is rounded up to the tick. A misconfigured `interval_secs = 0` is floored to `MIN_INTERVAL_SECONDS = 60`. The first immediate-fire tick is skipped so startup isn't slammed.
 - **Pipeline is infallible at the boundary.** `run_source_once` captures any error into `FetchOutcome::error` (and a failure event) so the scheduler loop never unwinds.
 - **Route-then-mark ordering.** A task is marked ingested only after routing succeeds, so a routing failure retries next pass instead of being silently dropped.
