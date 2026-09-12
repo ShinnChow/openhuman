@@ -48,7 +48,7 @@ Plus the sub-domain namespaces: `skill_registry.*` (`browse`, `search`, `sources
 - `crates/openhuman-core/src/config/workspace/ops.rs` — calls `skills::init_workflows_dir` during workspace bootstrap.
 - `crates/openhuman-core/src/agent/registry/agents/orchestrator/prompt.rs` — renders the `## Installed Skills` catalog, fed by the skill list on `PromptContext` (`agent/harness/session/turn/context.rs`).
 - `crates/openhuman-core/src/agent/prompts/` — renders the `## Available Skills` catalog section.
-- `crates/openhuman-core/src/core/bus.rs` / `crates/openhuman-core/src/core/events.rs` — `bus.rs` subscribes to `DomainEvent` for triggered skills; `ops`/`bus` publish `Workflow{Loaded,Stopped,StartFailed,Executed,sChanged}` on run and catalog changes.
+- `crates/openhuman-core/src/core/bus.rs` / `crates/openhuman-core/src/core/events.rs` — `bus.rs` subscribes to `DomainEvent` for triggered skills; `ops`/`bus` publish `WorkflowLoaded`/`WorkflowStopped`/`WorkflowStartFailed`/`WorkflowExecuted`/`WorkflowsChanged` on run and catalog changes.
 - `crates/openhuman-core/src/agent/harness/definition.rs` — `registry.rs` flattens `AgentDefinition` fields from `skill.toml`.
 
 ## Called by
@@ -70,4 +70,4 @@ Cross-cutting agent + skill behavior is covered indirectly by `crates/openhuman-
 ## Notes
 
 - Per AGENTS.md, skill discovery rejects symlinked bundles — copy skills into the `Harness` workspace rather than symlinking them.
-- `WorkflowScope` precedence on name collision, lowest to highest: `Builtin` < `User`/`Project`/`Legacy` < `Profile` (profile-local skills are private to the active agent profile).
+- `WorkflowScope` precedence on name collision, lowest to highest: `Builtin` < `User`/`Project`/`Legacy` < `Profile` (profile-local skills are private to the active agent profile and shadow a same-named global one for its owner). `Flow` is a distinct, non-collision-checked scope: a Flows automation row from `flows.db` surfaced in the same catalogue rather than a `SKILL.md` bundle on disk.
