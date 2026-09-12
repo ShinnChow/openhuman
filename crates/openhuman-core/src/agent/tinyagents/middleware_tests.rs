@@ -3,9 +3,9 @@ use super::artifact_index_toc::NO_WINDOW_ALLOWANCE;
 use super::message_trim::{estimate_message_tokens, estimate_text_tokens, IMAGE_MARKER_TOKEN_COST};
 use super::repeated_failure::{is_body_level_failure, user_actionable_escalation};
 use super::tool_output::{
-use crate::agent::tinyagents::middleware::tool_output::ToolOutputMiddleware;
     is_compaction_exempt, is_truncation_exempt, COMPACTION_EXEMPT_TOOLS, SAMPLING_TOOLS,
 };
+use crate::agent::tinyagents::middleware::tool_output::ToolOutputMiddleware;
 use super::turn_context::DEFAULT_TOOL_RESULT_BUDGET_BYTES;
 use super::*;
 use serde_json::json;
