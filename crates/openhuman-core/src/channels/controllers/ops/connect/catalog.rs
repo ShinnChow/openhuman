@@ -5,12 +5,12 @@ use crate::rpc::RpcOutcome;
 use super::super::definitions::{all_channel_definitions, find_channel_definition, ChannelDefinition};
 
 /// List all available channel definitions.
-pub(super) async fn list_channels() -> Result<RpcOutcome<Vec<ChannelDefinition>>, String> {
+pub async fn list_channels() -> Result<RpcOutcome<Vec<ChannelDefinition>>, String> {
     Ok(RpcOutcome::new(all_channel_definitions(), vec![]))
 }
 
 /// Describe a single channel by id.
-pub(super) async fn describe_channel(
+pub async fn describe_channel(
     channel_id: &str,
 ) -> Result<RpcOutcome<ChannelDefinition>, String> {
     let def = find_channel_definition(channel_id)
