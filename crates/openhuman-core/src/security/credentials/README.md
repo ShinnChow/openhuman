@@ -94,7 +94,7 @@ None. This module owns no agent tools (`tools.rs` does not exist).
 
 ## Used by
 
-Many domains consume `AuthService` / session helpers / Composio-direct key, including: `crates/openhuman-core/src/core/{all,auth,jsonrpc}.rs` (controller wiring + auth gate), `crates/openhuman-core/src/api/jwt.rs`, `app_state/ops.rs` (session snapshot), `channels/*` (managed credentials), `composio/{client,ops}.rs` (BYO key), `config/schema/*`, `embeddings/cloud.rs`, `encryption/ops.rs`, `http_host/auth.rs`, `inference/*` (provider auth, OpenAI OAuth), `migrations/unify_ai_provider_settings.rs`, `referral/ops.rs`, `subconscious/engine.rs`, and `webhooks`.
+Many domains consume `AuthService` / session helpers / Composio-direct key, including (paths under `crates/openhuman-core/src/`): `core/{all,auth,jsonrpc}.rs` and `core/runtime/{context,services}.rs` (controller wiring, auth gate, login-gated services), `api/jwt.rs`, `desktop/app_state/ops_part_0*.rs` (session snapshot), `channels/controllers/ops/*` and `channels/runtime/startup_part_02.rs` (managed credentials), `integrations/composio/{client_part_02,ops/direct_mode}.rs` (BYO key), `config/ops/model.rs`, `config/migrations/unify_ai_provider_settings.rs`, `inference/embeddings/{cloud_adapter,factory,rpc_part_0*}.rs`, `security/encryption/ops.rs`, `http_host/auth.rs`, `inference/{openai_oauth,provider}/*` (provider auth, OpenAI OAuth), `hosted/{announcements,billing,team}/ops.rs`, `flows/*`, `modules/{connectors,memory_host}.rs`, and `web3/wallet/ops_part_02.rs`.
 
 ## Notes / gotchas
 
