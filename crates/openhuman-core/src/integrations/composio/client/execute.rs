@@ -5,7 +5,7 @@
 use std::time::Duration;
 
 use anyhow::Result;
-use serde_json::Value;
+use serde_json::{json, Value};
 
 use super::connections::ComposioClient;
 use super::super::types::{ComposioExecuteResponse, ComposioToolsResponse};

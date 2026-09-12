@@ -452,7 +452,7 @@ impl ModuleMemoryProvider {
 ///
 /// Uses the shared table so the host and the module cannot disagree about what a
 /// name means. An unrecognised name becomes `Other`, never `Invalid`.
-fn from_bus(error: &tinybus::Error) -> MemoryError {
+pub(super) fn from_bus(error: &tinybus::Error) -> MemoryError {
     wire::from_wire(error.wire_name(), &error.to_string())
 }
 
