@@ -103,3 +103,7 @@ SQLite DB at `{workspace_dir}/approval/approval.db`, table `pending_approvals` (
 - **`approve_always_for_tool` persistence is the RPC handler's job**, not the gate's — `gate.decide` only resolves the parked future and emits the audit event; `rpc::approval_decide` appends to `autonomy.auto_approve` + reloads the live policy (best-effort; failure degrades to prompting again).
 - `OPENHUMAN_APPROVAL_GATE=0`/`false` skips installing the gate for CLI, Docker, and library hosts only (`approval_gate_boot_decision` in `crates/openhuman-core/src/core/types.rs`, applied in `core/jsonrpc.rs`); the Tauri shell always installs it and ignores the override. Where honored, `Prompt`-class calls run unprompted.
 - A prior list-based `ApprovalManager` was removed; the gate is now the sole control reading the `autonomy.auto_approve` allowlist.
+
+## Tests
+
+- `gate_tests.rs` (+ `gate_tests_part_01..03_tests.rs`), `store_tests.rs` (+ `store_tests_part_01..02_tests.rs`), `redact_tests.rs`, `schemas_tests.rs`, `types_tests.rs`.
