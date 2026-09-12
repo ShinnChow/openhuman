@@ -3,7 +3,8 @@
 //! structural "hidden execution" guard for the harness-gated command flow.
 
 use super::quoting::contains_unquoted_background_ampersand;
-use super::{command_name::is_command_executor, CommandClass};
+use crate::security::policy::policy_command::command_name::is_command_executor;
+use crate::security::policy::types::CommandClass;
 
 /// Provably read-only command bases (cross-platform union). A base **not** in
 /// this set — and not a recognized network/destructive/executor command, nor a
