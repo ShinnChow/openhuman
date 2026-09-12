@@ -1,3 +1,11 @@
+//! Diagnostic helpers for `dry_run_workflow`: null-resolution entries, upstream
+//! condition lookup, routed tool-call error extraction, and the capturing observer.
+
+use serde_json::{json, Value};
+use tinyflows::model::WorkflowGraph;
+
+use crate::flows::ops;
+
 /// Builds one `null_resolutions` diagnostic entry for a `tool_call` node's
 /// null-resolved `args.*` config expression.
 ///

@@ -1,3 +1,21 @@
+//! `dry_run_workflow`: execute a DRAFT against tinyflows MOCK capabilities (ungated, F7).
+
+use std::sync::Arc;
+
+use async_trait::async_trait;
+use serde_json::{json, Value};
+use tinyflows::model::WorkflowGraph;
+
+use crate::config::Config;
+use crate::flows::ops;
+use crate::flows::ops::validate_and_migrate_graph;
+use crate::tools::traits::{PermissionLevel, Tool, ToolResult};
+
+use super::dry_run_diagnostics::{
+    find_upstream_condition, tool_call_arg_null_entries, tool_call_error_message,
+    CapturingObserver,
+};
+
 
 /// Wall-clock bound on a single `dry_run_workflow` mock execution. A malformed
 /// or pathological draft graph must never hang the agent tool-loop; the mock

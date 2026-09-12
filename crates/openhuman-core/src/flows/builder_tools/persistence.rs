@@ -1,3 +1,17 @@
+//! Persistence tools: `create_workflow`, `duplicate_flow`, and `save_workflow`.
+//! Created/duplicated flows are always born DISABLED; save never touches enablement.
+
+use std::sync::Arc;
+
+use async_trait::async_trait;
+use serde_json::{json, Value};
+
+use crate::config::Config;
+use crate::flows::ops;
+use crate::flows::ops::validate_and_migrate_graph;
+use crate::flows::tools;
+use crate::tools::traits::{PermissionLevel, Tool, ToolResult};
+
 /// `create_workflow`: the gated create tool (audit F4/F12). Persists a NEW
 /// flow, always **born disabled** (enable stays human-only) and behind the
 /// forced `require_approval` floor for side-effect graphs. Write + approval

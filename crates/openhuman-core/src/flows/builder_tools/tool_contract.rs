@@ -1,3 +1,14 @@
+//! `get_tool_contract` and the B12 `get_tool_output_sample` read-only probe.
+
+use std::sync::Arc;
+
+use async_trait::async_trait;
+use serde_json::{json, Value};
+
+use crate::config::Config;
+use crate::flows::ops;
+use crate::tools::traits::{PermissionLevel, Tool, ToolResult};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // get_tool_contract — read-only: the FULL live contract for one action slug
 // ─────────────────────────────────────────────────────────────────────────────

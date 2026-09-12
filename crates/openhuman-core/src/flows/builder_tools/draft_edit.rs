@@ -1,3 +1,14 @@
+//! `edit_workflow`: structured incremental edits on a draft (proposal only, F1).
+
+use std::sync::Arc;
+
+use async_trait::async_trait;
+use serde_json::{json, Value};
+
+use crate::config::Config;
+use crate::flows::ops;
+use crate::tools::traits::{PermissionLevel, Tool, ToolResult};
+
 /// Comma list of the valid `op` tag values, for the missing-/unknown-`op`
 /// parse errors surfaced by [`EditWorkflowTool`].
 const VALID_OP_TYPES: &str = "add_node, update_node_config, set_node_name, rename_node, \

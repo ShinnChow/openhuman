@@ -1,3 +1,14 @@
+//! `validate_workflow`: run the full gate stack on a draft without proposing (F3).
+
+use std::sync::Arc;
+
+use async_trait::async_trait;
+use serde_json::{json, Value};
+
+use crate::config::Config;
+use crate::flows::ops;
+use crate::tools::traits::{PermissionLevel, Tool, ToolResult};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // validate_workflow — standalone check without proposing (F3)
 // ─────────────────────────────────────────────────────────────────────────────

@@ -1,3 +1,16 @@
+//! `revise_workflow`: validate a revised draft and emit a proposal (never persists).
+
+use std::sync::Arc;
+
+use async_trait::async_trait;
+use serde_json::{json, Value};
+
+use crate::config::Config;
+use crate::flows::ops;
+use crate::flows::ops::validate_and_migrate_graph;
+use crate::flows::tools;
+use crate::tools::traits::{PermissionLevel, Tool, ToolResult};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // revise_workflow — iterative refine of an existing draft (proposal only)
 // ─────────────────────────────────────────────────────────────────────────────

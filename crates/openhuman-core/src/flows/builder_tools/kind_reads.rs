@@ -1,3 +1,10 @@
+//! Read-only DSL/registry tools: agent profiles, node kinds, and node-kind contracts (F2).
+
+use async_trait::async_trait;
+use serde_json::{json, Value};
+
+use crate::tools::traits::{PermissionLevel, Tool, ToolResult};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // list_agent_profiles — read-only: selectable agent kinds for an `agent` node
 // ─────────────────────────────────────────────────────────────────────────────

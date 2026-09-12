@@ -1,3 +1,14 @@
+//! Run control: resume a run parked on approval, cancel an in-flight run.
+
+use std::sync::Arc;
+
+use async_trait::async_trait;
+use serde_json::{json, Value};
+
+use crate::config::Config;
+use crate::flows::ops;
+use crate::tools::traits::{PermissionLevel, Tool, ToolResult};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Phase 4 — the self-debug loop + gated create (F4, F7)
 // ─────────────────────────────────────────────────────────────────────────────

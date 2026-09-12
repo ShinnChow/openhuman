@@ -1,3 +1,14 @@
+//! Read-only connection tools: connectable toolkits and connection refs (ids/names only).
+
+use std::sync::Arc;
+
+use async_trait::async_trait;
+use serde_json::{json, Value};
+
+use crate::config::Config;
+use crate::flows::ops;
+use crate::tools::traits::{PermissionLevel, Tool, ToolResult};
+
 
 /// `list_connectable_toolkits`: read-only list of the Composio toolkits the
 /// builder can wire, each tagged connected/unconnected — so the agent can steer
