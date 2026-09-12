@@ -506,7 +506,7 @@ components/
 ├── ProtectedRoute / PublicRoute / DefaultRedirect   # Route guards
 ├── layout/shell/            # RootShellLayout, AppSidebar, SidebarSlot (two-pane app chrome)
 ├── settings/                # Settings registry, modal, layout, panels, search (see above)
-├── accounts/                # WebviewHost + connected-app (CEF webview) surfaces
+├── accounts/                # WebviewHost + connected-app (Wry webview) surfaces
 ├── BootCheckGate/, daemon/  # Boot + service gates in the provider chain
 ├── commands/                # CommandProvider (command palette)
 ├── Announcement/, upsell/, userErrors/, walkthrough/  # Shell-level overlays
