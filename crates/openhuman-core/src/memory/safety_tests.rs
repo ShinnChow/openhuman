@@ -25,7 +25,7 @@ fn unchanged(input: &str) {
     assert_eq!(out.report.pii_redactions, 0);
 }
 
-#[path = "safety_tests_part_01_tests.rs"]
-mod part_01_tests;
-#[path = "safety_tests_part_02_tests.rs"]
-mod part_02_tests;
+#[path = "sanitize_and_pii_id_tests.rs"]
+mod sanitize_and_pii_id_tests;
+#[path = "prefilter_and_checksum_tests.rs"]
+mod prefilter_and_checksum_tests;
