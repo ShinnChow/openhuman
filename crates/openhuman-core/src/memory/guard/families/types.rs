@@ -36,7 +36,7 @@ macro_rules! decorator {
         $(#[$meta])*
         pub struct $name {
             inner: Arc<dyn MemoryProvider>,
-            policy: Arc<GuardPolicy>,
+            pub(super) policy: Arc<GuardPolicy>,
         }
 
         impl $name {
@@ -53,7 +53,7 @@ macro_rules! decorator {
             /// error rather than `.expect(...)` because a panic inside a memory
             /// call is a strictly worse failure than an `Unsupported` a caller
             /// can already handle.
-            fn family(&self) -> Result<&$fam, MemoryError> {
+            pub(super) fn family(&self) -> Result<&$fam, MemoryError> {
                 self.inner
                     .$accessor()
                     .ok_or_else(|| MemoryError::unsupported(Capability::$cap))
