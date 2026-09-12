@@ -34,3 +34,5 @@ pub use factory::{
 use execute::is_post_oauth_auth_readiness_error;
 #[cfg(test)]
 use std::sync::Arc;
+#[cfg(test)]
+use super::types::ComposioExecuteResponse;
