@@ -557,7 +557,7 @@ async fn build_session_agent_uses_profile_memory_instead_of_root_memory() {
 /// It is why this passed run alone and failed inside the full
 /// `openhuman::agent` run (`ci-lite` scopes the Rust lane per changed domain,
 /// so the whole scope only runs when a PR touches `agent/`), and why the
-/// sibling write-side test in `builder_tests_part_03_tests.rs` never flaked —
+/// sibling write-side test in `builder_tests_memory_write_instruction_tests.rs` never flaked —
 /// it already supplied `builtin_def("orchestrator")`.
 #[tokio::test]
 async fn memory_access_instruction_is_present_with_learning_disabled() {
