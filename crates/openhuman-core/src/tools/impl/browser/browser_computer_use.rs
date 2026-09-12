@@ -4,7 +4,12 @@
 use super::*;
 
 impl BrowserTool {
-    pub(super) fn validate_coordinate(&self, key: &str, value: i64, max: Option<i64>) -> anyhow::Result<()> {
+    pub(super) fn validate_coordinate(
+        &self,
+        key: &str,
+        value: i64,
+        max: Option<i64>,
+    ) -> anyhow::Result<()> {
         if value < 0 {
             anyhow::bail!("'{key}' must be >= 0")
         }
