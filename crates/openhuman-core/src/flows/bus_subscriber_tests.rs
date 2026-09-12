@@ -1,4 +1,7 @@
 use super::*;
+use crate::memory::MemoryTaint;
+use tinyflows::model::TriggerKind;
+use tinymemory_api::provider::MemoryCore;
 
 #[test]
 fn pinned_trigger_inputs_reads_values_an_author_fixed_for_unattended_runs() {
