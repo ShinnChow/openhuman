@@ -463,7 +463,7 @@ macro_rules! module_call {
             .await?
             .call($method, $args)
             .await
-            .map_err(|error| from_bus(&error))
+            .map_err(|error| $crate::modules::memory::provider::from_bus(&error))
     };
 }
 
