@@ -44,9 +44,9 @@ None — stateless, pure factory.
 Every HTTP-client construction site that talks to external HTTPS endpoints, including:
 
 - `crates/openhuman-core/src/config/schema/proxy.rs` — proxy-aware client builders (primary + fallback).
-- `crates/openhuman-core/src/integrations/client.rs` and integration tools (`tools/searxng.rs`, `tools/brave.rs`, `tools/querit.rs`, `tools/seltz.rs`).
+- `crates/openhuman-core/src/integrations/client_part_01.rs` and `crates/openhuman-core/src/integrations/composio/client_part_01.rs`.
 - `crates/openhuman-core/src/search/tools/*.rs` (`tavily`, `exa`, `brave`, `searxng`, `querit`, `seltz`) — search-tool HTTP clients.
-- `crates/openhuman-core/src/integrations/composio/client_part_01.rs`, `crates/openhuman-core/src/desktop/app_state/ops_part_01.rs`.
+- `crates/openhuman-core/src/desktop/app_state/ops_part_01.rs`.
 - `crates/openhuman-core/src/api/rest.rs` (REST API client).
 
 Registered in the domain tree via `pub mod tls;` in `crates/openhuman-core/src/util/mod.rs`.
