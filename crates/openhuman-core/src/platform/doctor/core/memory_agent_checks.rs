@@ -2,6 +2,7 @@
 
 use crate::config::Config;
 
+use super::daemon_env_checks::{truncate_for_display, COMMAND_VERSION_PREVIEW_CHARS};
 use super::run::MemoryChunkCount;
 use super::types::DiagnosticItem;
 
