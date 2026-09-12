@@ -20,7 +20,7 @@ pub(super) async fn response_error(resp: reqwest::Response) -> String {
     format!("HTTP {}", status.as_u16())
 }
 
-fn sanitize_error_message(message: &str) -> String {
+pub(super) fn sanitize_error_message(message: &str) -> String {
     let mut sanitized = message.replace('\n', " ");
     for marker in [
         "connected_account_id",
