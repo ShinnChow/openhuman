@@ -219,13 +219,13 @@ fn build_turn_models_crate(
 pub struct TurnModelSource {
     /// A directly injected crate model. This is the replacement test seam for
     /// provider-backed mocks while WP-1 removes `native model adapter`.
-    direct_model: Option<TurnChatModel>,
+    pub(crate) direct_model: Option<TurnChatModel>,
     /// When set, [`build`](Self::build) / [`build_summarizer`](Self::build_summarizer)
     /// construct **crate-native** models from `(role, config)` (Phase 3 P3-B) via
     /// [`build_turn_models_crate`]. Crate-native sources keep `provider` as
     /// `None`; build failures propagate instead of falling back to the host wire
     /// client.
-    crate_native: Option<CrateNativeSource>,
+    pub(crate) crate_native: Option<CrateNativeSource>,
     force_text_mode: bool,
 }
 
@@ -241,7 +241,7 @@ struct CrateNativeSource {
     /// (`build_remote_provider`). `None` builds the primary from `role`. Routes
     /// always use the standard workload tiers.
     primary_override: Option<String>,
-    force_text_mode: bool,
+    pub(crate) force_text_mode: bool,
 }
 
 impl TurnModelSource {
