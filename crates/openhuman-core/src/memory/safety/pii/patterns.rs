@@ -47,20 +47,20 @@ use crate::memory::safety::secrets::{Sanitized, SanitizationReport};
 
 // ---------- Replacement tokens ----------
 
-const PII_RFC: &str = "[REDACTED_PII_RFC]";
-const PII_CPF: &str = "[REDACTED_PII_CPF]";
-const PII_CNPJ: &str = "[REDACTED_PII_CNPJ]";
-const PII_CUIT: &str = "[REDACTED_PII_CUIT]";
-const PII_MYNUM: &str = "[REDACTED_PII_MYNUMBER]";
-const PII_PHONE: &str = "[REDACTED_PII_PHONE]";
-const PII_SSN: &str = "[REDACTED_PII_SSN]";
-const PII_CC: &str = "[REDACTED_PII_CREDIT_CARD]";
-const PII_IBAN: &str = "[REDACTED_PII_IBAN]";
-const PII_AADHAAR: &str = "[REDACTED_PII_AADHAAR]";
-const PII_PAN_IN: &str = "[REDACTED_PII_PAN_IN]";
-const PII_NINO: &str = "[REDACTED_PII_NINO]";
-const PII_DNI: &str = "[REDACTED_PII_DNI]";
-const PII_RRN: &str = "[REDACTED_PII_RRN]";
+pub(crate) const PII_RFC: &str = "[REDACTED_PII_RFC]";
+pub(crate) const PII_CPF: &str = "[REDACTED_PII_CPF]";
+pub(crate) const PII_CNPJ: &str = "[REDACTED_PII_CNPJ]";
+pub(crate) const PII_CUIT: &str = "[REDACTED_PII_CUIT]";
+pub(crate) const PII_MYNUM: &str = "[REDACTED_PII_MYNUMBER]";
+pub(crate) const PII_PHONE: &str = "[REDACTED_PII_PHONE]";
+pub(crate) const PII_SSN: &str = "[REDACTED_PII_SSN]";
+pub(crate) const PII_CC: &str = "[REDACTED_PII_CREDIT_CARD]";
+pub(crate) const PII_IBAN: &str = "[REDACTED_PII_IBAN]";
+pub(crate) const PII_AADHAAR: &str = "[REDACTED_PII_AADHAAR]";
+pub(crate) const PII_PAN_IN: &str = "[REDACTED_PII_PAN_IN]";
+pub(crate) const PII_NINO: &str = "[REDACTED_PII_NINO]";
+pub(crate) const PII_DNI: &str = "[REDACTED_PII_DNI]";
+pub(crate) const PII_RRN: &str = "[REDACTED_PII_RRN]";
 
 // ---------- Patterns ----------
 
