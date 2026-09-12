@@ -57,3 +57,7 @@ pub use probe::{
 // owning submodule.
 use contract::{compute_composio_array_path, live_catalog_fetch_lock};
 use probe::{cache_probe_result, resolve_composio_action_scope};
+#[cfg(test)]
+use crate::config::Config;
+#[cfg(test)]
+use serde_json::Value;
