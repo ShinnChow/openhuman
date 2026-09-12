@@ -18,7 +18,7 @@ pub struct DiagnosticItem {
 }
 
 impl DiagnosticItem {
-    fn ok(category: impl Into<String>, msg: impl Into<String>) -> Self {
+    pub(crate) fn ok(category: impl Into<String>, msg: impl Into<String>) -> Self {
         Self {
             severity: Severity::Ok,
             category: category.into(),
