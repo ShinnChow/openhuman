@@ -79,7 +79,7 @@ All handlers go through the memory client's `profile_store()` and a `FacetCache`
 
 ## Events
 
-Uses the typed event bus (`crates/openhuman-core/src/core/event_bus/`):
+Uses the typed event bus (`crates/openhuman-core/src/core/bus.rs`, the process-wide `BUS` singleton, and `core/events.rs` for `DomainEvent` / `EventHandler`):
 
 - **Publishes**: `DomainEvent::CacheRebuilt { added, evicted, kept, total_size, rebuilt_at }` after each rebuild (`stability_detector.rs`).
 - **Subscribes**:
