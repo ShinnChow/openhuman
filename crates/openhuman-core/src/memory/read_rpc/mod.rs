@@ -1,7 +1,8 @@
 //! Read RPCs that back the new Memory tab UI.
 //!
-//! Distinct from [`super::rpc`] (write/ingest) and [`super::retrieval::rpc`]
-//! (LLM-callable retrieval primitives), this module exposes a small set of
+//! Distinct from [`super::rpc`] (write/ingest, an alias of [`super::ops`])
+//! and [`super::tree::retrieval`] (LLM-callable retrieval primitives), this
+//! module exposes a small set of
 //! "list / inspect / search / recall / score-for / delete" methods designed
 //! for a human-facing dashboard — not for an LLM tool loop.
 //!

@@ -28,14 +28,16 @@ Proactive ingestion of work items from external tools. A **task source** is a us
 | `crates/openhuman-core/src/integrations/task_sources/route.rs` | `route_enriched` / `add_card` / `board_cards` — appends todo cards to the `task-sources` board (`TASK_SOURCES_THREAD_ID`), removes stale cards on re-ingest, and dispatches a scheduler-gated triage turn for proactive sources. |
 | `crates/openhuman-core/src/integrations/task_sources/periodic.rs` | `start_periodic_poll` — global tick scheduler; per-source due-timing in a process-global map; `run_one_tick` is `pub(crate)` for tests. |
 | `crates/openhuman-core/src/integrations/task_sources/bus.rs` | `TaskSourcesConnectionSubscriber` + `register_task_sources_subscriber` — one-shot fetch on `ComposioConnectionCreated`. |
+| `crates/openhuman-core/src/integrations/task_sources/tools.rs` | LLM-callable wrappers over `ops.rs` — see [Agent tools](#agent-tools) below. |
 | `crates/openhuman-core/src/integrations/task_sources/store_tests.rs` | Sibling test suite for `store.rs`. |
 | `crates/openhuman-core/src/integrations/task_sources/pipeline_tests.rs` | Sibling test suite for `pipeline.rs`. |
+| `crates/openhuman-core/src/integrations/task_sources/tools_tests.rs` | Sibling test suite for `tools.rs`. |
 
 ## Public surface
 
 Re-exported from `mod.rs`:
 
-- Types: `TaskSource`, `TaskSourcePatch`, `FilterSpec`, `ProviderSlug`, `SourceTarget`, `FetchReason`, `EnrichedTask`, `FetchOutcome`; plus `NormalizedTask` / `TaskFetchFilter` re-exported from the composio providers.
+- Types: `TaskSource`, `TaskSourcePatch`, `FilterSpec`, `ProviderSlug`, `SourceTarget`, `FetchReason`, `EnrichedTask`, `FetchOutcome`; plus `NormalizedTask`, `TaskContainer`, `TaskFetchFilter`, `TaskKind` re-exported from `crate::integrations::composio::providers` (`pub use crate::integrations::composio::providers::{NormalizedTask, TaskContainer, TaskFetchFilter, TaskKind};` in `mod.rs`).
 - Functions: `start_periodic_poll`, `run_source_once`.
 - Constant: `TASK_SOURCES_THREAD_ID` (`"task-sources"`).
 - RPC registry: `all_task_sources_controller_schemas`, `all_task_sources_registered_controllers`, `task_sources_schemas`.
@@ -60,7 +62,32 @@ Handlers parse params and delegate to `ops.rs`; schemas reference `FilterSpec`, 
 
 ## Agent tools
 
-None. This domain owns no `tools.rs` / agent tools. It *produces* work for agents (todo cards + triage turns) rather than exposing callable tools.
+`tools.rs` wraps `ops.rs` as thin LLM-callable shims — each parses args,
+calls the matching `ops` function, and emits its `RpcOutcome::value` as JSON.
+Read/observe tools are default-enabled; the persistent-config mutators are
+default-OFF and must be explicitly allowlisted via `tools/user_filter.rs`
+(the `task_source_manage` filter group covers `add`/`update`/`remove`).
+
+| Tool name | Struct | Backing op | Default |
+| --- | --- | --- | --- |
+| `task_source_list` | `TaskSourceListTool` | `ops::list` | enabled |
+| `task_source_get` | `TaskSourceGetTool` | `ops::get` | enabled |
+| `task_source_fetch` | `TaskSourceFetchTool` | `ops::fetch` | enabled |
+| `task_source_list_tasks` | `TaskSourceListTasksTool` | `ops::list_tasks` | enabled |
+| `task_source_preview_filter` | `TaskSourcePreviewFilterTool` | `ops::preview_filter` | enabled |
+| `task_source_status` | `TaskSourceStatusTool` | `ops::status` | enabled |
+| `task_source_add` | `TaskSourceAddTool` | `ops::add` | OFF (`task_source_manage`) |
+| `task_source_update` | `TaskSourceUpdateTool` | `ops::update` | OFF (`task_source_manage`) |
+| `task_source_remove` | `TaskSourceRemoveTool` | `ops::remove` | OFF (`task_source_manage`) |
+
+Re-exported into the global agent tool registry via
+`crates/openhuman-core/src/tools/mod.rs`
+(`pub use crate::integrations::task_sources::tools::*;`).
+
+`task_source_fetch` and `task_source_preview_filter` currently advertise
+themselves as **UNAVAILABLE** in their tool descriptions: the underlying
+`ComposioProvider::fetch_tasks` path was removed upstream (tinymemory
+v1.13.4), so calling either always fails until it is restored.
 
 ## Events
 

@@ -117,14 +117,14 @@ None. The module publishes/subscribes no `DomainEvent`s and has no `bus.rs`. Cha
 - `crate::tools::traits` — `Tool`/`ToolResult`/`ToolCallOptions` for the agent tools.
 - `crate::core::all` (`ControllerFuture`, `RegisteredController`) and `crate::core` (`ControllerSchema`, `FieldSchema`, `TypeSchema`) — RPC controller registry wiring.
 - `crate::rpc::RpcOutcome` — standard RPC return shape.
-- External crates: `ethers_core` / `ethers_signers` / `coins_bip39` (EVM + ABI + BIP-39), `bitcoin` + `secp256k1` (BTC), `ed25519_dalek` (Solana), `sha2`, `hex`, `reqwest`, `serde`/`serde_json`, `tempfile`, `parking_lot`, `once_cell`.
+- `tinywallet-bus` (`vendor/tinywallet/crates/tinywallet-bus`, optional, gated by the `web3` feature; features `btc`, `evm`, `solana`, `tron`, `keccak`, `net`, `wire`, `eip712`, `abi`, `tx-codec`) — the contract crate. It owns address formats (parsing/validation/conversion) and the wire types crossing the `Transport` seam (`SecretMaterial`, `TransactionSpec`, `NetworkId`), the ERC-20/EIP-712 encoders, and the Tron verifier. Per Cargo.toml's own rationale: taken as the contract crate and NOT the root `tinywallet` crate — key derivation, transaction building, signing and the chain clients (including the `bitcoin` crate and its native secp256k1 build) live inside that loaded module now, so this binary links none of it. The root `tinywallet` crate is still a dev-dependency, used only so test fixtures can derive a known account from a BIP-39 vector phrase.
+- Other external crates: `k256` (secp256k1 signing over digests the wallet hands back — replaces `bitcoin`/`secp256k1` as a direct dependency), `coins-bip39` (shared BIP-39 mnemonic → seed for BTC/Tron/Solana derivation), `ed25519-dalek` (Solana signing), `curve25519-dalek` (Solana off-curve ATA check), `bs58` (Solana/Tron base58 addresses), `sha2`, `hex`, `reqwest`, `serde`/`serde_json`, `tempfile`, `parking_lot`, `once_cell`.
 
 ## Used by
 
-- `crates/openhuman-core/src/tools/mod.rs` & `crates/openhuman-core/src/tools/ops.rs` — register the three wallet agent tools.
-- `crates/openhuman-core/src/agent/agents/loader.rs` — references the wallet tools when assembling agent toolsets.
+- `crates/openhuman-core/src/tools/mod.rs` — re-exports `wallet::tools::*`; `crates/openhuman-core/src/tools/ops.rs` — registers the six wallet agent tools (gated on the `web3` feature) and reserves the `wallet_`/`web3_`/`x402_` name prefixes as Web3-exclusive.
 - `crates/openhuman-core/src/core/all.rs` — wires controllers/schemas/capability description.
-- `crates/openhuman-core/src/test_support/introspect.rs` — introspection in tests.
+- `crates/openhuman-core/src/test_support/introspect.rs` — `wallet_prepared_quotes` introspection helper used in tests, backed by `wallet::prepared_quotes_for_test`.
 
 ## Notes / gotchas
 
