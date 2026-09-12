@@ -4,7 +4,7 @@
 
 use super::current_user::{current_user_api_base, fetch_current_user_cached, note_current_user_timeout, CurrentUserFetchError};
 use super::current_user_fetch::sanitize_snapshot_user;
-use super::current_user_generation::CURRENT_USER_SESSION_MUTATION_LOCK;
+use super::current_user_generation::{current_user_generation, CURRENT_USER_SESSION_MUTATION_LOCK};
 use super::auth_timeout::auth_fetch_timeout;
 use super::pending_session::{
     clear_deferred_session_after_backend_rejection, clear_pending_backend_validation_flag,
