@@ -1,27 +1,33 @@
 //! Agent-owned dialogue and control tools.
 //!
-//! Unlike domain tools (files, memory, search, ...), the tools declared here
-//! act on the agent loop itself rather than on external state:
+//! These tools act on the agent loop, its task board, or the user's stored
+//! preferences rather than on files, memory, or the network. Wire names are
+//! given in parentheses where they differ from the type name:
 //!
-//! - [`ask_clarification::AskClarificationTool`] — early-exit a turn to ask
-//!   the user a clarifying question instead of guessing.
-//! - [`delegate::DelegateTool`] and
-//!   [`delegate_to_personality::DelegateToPersonalityTool`] — hand a subtask
-//!   off to a differently configured sub-agent or a named personality.
-//! - [`plan_exit::PlanExitTool`] — mark a plan-mode pass complete with the
-//!   [`plan_exit::PLAN_EXIT_MARKER`] the harness greps for on a plan→build
-//!   hand-off.
-//! - [`remember_preference`] / [`save_preference`] — capture user
-//!   preferences during a turn.
-//! - `run_workflow` — spawn and await a `skill_runtime` workflow run; gated
-//!   behind the `skills` feature so the tool is omitted from the catalog
-//!   entirely (not degraded to a disabled-error) on builds without it.
-//! - [`todo::TodoTool`] and [`update_task::UpdateTaskTool`] — maintain the
-//!   agent's todo/task board.
+//! - [`AskClarificationTool`] (`ask_user_clarification`) — returns the
+//!   question as its output; the turn actually pauses only because callers
+//!   list this name in the harness seam's `early_exit_tools`.
+//! - [`DelegateTool`] — hands a subtask to a named agent with its own
+//!   provider/model configuration. [`DelegateToPersonalityTool`] does the
+//!   same for a named personality.
+//! - [`PlanExitTool`] — ends a plan-mode pass by returning the plan plus
+//!   [`PLAN_EXIT_MARKER`]. The mode switch itself lives outside the tool;
+//!   nothing in this crate consumes the marker yet.
+//! - [`RememberPreferenceTool`] — pins an explicit `(class, key, value)`
+//!   preference into the `user_profile` memory namespace.
+//!   [`SavePreferenceTool`] stores a free-form preference in either the
+//!   `general` or `situational` lane.
+//! - [`RunWorkflowTool`] / [`AwaitWorkflowTool`] — spawn a
+//!   `crate::skills::runtime` workflow run and wait on its outcome. Compiled
+//!   in only with the `skills` feature, so builds without it omit both tools
+//!   from the catalog.
+//! - [`TodoTool`] — CRUD on the current thread's task board.
+//!   [`UpdateTaskTool`] edits one card by id on a target board (default:
+//!   the proactive `task-sources` board).
 //!
-//! All nine tools are re-exported through `crate::tools`
-//! (`pub use crate::agent::tools::*;` in `tools/mod.rs`), so callers should
-//! reach them via `crate::tools` rather than this module directly.
+//! `crate::tools` re-exports everything here (`pub use
+//! crate::agent::tools::*;` in `tools/mod.rs`); `tools::ops` registers the
+//! tools into the catalog.
 mod ask_clarification;
 mod delegate;
 mod delegate_to_personality;
