@@ -68,19 +68,19 @@ fn event_with_exception_value(value: &str) -> sentry::protocol::Event<'static> {
     event
 }
 
-#[path = "observability_tests_part_01.rs"]
-mod part_01;
-#[path = "observability_tests_part_02.rs"]
-mod part_02;
-#[path = "observability_tests_part_03.rs"]
-mod part_03;
-#[path = "observability_tests_part_04.rs"]
-mod part_04;
-#[path = "observability_tests_part_05.rs"]
-mod part_05;
-#[path = "observability_tests_part_06.rs"]
-mod part_06;
-#[path = "observability_tests_part_07.rs"]
-mod part_07;
-#[path = "observability_tests_part_08.rs"]
-mod part_08;
+#[path = "observability_error_classification_core_tests.rs"]
+mod error_classification_core;
+#[path = "observability_error_classification_provider_tests.rs"]
+mod error_classification_provider;
+#[path = "observability_error_classification_network_tests.rs"]
+mod error_classification_network;
+#[path = "observability_error_classification_user_state_tests.rs"]
+mod error_classification_user_state;
+#[path = "observability_error_classification_session_tests.rs"]
+mod error_classification_session;
+#[path = "observability_crash_filter_integrations_tests.rs"]
+mod crash_filter_integrations;
+#[path = "observability_crash_filter_messages_tests.rs"]
+mod crash_filter_messages;
+#[path = "observability_crash_filter_auth_tests.rs"]
+mod crash_filter_auth;
