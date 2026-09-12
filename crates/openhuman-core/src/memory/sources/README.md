@@ -23,7 +23,7 @@ of `mod.rs`.
 | `status.rs` | Per-source sync status: the chunk-key prefix (derived from the registry entry) and freshness label are host-side; in-flight/chunk counts go through `MemoryChunks::source_ingest_status`. |
 | `sync.rs` | `derive_scopes` — which tree scope and raw-archive id a configured source maps onto; the only production-reached piece of the old engine sync pipeline. |
 | `reconcile.rs` | Startup/list-time reconciliation of active Composio connections into the registry, built on `memory::sync::composio::scan_active_sync_targets`. |
-| `readers/mod.rs` | `SourceReader` trait plus one implementation per `SourceKind`: `composio`, `conversation`, `folder`, `github`, `rss`, `twitter`, `web_page`. Network readers (`twitter`, `web_page`, ...) are never handed out by kind-dispatch — a caller constructs them explicitly, keeping egress/OAuth/cost decisions with the host. |
+| `readers/mod.rs` | `SourceReader` trait (takes `&Config`, unlike the crate's `&Path` trait) plus one implementation per `SourceKind`: `composio`, `conversation`, `folder`, `github`, `rss`, `twitter`, `web_page`. This module's `reader_for` hands out all seven, network kinds included, because its callers are RPC handlers acting on an explicit user request; the crate's `reader_for` returns `None` for network kinds. Do not call it from a polling loop. |
 
 ## RPC surface (`memory_sources_*`)
 
@@ -44,8 +44,10 @@ re-exported from `schemas::all_registered_controllers`.
   providers (including Slack) that actually move data, plus `sync_status/`
   for per-connection sync progress. `sources/` owns *which* connectors are
   configured and *what* they map onto; `sync/` owns moving data for them.
-- [`../read_rpc/`](../read_rpc/) — dashboard reads (list/inspect/search) over
-  the memory tree; distinct from the write/ingest surface here.
+- [`../read_rpc/`](../read_rpc/) — the Memory tab's read RPCs
+  (list/inspect/search over the tree, under the `memory_tree` namespace).
+  `sources.status_list` is the one status read that lives here instead,
+  because it is keyed on the registry.
 
 ## Tests
 

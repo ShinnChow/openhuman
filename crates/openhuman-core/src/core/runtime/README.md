@@ -40,13 +40,14 @@ Each flag is independent. Presets:
 | `ServiceSet::none()` | No transport, no background services — a library/harness embedder driving only `CoreRuntime::invoke`. |
 | `ServiceSet::embedded()` | No transport (`rpc_http: false`), but the background work a long-lived embedded session expects: cron, heartbeat, memory queue, harness init, skill catalog refresh, memory sync. `socketio`/`channels` stay off because such a host reads state through the facade and owns its own networking. |
 
-Individual services still honor their own runtime config gates inside
-`runtime/services.rs` regardless of `ServiceSet` selection:
-`config.cron.enabled`, `config.heartbeat.enabled`,
-`OPENHUMAN_DISABLE_CHANNEL_LISTENERS`, and
-`config.channels_config.has_listening_integrations()`. `ServiceSet` picks
-*whether a service is spawned at all*; the config gate picks *whether it's
-enabled for this user*.
+Individual services still honor their own runtime gates inside
+`runtime/services.rs` regardless of `ServiceSet` selection: `cron` checks
+`config.cron.enabled`; `channels` returns early on
+`OPENHUMAN_DISABLE_CHANNEL_LISTENERS=1` or when
+`config.channels_config.has_listening_integrations()` is false; `heartbeat`
+(`spawn_login_gated_services`) defers the login-gated services until a user
+session exists on disk. `ServiceSet` picks *whether a service is spawned at
+all*; the gate picks *whether it runs for this user*.
 
 ## `DomainSet` — which domain families exist at runtime
 
@@ -61,7 +62,7 @@ registry filters on.
 | --- | --- |
 | `DomainSet::full()` | Every family on — today's default, byte-identical to registration with no runtime narrowing. |
 | `DomainSet::harness()` | `agent` + `memory` + `threads` + `config` + `security` only; every gate family and `platform` off. The embeddable agent core (`examples/embed_headless.rs`). |
-| `DomainSet::embedded()` | The harness families plus `medulla`, `flows` (the engine `medulla_workflows` runs on), `skills`, `channels` (for `channel.web_chat`), `inference`, `integrations`, `automation`, `runtimes`, and `platform`. Deliberately not built on `harness()` because that preset's `platform: false` also drops credentials, config, cron, task_sources, and todos. `mcp`/`web3`/`voice`/`media` stay off — an embedded host supplies its own routing for those. |
+| `DomainSet::embedded()` | The harness families plus `medulla`, `flows` (the engine `medulla_workflows` runs on; boot reconciliation keys off `ctx.domains().flows`), `skills`, `channels` (`channel.web_chat` is tagged `Channels` and is how an embedded host drives chat turns), `inference`, `integrations`, `automation`, `runtimes`, and `platform`. `mcp`/`web3`/`voice`/`media`/`desktop`/`hosted`/`modules` stay off — an embedded host supplies its own routing and presentation. |
 | `DomainSet::kernel()` | The floor: `threads` + `config` + `security` only. Distinct from `none()` — this is "opt a subsystem back in from nothing," so `agent` and `memory` (the two largest, most replaceable subsystems) are deliberately off. See `examples/embed_kernel.rs`. |
 | `DomainSet::none()` | Every family off. |
 
@@ -77,8 +78,10 @@ registry filters on.
 ## `CoreBuilder` setters
 
 `CoreBuilder::new(host_kind)` defaults to `TokenSource::EnvOrFile`,
-`ServiceSet::desktop()`, and `DomainSet::full()`. Setters (each narrows,
-never widens, a default):
+`ServiceSet::desktop()`, `DomainSet::full()`, and `ToolGroups::default()`
+(every group withheld behind `use_skill`, the desktop app's shape). The
+three capability axes only narrow — a group set to `Advertised` whose tools
+are compiled out, or whose `DomainGroup` is off, stays absent.
 
 - `.services(ServiceSet)`, `.domains(DomainSet)`, `.tool_groups(ToolGroups)`
   — the three independent narrowing axes: which services run, which domain
@@ -100,18 +103,25 @@ never widens, a default):
 
 `runtime/context.rs`'s `CoreContext` owns the core's initialization
 *order*: register controllers, load the master key, seed the RPC bearer,
-initialize the workspace-bound stores (`init_stores`: memory, image
-attachments, WhatsApp data, people, plus the boot-time Sentry user binding),
-and run the pure-registration part of `bootstrap_core_runtime`. It also
+initialize the workspace-bound stores, and run the pure-registration part of
+`bootstrap_core_runtime`. `init_stores` gates each store on its owning
+`DomainGroup` via `StoreInitPlan` — the memory driver binding (`Memory`), the
+image-attachment sidecar dir (`Agent`), and the legacy-workflow prune
+(`Skills`) — while the keyring-path log and the boot-time Sentry user bind run
+unguarded for every `DomainSet`. The WhatsApp store moved to the Tauri
+shell and the people store is owned by the bound memory driver, so neither
+is seeded here. It also
 holds the `DomainSet` for its scope and, when supplied, the embedder's
 `Config` — RPC handlers otherwise re-resolve config independently per
 dispatch, so an embedder-supplied config would be silently ignored without
 this seam.
 
-`init_stores` deliberately guards against seeding stores against a
-`Config::default()` fallback workspace (the "wrong-workspace guard",
-Sentry OPENHUMAN-CORE-48 / TAURI-RUST-8NM) — a caller with no resolved
-workspace should fail loudly rather than write into the wrong directory.
+The "wrong-workspace guard" (Sentry OPENHUMAN-CORE-48 / TAURI-RUST-8NM)
+lives in `CoreContext::init_with_config`: when no config was supplied and
+`Config::load_or_init()` fails, it logs an error and skips `init_stores`
+entirely — memory stays explicitly uninitialised for the run and callers get
+a "memory client not ready" error — rather than falling back to
+`Config::default()` and seeding stores against the wrong workspace.
 
 `CoreContext::scope(ctx, fut)` establishes the ambient context for the
 duration of a future (used at the `try_invoke_registered_rpc` chokepoint and
