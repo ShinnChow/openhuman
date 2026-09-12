@@ -66,7 +66,7 @@ No dependencies on other `openhuman` domains — capability metadata for other d
 ## Used by
 
 - `crates/openhuman-core/src/core/all.rs` — registers the controllers/schemas into the global RPC/CLI registry and supplies the `about_app` namespace description.
-- `crates/openhuman-core/src/memory/sync/composio/periodic.rs` — references this catalog only in a doc comment, as the place to add the user-visible status for that flow (no code dependency).
+- `crates/openhuman-core/src/memory/sources/rpc_part_01.rs` — references `platform/about_app/catalog_data.rs` in a doc comment, noting `max_sessions` is an untrusted, advertised programmatic RPC input (no code dependency).
 
 ## Notes / gotchas
 

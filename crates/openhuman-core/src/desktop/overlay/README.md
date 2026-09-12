@@ -26,7 +26,7 @@ Signals pushed from the core to the desktop **overlay window** — a separate Ta
 
 ## Events
 
-Not a `DomainEvent` / event-bus (`crates/openhuman-core/src/core/event_bus/`) participant. It runs its own standalone `tokio::sync::broadcast` channel. The Socket.IO bridge in `crates/openhuman-core/src/core/socketio.rs` (`spawn_web_channel_bridge`, task #3) subscribes via `subscribe_attention_events()` and emits each event to the overlay socket as both `overlay:attention` and `overlay_attention`; it logs and continues on `Lagged` and breaks on `Closed`.
+Not a `DomainEvent` / bus (`crates/openhuman-core/src/core/bus.rs`, `crates/openhuman-core/src/core/events.rs`) participant. It runs its own standalone `tokio::sync::broadcast` channel. The Socket.IO bridge in `crates/openhuman-core/src/core/socketio.rs` (`spawn_web_channel_bridge`, task #3) subscribes via `subscribe_attention_events()` and emits each event to the overlay socket as both `overlay:attention` and `overlay_attention`; it logs and continues on `Lagged` and breaks on `Closed`.
 
 ## Persistence
 

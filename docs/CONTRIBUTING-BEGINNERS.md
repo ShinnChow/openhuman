@@ -30,7 +30,7 @@ OpenHuman is a desktop AI assistant app. The codebase has three main parts:
 | ---------------- | ------------------ | -------------------------------------- |
 | `app/`           | React + TypeScript | The UI — what you see and click        |
 | `crates/openhuman-app/` | Rust + Tauri       | Wraps the UI into a desktop app        |
-| `src/`           | Rust               | The backend brain — logic, memory, RPC |
+| `crates/openhuman-core/` | Rust              | The backend brain — logic, memory, RPC |
 
 **As a beginner**, focus on `app/src/` (React/TypeScript). You don't need to touch Rust to make meaningful contributions.
 
@@ -56,8 +56,8 @@ npm install -g pnpm@10.10.0
 
 # Rust (the backend language)
 brew install rustup-init
-rustup toolchain install 1.93.0 --profile minimal
-rustup component add rustfmt clippy --toolchain 1.93.0
+rustup toolchain install --profile minimal
+rustup component add rustfmt clippy
 
 # CMake (required by Rust dependencies)
 brew install cmake
@@ -334,7 +334,7 @@ For your first contribution, `pnpm dev` is all you need.
 | Documentation        | `*.md` files, `gitbooks/`            | Writing           |
 | Bug fixes (frontend) | `app/src/`                           | React, TypeScript |
 
-**Avoid for now**: anything in `src/` (Rust core) or `crates/openhuman-app/` (Tauri shell) until you're comfortable with the codebase.
+**Avoid for now**: anything under `crates/` (Rust core and Tauri shell) until you're comfortable with the codebase.
 
 ---
 
