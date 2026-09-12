@@ -80,22 +80,22 @@ impl Default for RecordingProvider {
     }
 }
 
-/// A [`GuardPolicy`](super::GuardPolicy) over an embedded driver with default
+/// A [`GuardPolicy`](super::super::GuardPolicy) over an embedded driver with default
 /// budgets — the shipped configuration.
-pub fn embedded_policy() -> super::GuardPolicy {
-    super::GuardPolicy::new(
+pub fn embedded_policy() -> super::super::GuardPolicy {
+    super::super::GuardPolicy::new(
         "recording",
         crate::core::subsystem::DriverClass::Embedded,
         crate::config::schema::MemoryHooksConfig::default(),
-        super::policy::TRUSTED,
+        super::super::policy::TRUSTED,
     )
 }
 
 /// A policy over an *external* driver. No such driver can bind today
 /// (`binding::admit` refuses them), so this is the only way to reach the class
 /// branches that land for real in M6.
-pub fn external_policy(trust_state: &str) -> super::GuardPolicy {
-    super::GuardPolicy::new(
+pub fn external_policy(trust_state: &str) -> super::super::GuardPolicy {
+    super::super::GuardPolicy::new(
         "supermemory",
         crate::core::subsystem::DriverClass::External,
         crate::config::schema::MemoryHooksConfig::default(),
@@ -115,17 +115,17 @@ pub fn export_record(taint: MemoryTaint) -> ExportRecord {
 }
 
 /// A guard over a fresh recording provider, plus a handle on that provider.
-pub fn guarded(policy: super::GuardPolicy) -> (Arc<RecordingProvider>, super::MemoryGuard) {
+pub fn guarded(policy: super::super::GuardPolicy) -> (Arc<RecordingProvider>, super::super::MemoryGuard) {
     guarded_with(RecordingProvider::new(), policy)
 }
 
 /// As [`guarded`], over a caller-configured provider.
 pub fn guarded_with(
     provider: RecordingProvider,
-    policy: super::GuardPolicy,
-) -> (Arc<RecordingProvider>, super::MemoryGuard) {
+    policy: super::super::GuardPolicy,
+) -> (Arc<RecordingProvider>, super::super::MemoryGuard) {
     let provider = Arc::new(provider);
-    let guard = super::MemoryGuard::new(
+    let guard = super::super::MemoryGuard::new(
         Arc::clone(&provider) as Arc<dyn MemoryProvider>,
         Arc::new(policy),
     );

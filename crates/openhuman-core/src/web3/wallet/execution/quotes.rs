@@ -67,6 +67,23 @@ pub(super) fn store_quote(quote: PreparedTransaction) -> PreparedTransaction {
     quote
 }
 
+pub(super) fn get_quote(quote_id: &str) -> Result<PreparedTransaction, String> {
+    let store = QUOTE_STORE.lock();
+    let now = now_ms();
+    let quote = store
+        .iter()
+        .find(|q| q.quote_id == quote_id)
+        .cloned()
+        .ok_or_else(|| format!("quote '{quote_id}' not found"))?;
+    if quote.status == PreparedStatus::Consumed {
+        return Err(format!("quote '{quote_id}' already executed"));
+    }
+    if quote.expires_at_ms <= now {
+        return Err(format!("quote '{quote_id}' expired"));
+    }
+    Ok(quote)
+}
+
 /// Remove a quote from the store and return it to the caller, if and only if
 /// the caller's chat-thread owner matches the prepare-time owner.
 ///
