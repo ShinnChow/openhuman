@@ -28,11 +28,10 @@ pub(super) fn handle_apify_linkedin_scrape(params: Map<String, Value>) -> Contro
         .await
         .map_err(|e| format!("Apify LinkedIn scrape failed: {e:#}"))?;
 
-        let markdown =
-            crate::agent::learning::linkedin_enrichment::render_profile_markdown(
-                &profile_url,
-                &data,
-            );
+        let markdown = crate::agent::learning::linkedin_enrichment::render_profile_markdown(
+            &profile_url,
+            &data,
+        );
 
         let payload = json!({ "data": data, "markdown": markdown });
         let log = vec![format!(
@@ -42,4 +41,3 @@ pub(super) fn handle_apify_linkedin_scrape(params: Map<String, Value>) -> Contro
         RpcOutcome::new(payload, log).into_cli_compatible_json()
     })
 }
-

@@ -236,7 +236,6 @@ pub(super) fn handle_querit_search(params: Map<String, Value>) -> ControllerFutu
     })
 }
 
-
 pub(super) fn handle_searxng_search(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let query = params
@@ -304,7 +303,6 @@ pub(super) fn handle_searxng_search(params: Map<String, Value>) -> ControllerFut
         RpcOutcome::new(payload, log).into_cli_compatible_json()
     })
 }
-
 
 fn optional_string_array(params: &Map<String, Value>, key: &str) -> Result<Vec<String>, String> {
     let Some(value) = params.get(key) else {
