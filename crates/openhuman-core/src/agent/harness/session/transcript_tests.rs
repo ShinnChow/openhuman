@@ -1,4 +1,5 @@
 use super::*;
+use crate::agent::messages::ChatMessage;
 use crate::inference::provider::ToolCall;
 use tempfile::TempDir;
 
