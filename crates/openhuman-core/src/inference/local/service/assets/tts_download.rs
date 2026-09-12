@@ -1,3 +1,12 @@
+//! Fetching the TTS voice and streaming a file to disk with progress.
+
+use std::path::Path;
+
+use futures_util::TryStreamExt;
+
+use crate::config::Config;
+use crate::inference::local::service::LocalAiService;
+use crate::inference::paths::{resolve_tts_voice_path, tts_model_target_path};
 
 impl LocalAiService {
     pub(in crate::inference::local::service) async fn ensure_tts_asset_available(
@@ -36,7 +45,7 @@ impl LocalAiService {
         Ok(())
     }
 
-    async fn download_file_with_progress(
+    pub(super) async fn download_file_with_progress(
         &self,
         url: &str,
         dest: &Path,
