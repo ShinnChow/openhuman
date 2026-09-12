@@ -1,12 +1,13 @@
+//! The LIVE, ground-truth Composio tool contract: [`ToolContract`] itself
+//! and the per-toolkit cache/fetch ([`fetch_live_toolkit_catalog`]) that
+//! backs it — sourced straight from Composio's own v3 `/tools` listing.
+//! See the parent module's docs for why this lives in `composio` at all.
+
 use serde_json::Value;
 
-use super::client::{
-    create_composio_client, direct_execute, direct_list_tools, ComposioClientKind,
-};
 use crate::config::Config;
-use crate::json_schema::{
-    compute_primary_array_path, compute_primary_array_path_from_value, response_fields_from_schema,
-};
+use crate::integrations::composio::client::{create_composio_client, direct_list_tools, ComposioClientKind};
+use crate::json_schema::{compute_primary_array_path, response_fields_from_schema};
 
 /// One Composio action's LIVE, ground-truth contract — the source of truth
 /// [Part 1 of the systemic tool-contract fix] grounds the Workflow builder
