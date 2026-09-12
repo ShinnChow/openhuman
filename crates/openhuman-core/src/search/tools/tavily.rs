@@ -32,3 +32,7 @@ pub use types::{
 // formatting directly.
 #[cfg(test)]
 pub(crate) use client::TavilyClient;
+#[cfg(test)]
+use crate::tools::traits::{Tool, ToolCallOptions};
+#[cfg(test)]
+use serde_json::{json, Value};
