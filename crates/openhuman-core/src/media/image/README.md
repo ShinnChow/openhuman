@@ -6,8 +6,9 @@ This module does not execute image generation or pixel inspection directly. It
 defines the stable model-facing contracts that provider/runtime adapters can
 expose when image capabilities are available.
 
-Currently unwired (#2997) — no tool registers these contracts yet ("image tool
-contracts scaffold (currently unwired, #2997)", per `media/mod.rs`).
+Currently unwired (#2997) — no tool registers these contracts yet. See the
+family root: `media/mod.rs` describes this crate as an "image tool contracts
+scaffold (currently unwired, #2997)".
 
 ## Gate
 

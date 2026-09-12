@@ -1,9 +1,9 @@
 ---
 description: >-
-  The dynamic, user-facing side of MCP-client support: discover servers on
-  Smithery and the official MCP registry, persist installs to SQLite, supervise
-  local-spawn subprocess lifecycle, surface their tools to agents via the
-  unified tool registry.
+  The host half of the dynamic, user-facing side of MCP-client support:
+  discover servers on Smithery and the official MCP registry, install and
+  connect them (persistence and supervision live in the vendored `tinymcp`
+  crate), and surface their tools to agents via the unified tool registry.
 icon: plug
 ---
 
@@ -95,6 +95,10 @@ pub use types::{ConnStatus, InstalledServer, McpTool};
 
 - Core startup, via `mcp::host::init` and the reconnect-supervisor loop.
 - Frontend Skills UI: the **MCP** tab at `/skills?tab=mcp` (`McpServersTab`) dispatches through `ops.rs` over the `openhuman.mcp_clients_*` RPC namespace: browse, install (auto-connects), connect/disconnect, status, tool call, `update_env` (reconfigure + reconnect), and `registry_settings_get` / `registry_settings_set` (Smithery / official-registry credentials; secret values are write-only). The agent-native flow uses `openhuman.mcp_setup_*` via the `mcp_setup` sub-agent (orchestrator delegate `setup_mcp_server`).
+
+## Tests
+
+Focused `*_tests.rs` siblings cover each file: `bus_tests.rs`, `ops_tests.rs`, `schemas_tests.rs`, `setup_ops_tests.rs`, `supervisor_events_tests.rs`, `tools_tests.rs`.
 
 ## Related
 

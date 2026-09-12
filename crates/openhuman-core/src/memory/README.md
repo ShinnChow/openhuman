@@ -71,6 +71,24 @@ link. `memory::api` is the re-export of the contract, and its own module docs
 explain which parts of `tinymemory-api` are the *bus* surface and which are the
 host's own use of the crate — they are not the same set.
 
+## Wiring
+
+`core/all.rs` registers the nine schema families behind the `all_memory_*_registered_controllers`
+aliases re-exported from [`mod.rs`](mod.rs) — `core_recall`, `documents`,
+`ingest`, `files`, `kv_graph`, `sync`, `learn`, `provider`, `tool_memory` —
+plus [`goals`](goals/)'s, [`people`](people/)'s, and
+[`tree`](tree/)'s own `all_memory_tree_*`, `all_retrieval_*`, and
+`all_tree_summarizer_*` registered-controller functions,
+[`sync/sync_status`](sync/sync_status.rs)'s `all_memory_sync_status_registered_controllers`,
+and [`sources`](sources/)'s `all_memory_sources_registered_controllers`.
+
+Agent tools reach the same registry through
+[`tools/mod.rs`](../tools/mod.rs): `pub use crate::memory::tools::*`,
+`crate::memory::tools::goals::*`, and `crate::memory::agent::tools::*`.
+
+`memory::rpc` is an alias of [`ops`](ops/) (`pub use ops as rpc;` in
+[`mod.rs`](mod.rs)) kept for callers that predate the extraction.
+
 ## Domains that kept their RPC surface here
 
 Each is the RPC surface for a family the *driver* serves: the handler and
@@ -84,7 +102,7 @@ each was a thin wrapper over `pub use tinymemory_core::<domain>::*;` as well.
 | [`goals/`](goals/)               | Goal tracking RPC.                                       |
 | [`people/`](people/)             | People/contacts RPC.                                     |
 | [`sources/`](sources/)           | Source-registration RPC.                                 |
-| [`sync/`](sync/)                 | Composio + workspace + MCP sync pipeline RPC.            |
+| [`sync/`](sync/)                 | `composio/` bus subscribers + providers (incl. Slack), and `sync_status/` — per-connection sync status/progress RPC. |
 | [`tool_memory/`](tool_memory/)   | Tool-scoped rules + agent read/write tools.               |
 | [`tree/`](tree/)                 | Tree walk/retrieval RPC.                                  |
 

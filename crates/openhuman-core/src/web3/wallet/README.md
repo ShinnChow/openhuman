@@ -28,7 +28,7 @@ drift.
 - Build prepared-transaction quotes (validated, fee-estimated, TTL'd) that must be explicitly confirmed before execution.
 - Sign and broadcast confirmed quotes per chain; restore (and TTL-refresh) the quote on failure so it stays retryable.
 - Bind each quote to the chat thread that prepared it so a leaked `quote_id` in a shared channel can't be hijacked from another agent session.
-- Expose six agent tools (`wallet_status`, `wallet_chain_status`, `wallet_prepare_transfer`, `wallet_tx_status`, `wallet_tx_receipt`, `wallet_lookup_tx`) and twelve `wallet.*` RPC controllers.
+- Expose six agent tools (`wallet_status`, `wallet_chain_status`, `wallet_prepare_transfer`, `wallet_tx_status`, `wallet_tx_receipt`, `wallet_lookup_tx`) and twelve `wallet` RPC controllers.
 - Provide crate-internal `sign_and_broadcast_evm` / `sign_and_broadcast_solana` primitives for the `web3` layer (sign+broadcast an externally-built unsigned transaction). Not exposed to the agent / RPC surface.
 
 ## Key files
@@ -39,18 +39,21 @@ drift.
 | `crates/openhuman-core/src/web3/wallet/ops.rs` | Onboarding metadata + secret persistence: `WalletChain`/`WalletAccount`/`WalletStatus` types, `setup`/`status`, atomic `wallet-state.json` writes (temp-file + fsync), corrupt-state quarantine, keychain load/save/migrate, `validate_setup`, and `secret_material` (crate-internal) used by chain signers. |
 | `crates/openhuman-core/src/web3/wallet/execution.rs` | Execution surface: balances/network_defaults/supported_assets/chain_status reads, `prepare_transfer`/`execute_prepared` (native + token transfers only), `tx_status`/`tx_receipt`/`lookup_tx` readers, the crate-internal `sign_and_broadcast_evm`/`sign_and_broadcast_solana` re-exports, the in-memory quote store (TTL'd, capped at 64), `QuoteOwner` chat-thread binding, amount/address/calldata validation, fee estimation, hex/u256 helpers. |
 | `crates/openhuman-core/src/web3/wallet/defaults.rs` | `EvmNetwork` enum (chain id, default RPC, explorer base, env var), default RPC/REST URLs for BTC/Solana/Tron, env-override resolution, and per-chain/per-network asset catalogs. |
-| `crates/openhuman-core/src/web3/wallet/abi.rs` | `encode_erc20_transfer` — encodes `transfer(address,uint256)` calldata via `ethers_core::abi`. |
+| `crates/openhuman-core/src/web3/wallet/abi.rs` | `encode_erc20_transfer` — delegates the `transfer(address,uint256)` calldata encoding to `tinywallet_bus::abi`, mapping its typed errors (`InvalidRecipient`/`InvalidAmount`) to the plain-`String` shape the RPC/tool surface uses. |
 | `crates/openhuman-core/src/web3/wallet/schemas.rs` | RPC controller schemas + `handle_*` dispatchers delegating to `ops`/`execution`; `all_wallet_controller_schemas` / `all_wallet_registered_controllers`. |
 | `crates/openhuman-core/src/web3/wallet/rpc.rs` | **Network transport** (not RPC controllers): shared `reqwest::Client`, JSON-RPC POST (`rpc_call`, `evm_rpc_call`, `rpc_call_to`), REST GET/POST helpers, URL redaction for logs. |
-| `crates/openhuman-core/src/web3/wallet/tools.rs` | Re-exports the three agent tool structs from `tools/`. |
+| `crates/openhuman-core/src/web3/wallet/transport.rs` | OpenHuman's implementation of the `tinywallet_bus::rpc::Transport` seam: resolves a `tinywallet_bus::rpc::NetworkId` to an endpoint (including `OPENHUMAN_WALLET_RPC_<CHAIN>` overrides), redacts URLs for logs, and reuses `rpc.rs`'s shared `reqwest` client. Classifies errors conservatively — anything it cannot prove is a transport failure is reported as `TransportError::Rpc` (authoritative) rather than `Unreachable` (retryable), so an unclassifiable error stops a failover loop instead of risking a double broadcast. |
+| `crates/openhuman-core/src/web3/wallet/tools.rs` | Re-exports the six agent tool structs from `tools/`. |
 | `crates/openhuman-core/src/web3/wallet/tools/status.rs` | `WalletStatusTool` (`wallet_status`). |
 | `crates/openhuman-core/src/web3/wallet/tools/chain_status.rs` | `WalletChainStatusTool` (`wallet_chain_status`). |
 | `crates/openhuman-core/src/web3/wallet/tools/prepare_transfer.rs` | `WalletPrepareTransferTool` (`wallet_prepare_transfer`). |
+| `crates/openhuman-core/src/web3/wallet/tools/tx_query.rs` | `WalletTxStatusTool` (`wallet_tx_status`), `WalletTxReceiptTool` (`wallet_tx_receipt`), `WalletLookupTxTool` (`wallet_lookup_tx`) — share a `{chain, hash, evmNetwork?}` input and delegate to the matching `wallet::*` dispatcher. |
 | `crates/openhuman-core/src/web3/wallet/chains/mod.rs` | Per-chain executor namespace; docstring of the small per-chain surface (`execute_*_quote`, `native_balance`, `validate_*_address`). |
-| `crates/openhuman-core/src/web3/wallet/chains/evm.rs` | EVM key derivation (`ethers_signers` BIP-39), EIP-1559/typed-tx signing, `eth_*` balance/gas/broadcast. |
-| `crates/openhuman-core/src/web3/wallet/chains/btc.rs` | Bitcoin P2WPKH derivation/signing (`bitcoin` crate, secp256k1, BIP-32) + Esplora REST balance/broadcast. |
-| `crates/openhuman-core/src/web3/wallet/chains/solana.rs` | Solana ed25519 (`ed25519_dalek`) derivation, native + SPL transfers, JSON-RPC balance/broadcast. |
+| `crates/openhuman-core/src/web3/wallet/chains/evm.rs` | EVM signing/broadcast built on `tinywallet_bus::wire::{SecretMaterial, TransactionSpec}` and `tinywallet_bus::address::evm::validate`; one derivation path shared across all EVM networks, EIP-1559 signing, `eth_*` balance/gas/broadcast. |
+| `crates/openhuman-core/src/web3/wallet/chains/btc.rs` | Bitcoin P2WPKH (BIP84) derivation/signing via `tinywallet_bus::wire`/`tinywallet_bus::address::btc`, plus Esplora REST balance/broadcast. |
+| `crates/openhuman-core/src/web3/wallet/chains/solana.rs` | Solana native + SPL transfers: hand-rolled wire format (`ed25519_dalek`, `curve25519_dalek`, `sha2`) to avoid pulling in `solana-sdk`; JSON-RPC balance/broadcast. |
 | `crates/openhuman-core/src/web3/wallet/chains/tron.rs` | Tron derivation/signing + TronGrid REST native + TRC20 transfers. |
+| `crates/openhuman-core/src/web3/wallet/stub.rs` | Disabled-wallet facade compiled when `web3` is off; mirrors the subset of the real surface that always-on / other-gated callers need, with no-op / disabled-error bodies. See the Compile-time gate section. |
 | `crates/openhuman-core/src/web3/wallet/test_support.rs` | `#[cfg(test)]` shared plumbing: `TEST_LOCK`, `setup_wallet_in` (deterministic "abandon … about" mnemonic), per-chain sample addresses. |
 
 ## Public surface
