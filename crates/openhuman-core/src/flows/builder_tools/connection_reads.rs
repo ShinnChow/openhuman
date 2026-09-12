@@ -144,7 +144,7 @@ impl Tool for ListFlowConnectionsTool {
 /// `U123ABC`, or `null` when no identity has synced yet). Never secret
 /// material. A free function (rather than inline in `execute`) so the
 /// mapping is unit-testable without a live Composio backend.
-fn flow_connection_to_json(c: &crate::flows::types::FlowConnection) -> Value {
+pub(super) fn flow_connection_to_json(c: &crate::flows::types::FlowConnection) -> Value {
     json!({
         "connection_ref": c.connection_ref,
         "kind": c.kind,

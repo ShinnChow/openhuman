@@ -88,7 +88,7 @@ fn build_null_resolution_entry(
 /// (which fails the dry run on these) and the errored-run path (which surfaces
 /// only the `unverifiable` ones so a stop-policy preflight abort explains
 /// itself honestly instead of via the generic required-arg text).
-fn tool_call_arg_null_entries(
+pub(super) fn tool_call_arg_null_entries(
     steps: &[tinyflows::observability::ExecutionStep],
     graph: &WorkflowGraph,
     tool_call_node_ids: &std::collections::HashSet<&str>,
@@ -113,7 +113,7 @@ fn tool_call_arg_null_entries(
 /// Returns `None` if no predecessor chain reaches a `condition` node (e.g. the
 /// node simply has no predecessors, or none of them is a condition) — the
 /// warning is still emitted, just without a named culprit node.
-fn find_upstream_condition(graph: &WorkflowGraph, node_id: &str) -> Option<String> {
+pub(super) fn find_upstream_condition(graph: &WorkflowGraph, node_id: &str) -> Option<String> {
     let mut visited: std::collections::HashSet<&str> = std::collections::HashSet::new();
     let mut queue: std::collections::VecDeque<&str> = graph
         .edges
@@ -145,7 +145,7 @@ fn find_upstream_condition(graph: &WorkflowGraph, node_id: &str) -> Option<Strin
 /// the run's `output` state, not on the [`tinyflows::observability::ExecutionStep`]
 /// itself (whose `diagnostics` stays empty for an error step — see
 /// [`DryRunWorkflowTool::execute`]'s `node_errors` collection).
-fn tool_call_error_message(output: &Value, node_id: &str) -> Option<String> {
+pub(super) fn tool_call_error_message(output: &Value, node_id: &str) -> Option<String> {
     output
         .get("nodes")?
         .get(node_id)?

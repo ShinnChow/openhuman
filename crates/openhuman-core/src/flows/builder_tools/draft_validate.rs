@@ -186,7 +186,7 @@ impl Tool for ValidateWorkflowTool {
 /// reported as `ok: true` — is unit-testable independent of the async gate
 /// execution and the (currently unreachable, pending future per-node schema
 /// migrations) path that produces `gate_check_failed`.
-fn validate_workflow_report_is_ok(
+pub(super) fn validate_workflow_report_is_ok(
     structurally_valid: bool,
     gate_errors: &[String],
     gate_check_failed: bool,

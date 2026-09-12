@@ -147,7 +147,7 @@ impl Tool for CreateWorkflowTool {
 /// the flow's real post-attempt state, not the intended one — is
 /// unit-testable without forcing a genuine concurrent store failure between
 /// `flows_create` and `flows_set_enabled`.
-fn create_workflow_report(born_enabled: bool, disable_succeeded: bool) -> (bool, &'static str) {
+pub(super) fn create_workflow_report(born_enabled: bool, disable_succeeded: bool) -> (bool, &'static str) {
     let enabled = born_enabled && !disable_succeeded;
     let note = if enabled {
         "Flow created, but it could NOT be force-disabled (see the tool result for the \
