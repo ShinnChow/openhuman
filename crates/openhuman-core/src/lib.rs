@@ -1,7 +1,7 @@
 //! `openhuman-core` — the in-process Rust core.
 //!
 //! Cargo package `openhuman`, library `openhuman_core`, binary `openhuman-core`
-//! ([`main.rs`](../src/main.rs)). Owns business rules, persistence, execution
+//! (`src/main.rs`). Owns business rules, persistence, execution
 //! policy, the JSON-RPC/Socket.IO server, and the CLI. Hosted in-process by
 //! `openhuman-app` (the Tauri shell), `openhuman-embed` (the typed facade for
 //! third-party embedders such as Medulla and OpenCompany), and `openhuman-tui`.
