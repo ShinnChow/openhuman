@@ -28,8 +28,8 @@ semantics, compatibility events, and JSON-RPC/tool response formatting.
   continue/follow-up control verbs (`command_center/`).
 - Git-worktree isolation so parallel coding workers never clobber the same
   checkout (`worktree.rs`, `worktree_schemas.rs`).
-- Cancellation of detached (`spawn_async_subagent`) background sub-agents from
-  the frontend "Cancel" affordance (`subagent_control.rs`).
+- User-driven cancel/steer of detached (`spawn_async_subagent`) background
+  sub-agents from the frontend background-tasks drawer (`subagent_control.rs`).
 - Mirroring detached sub-agent lifecycle into a TinyAgents task store, batching
   finished background results back into chat, and settling run-ledger rows
   from the global bus regardless of the parent turn's lifecycle
@@ -53,7 +53,13 @@ semantics, compatibility events, and JSON-RPC/tool response formatting.
 - `workflow_runs/` — declarative `WorkflowDefinition` phase graphs (issue
   #3375), the builtin "parallel research with cross-checking" workflow,
   structural/agent validation, and the live execution engine (`engine.rs`).
-- `delegation.rs` — the durable plan→execute⇄review→finalize graph.
+- `delegation.rs` — production worker for TinyAgents' durable
+  plan→execute⇄review→finalize graph; every stage runs through `run_subagent`.
+- `spawn_parallel_graph.rs` (+ `_part_0N.rs`) — the fanout behind
+  `spawn_parallel_agents`: request/claim validation, worktree preflight, and the
+  bounded `map_reduce` worker run; the tool file only translates `ToolResult`.
+- `subagent_events.rs` — the single owner that constructs and publishes
+  `DomainEvent::Subagent{Spawned,Completed,Failed,AwaitingUser}`.
 - `subagent_control.rs` — manual cancel/steer of detached background
   sub-agents; the manual counterpart to the automatic thread-close
   cancellation in `crate::threads`.
@@ -89,37 +95,51 @@ semantics, compatibility events, and JSON-RPC/tool response formatting.
 
 Five controller pairs are registered in `crate::core::all`:
 
-| Namespace | Source |
-| --- | --- |
-| `agent_team` | `agent_teams::{all_agent_team_controller_schemas, all_agent_team_registered_controllers}` |
-| `agent_work` | `command_center::{all_command_center_controller_schemas, all_command_center_registered_controllers}` |
-| `workflow_run` | `workflow_runs::{all_workflow_run_controller_schemas, all_workflow_run_registered_controllers}` |
-| `worktree` | `worktree_schemas::{all_controller_schemas, all_registered_controllers}` |
-| `subagent` | `subagent_control::{all_controller_schemas, all_registered_controllers}` |
+| Namespace | Source | Methods |
+| --- | --- | --- |
+| `agent_team` | `agent_teams::{all_agent_team_controller_schemas, all_agent_team_registered_controllers}` | `create`, `list`, `get`, `assign_task`, `claim_task`, `message_member`, `list_messages`, `complete_task`, `shutdown_member`, `close`, `start_member` |
+| `agent_work` | `command_center::{all_command_center_controller_schemas, all_command_center_registered_controllers}` | `list`, `control` |
+| `workflow_run` | `workflow_runs::{all_workflow_run_controller_schemas, all_workflow_run_registered_controllers}` | `list_definitions`, `list`, `get`, `start`, `stop`, `resume` |
+| `worktree` | `worktree_schemas::{all_controller_schemas, all_registered_controllers}` | `list`, `status`, `diff`, `remove` |
+| `subagent` | `subagent_control::{all_controller_schemas, all_registered_controllers}` | `cancel`, `steer` |
 
 ## Agent tools
 
 `tools.rs` declares the `tools/` directory files (via `#[path]`) and
 re-exports them through `crate::tools` (`tools/mod.rs`:
-`pub use crate::agent::orchestration::tools::*`): `agent_prepare_context`,
-`archetype_delegation`, `awaiting_user`, `close_subagent`,
-`collapsed_delegation`, `continue_subagent`, `delegate_graph`, `dispatch`,
-`list_subagents`, `skill_delegation`, `spawn_async_subagent`,
-`spawn_parallel_agents`, `spawn_subagent`, `spawn_worker_thread`,
-`steer_subagent`, `wait`, `wait_subagent`, `worker_thread`. Execution itself
-routes through `agent::harness::run_subagent`.
+`pub use crate::agent::orchestration::tools::*`). LLM-callable tools, by wire
+name:
+
+- Spawn: `spawn_subagent`, `spawn_async_subagent`, `spawn_parallel_agents`,
+  `spawn_worker_thread`.
+- Control: `steer_subagent`, `continue_subagent`, `close_subagent`,
+  `wait_subagent`, `wait`, `wait_loop`, `list_subagents`.
+- Delegation: `DelegateGraphTool` (`delegate_graph.rs`),
+  `ArchetypeDelegationTool` and `SkillDelegationTool` (names set per
+  instance, e.g. `delegate_to_integrations_agent`), `CollapsedDelegationTool`
+  (`delegate_to`), and `agent_prepare_context`.
+
+`dispatch.rs` (`dispatch_subagent`, the shared spawn path every tool above
+calls), `awaiting_user.rs` (the awaiting-user envelope), and
+`worker_thread.rs` (worker thread creation) are `pub(crate)` helpers, not
+tools. Execution itself routes through `agent::harness::run_subagent`.
 
 ## Persistence
 
-Durable state lives in `tinyagents_session::run_ledger` — the `agent_runs`,
-`agent_teams`/`agent_team_members`/`agent_team_tasks`, and `workflow_runs`
-tables, plus the shared run-event log for messages — backed by
-`{workspace}/session_db/sessions.db` (see `agent/session_db/mod.rs`). Every
-spawn path (`spawn_subagent`, `spawn_async_subagent`,
-`spawn_parallel_agents`, `continue_subagent`, `dispatch`) writes a `running`
-row; `run_ledger_finalize.rs` settles it from the global event bus so
-detached runs that outlive their spawning turn are not left `running`
-forever.
+- `tinyagents_session::run_ledger` — the `agent_runs`,
+  `agent_teams`/`agent_team_members`/`agent_team_tasks`, and `workflow_runs`
+  tables plus the shared `run_events` log, backed by
+  `{workspace}/session_db/sessions.db` (see `agent/session_db/mod.rs`). Every
+  spawn path (`spawn_subagent`, `spawn_async_subagent`,
+  `spawn_parallel_agents`, `continue_subagent`, `dispatch`) writes a `running`
+  `agent_runs` row; `run_ledger_finalize.rs` settles it from the global event
+  bus so detached runs that outlive their spawning turn are not left `running`
+  forever.
+- `subagent_sessions/` — `SubagentSessionStore` writes
+  `{workspace}/.openhuman/subagent_sessions.json` (atomic tmp-file rename).
+- `delegation.rs` — checkpoints `DelegationState` through
+  `tinyagents_graph::SqliteCheckpointer` in `graph_checkpoints.db` under the
+  workspace.
 
 ## Policy inheritance
 
@@ -146,8 +166,8 @@ what the harness exposes to the child.
 
 ## Used by
 
-- `agent::tools` re-exports every tool in `tools/` for the LLM tool-calling
-  loop.
+- `crate::tools` (`tools/mod.rs`) re-exports every tool in `tools/` for the
+  LLM tool-calling loop.
 - `threads` — the automatic thread-close cancellation counterpart to
   `subagent_control.rs`'s manual cancel.
 - `crate::core::all` — registers the five controller pairs above.
