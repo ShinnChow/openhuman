@@ -134,7 +134,7 @@ pub(super) fn normalized_scope_toolkits(
     out.into_iter().collect()
 }
 
-fn uncatalogued_toolkits(toolkits: &[String]) -> Vec<String> {
+pub(super) fn uncatalogued_toolkits(toolkits: &[String]) -> Vec<String> {
     toolkits
         .iter()
         .filter(|toolkit| catalog_for_toolkit(toolkit).is_none())
