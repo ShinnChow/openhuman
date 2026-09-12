@@ -160,7 +160,7 @@ pub(crate) fn helper_send_receive(
 /// Used for `show`, `hide`, and `quit` commands.
 /// Only acquires UNIFIED_HELPER (for the stdin write) — never blocks on I/O.
 #[cfg(target_os = "macos")]
-pub(super) fn helper_send_fire_and_forget(request: &serde_json::Value) -> Result<(), String> {
+pub(in crate::desktop::accessibility) fn helper_send_fire_and_forget(request: &serde_json::Value) -> Result<(), String> {
     ensure_helper_running()?;
     let mut guard = UNIFIED_HELPER
         .lock()
@@ -181,7 +181,7 @@ pub(super) fn helper_send_fire_and_forget(request: &serde_json::Value) -> Result
 
 /// Quit and clean up the helper process.
 #[cfg(target_os = "macos")]
-pub(super) fn helper_quit() -> Result<(), String> {
+pub(in crate::desktop::accessibility) fn helper_quit() -> Result<(), String> {
     // Drop the response channel first so the reader thread exits cleanly.
     {
         let mut rx_guard = RESPONSE_RX
