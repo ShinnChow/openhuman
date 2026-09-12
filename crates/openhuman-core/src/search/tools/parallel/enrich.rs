@@ -10,7 +10,7 @@ use std::sync::Arc;
 // ── ParallelEnrichTool ──────────────────────────────────────────────
 
 #[derive(Debug, Deserialize)]
-struct EnrichResponse {
+pub(super) struct EnrichResponse {
     #[serde(default, rename = "runId")]
     run_id: Option<String>,
     #[serde(default)]
@@ -21,7 +21,7 @@ struct EnrichResponse {
     cost_usd: f64,
 }
 
-fn format_enrich_response(resp: EnrichResponse) -> Result<String, String> {
+pub(super) fn format_enrich_response(resp: EnrichResponse) -> Result<String, String> {
     if let Some(id) = &resp.run_id {
         tracing::debug!(
             "[parallel_enrich] completed run_id={} status={:?} cost_usd={:.4}",

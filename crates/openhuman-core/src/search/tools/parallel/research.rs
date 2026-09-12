@@ -10,7 +10,7 @@ use std::sync::Arc;
 // ── ParallelResearchTool ────────────────────────────────────────────
 
 #[derive(Debug, Deserialize)]
-struct ResearchResponse {
+pub(super) struct ResearchResponse {
     #[serde(default, rename = "runId")]
     run_id: Option<String>,
     #[serde(default)]
@@ -21,7 +21,7 @@ struct ResearchResponse {
     cost_usd: f64,
 }
 
-fn format_research_response(resp: ResearchResponse) -> Result<String, String> {
+pub(super) fn format_research_response(resp: ResearchResponse) -> Result<String, String> {
     if let Some(id) = &resp.run_id {
         tracing::debug!(
             "[parallel_research] completed run_id={} status={:?} cost_usd={:.4}",

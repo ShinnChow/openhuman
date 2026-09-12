@@ -7,7 +7,7 @@ use serde::Deserialize;
 use std::sync::Arc;
 
 /// UTF-8 safe truncation: returns the truncated slice and whether it was truncated.
-fn truncate_chars(s: &str, max_chars: usize) -> (&str, bool) {
+pub(super) fn truncate_chars(s: &str, max_chars: usize) -> (&str, bool) {
     match s.char_indices().nth(max_chars) {
         Some((byte_idx, _)) => (&s[..byte_idx], true),
         None => (s, false),
