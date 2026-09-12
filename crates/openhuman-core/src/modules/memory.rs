@@ -38,11 +38,33 @@
 //! back, and **both ends use it**. Reimplementing the mapping here is what would
 //! let a `PathEscape` arrive as an `Invalid`, silently reclassifying a sandbox
 //! escape as a caller mistake.
+//!
+//! # Module layout
+//!
+//! Split by responsibility rather than by trait count:
+//! - [`capabilities`] — the pinned artifact's advertised capability set.
+//! - [`provider`] — [`ModuleMemoryProvider`] construction, proxy resolution,
+//!   and the bus-error/macro plumbing the trait impls below build on.
+//! - `documents_tree`, `entities_graph_diff`, `goals_tools_sources`,
+//!   `sync_sessions_episodic`, `people_chunks_retrieval`, `ingest_answer`,
+//!   `core_provider` — the `Memory*` trait forwarding, grouped by the memory
+//!   subsystem each family belongs to.
 
 #[cfg(test)]
 #[path = "memory_tests.rs"]
 mod tests;
-include!("memory_part_01.rs");
-include!("memory_part_02.rs");
-include!("memory_part_03.rs");
-include!("memory_part_04.rs");
+
+mod capabilities;
+mod core_provider;
+mod documents_tree;
+mod entities_graph_diff;
+mod goals_tools_sources;
+mod ingest_answer;
+mod people_chunks_retrieval;
+mod provider;
+mod sync_sessions_episodic;
+
+pub(crate) use capabilities::ARTIFACT_CAPABILITIES;
+pub use provider::{install_host_callbacks, publish_cli_boot_policy, set_modules_policy};
+pub(crate) use provider::policy;
+pub use provider::{ModuleMemoryProvider, MODULE_ID};

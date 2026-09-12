@@ -30,7 +30,7 @@ use std::time::Instant;
 /// cleanup, so a logout and re-login in the same process — or simply a second
 /// identity failing after a first succeeded — would report the previous
 /// session's age as this one's.
-static LAST_CURRENT_USER_SUCCESS: Lazy<Mutex<Option<CurrentUserSuccess>>> =
+pub(super) static LAST_CURRENT_USER_SUCCESS: Lazy<Mutex<Option<CurrentUserSuccess>>> =
     Lazy::new(|| Mutex::new(None));
 
 /// The last successful `auth_get_me`, with the identity it belongs to.
