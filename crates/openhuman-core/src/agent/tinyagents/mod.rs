@@ -95,7 +95,7 @@ use tinyagents_harness::runtime::InvalidArgsPolicy;
 #[cfg(test)]
 use turn_policy::{
     model_call_wall_clock_ms, parse_agent_turn_wall_clock_ms, parse_model_call_wall_clock_ms,
-    DEFAULT_AGENT_TURN_TIMEOUT_SECS, DEFAULT_MODEL_CALL_TIMEOUT_SECS,
+    run_policy_for, DEFAULT_AGENT_TURN_TIMEOUT_SECS, DEFAULT_MODEL_CALL_TIMEOUT_SECS,
 };
 
 #[cfg(test)]
