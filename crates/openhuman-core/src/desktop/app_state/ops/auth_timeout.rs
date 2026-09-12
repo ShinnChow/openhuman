@@ -1,12 +1,15 @@
-// How long the current-user refresh may take, and how long a failed run of
-// them suppresses the next attempt.
-//
-// Split out of `ops_part_01.rs` because the two values are one decision: the
-// backoff step is *derived* from the fetch timeout so that widening the
-// timeout cannot re-open #5624's poll treadmill. Keeping them adjacent is
-// what makes that relationship reviewable.
-//
-// `include!`d into `ops.rs`, so everything here shares that module's scope.
+//! How long the current-user refresh may take, and how long a failed run of
+//! them suppresses the next attempt.
+//!
+//! Split out because the two values are one decision: the backoff step is
+//! *derived* from the fetch timeout so that widening the timeout cannot
+//! re-open #5624's poll treadmill. Keeping them adjacent is what makes that
+//! relationship reviewable.
+
+use super::LOG_PREFIX;
+use log::{debug, warn};
+use once_cell::sync::Lazy;
+use std::time::Duration;
 
 /// Wall-clock budget for one `auth_get_me` refresh when nothing overrides it.
 pub const DEFAULT_AUTH_FETCH_TIMEOUT_SECS: u64 = 5;
