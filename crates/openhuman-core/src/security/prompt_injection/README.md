@@ -16,7 +16,7 @@ Centralized, deterministic prompt-injection screening. Given a user-provided pro
 | --- | --- |
 | `crates/openhuman-core/src/security/prompt_injection/mod.rs` | Module docstring + re-exports of the public surface. No logic. |
 | `crates/openhuman-core/src/security/prompt_injection/detector.rs` | All logic: types, normalization, detection rules + `RegexSet`, heuristics, optional classifier, scoring/thresholds, and the `enforce_prompt_input` entry point. |
-| `crates/openhuman-core/src/security/prompt_injection/tests.rs` | `#[cfg(test)]` suite (~40 cases) covering allow/review/block verdicts, obfuscation handling, and known false-positive regressions (TAURI-140, issue #1940). |
+| `crates/openhuman-core/src/security/prompt_injection/prompt_injection_tests.rs` | `#[cfg(test)]` suite (~40 cases) covering allow/review/block verdicts, obfuscation handling, and known false-positive regressions (TAURI-140, issue #1940). |
 
 ## Public surface
 

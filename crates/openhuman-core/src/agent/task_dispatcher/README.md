@@ -10,14 +10,19 @@ Two dispatch paths converge on `dispatch_card`, so the claim is what keeps
 them from racing:
 
 - the **board poller** (`poller.rs`, `start_board_poller`) — a periodic sweep
-  spawned from `channels/runtime/startup_part_01.rs`, catching cards that
-  arrive without a proactive trigger.
-- **proactive triage** (`agent::triage::escalation`) — dispatches a card once
-  it has decided to act on it.
+  catching cards that arrive without a proactive trigger. Spawned from both
+  `core/runtime/services.rs` (under `ServiceSet::proactive_task_pollers`) and
+  `channels/runtime/startup_part_01.rs`; a `OnceLock` makes the second call a
+  no-op.
+- **proactive triage** (`agent::triage::escalation`, `apply_decision` →
+  `dispatch_linked_card`) — dispatches a card once triage has decided to act
+  on it.
 
-The dispatcher only ever sweeps the `user-tasks` and `task-sources` boards. It
-never sweeps conversation-thread boards; a chat-turn plan is gated on the turn
-itself instead (see `agent::plan_review`).
+The poller sweeps only two boards: `user-tasks` (always, but only cards with
+an `assigned_agent`, so a human's manually-created card is never auto-run)
+and `task-sources` (only when `config.task_sources.enabled`). It never sweeps
+conversation-thread boards; a chat-turn plan is gated on the turn itself
+instead (see `agent::plan_review`).
 
 ## Files
 
@@ -41,7 +46,8 @@ itself instead (see `agent::plan_review`).
   names (`memory_recall`, `update_task`).
 - `registry.rs` — in-flight run registry keyed by session `thread_id`;
   `cancel_session` / `cancel_session_scoped` abort a detached run and drive its
-  cancellation write-back for the web-channel Cancel button.
+  cancellation write-back. `web_chat` calls the scoped variant as the
+  `channel_web_cancel` fallback when no web-channel turn matched the thread.
 - `types.rs` — `DispatchOutcome` (`Running` / `AwaitingApproval`),
   `ResolvedExecutor`, and the crate-backed `ActiveRun` alias.
 
