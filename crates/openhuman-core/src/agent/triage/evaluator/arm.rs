@@ -29,7 +29,7 @@ pub const TRIGGER_TRIAGE_AGENT_ID: &str = "trigger_triage";
 /// Single-arm execution result. `Retryable` lets the orchestrator
 /// decide whether to sleep + retry on the same arm (cloud) or to fall
 /// through (local). `Fatal` short-circuits the whole chain.
-pub(super) enum ArmError {
+pub(crate) enum ArmError {
     /// 429 / 5xx / timeout / connection — the kind of failure where
     /// trying again later might help.
     Retryable {
@@ -222,7 +222,7 @@ pub(super) async fn try_arm(
 
 /// Classify a handler-failure message string from the agent bus into
 /// either a retryable (sleep + try again) or fatal (give up) error.
-pub(super) fn classify_error(message: String) -> ArmError {
+pub(crate) fn classify_error(message: String) -> ArmError {
     let err = anyhow!("{message}");
     if is_rate_limited(&err) {
         return ArmError::Retryable {
