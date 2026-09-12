@@ -6,6 +6,7 @@ use crate::inference::provider::crate_openai;
 use crate::inference::provider::factory::access_gates::verify_session_active;
 use super::*;
 
+use use crate::inference::provider::crate_openai;;
 /// Local OpenAI-compatible runtimes (Ollama / LM Studio / MLX / OMLX /
 /// local-openai) as a crate-native [`ChatModel`] (issue #4727).
 ///

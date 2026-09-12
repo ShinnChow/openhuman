@@ -19,6 +19,7 @@ use tinyagents_harness::workspace::WorkspaceDescriptor;
 use super::transcript::persist_subagent_transcript;
 use super::worker_mirror::mirror_worker_thread;
 
+use use crate::agent::harness::subagent_runner::ops::checkpoint;;
 /// Cumulative usage stats gathered across a sub-agent graph run.
 #[derive(Debug, Clone, Default)]
 pub(in super::super) struct AggregatedUsage {

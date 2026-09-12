@@ -5,6 +5,7 @@
 use crate::inference::provider::fallback_diagnostics;
 use super::*;
 
+use use crate::inference::provider::fallback_diagnostics;;
 /// The provider route a role has **explicitly** configured, before any
 /// fallback.
 ///

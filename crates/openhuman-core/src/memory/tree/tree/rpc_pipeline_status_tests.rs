@@ -6,6 +6,8 @@ use crate::memory::tree::tree::rpc::stall::QUEUE_STALL_THRESHOLD_MS;
 use crate::memory::tree::tree::rpc::stall::derive_pipeline_status;
 use crate::memory::tree::tree::rpc::stall::queue_idle_ms;
 use crate::memory::tree::tree::rpc::stall::queue_is_stalled;
+use use crate::memory::tree::tree::rpc::tests::pipeline_status_tests::gate_pause_state;;
+use use crate::memory::tree::tree::rpc::tests::pipeline_status_tests::queue_is_stalled;;
 #[test]
 fn derive_pipeline_status_precedence_matches_spec() {
     use crate::memory::tree::health::{DegradedState, FailureCode, PipelineFailure};

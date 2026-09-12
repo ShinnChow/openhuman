@@ -9,6 +9,9 @@ use crate::inference::provider::factory::access_gates::verify_session_active;
 use crate::inference::provider::fallback_diagnostics;
 use super::*;
 
+use use crate::inference::provider::crate_anthropic;;
+use use crate::inference::provider::crate_openai;;
+use use crate::inference::provider::fallback_diagnostics;;
 /// Look up a `cloud_providers` entry by slug and build the provider.
 /// The shared resolution for a `<slug>:<model>` cloud provider — the cloud
 /// `cloud_providers` entry, the effective model id (with `default_model`
