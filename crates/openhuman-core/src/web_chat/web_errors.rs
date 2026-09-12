@@ -21,5 +21,9 @@ pub(crate) use provider_detail::{
     with_provider_detail,
 };
 pub(crate) use response_predicates::is_empty_provider_response_text;
-pub(crate) use retry::{parse_retry_after_secs_from_str, retry_after_hint, is_non_retryable_rate_limit_text};
-pub(crate) use timeout::{is_outer_backstop_timeout, is_turn_timeout_error, turn_timeout_error_message};
+pub(crate) use retry::{
+    is_non_retryable_rate_limit_text, parse_retry_after_secs_from_str, retry_after_hint,
+};
+pub(crate) use timeout::{
+    is_outer_backstop_timeout, is_turn_timeout_error, turn_timeout_error_message,
+};

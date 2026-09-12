@@ -223,11 +223,7 @@ pub async fn channel_web_cancel(
     let cancelled = if cancelled_request_id.is_some() {
         true
     } else {
-        crate::agent::task_dispatcher::cancel_session_scoped(
-            thread_id.trim(),
-            request_id,
-        )
-        .await
+        crate::agent::task_dispatcher::cancel_session_scoped(thread_id.trim(), request_id).await
     };
 
     Ok(RpcOutcome::single_log(

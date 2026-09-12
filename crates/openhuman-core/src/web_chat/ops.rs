@@ -18,16 +18,16 @@ pub(super) use budget_correlation::{
 };
 
 pub use channel_ops::{
-    cancel_chat, cancel_chat_scoped, channel_web_cancel, channel_web_chat,
-    channel_web_queue_clear, channel_web_queue_status,
+    cancel_chat, cancel_chat_scoped, channel_web_cancel, channel_web_chat, channel_web_queue_clear,
+    channel_web_queue_status,
 };
 
 pub use start_chat::start_chat;
 
-pub(super) use state::{cancel_in_flight_gracefully, event_session_id_for, key_for};
-pub use state::{cancel_should_target, in_flight_entries_for_test, invalidate_thread_sessions};
 #[cfg(any(test, debug_assertions))]
 pub use state::parallel_in_flight_entries_for_test;
+pub(super) use state::{cancel_in_flight_gracefully, event_session_id_for, key_for};
+pub use state::{cancel_should_target, in_flight_entries_for_test, invalidate_thread_sessions};
 pub(super) use state::{IN_FLIGHT, PARALLEL_IN_FLIGHT, THREAD_SESSIONS};
 
 #[cfg(any(test, debug_assertions))]

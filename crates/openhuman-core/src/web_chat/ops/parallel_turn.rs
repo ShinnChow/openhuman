@@ -13,7 +13,9 @@ use super::super::run_task::run_chat_task;
 use super::super::types::{ChatRequestMetadata, ParallelEntry};
 use super::super::web_errors::classify_inference_error;
 use super::state::PARALLEL_IN_FLIGHT;
-use super::turn_guards::{run_turn_under_cancel_and_deadline, sentry_suppression_reason, timeout_bound_tag};
+use super::turn_guards::{
+    run_turn_under_cancel_and_deadline, sentry_suppression_reason, timeout_bound_tag,
+};
 
 /// Spawn an independent, forked (`QueueMode::Parallel`) turn. It snapshots the
 /// thread's history-at-start (inside `run_chat_task` with `fork = true`), runs
@@ -46,132 +48,132 @@ pub(crate) async fn spawn_parallel_turn(
 
     let handle = tokio::spawn(crate::core::runtime::context::CoreContext::propagate(
         async move {
-        let approval_ctx = crate::security::approval::ApprovalChatContext {
-            thread_id: thread_id_task.clone(),
-            client_id: client_id_task.clone(),
-        };
-        let origin = crate::agent::turn_origin::AgentTurnOrigin::WebChat {
-            thread_id: thread_id_task.clone(),
-            client_id: client_id_task.clone(),
-            request_id: Some(request_id_task.clone()),
-        };
-        let result = run_turn_under_cancel_and_deadline(
-            task_cancel_token,
-            origin,
-            approval_ctx,
-            run_chat_task(
-                &client_id_task,
-                &thread_id_task,
-                &request_id_task,
-                &user_message,
-                model_override,
-                temperature,
-                profile_id,
-                locale,
-                run_queue,
-                metadata,
-                /* fork */ true,
-            ),
-        )
-        .await;
-
-        match result {
-            Some(Ok(chat_result)) => {
-                crate::web_chat::presentation::deliver_response(
+            let approval_ctx = crate::security::approval::ApprovalChatContext {
+                thread_id: thread_id_task.clone(),
+                client_id: client_id_task.clone(),
+            };
+            let origin = crate::agent::turn_origin::AgentTurnOrigin::WebChat {
+                thread_id: thread_id_task.clone(),
+                client_id: client_id_task.clone(),
+                request_id: Some(request_id_task.clone()),
+            };
+            let result = run_turn_under_cancel_and_deadline(
+                task_cancel_token,
+                origin,
+                approval_ctx,
+                run_chat_task(
                     &client_id_task,
                     &thread_id_task,
                     &request_id_task,
-                    &chat_result.full_response,
                     &user_message,
-                    &chat_result.citations,
-                    chat_result.usage.as_ref(),
-                    // The workspace the turn ran in, so the reply is stored
-                    // there before it is announced (#6034).
-                    Some(chat_result.workspace_dir.as_path()),
-                )
-                .await;
-            }
-            Some(Err(err)) => {
-                log::warn!(
+                    model_override,
+                    temperature,
+                    profile_id,
+                    locale,
+                    run_queue,
+                    metadata,
+                    /* fork */ true,
+                ),
+            )
+            .await;
+
+            match result {
+                Some(Ok(chat_result)) => {
+                    crate::web_chat::presentation::deliver_response(
+                        &client_id_task,
+                        &thread_id_task,
+                        &request_id_task,
+                        &chat_result.full_response,
+                        &user_message,
+                        &chat_result.citations,
+                        chat_result.usage.as_ref(),
+                        // The workspace the turn ran in, so the reply is stored
+                        // there before it is announced (#6034).
+                        Some(chat_result.workspace_dir.as_path()),
+                    )
+                    .await;
+                }
+                Some(Err(err)) => {
+                    log::warn!(
                     "[web-channel] parallel run_chat_task failed client_id={} thread_id={} request_id={} error={}",
                     client_id_task,
                     thread_id_task,
                     request_id_task,
                     err
                 );
-                let detailed = format!(
+                    let detailed = format!(
                     "parallel run_chat_task failed client_id={} thread_id={} request_id={} error={}",
                     client_id_task, thread_id_task, request_id_task, err
                 );
-                let classified = classify_inference_error(&err);
-                let classified_type = classified.error_type;
+                    let classified = classify_inference_error(&err);
+                    let classified_type = classified.error_type;
 
-                // A parallel turn runs under the same deadline wrapper as the
-                // serial one and dies the same way, but this branch reported
-                // NOTHING to Sentry — not merely the timeouts this PR
-                // un-suppresses, but every error type, since the parallel path
-                // was added. So a discarded turn was invisible here even
-                // before the suppression arm existed, and fixing only
-                // `start_chat` would have left `QueueMode::Parallel` exactly
-                // as blind as it was (#5804 review).
-                //
-                // Same policy as the serial site, deliberately sharing
-                // `sentry_suppression_reason` rather than restating it: the
-                // outer backstop stays suppressed, a harness `Timeout` reports
-                // with the ceiling that fired.
-                if let Some(reason) = sentry_suppression_reason(&detailed) {
-                    log::info!(
-                        target: "web_channel",
-                        "[web_channel.spawn_parallel_turn] suppressed Sentry emission for {} \
-                         client_id={} thread_id={} request_id={} error_type={} message={}",
-                        reason,
-                        client_id_task,
-                        thread_id_task,
-                        request_id_task,
-                        classified_type,
-                        detailed
-                    );
-                } else {
-                    crate::core::observability::report_error_or_expected(
-                        detailed.as_str(),
-                        "web_channel",
-                        "spawn_parallel_turn",
-                        &[
-                            ("channel", "web"),
-                            ("error_type", classified_type),
-                            ("thread_id", thread_id_task.as_str()),
-                            ("request_id", request_id_task.as_str()),
-                            ("queue_mode", "parallel"),
-                            ("timeout_bound", timeout_bound_tag(&detailed)),
-                        ],
-                    );
+                    // A parallel turn runs under the same deadline wrapper as the
+                    // serial one and dies the same way, but this branch reported
+                    // NOTHING to Sentry — not merely the timeouts this PR
+                    // un-suppresses, but every error type, since the parallel path
+                    // was added. So a discarded turn was invisible here even
+                    // before the suppression arm existed, and fixing only
+                    // `start_chat` would have left `QueueMode::Parallel` exactly
+                    // as blind as it was (#5804 review).
+                    //
+                    // Same policy as the serial site, deliberately sharing
+                    // `sentry_suppression_reason` rather than restating it: the
+                    // outer backstop stays suppressed, a harness `Timeout` reports
+                    // with the ceiling that fired.
+                    if let Some(reason) = sentry_suppression_reason(&detailed) {
+                        log::info!(
+                            target: "web_channel",
+                            "[web_channel.spawn_parallel_turn] suppressed Sentry emission for {} \
+                             client_id={} thread_id={} request_id={} error_type={} message={}",
+                            reason,
+                            client_id_task,
+                            thread_id_task,
+                            request_id_task,
+                            classified_type,
+                            detailed
+                        );
+                    } else {
+                        crate::core::observability::report_error_or_expected(
+                            detailed.as_str(),
+                            "web_channel",
+                            "spawn_parallel_turn",
+                            &[
+                                ("channel", "web"),
+                                ("error_type", classified_type),
+                                ("thread_id", thread_id_task.as_str()),
+                                ("request_id", request_id_task.as_str()),
+                                ("queue_mode", "parallel"),
+                                ("timeout_bound", timeout_bound_tag(&detailed)),
+                            ],
+                        );
+                    }
+
+                    publish_web_channel_event(WebChannelEvent {
+                        event: "chat_error".to_string(),
+                        client_id: client_id_task.clone(),
+                        thread_id: thread_id_task.clone(),
+                        request_id: request_id_task.clone(),
+                        message: Some(classified.message),
+                        error_type: Some(classified.error_type.to_string()),
+                        error_source: Some(classified.source.to_string()),
+                        error_retryable: Some(classified.retryable),
+                        error_retry_after_ms: classified.retry_after_ms,
+                        error_provider: classified.provider,
+                        error_fallback_available: classified.fallback_available,
+                        ..Default::default()
+                    });
                 }
-
-                publish_web_channel_event(WebChannelEvent {
-                    event: "chat_error".to_string(),
-                    client_id: client_id_task.clone(),
-                    thread_id: thread_id_task.clone(),
-                    request_id: request_id_task.clone(),
-                    message: Some(classified.message),
-                    error_type: Some(classified.error_type.to_string()),
-                    error_source: Some(classified.source.to_string()),
-                    error_retryable: Some(classified.retryable),
-                    error_retry_after_ms: classified.retry_after_ms,
-                    error_provider: classified.provider,
-                    error_fallback_available: classified.fallback_available,
-                    ..Default::default()
-                });
-            }
-            None => {
-                log::info!(
+                None => {
+                    log::info!(
                     "[web-channel] parallel turn cancelled cooperatively thread_id={} request_id={}",
                     thread_id_task,
                     request_id_task
                 );
+                }
             }
-        }
 
-        PARALLEL_IN_FLIGHT.lock().await.remove(&request_id_task);
+            PARALLEL_IN_FLIGHT.lock().await.remove(&request_id_task);
         },
     ));
 

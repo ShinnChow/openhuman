@@ -7,13 +7,17 @@ use super::budget::{
     generic_inference_error_user_message, inference_budget_exceeded_user_message,
     is_action_budget_exhausted, is_inference_budget_exceeded_error,
 };
-use super::provider_detail::{extract_provider_name, is_fallback_chain_exhausted, with_provider_detail};
+use super::provider_detail::{
+    extract_provider_name, is_fallback_chain_exhausted, with_provider_detail,
+};
 use super::response_predicates::{
     is_connection_dropped_text, is_empty_provider_response_text, is_malformed_tool_history_text,
     is_provider_request_rejected_text, is_transient_unavailability_text,
     malformed_history_user_message,
 };
-use super::retry::{is_non_retryable_rate_limit_text, parse_retry_after_secs_from_str, retry_after_hint};
+use super::retry::{
+    is_non_retryable_rate_limit_text, parse_retry_after_secs_from_str, retry_after_hint,
+};
 use super::timeout::is_turn_timeout_error;
 
 /// Structured chat-error envelope produced by [`classify_inference_error`].
