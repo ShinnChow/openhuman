@@ -148,8 +148,8 @@ From `tools.rs` (`all_composio_agent_tools`, registered only when `subagent_runn
 
 Subscribers/handlers for trigger and config-change events still live in `crate::memory::sync::composio::bus` (re-exported here via `bus.rs`). All three are registered by one call, `register_composio_trigger_subscriber()`, from `crates/openhuman-core/src/core/jsonrpc.rs` (~2158, right after `init_composio_trigger_history`):
 
-- **`ComposioTriggerSubscriber`** — reacts to `DomainEvent::ComposioTriggerReceived` (published by `platform::socket::event_handlers` when the backend emits `composio:trigger`); archives to trigger history and drives memory ingestion.
-- **`ComposioConnectionCreatedSubscriber`** — reacts to `DomainEvent::ComposioConnectionCreated` (published by `composio_authorize`); eagerly warms the integrations cache.
+- **`ComposioTriggerSubscriber`** — reacts to `DomainEvent::ComposioTriggerReceived` (published by `platform::socket::event_handlers` when the backend emits `composio:trigger`); archives the event to `trigger_history` and routes it through `agent::triage::run_triage` unless `OPENHUMAN_TRIGGER_TRIAGE_DISABLED`, `composio.triage_disabled`, or `composio.triage_disabled_toolkits` opts out.
+- **`ComposioConnectionCreatedSubscriber`** — reacts to `DomainEvent::ComposioConnectionCreated` (published by `composio_authorize`); waits for the connection to go active, invalidates and eagerly warms the integrations cache, then runs the initial profile fetch + sync.
 - **`ComposioConfigChangedSubscriber`** — reacts to `DomainEvent::ComposioConfigChanged` (mode/api-key changes).
 
 Published from `ops/` via `crate::core::bus::BUS.publish` (`crate::core::events::DomainEvent`): `DomainEvent::ComposioConnectionCreated` (authorize), `DomainEvent::ComposioConnectionDeleted` (delete), `DomainEvent::ComposioActionExecuted` (execute success/failure, with cost + elapsed).
