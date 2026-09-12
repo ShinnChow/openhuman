@@ -11,7 +11,6 @@ use tinyagents_harness::middleware::{
 };
 use tinyagents_harness::runtime::AgentHarness;
 use tinyagents_harness::steering::SteeringHandle;
-use tinyagents_harness::workspace::WorkspaceDescriptor;
 use tinyagents_registry::{CapabilityRegistry, RegistryDiagnostic, RegistrySnapshot};
 use tinyinference::model::CapabilitySet;
 use tokio::sync::mpsc::Sender;
