@@ -112,8 +112,8 @@ fn redacted_drops_directory_components_for_stale_paths() {
     // user's home directory must produce a log line that contains the
     // exe basenames but neither the username nor the parent dirs.
     let status = RegistrationStatus::Stale {
-        registered_command:
-            "\"C:\\Users\\joe\\AppData\\Local\\OpenHuman\\OpenHuman.exe\" \"%1\"".into(),
+        registered_command: "\"C:\\Users\\joe\\AppData\\Local\\OpenHuman\\OpenHuman.exe\" \"%1\""
+            .into(),
         expected_exe: "C:\\Users\\joe\\AppData\\Local\\OpenHuman_new\\OpenHuman.exe".into(),
     };
     let rendered = status.redacted();

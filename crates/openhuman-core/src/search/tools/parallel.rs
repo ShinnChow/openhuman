@@ -49,4 +49,6 @@ use crate::integrations::IntegrationClient;
 #[cfg(test)]
 use crate::tools::traits::Tool;
 #[cfg(test)]
+use serde_json::json;
+#[cfg(test)]
 use std::sync::Arc;
