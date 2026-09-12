@@ -278,22 +278,34 @@ Most contributor-visible configuration and state flows are documented in:
 
 ```text
 openhuman/
-├── app/                    # React app, Tauri shell, Vitest tests
-│   ├── src/
-│   ├── src-tauri/
-│   └── test/
-├── src/                    # Rust core crate and openhuman-core binary
-├── docs/                   # Internal and workflow docs
-├── gitbooks/developing/    # Contributor-facing architecture and setup guides
-├── scripts/                # Dev, test, debug, and automation scripts
-├── AGENTS.md               # Coding-agent repo rules
-└── CLAUDE.md               # Additional contributor and workflow guidance
+├── app/                    # React frontend (app/src), Vitest + E2E tests (app/test)
+├── crates/
+│   ├── openhuman-app/      # Thin Tauri desktop host (separate workspace)
+│   ├── openhuman-core/     # Rust core: domains under src/<domain>/, RPC server, `openhuman-core` CLI
+│   ├── openhuman-embed/    # Library facade for embedding the core
+│   ├── openhuman-rpc/      # Shared RPC contracts + HTTP client (app, TUI)
+│   └── openhuman-tui/      # Terminal frontend
+├── tests/                  # Rust integration and JSON-RPC E2E tests (explicit [[test]] targets)
+├── examples/               # Embedding examples (explicit [[example]] targets)
+├── vendor/                 # Recursive git submodules (tinyagents, tinymemory, ...)
+├── docs/                   # Internal maintainer docs
+├── gitbooks/               # Public product and contributor docs
+├── scripts/                # Dev, test, CI, and release scripts
+└── AGENTS.md               # Repo rules for contributors and coding agents (CLAUDE.md symlinks here)
 ```
+
+There is no `app/src-tauri/`; the app workspace uses `app/src-tauri-mobile/` and
+`app/src-tauri-web/` for those targets, and the desktop host lives in
+`crates/openhuman-app/`. Root `Cargo.toml` is a virtual workspace with members
+`openhuman-core`, `openhuman-embed`, `openhuman-rpc`, and `openhuman-tui`;
+`crates/openhuman-app` is deliberately excluded and builds as its own
+workspace (`cargo check --manifest-path crates/openhuman-app/Cargo.toml`).
 
 Short version:
 
 - `app/` is the UI and desktop shell.
-- Root `src/` is the Rust core and JSON-RPC surface.
+- `crates/openhuman-core/` is the Rust core and JSON-RPC surface; see the
+  "Rust domain structure" section of AGENTS.md.
 - `gitbooks/developing/` is the canonical place for deeper subsystem docs.
 
 ## Git Workflow
