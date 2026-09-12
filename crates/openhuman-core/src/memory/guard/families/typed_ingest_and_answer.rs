@@ -7,7 +7,7 @@
 //! scaffolding these `impl` blocks build on.
 
 
-use crate::memory::sources::sync::SourceScope;
+use crate::memory::api::provider::types::SourceScope;
 use crate::memory::api::capabilities::Capability;
 use crate::memory::api::chunks::Chunk;
 use crate::memory::api::error::MemoryError;
