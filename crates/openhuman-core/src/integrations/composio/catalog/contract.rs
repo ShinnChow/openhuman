@@ -78,7 +78,7 @@ pub struct ToolContract {
 /// A [`LIVE_CATALOG_CACHE`] / [`PROBE_CACHE`] entry, timestamped so a lookup
 /// can tell a fresh hit from an expired one (E-m8).
 #[derive(Debug, Clone)]
-struct CacheEntry<T> {
+pub(super) struct CacheEntry<T> {
     value: T,
     cached_at: std::time::Instant,
 }
@@ -144,7 +144,7 @@ static LIVE_CATALOG_IN_FLIGHT: std::sync::OnceLock<
     std::sync::Mutex<std::collections::HashMap<String, std::sync::Arc<tokio::sync::Mutex<()>>>>,
 > = std::sync::OnceLock::new();
 
-fn live_catalog_fetch_lock(toolkit: &str) -> Option<std::sync::Arc<tokio::sync::Mutex<()>>> {
+pub(super) fn live_catalog_fetch_lock(toolkit: &str) -> Option<std::sync::Arc<tokio::sync::Mutex<()>>> {
     let mut in_flight = LIVE_CATALOG_IN_FLIGHT
         .get_or_init(Default::default)
         .lock()
