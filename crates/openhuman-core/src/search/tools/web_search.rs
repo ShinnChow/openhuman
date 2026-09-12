@@ -1,3 +1,11 @@
+//! `WebSearchTool` — the managed, backend-proxied `web_search_tool`.
+//!
+//! Used when `search.engine = "managed"` (the default and the fallback when a
+//! BYOK engine has no key configured). Requests go through
+//! `crate::integrations::IntegrationClient`; `resolve_managed_provider`
+//! attributes each response to the provider the backend actually used
+//! (Exa today) for UI display.
+
 use super::{SearchResponse, SearchResultItem, SeltzSearchTool};
 use crate::config::Config;
 use crate::integrations::IntegrationClient;
