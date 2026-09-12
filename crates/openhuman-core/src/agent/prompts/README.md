@@ -56,8 +56,8 @@ as `GLOBAL_STYLE_SUFFIX`. Two uses:
   changed (hash mismatch), in which case the disk copy is overwritten. So a
   user edit survives until the next release that touches that asset. Only
   absolute `workspace_dir`s are seeded. `IdentitySection` syncs
-  `SOUL.md`/`IDENTITY.md`/`ROLE.md` (`ROLE.md` is injected only for the
-  orchestrator); `builder.rs` syncs `STYLE.md` on every build so agents that
+  `SOUL.md`/`IDENTITY.md`/`ROLE.md` (`ROLE.md` is injected only when
+  `visible_tool_names` is non-empty, i.e. for the orchestrator); `builder.rs` syncs `STYLE.md` on every build so agents that
   set `omit_identity` still get the style rules.
 - **Compile-time fallback** — `GLOBAL_STYLE_SUFFIX` is used when the
   workspace `STYLE.md` cannot be read.
@@ -146,6 +146,7 @@ rather than "N days ago".
   tool-policy boundary.
 - `agent/harness/session/builder/factory.rs` — picks the entry point per
   `PromptSource` and registers the learning/profile sections.
-- `agent/debug/` — `mod.rs` builds the same `PromptContext` to dump every
-  agent's prompt (`dump_writer.rs`), `prompt_size.rs` measures it.
+- `agent/debug/` — `dump_agent_prompt` / `dump_all_agent_prompts` (`mod.rs`)
+  build the same `PromptContext` to render each agent's prompt,
+  `dump_writer.rs` writes it to disk, `prompt_size.rs` measures it.
 - `agent/context/prompt.rs` — compat re-export shim (see above).
