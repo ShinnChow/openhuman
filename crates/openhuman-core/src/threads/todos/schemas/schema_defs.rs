@@ -244,7 +244,7 @@ pub(super) fn schemas(function: &str) -> ControllerSchema {
     }
 }
 
-pub(super) fn thread_id_input() -> FieldSchema {
+fn thread_id_input() -> FieldSchema {
     FieldSchema {
         name: "thread_id",
         ty: TypeSchema::String,
