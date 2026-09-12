@@ -81,7 +81,7 @@ Because the engine keys persisted state by a caller-supplied `thread_id`,
 durable **HITL resume** is `engine::resume_with_checkpointer` over the same
 `tinyagents::graph::SqliteCheckpointer` the agent harness uses - opened once per
 host at `<workspace_dir>/flows/checkpoints.db`
-([`caps/`](../../../crates/openhuman-core/src/flows/tinyflows/caps/mod.rs), `open_flow_checkpointer`).
+([`caps/ops.rs`](../../../crates/openhuman-core/src/flows/tinyflows/caps/ops.rs), `open_flow_checkpointer`).
 
 ## Run state: one JSON map, a merge reducer, and the `{json,text,raw}` envelope
 
