@@ -4,7 +4,7 @@
 use super::*;
 
 impl BrowserTool {
-    fn computer_use_endpoint_url(&self) -> anyhow::Result<reqwest::Url> {
+    pub(super) fn computer_use_endpoint_url(&self) -> anyhow::Result<reqwest::Url> {
         if self.computer_use.timeout_ms == 0 {
             anyhow::bail!("browser.computer_use.timeout_ms must be > 0");
         }
@@ -136,7 +136,7 @@ impl BrowserTool {
     }
 
     /// Validate URL against allowlist
-    fn validate_url(&self, url: &str) -> anyhow::Result<()> {
+    pub(super) fn validate_url(&self, url: &str) -> anyhow::Result<()> {
         let url = url.trim();
 
         if url.is_empty() {

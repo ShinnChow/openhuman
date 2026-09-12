@@ -235,7 +235,7 @@ impl BrowserTool {
         ))
     }
 
-    async fn execute_action(
+    pub(super) async fn execute_action(
         &self,
         action: BrowserAction,
         backend: ResolvedBackend,

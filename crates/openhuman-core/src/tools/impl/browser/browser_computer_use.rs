@@ -4,7 +4,7 @@
 use super::*;
 
 impl BrowserTool {
-    fn validate_coordinate(&self, key: &str, value: i64, max: Option<i64>) -> anyhow::Result<()> {
+    pub(super) fn validate_coordinate(&self, key: &str, value: i64, max: Option<i64>) -> anyhow::Result<()> {
         if value < 0 {
             anyhow::bail!("'{key}' must be >= 0")
         }
@@ -30,7 +30,7 @@ impl BrowserTool {
             .ok_or_else(|| anyhow::anyhow!("Missing or invalid '{key}' parameter"))
     }
 
-    fn validate_computer_use_action(
+    pub(super) fn validate_computer_use_action(
         &self,
         action: &str,
         params: &serde_json::Map<String, Value>,
