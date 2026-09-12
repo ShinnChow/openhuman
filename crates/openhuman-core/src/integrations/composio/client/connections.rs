@@ -21,7 +21,7 @@ const GMAIL_REQUIRED_OAUTH_SCOPES: &[&str] = &["https://www.googleapis.com/auth/
 /// High-level client for all backend-proxied Composio operations.
 #[derive(Clone)]
 pub struct ComposioClient {
-    inner: Arc<IntegrationClient>,
+    pub(super) inner: Arc<IntegrationClient>,
 }
 
 impl ComposioClient {
