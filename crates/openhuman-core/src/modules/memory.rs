@@ -68,9 +68,7 @@ pub(crate) use capabilities::{capabilities_for, ARTIFACT_CAPABILITIES, ARTIFACT_
 pub use provider::{install_host_callbacks, publish_cli_boot_policy, set_modules_policy};
 pub(crate) use provider::policy;
 pub use provider::{ModuleMemoryProvider, MODULE_ID};
-use provider::from_bus;
-use sync_sessions_episodic::INGEST_BUS_GRACE;
-
 #[cfg(test)]
-#[allow(unused_imports)]
-use {from_bus as _, INGEST_BUS_GRACE as _};
+use provider::from_bus;
+#[cfg(test)]
+use sync_sessions_episodic::INGEST_BUS_GRACE;
