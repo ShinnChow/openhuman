@@ -142,7 +142,7 @@ Three of them also gate items on this crate's own public surface:
   `SessionDetail`, `SessionCreated`, `Message`, `SendResult`, `AbortResult`,
   `RosterWorker`, `WireEventEnvelope`).
 - `mcp` — `HttpHeader`, `McpAuthConfig`, `McpServer` and
-  `HarnessBuilder::mcp_server`.
+  `HarnessBuilder::mcp`.
 - `skills` — `HarnessBuilder::skills_dir`.
 
 See [`docs/library-minimal-recipe.md`](../../docs/library-minimal-recipe.md)
