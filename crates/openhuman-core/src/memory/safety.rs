@@ -41,5 +41,11 @@
 #[cfg(test)]
 #[path = "safety_tests.rs"]
 mod tests;
-include!("safety_part_01.rs");
-include!("safety_part_02.rs");
+
+mod pii;
+mod secrets;
+
+pub use pii::{has_likely_email, has_likely_pii, redact_pii};
+pub use secrets::{
+    has_likely_secret, sanitize_json, sanitize_text, SanitizationReport, Sanitized,
+};
