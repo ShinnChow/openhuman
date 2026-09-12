@@ -3,7 +3,7 @@
 use super::*;
 
 pub(super) const CAPABILITIES: &[Capability] = &[
-{
+Capability {
         id: "team.create",
         name: "Create Teams",
         domain: "team",
@@ -13,7 +13,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "team.join_via_invite_code",
         name: "Join Teams via Invite Code",
         domain: "team",
@@ -23,7 +23,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "team.switch_active_team",
         name: "Switch Active Team",
         domain: "team",
@@ -33,7 +33,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "team.leave",
         name: "Leave Teams",
         domain: "team",
@@ -43,7 +43,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "team.manage_members",
         name: "Manage Team Members",
         domain: "team",
@@ -53,7 +53,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "team.generate_invite_codes",
         name: "Generate Invite Codes",
         domain: "team",
@@ -63,7 +63,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "team.track_invite_usage",
         name: "Track Invite Usage",
         domain: "team",
@@ -73,7 +73,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "auth.login_oauth",
         name: "Login via OAuth",
         domain: "auth",
@@ -83,7 +83,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "auth.onboarding_setup",
         name: "Onboarding Setup",
         domain: "auth",
@@ -93,7 +93,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "auth.configure_tool_access",
         name: "Configure Tool Access",
         domain: "auth",
@@ -103,7 +103,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "auth.backup_recovery_phrase",
         name: "Back Up Recovery Phrase",
         domain: "auth",
@@ -113,7 +113,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "auth.import_recovery_phrase",
         name: "Import Recovery Phrase",
         domain: "auth",
@@ -123,7 +123,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "auth.logout",
         name: "Logout",
         domain: "auth",
@@ -133,7 +133,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "channels.connect_platform",
         name: "Connect Messaging Platforms",
         domain: "channels",
@@ -143,7 +143,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "channels.telegram_remote_control",
         name: "Telegram Remote Control",
         domain: "channels",
@@ -154,7 +154,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "channels.disconnect_platform",
         name: "Disconnect Messaging Platforms",
         domain: "channels",
@@ -164,7 +164,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "channels.test_credentials",
         name: "Test Channel Credentials",
         domain: "channels",
@@ -174,7 +174,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "channels.set_default_channel",
         name: "Set Default Messaging Channel",
         domain: "channels",
@@ -184,7 +184,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "channels.whatsapp_read_messages",
         name: "Read WhatsApp Messages",
         domain: "channels",
@@ -194,7 +194,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_RAW,
     },
-{
+Capability {
         id: "channels.mcp_registry_browse",
         name: "Browse MCP Server Registry",
         domain: "channels",
@@ -208,7 +208,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
             destinations: &["Smithery.ai registry API", "modelcontextprotocol registry API"],
         }),
     },
-{
+Capability {
         id: "channels.mcp_server_install",
         name: "Install MCP Servers",
         domain: "channels",
@@ -218,7 +218,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_CREDENTIALS,
     },
-{
+Capability {
         id: "channels.mcp_server_connect",
         name: "Connect / Reconfigure MCP Servers",
         domain: "channels",
@@ -232,7 +232,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
             destinations: &["Configured MCP endpoint(s)"],
         }),
     },
-{
+Capability {
         id: "channels.mcp_connection_alerts",
         name: "MCP Connection Health Alerts",
         domain: "channels",
@@ -242,7 +242,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "channels.mcp_tool_call",
         name: "Invoke MCP Server Tools",
         domain: "channels",

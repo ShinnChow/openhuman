@@ -3,7 +3,7 @@
 use super::*;
 
 pub(super) const CAPABILITIES: &[Capability] = &[
-{
+Capability {
         id: "local_ai.download_model",
         name: "Download Local Models",
         domain: "local_ai",
@@ -13,7 +13,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: MODEL_DOWNLOAD,
     },
-{
+Capability {
         id: "local_ai.configure_provider",
         name: "Configure Local Provider",
         domain: "local_ai",
@@ -23,7 +23,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "local_ai.manage_model_assets",
         name: "Manage Model Assets",
         domain: "local_ai",
@@ -33,7 +33,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "local_ai.model_context_check",
         name: "Model Context Requirement Check",
         domain: "local_ai",
@@ -43,7 +43,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "local_ai.embed_text",
         name: "Generate Text Embeddings",
         domain: "local_ai",
@@ -53,7 +53,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_RAW,
     },
-{
+Capability {
         id: "local_ai.text_to_speech",
         name: "Text to Speech (Local)",
         domain: "local_ai",
@@ -66,7 +66,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "local_ai.vision_processing",
         name: "Vision Processing",
         domain: "local_ai",
@@ -76,7 +76,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "local_ai.direct_prompting",
         name: "Direct Model Prompting",
         domain: "local_ai",
@@ -86,7 +86,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "local_ai.piper_installer",
         name: "Piper Installer (Local TTS)",
         domain: "local_ai",
@@ -100,7 +100,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: MODEL_DOWNLOAD,
     },
-{
+Capability {
         id: "local_ai.python_runtime_installer",
         name: "Managed Python Runtime",
         domain: "runtime_python",
@@ -111,7 +111,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: MODEL_DOWNLOAD,
     },
-{
+Capability {
         id: "settings.configure_ai",
         name: "Configure AI",
         domain: "settings",
@@ -121,7 +121,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "settings.core_connection",
         name: "Run the Core Somewhere Else",
         domain: "settings",
@@ -145,7 +145,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
             destinations: &["The machine you configure, when the core runs off this device"],
         }),
     },
-{
+Capability {
         id: "settings.persona_pack",
         name: "Persona Pack",
         domain: "settings",
@@ -155,7 +155,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: GITHUB_MASCOT_MANIFEST,
     },
-{
+Capability {
         id: "settings.manage_privacy_analytics",
         name: "Manage Privacy and Analytics",
         domain: "settings",
@@ -168,7 +168,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: DIAGNOSTICS_TO_BACKEND,
     },
-{
+Capability {
         id: "settings.view_billing",
         name: "View Billing",
         domain: "settings",
@@ -178,7 +178,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "settings.manage_subscription_plan",
         name: "Manage Subscription Plan",
         domain: "settings",
@@ -188,7 +188,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "settings.manage_credits",
         name: "Manage Credits",
         domain: "settings",
@@ -198,7 +198,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "settings.add_payment_methods",
         name: "Add Payment Methods",
         domain: "settings",
@@ -208,7 +208,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "settings.developer_options",
         name: "Developer Options",
         domain: "settings",
@@ -218,7 +218,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "settings.debug_webhooks",
         name: "Debug Webhooks",
         domain: "settings",
@@ -229,7 +229,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "settings.manage_service",
         name: "Manage Desktop Service",
         domain: "settings",
@@ -239,7 +239,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "settings.clear_app_data",
         name: "Log Out and Clear App Data",
         domain: "settings",
@@ -249,7 +249,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "settings.delete_all_data",
         name: "Delete All Data",
         domain: "settings",
@@ -259,7 +259,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::ComingSoon,
         privacy: None,
     },
-{
+Capability {
         id: "mobile.device_pairing",
         name: "Device Pairing",
         domain: "devices",
@@ -271,7 +271,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "mobile.ios_client",
         name: "iOS Client",
         domain: "devices",
@@ -283,7 +283,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "mobile.push_to_talk",
         name: "Push-to-Talk",
         domain: "devices",
@@ -299,7 +299,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
             destinations: &[],
         }),
     },
-{
+Capability {
         id: "update.check",
         name: "Check for Core Updates",
         domain: "update",
@@ -311,7 +311,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: GITHUB_RELEASES_METADATA,
     },
-{
+Capability {
         id: "update.apply",
         name: "Apply Core Update",
         domain: "update",
@@ -325,7 +325,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: GITHUB_RELEASES_METADATA,
     },
-{
+Capability {
         id: "filesystem.access_mode",
         name: "Agent OS Access Mode",
         domain: "security",
@@ -337,7 +337,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "agent.action_timeout",
         name: "Action Timeout",
         domain: "agent",
@@ -350,7 +350,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "security.always_allow_tool",
         name: "Always Allow a Tool",
         domain: "security",
@@ -363,7 +363,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "security.approval_history",
         name: "Approval History",
         domain: "security",
@@ -375,7 +375,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "tool.detect_tools",
         name: "Detect Installed Tools",
         domain: "tools",
@@ -386,7 +386,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "tool.install_tool",
         name: "Install OS Packages",
         domain: "tools",
@@ -397,7 +397,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "security.action_sandbox",
         name: "Action Sandbox",
         domain: "security",
@@ -410,7 +410,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "security.sandbox_backends",
         name: "Sandbox Execution Backends",
         domain: "security",

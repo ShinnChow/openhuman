@@ -3,7 +3,7 @@
 use super::*;
 
 pub(super) const CAPABILITIES: &[Capability] = &[
-{
+Capability {
         id: "workflows.discover",
         name: "Discover Workflows",
         domain: "workflows",
@@ -13,7 +13,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "workflows.install",
         name: "Install Workflows",
         domain: "workflows",
@@ -23,7 +23,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "workflows.configure",
         name: "Configure Workflows",
         domain: "workflows",
@@ -33,7 +33,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "workflows.connection_status",
         name: "Monitor Workflow Connection Status",
         domain: "workflows",
@@ -43,7 +43,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "workflows.sync_manual",
         name: "Manually Sync Workflow Data",
         domain: "workflows",
@@ -53,7 +53,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: DERIVED_TO_BACKEND,
     },
-{
+Capability {
         id: "workflows.tinyfish_web_automation",
         name: "TinyFish Web Automation",
         domain: "workflows",
@@ -64,7 +64,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: DERIVED_TO_BACKEND,
     },
-{
+Capability {
         id: "workflows.toggle_enabled",
         name: "Enable or Disable Workflows",
         domain: "workflows",
@@ -74,7 +74,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "workflows.open_connections_hub",
         name: "Open Connections Hub",
         domain: "workflows",
@@ -84,7 +84,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "composio.direct_mode",
         name: "Composio Direct Mode (BYO API Key)",
         domain: "workflows",
@@ -97,7 +97,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: COMPOSIO_DIRECT_CREDENTIALS,
     },
-{
+Capability {
         id: "composio.direct_mode_triggers_gap",
         name: "Composio Triggers (Direct Mode — Limited)",
         domain: "workflows",
@@ -111,7 +111,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::ComingSoon,
         privacy: None,
     },
-{
+Capability {
         id: "workflows.connect_google",
         name: "Connect Google",
         domain: "workflows",
@@ -121,7 +121,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::ComingSoon,
         privacy: LOCAL_CREDENTIALS,
     },
-{
+Capability {
         id: "workflows.connect_notion",
         name: "Connect Notion",
         domain: "workflows",
@@ -131,7 +131,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::ComingSoon,
         privacy: LOCAL_CREDENTIALS,
     },
-{
+Capability {
         id: "workflows.connect_web3_wallet",
         name: "Connect Web3 Wallet",
         domain: "workflows",
@@ -141,7 +141,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_CREDENTIALS,
     },
-{
+Capability {
         id: "workflows.wallet_execution",
         name: "Wallet Execution Tools",
         domain: "wallet",
@@ -151,7 +151,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_CREDENTIALS,
     },
-{
+Capability {
         id: "workflows.web3_defi",
         name: "Web3 Swaps & Bridges",
         domain: "web3",
@@ -161,7 +161,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_CREDENTIALS,
     },
-{
+Capability {
         id: "workflows.x402_payments",
         name: "x402 Machine Payments",
         domain: "x402",
@@ -171,7 +171,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_CREDENTIALS,
     },
-{
+Capability {
         id: "workflows.connect_crypto_exchange",
         name: "Connect Crypto Exchange",
         domain: "workflows",
@@ -181,7 +181,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::ComingSoon,
         privacy: None,
     },
-{
+Capability {
         id: "automation.task_sources",
         name: "Task Sources",
         domain: "automation",
@@ -193,7 +193,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: DERIVED_TO_BACKEND,
     },
-{
+Capability {
         id: "automation.discover_workflows",
         name: "Suggested Workflows (Flow Scout)",
         domain: "flows",
@@ -208,7 +208,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: DERIVED_TO_BACKEND,
     },
-{
+Capability {
         id: "automation.flow_memory_node",
         name: "Memory Node (Flows)",
         domain: "flows",
@@ -225,7 +225,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_RAW,
     },
-{
+Capability {
         id: "automation.flow_dedup_node",
         name: "Dedup Node (Flows)",
         domain: "flows",
@@ -249,7 +249,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_RAW,
     },
-{
+Capability {
         id: "automation.view_cron_jobs",
         name: "View Cron Jobs",
         domain: "automation",
@@ -259,7 +259,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "automation.set_job_intervals",
         name: "Set Job Intervals",
         domain: "automation",
@@ -269,7 +269,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "automation.view_execution_history",
         name: "View Execution History",
         domain: "automation",
@@ -279,7 +279,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "automation.morning_briefing",
         name: "Morning Briefing",
         domain: "automation",
@@ -289,7 +289,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "automation.crypto_agent",
         name: "Crypto Agent",
         domain: "automation",

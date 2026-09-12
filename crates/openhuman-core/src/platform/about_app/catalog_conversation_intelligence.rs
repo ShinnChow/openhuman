@@ -3,7 +3,7 @@
 use super::*;
 
 pub(super) const CAPABILITIES: &[Capability] = &[
-{
+Capability {
         id: "conversation.create",
         name: "Create Conversations",
         domain: "conversation",
@@ -13,7 +13,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "conversation.send_text",
         name: "Send Text Messages",
         domain: "conversation",
@@ -23,7 +23,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: DERIVED_TO_BACKEND,
     },
-{
+Capability {
         id: "conversation.prompt_injection_guard",
         name: "Prompt Injection Guard",
         domain: "conversation",
@@ -33,7 +33,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: DERIVED_TO_BACKEND,
     },
-{
+Capability {
         id: "conversation.send_voice",
         name: "Send Voice Messages",
         domain: "conversation",
@@ -43,7 +43,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: DERIVED_TO_BACKEND,
     },
-{
+Capability {
         id: "voice.stt_engine",
         name: "Speech Recognition Engine",
         domain: "voice",
@@ -57,7 +57,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: DERIVED_TO_BACKEND,
     },
-{
+Capability {
         id: "voice.ptt",
         name: "Global push-to-talk",
         domain: "voice",
@@ -73,7 +73,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: DERIVED_TO_BACKEND,
     },
-{
+Capability {
         id: "conversation.copy_messages",
         name: "Copy Messages",
         domain: "conversation",
@@ -83,7 +83,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "conversation.delete_conversations",
         name: "Delete Conversations",
         domain: "conversation",
@@ -93,7 +93,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "conversation.terminal_chat",
         name: "Tabbed Terminal UI",
         domain: "tui",
@@ -109,7 +109,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: DERIVED_TO_BACKEND,
     },
-{
+Capability {
         id: "conversation.suggested_questions",
         name: "Suggested Questions",
         domain: "conversation",
@@ -119,7 +119,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "conversation.tool_execution_timeline",
         name: "Tool Execution Timeline",
         domain: "conversation",
@@ -129,7 +129,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "conversation.plan_review",
         name: "Plan Review",
         domain: "conversation",
@@ -139,7 +139,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "conversation.subagent_mascots",
         name: "Subagent Mascots",
         domain: "conversation",
@@ -149,7 +149,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "intelligence.vision_subagent",
         name: "Vision Sub-agent",
         domain: "agent",
@@ -159,7 +159,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: IMAGE_TO_BACKEND,
     },
-{
+Capability {
         id: "intelligence.image_generation",
         name: "Image Generation",
         domain: "agent",
@@ -169,7 +169,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: MEDIA_GEN_TO_BACKEND,
     },
-{
+Capability {
         id: "intelligence.video_generation",
         name: "Video Generation",
         domain: "agent",
@@ -179,7 +179,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: MEDIA_GEN_TO_BACKEND,
     },
-{
+Capability {
         id: "conversation.label_filter",
         name: "Thread Label Filters",
         domain: "conversation",
@@ -189,7 +189,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "intelligence.analyze_actionable_items",
         name: "Analyze Actionable Items",
         domain: "intelligence",
@@ -199,7 +199,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: DERIVED_TO_BACKEND,
     },
-{
+Capability {
         id: "intelligence.filter_actionable_items",
         name: "Filter Actionable Items",
         domain: "intelligence",
@@ -209,7 +209,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "intelligence.mark_actionable_item_complete",
         name: "Mark Items Complete",
         domain: "intelligence",
@@ -219,7 +219,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "intelligence.dismiss_actionable_item",
         name: "Dismiss Items",
         domain: "intelligence",
@@ -229,7 +229,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "intelligence.snooze_actionable_item",
         name: "Snooze Items",
         domain: "intelligence",
@@ -239,7 +239,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: None,
     },
-{
+Capability {
         id: "intelligence.undo_action",
         name: "Undo Item Actions",
         domain: "intelligence",
@@ -249,7 +249,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "intelligence.agentmemory_backend",
         name: "agentmemory Memory Backend",
         domain: "intelligence",
@@ -264,7 +264,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_RAW,
     },
-{
+Capability {
         id: "intelligence.memory_workspace",
         name: "Memory Workspace",
         domain: "intelligence",
@@ -274,7 +274,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "intelligence.agents_md_instructions",
         name: "AGENTS.md Project Instructions",
         domain: "intelligence",
@@ -293,7 +293,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Stable,
         privacy: AGENTS_MD_TO_INFERENCE_PROVIDER,
     },
-{
+Capability {
         id: "intelligence.tool_scoped_memory",
         name: "Tool-Scoped Memory Rules",
         domain: "intelligence",
@@ -307,7 +307,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_RAW,
     },
-{
+Capability {
         id: "intelligence.long_term_goals",
         name: "Long-term Goals",
         domain: "intelligence",
@@ -325,7 +325,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         // the device during a reflect pass (CRUD/storage stays local).
         privacy: DERIVED_TO_BACKEND,
     },
-{
+Capability {
         id: "conversation.thread_goal",
         name: "Thread Goal",
         domain: "conversation",
@@ -346,7 +346,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         // cloud agentic model, so objective/context can leave the device then.
         privacy: DERIVED_TO_BACKEND,
     },
-{
+Capability {
         id: "intelligence.memory_tree_retrieval",
         name: "Memory Tree Retrieval (chat)",
         domain: "intelligence",
@@ -356,7 +356,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_RAW,
     },
-{
+Capability {
         id: "intelligence.memory_pipeline_doctor",
         name: "Memory Pipeline Doctor",
         domain: "intelligence",
@@ -366,7 +366,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_RAW,
     },
-{
+Capability {
         id: "intelligence.github_repo_memory_source",
         name: "GitHub Repo Memory Source",
         domain: "memory_sources",
@@ -385,7 +385,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: GITHUB_REPO_SOURCE,
     },
-{
+Capability {
         id: "intelligence.memory_source_sync_controls",
         name: "Memory Source Sync Defaults & Controls",
         domain: "memory_sources",
@@ -404,7 +404,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_RAW,
     },
-{
+Capability {
         id: "intelligence.coding_session_memory",
         name: "Coding-Agent Session Memory",
         domain: "memory_sources",
@@ -414,7 +414,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: CODING_SESSION_TO_BACKEND,
     },
-{
+Capability {
         id: "intelligence.memory_sync_schedule",
         name: "Memory Sync Schedule",
         domain: "config",
@@ -433,7 +433,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_RAW,
     },
-{
+Capability {
         id: "intelligence.embedding_provider_config",
         name: "Configure Embedding Provider",
         domain: "embeddings",
@@ -456,7 +456,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         // network side on the test action.
         privacy: LOCAL_CREDENTIALS,
     },
-{
+Capability {
         id: "intelligence.embedding_provider_test",
         name: "Test Embedding Provider",
         domain: "embeddings",
@@ -477,7 +477,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: EMBEDDING_PROBE_TO_CONFIGURED_PROVIDER,
     },
-{
+Capability {
         id: "intelligence.mcp_server",
         name: "MCP Server",
         domain: "intelligence",
@@ -487,7 +487,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_RAW,
     },
-{
+Capability {
         id: "intelligence.searxng_search",
         name: "SearXNG Search",
         domain: "intelligence",
@@ -497,7 +497,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: SEARXNG_RAW_TO_CONFIGURED_INSTANCE,
     },
-{
+Capability {
         id: "intelligence.tool_registry",
         name: "Tool Registry",
         domain: "intelligence",
@@ -507,7 +507,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_RAW,
     },
-{
+Capability {
         id: "intelligence.orchestrator_worker_thread",
         name: "Worker Thread Delegation",
         domain: "intelligence",
@@ -517,7 +517,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: DERIVED_TO_BACKEND,
     },
-{
+Capability {
         id: "intelligence.workflow_orchestration",
         name: "Workflow Orchestration",
         domain: "workflow_runs",
@@ -527,7 +527,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: DERIVED_TO_BACKEND,
     },
-{
+Capability {
         id: "intelligence.agent_library",
         name: "Agents Library",
         domain: "intelligence",
@@ -537,7 +537,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: DERIVED_TO_BACKEND,
     },
-{
+Capability {
         id: "intelligence.worktree_manager",
         name: "Agent Worktrees",
         domain: "intelligence",
@@ -547,7 +547,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "intelligence.slack_memory_ingest",
         name: "Slack Memory Ingestion",
         domain: "intelligence",
@@ -557,7 +557,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_RAW,
     },
-{
+Capability {
         id: "intelligence.clickup_memory_ingest",
         name: "ClickUp Memory Ingestion",
         domain: "intelligence",
@@ -567,7 +567,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: LOCAL_RAW,
     },
-{
+Capability {
         id: "intelligence.notifications_dismiss",
         name: "Dismiss Notifications",
         domain: "intelligence",
@@ -577,7 +577,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "intelligence.notifications_mark_acted",
         name: "Mark Notifications Acted",
         domain: "intelligence",
@@ -587,7 +587,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "intelligence.notifications_stats",
         name: "View Notification Stats",
         domain: "intelligence",
@@ -597,7 +597,7 @@ pub(super) const CAPABILITIES: &[Capability] = &[
         status: CapabilityStatus::Beta,
         privacy: None,
     },
-{
+Capability {
         id: "intelligence.remember_preferences",
         name: "Remember Preferences",
         domain: "memory",

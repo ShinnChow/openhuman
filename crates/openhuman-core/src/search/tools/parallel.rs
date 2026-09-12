@@ -44,3 +44,9 @@ use enrich::{enrich_payload, format_enrich_response, EnrichResponse};
 use extract::ExtractResponse;
 #[cfg(test)]
 use research::{format_research_response, research_payload, ResearchResponse};
+#[cfg(test)]
+use crate::integrations::IntegrationClient;
+#[cfg(test)]
+use crate::tools::traits::Tool as _;
+#[cfg(test)]
+use std::sync::Arc;

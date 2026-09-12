@@ -10,9 +10,17 @@
 //!
 //! The scout's output is bounded by `context_scout`'s `max_result_chars`
 //! (≈1000 tokens) so the parent's context only grows by a bounded amount.
+//!
+//! - [`scout_run`] — the engine: running `context_scout` inline, extracting
+//!   its envelope, and classifying/logging failures.
+//! - [`tool`] — the `Tool` wrapper: schema and parent-catalogue rendering.
+
+mod scout_run;
+mod tool;
 
 #[cfg(test)]
 #[path = "agent_prepare_context_tests.rs"]
 mod tests;
-include!("agent_prepare_context_part_01.rs");
-include!("agent_prepare_context_part_02.rs");
+
+pub use scout_run::{run_context_scout, run_context_scout_with_catalog};
+pub use tool::AgentPrepareContextTool;
