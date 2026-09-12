@@ -36,7 +36,7 @@ fn sanitize_error_message(message: &str) -> String {
     crate::util::truncate_with_ellipsis(&sanitized, 240)
 }
 
-fn extract_api_error_message(body: &str) -> Option<String> {
+pub(super) fn extract_api_error_message(body: &str) -> Option<String> {
     let parsed: serde_json::Value = serde_json::from_str(body).ok()?;
     parsed
         .get("error")

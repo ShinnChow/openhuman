@@ -11,7 +11,7 @@ use std::sync::Arc;
 #[cfg(debug_assertions)]
 use super::types::is_loopback_http_base;
 
-fn normalize_entity_id(entity_id: &str) -> String {
+pub(super) fn normalize_entity_id(entity_id: &str) -> String {
     let trimmed = entity_id.trim();
     if trimmed.is_empty() {
         "default".to_string()
