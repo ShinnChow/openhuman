@@ -88,7 +88,7 @@ pub(crate) async fn graph_wiring_warnings(config: &Config, graph: &WorkflowGraph
 /// `.item.json.<x>` fields with no `data.` prefix; flagging them as
 /// "missing the `data.` segment" would rewire an already-correct binding to
 /// a nonsense path (e.g. suggesting `.item.json.data.successful`).
-async fn graph_output_field_warnings(config: &Config, graph: &WorkflowGraph) -> Vec<String> {
+pub(super) async fn graph_output_field_warnings(config: &Config, graph: &WorkflowGraph) -> Vec<String> {
     use crate::flows::tinyflows::caps::fetch_live_toolkit_catalog;
     // Reading a graph's `=`-bindings is the engine's grammar, not this host's:
     // both helpers were a private copy here until the gates moved upstream.

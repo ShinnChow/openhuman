@@ -440,7 +440,7 @@ pub async fn flows_build_cancel(
 /// return a self-describing `{ "type": "workflow_proposal", … }` JSON string as
 /// their tool result, so we match on that (the same gate the frontend uses) and
 /// return the LAST one — the most recent proposal in the turn.
-fn extract_workflow_proposal(
+pub(super) fn extract_workflow_proposal(
     history: &[crate::agent::messages::ConversationMessage],
 ) -> Option<Value> {
     use crate::agent::messages::ConversationMessage;

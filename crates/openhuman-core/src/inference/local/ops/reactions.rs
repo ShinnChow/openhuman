@@ -1,3 +1,18 @@
+//! The emoji reaction decision: asking the local model whether to react and
+//! extracting the emoji it picked.
+
+use crate::config::Config;
+use crate::inference::local as local_ai;
+use crate::rpc::RpcOutcome;
+
+/// Result of the reaction-decision prompt.
+#[derive(Debug, serde::Serialize)]
+pub struct ReactionDecision {
+    /// Whether the model thinks a reaction is appropriate.
+    pub should_react: bool,
+    /// The emoji to use (only meaningful when `should_react` is true).
+    pub emoji: Option<String>,
+}
 
 /// Evaluates whether the assistant should add an emoji reaction to a user message.
 ///
@@ -97,7 +112,7 @@ pub async fn local_ai_should_react(
 
 /// Extract the first emoji from a string. Handles common emoji codepoints
 /// including flag sequences (pairs of regional indicator symbols).
-fn extract_first_emoji(text: &str) -> Option<String> {
+pub(super) fn extract_first_emoji(text: &str) -> Option<String> {
     let mut chars = text.chars();
     while let Some(ch) = chars.next() {
         // Regional indicator pair → flag emoji (e.g. 🇺🇸 = U+1F1FA U+1F1F8)
@@ -136,11 +151,11 @@ fn extract_first_emoji(text: &str) -> Option<String> {
     None
 }
 
-fn is_regional_indicator(ch: char) -> bool {
+pub(super) fn is_regional_indicator(ch: char) -> bool {
     ('\u{1F1E6}'..='\u{1F1FF}').contains(&ch)
 }
 
-fn is_emoji_start(ch: char) -> bool {
+pub(super) fn is_emoji_start(ch: char) -> bool {
     matches!(ch,
         '\u{203C}' | '\u{2049}'       // exclamation marks
         | '\u{2139}'                   // information

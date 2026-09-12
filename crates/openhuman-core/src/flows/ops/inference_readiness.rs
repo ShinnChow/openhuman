@@ -92,7 +92,7 @@ type InferenceProbeCacheMap =
 /// above on fail-open) — a fixed provider becomes visible again at most
 /// `INFERENCE_PROBE_CACHE_TTL` later, or immediately on sign-out/back-in via
 /// [`invalidate_inference_probe_cache_if_signed_out`].
-static INFERENCE_PROBE_CACHE: LazyLock<std::sync::Mutex<InferenceProbeCacheMap>> =
+pub(super) static INFERENCE_PROBE_CACHE: LazyLock<std::sync::Mutex<InferenceProbeCacheMap>> =
     LazyLock::new(|| std::sync::Mutex::new(std::collections::HashMap::new()));
 
 /// Invalidate every cached Layer-2 probe result. Checked defensively on every
@@ -110,7 +110,7 @@ fn invalidate_inference_probe_cache_if_signed_out() {
     }
 }
 
-async fn cached_probe_inference_readiness(role: &str, config: &Config) -> Result<(), String> {
+pub(super) async fn cached_probe_inference_readiness(role: &str, config: &Config) -> Result<(), String> {
     invalidate_inference_probe_cache_if_signed_out();
 
     let key: InferenceProbeCacheKey = (role.to_string(), config.config_path.clone());
@@ -169,7 +169,7 @@ async fn cached_probe_inference_readiness(role: &str, config: &Config) -> Result
 /// this case falls back to the default role rather than guess.
 /// TODO(B45): resolve agent_ref-pinned model for harness `AgentDefinition`s
 /// once a parent-model-free resolution path exists.
-fn agent_node_role(config: &Config, node: &tinyflows::model::Node) -> &'static str {
+pub(super) fn agent_node_role(config: &Config, node: &tinyflows::model::Node) -> &'static str {
     let pinned_model = node
         .config
         .get("model")
@@ -226,14 +226,14 @@ fn classify_inference_error_message(message: &str) -> &'static str {
 
 /// Outcome of [`evaluate_inference_readiness`] for a graph that has at least
 /// one applicable `agent` node.
-struct InferenceReadinessEvaluation {
+pub(super) struct InferenceReadinessEvaluation {
     /// One of `"ready"`, `"signed_out"`, `"provider_not_configured"`, `"error"`
     /// — the fixed vocabulary shared with the proposal payload.
-    status: &'static str,
+    pub(super) status: &'static str,
     /// User-actionable prose; `None` only when `status == "ready"`.
-    message: Option<String>,
+    pub(super) message: Option<String>,
     /// The offending node id, when applicable (absent for `"ready"`).
-    node_id: Option<String>,
+    pub(super) node_id: Option<String>,
 }
 
 /// Evaluate the B45 provider-connectivity gate for `graph`.
@@ -254,7 +254,7 @@ struct InferenceReadinessEvaluation {
 /// role already probed elsewhere in this process within the TTL is served
 /// from cache). `status`/`message` report `provider_not_configured`/`error`
 /// if ANY role's probe fails, naming every offending node and role.
-async fn evaluate_inference_readiness(
+pub(super) async fn evaluate_inference_readiness(
     config: &Config,
     graph: &WorkflowGraph,
 ) -> Option<InferenceReadinessEvaluation> {

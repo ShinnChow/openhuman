@@ -108,7 +108,7 @@ pub async fn flows_cancel_run(config: &Config, run_id: &str) -> Result<RpcOutcom
 /// authoritative "not resumable" signal (the `flows_resume` guard already
 /// rejects any non-`pending_approval` status); dropping the checkpoint is
 /// belt-and-suspenders that also reclaims the storage.
-async fn drop_checkpoint(config: &Config, thread_id: &str) {
+pub(super) async fn drop_checkpoint(config: &Config, thread_id: &str) {
     match crate::flows::tinyflows::open_flow_checkpointer(config) {
         Ok(checkpointer) => match checkpointer.delete_thread(thread_id).await {
             Ok(()) => {

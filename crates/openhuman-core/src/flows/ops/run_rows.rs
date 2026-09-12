@@ -5,7 +5,7 @@ use super::*;
 /// tool abort, chat turn end, runtime shutdown, panic) before any terminal
 /// write landed. Surfaced verbatim in the run-details sidebar (bug B42c) so a
 /// cancelled/timed-out run reads as interrupted rather than a blank spinner.
-const INTERRUPTED_DROP_REASON: &str =
+pub(super) const INTERRUPTED_DROP_REASON: &str =
     "Run interrupted before completion — it was cancelled, timed out, or the app shut down mid-run.";
 
 /// Cancellation-safe finalizer for a live `flow_runs` row (bug B42).
@@ -19,7 +19,7 @@ const INTERRUPTED_DROP_REASON: &str =
 /// explicitly [`disarm`](Self::disarm)ed after a real terminal write. The
 /// `armed` flag is a single-task `Cell` (the guard never crosses tasks by
 /// reference), so the type stays `Send` for `tokio::spawn`.
-struct RunRowFinalizer {
+pub(super) struct RunRowFinalizer {
     config: Arc<Config>,
     thread_id: String,
     flow_id: String,
@@ -27,7 +27,7 @@ struct RunRowFinalizer {
 }
 
 impl RunRowFinalizer {
-    fn new(config: Arc<Config>, thread_id: &str, flow_id: &str) -> Self {
+    pub(super) fn new(config: Arc<Config>, thread_id: &str, flow_id: &str) -> Self {
         Self {
             config,
             thread_id: thread_id.to_string(),
@@ -38,7 +38,7 @@ impl RunRowFinalizer {
 
     /// Disarm the guard after a real terminal write (success/failure/cancel/
     /// pause) has already finalized the row, so `Drop` becomes a no-op.
-    fn disarm(&self) {
+    pub(super) fn disarm(&self) {
         self.armed.set(false);
     }
 }
@@ -103,12 +103,12 @@ impl Drop for RunRowFinalizer {
 /// has since moved ahead of the insert, closing that window at the source too;
 /// the floor stays because it holds regardless of what future callers do with
 /// that ordering.
-static PROCESS_RUN_FLOOR: LazyLock<String> = LazyLock::new(|| Utc::now().to_rfc3339());
+pub(super) static PROCESS_RUN_FLOOR: LazyLock<String> = LazyLock::new(|| Utc::now().to_rfc3339());
 
 /// Best-effort insert of the initial `"running"` `flow_runs` row. Logged,
 /// never fails the run — run-history persistence is an observability aid,
 /// not a correctness requirement of the run itself.
-fn start_flow_run_row(config: &Config, thread_id: &str, flow_id: &str) {
+pub(super) fn start_flow_run_row(config: &Config, thread_id: &str, flow_id: &str) {
     // Anchor the boot-sweep floor BEFORE stamping this row, so this row's
     // `started_at` can never precede it. See [`PROCESS_RUN_FLOOR`].
     LazyLock::force(&PROCESS_RUN_FLOOR);
@@ -125,7 +125,7 @@ fn start_flow_run_row(config: &Config, thread_id: &str, flow_id: &str) {
 /// row (`status == "pending_approval"`) — every other caller passes `None`,
 /// which clears any stale pin now that the row is leaving (or never entered)
 /// `pending_approval`. See [`compute_graph_hash`] and `store::finish_flow_run`.
-fn finish_flow_run_row(
+pub(super) fn finish_flow_run_row(
     config: &Config,
     thread_id: &str,
     flow_id: &str,
@@ -239,7 +239,7 @@ fn reconstruct_steps(output: &Value) -> Vec<FlowRunStep> {
 /// run's settle path.
 ///
 /// [`FlowRunObserver`]: crate::flows::tinyflows::observability::FlowRunObserver
-fn current_persisted_steps(config: &Config, run_id: &str) -> Vec<FlowRunStep> {
+pub(super) fn current_persisted_steps(config: &Config, run_id: &str) -> Vec<FlowRunStep> {
     store::get_flow_run(config, run_id)
         .ok()
         .flatten()
@@ -254,7 +254,7 @@ fn current_persisted_steps(config: &Config, run_id: &str) -> Vec<FlowRunStep> {
 /// observer that missed a step. If the observer recorded nothing at all
 /// (e.g. a run that paused immediately at a gate before any node finished),
 /// falls back wholesale to the reconstruction.
-fn settle_steps(config: &Config, run_id: &str, output: &Value) -> Vec<FlowRunStep> {
+pub(super) fn settle_steps(config: &Config, run_id: &str, output: &Value) -> Vec<FlowRunStep> {
     let reconstructed = reconstruct_steps(output);
     let persisted = current_persisted_steps(config, run_id);
     if persisted.is_empty() {
@@ -291,7 +291,7 @@ fn settle_steps(config: &Config, run_id: &str, output: &Value) -> Vec<FlowRunSte
 /// Called only once the run has no `pending_approvals` left — precedence
 /// against that case is handled by the caller (`pending_approval` always
 /// wins over any of these).
-fn degrade_completed_status(steps: &[FlowRunStep]) -> &'static str {
+pub(super) fn degrade_completed_status(steps: &[FlowRunStep]) -> &'static str {
     if steps.iter().any(|s| s.status.as_deref() == Some("error")) {
         return "failed";
     }
@@ -309,7 +309,7 @@ fn degrade_completed_status(steps: &[FlowRunStep]) -> &'static str {
 /// policy is `"stop"`), so this is the best available detail for
 /// [`FlowRun::error`] when [`degrade_completed_status`] degrades to
 /// `"failed"` without an outer run-future `Err`.
-fn failed_step_error_summary(steps: &[FlowRunStep]) -> Option<String> {
+pub(super) fn failed_step_error_summary(steps: &[FlowRunStep]) -> Option<String> {
     let failed_nodes: Vec<&str> = steps
         .iter()
         .filter(|s| s.status.as_deref() == Some("error"))
@@ -332,7 +332,7 @@ fn failed_step_error_summary(steps: &[FlowRunStep]) -> Option<String> {
 /// populate [`FlowRun::error`] (its doc contract: "Error message when
 /// `status == \"failed\"`") for a run that degraded via a settled step error
 /// rather than an outer run-future `Err`.
-fn finalize_terminal_status(
+pub(super) fn finalize_terminal_status(
     settled: &[FlowRunStep],
     pending_approvals: &[String],
 ) -> (&'static str, Option<String>) {

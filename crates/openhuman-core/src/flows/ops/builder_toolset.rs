@@ -10,7 +10,7 @@ use super::*;
 /// ~10s/iteration can take up to ~500s — the old 300s bound would have
 /// clipped a legitimate long build before the iteration cap ever got a
 /// chance to.
-const FLOW_BUILD_TIMEOUT_SECS: u64 = 600;
+pub(super) const FLOW_BUILD_TIMEOUT_SECS: u64 = 600;
 
 /// Tools stripped from the `workflow_builder` belt on the direct `flows_build`
 /// RPC path (issue #4593; widened for `resume_flow_run`/`cancel_flow_run`
@@ -58,7 +58,7 @@ const FLOW_BUILD_TIMEOUT_SECS: u64 = 600;
 /// both are hard-forced **born disabled** (see [`builder_tools::CreateWorkflowTool`]
 /// / [`builder_tools::DuplicateFlowTool`]), so even an unattended call can't
 /// leave anything live — lower risk than the run/resume/cancel trio above.
-const FLOWS_BUILD_HIDDEN_TOOLS: &[&str] = &[
+pub(super) const FLOWS_BUILD_HIDDEN_TOOLS: &[&str] = &[
     "run_workflow",
     "run_flow",
     "resume_flow_run",
@@ -74,7 +74,7 @@ const FLOWS_BUILD_HIDDEN_TOOLS: &[&str] = &[
 /// boundary — a hard execution guarantee even if the model requests the tool.
 /// The authoring tools (`propose`/`revise`/`save`/`dry_run`/reads/`create_workflow`/
 /// `duplicate_flow`) stay visible and untouched, so the turn never fail-closes.
-fn restrict_builder_toolset(agent: &mut crate::agent::Agent) {
+pub(super) fn restrict_builder_toolset(agent: &mut crate::agent::Agent) {
     tracing::debug!(
         target: "flows",
         hidden = ?FLOWS_BUILD_HIDDEN_TOOLS,
@@ -126,12 +126,12 @@ fn restrict_builder_toolset(agent: &mut crate::agent::Agent) {
 /// belt) stays hidden — belt-and-braces against a re-rename or the name ever
 /// leaking back onto the `workflow_builder` toolset; `hide_tools` no-ops on a
 /// name that isn't present.
-const FLOWS_BUILD_COPILOT_HIDDEN_TOOLS: &[&str] = &["run_workflow", "cancel_flow_run"];
+pub(super) const FLOWS_BUILD_COPILOT_HIDDEN_TOOLS: &[&str] = &["run_workflow", "cancel_flow_run"];
 
 /// Strip only [`FLOWS_BUILD_COPILOT_HIDDEN_TOOLS`] from `agent`'s callable set
 /// on the streaming `flows_build` path (copilot pane with a real approval
 /// surface) — see that constant's doc for the full safety rationale.
-fn restrict_builder_toolset_for_copilot(agent: &mut crate::agent::Agent) {
+pub(super) fn restrict_builder_toolset_for_copilot(agent: &mut crate::agent::Agent) {
     tracing::info!(
         target: "flows",
         hidden = ?FLOWS_BUILD_COPILOT_HIDDEN_TOOLS,

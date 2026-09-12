@@ -157,13 +157,13 @@ pub async fn flows_run_detached(
 /// minted `thread_id` (== run id / checkpointer key), and whether the graph has
 /// no actionable nodes. Produced by [`prepare_flow_run`] and consumed by both
 /// `flows_run` entry points.
-struct PreparedFlowRun {
-    flow: Flow,
-    thread_id: String,
-    no_actionable_nodes: bool,
+pub(super) struct PreparedFlowRun {
+    pub(super) flow: Flow,
+    pub(super) thread_id: String,
+    pub(super) no_actionable_nodes: bool,
     /// The flow's declared inputs resolved against the caller's values —
     /// defaults applied, one entry per declaration.
-    inputs: serde_json::Map<String, Value>,
+    pub(super) inputs: serde_json::Map<String, Value>,
 }
 
 /// Synchronous prep shared by [`flows_run`] and [`flows_run_detached`]: loads
@@ -178,7 +178,7 @@ struct PreparedFlowRun {
 /// The engine re-resolves the same values (it is the authority on its own
 /// contract); doing it twice is cheap and keeps this host from having to trust
 /// its own copy of the rules.
-fn prepare_flow_run(
+pub(super) fn prepare_flow_run(
     config: &Config,
     flow_id: &str,
     inputs: &serde_json::Map<String, Value>,

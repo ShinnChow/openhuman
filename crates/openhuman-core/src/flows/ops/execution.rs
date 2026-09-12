@@ -3,7 +3,7 @@ use super::*;
 /// Builds the `TrustedAutomation { Workflow }` origin scoped around every
 /// `flows_run` / `flows_resume` invocation. See `flows_run`'s doc for why
 /// this applies uniformly regardless of caller.
-fn workflow_origin(flow_id: &str, require_approval: bool) -> AgentTurnOrigin {
+pub(super) fn workflow_origin(flow_id: &str, require_approval: bool) -> AgentTurnOrigin {
     AgentTurnOrigin::TrustedAutomation {
         job_id: flow_id.to_string(),
         source: TrustedAutomationSource::Workflow { require_approval },
@@ -16,7 +16,7 @@ fn workflow_origin(flow_id: &str, require_approval: bool) -> AgentTurnOrigin {
 /// construction: any journal read failure is logged and swallowed, and the
 /// exporter itself never fails the run. Skips the journal read entirely when
 /// `observability.share_usage_data` is off.
-async fn export_run_to_langfuse(
+pub(super) async fn export_run_to_langfuse(
     config: &Config,
     flow_name: &str,
     flow_id: &str,
@@ -90,7 +90,7 @@ async fn export_run_to_langfuse(
 /// status. Registering before the `run_id` is observable makes the cancel
 /// always take the signalled branch instead. `_run_guard` is held for the whole
 /// body and deregisters on any exit, including the early returns below.
-async fn run_flow_body(
+pub(super) async fn run_flow_body(
     config_arc: Arc<Config>,
     flow: Flow,
     flow_id: String,
@@ -422,7 +422,7 @@ fn now_ms() -> u64 {
 /// generic `DomainEvent -> event_to_notification` bridge — this is a
 /// flows-specific card with flow-specific action data, not a translation of
 /// an existing broadcast event). No-op when nothing is pending.
-fn notify_pending_approval(flow: &Flow, thread_id: &str, pending_approvals: &[String]) {
+pub(super) fn notify_pending_approval(flow: &Flow, thread_id: &str, pending_approvals: &[String]) {
     if pending_approvals.is_empty() {
         return;
     }

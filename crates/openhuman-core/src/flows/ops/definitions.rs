@@ -4,7 +4,7 @@ use super::*;
 /// so an open Workflows list/canvas refetches (bridged to a `flow:changed`
 /// socket event) — the observability half of audit F6. Best-effort broadcast;
 /// `actor` is a coarse hint (`"system"` for RPC-driven changes today).
-fn publish_flow_changed(flow_id: &str, kind: &str, actor: &str) {
+pub(super) fn publish_flow_changed(flow_id: &str, kind: &str, actor: &str) {
     tracing::debug!(target: "flows", %flow_id, kind, actor, "[flows] publishing FlowChanged");
     crate::core::bus::BUS.publish(crate::core::events::DomainEvent::FlowChanged {
         flow_id: flow_id.to_string(),
@@ -263,7 +263,7 @@ pub async fn flows_delete(config: &Config, id: &str) -> Result<RpcOutcome<Value>
 /// and the resolved path are the same type running the same policy steps; the
 /// override can no longer be a second, unguarded door into memory. Production
 /// still passes `None`.
-async fn flows_delete_impl(
+pub(super) async fn flows_delete_impl(
     config: &Config,
     id: &str,
     memory_override: Option<Arc<crate::memory::guard::MemoryGuard>>,

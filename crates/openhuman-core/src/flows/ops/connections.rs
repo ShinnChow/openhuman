@@ -119,7 +119,7 @@ pub async fn flows_list_connections(
 /// (e.g. Slack `U123ABC`). This is what lets the workflow builder wire a
 /// self-targeted action ("DM me") to the user's own account instead of
 /// guessing a public channel.
-fn build_flow_connections(
+pub(super) fn build_flow_connections(
     composio: Vec<crate::integrations::composio::ComposioConnection>,
     http: Vec<crate::security::credentials::HttpCredentialSummary>,
     identities: &[crate::integrations::composio::providers::ConnectedIdentity],
@@ -221,7 +221,7 @@ fn http_credential_display(
 
 /// Title-case a toolkit slug for display: `"gmail"` → `"Gmail"`,
 /// `"google_calendar"` → `"Google Calendar"`. Best-effort cosmetic only.
-fn title_case_toolkit(toolkit: &str) -> String {
+pub(super) fn title_case_toolkit(toolkit: &str) -> String {
     let trimmed = toolkit.trim();
     if trimmed.is_empty() {
         return String::new();

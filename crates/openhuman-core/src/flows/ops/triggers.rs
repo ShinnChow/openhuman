@@ -127,7 +127,7 @@ pub async fn flows_set_enabled(
 /// `flows_set_enabled` call — the flow is still saved as enabled, it just
 /// won't fire automatically until the underlying issue (invalid schedule,
 /// cron store error, …) is fixed.
-fn bind_trigger(config: &Config, flow: &Flow) {
+pub(super) fn bind_trigger(config: &Config, flow: &Flow) {
     match bus::extract_trigger_kind(flow) {
         Some(TriggerKind::Schedule) => bind_schedule_trigger(config, flow),
         Some(TriggerKind::Webhook) => log_webhook_trigger_deferred(flow, true),
@@ -141,7 +141,7 @@ fn bind_trigger(config: &Config, flow: &Flow) {
 
 /// Tears down the automatic-dispatch side effect for `flow`'s trigger kind,
 /// mirroring [`bind_trigger`]. Best-effort, same rationale.
-fn unbind_trigger(config: &Config, flow: &Flow) {
+pub(super) fn unbind_trigger(config: &Config, flow: &Flow) {
     match bus::extract_trigger_kind(flow) {
         Some(TriggerKind::Schedule) => unbind_schedule_trigger(config, &flow.id),
         Some(TriggerKind::Webhook) => log_webhook_trigger_deferred(flow, false),
@@ -155,7 +155,7 @@ fn unbind_trigger(config: &Config, flow: &Flow) {
 /// `cron::find_flow_schedule_job` rather than creating a duplicate, so this
 /// is safe to call both from `flows_set_enabled` and from boot
 /// reconciliation ([`reconcile_schedule_triggers_on_boot`]).
-fn bind_schedule_trigger(config: &Config, flow: &Flow) {
+pub(super) fn bind_schedule_trigger(config: &Config, flow: &Flow) {
     let Some(trigger_config) = bus::extract_trigger_config(flow) else {
         tracing::warn!(target: "flows", flow_id = %flow.id, "[flows] schedule trigger: flow has no single trigger node — cannot bind cron job");
         return;

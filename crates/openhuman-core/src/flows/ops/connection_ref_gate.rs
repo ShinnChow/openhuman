@@ -88,7 +88,7 @@ pub(crate) async fn validate_connection_refs(
 /// when the live connection list was fetched (possibly empty — a genuine "no
 /// connections" state), or `None` when it was unavailable (fail-open: the
 /// id-existence check is skipped, only the toolkit-mismatch check runs).
-fn validate_connection_refs_against(
+pub(super) fn validate_connection_refs_against(
     graph: &WorkflowGraph,
     connections: Option<&[FlowConnection]>,
 ) -> Vec<String> {

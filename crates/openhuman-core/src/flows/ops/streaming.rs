@@ -54,7 +54,7 @@ impl FlowStreamTarget {
 /// on reopen). The bridge task lives until the agent drops its progress sender
 /// (turn end). `source` is a short trace-attribution label (e.g.
 /// `"flows_build"`).
-fn attach_flow_progress_bridge(
+pub(super) fn attach_flow_progress_bridge(
     agent: &mut crate::agent::Agent,
     target: &FlowStreamTarget,
     source: &str,
@@ -90,7 +90,7 @@ fn attach_flow_progress_bridge(
 /// path, so segmentation/reaction match a normal turn), a failure publishes a
 /// `chat_error`. Broadcast as `"system"` so any viewer of the thread receives
 /// it (frontend keys by `thread_id`).
-async fn finalize_flow_stream(
+pub(super) async fn finalize_flow_stream(
     target: &FlowStreamTarget,
     result: &Result<String, String>,
     prompt: &str,

@@ -502,7 +502,7 @@ pub async fn flows_resume(
 /// cannot be hashed is a run whose approval cannot be verified — but it is the
 /// opposite of fail-open, so do not read this as a guarantee that a serialize
 /// failure leaves a resumable run resumable.
-fn compute_graph_hash(graph: &WorkflowGraph, require_approval: bool) -> Option<String> {
+pub(super) fn compute_graph_hash(graph: &WorkflowGraph, require_approval: bool) -> Option<String> {
     let raw = match serde_json::to_value(graph) {
         Ok(v) => v,
         Err(e) => {

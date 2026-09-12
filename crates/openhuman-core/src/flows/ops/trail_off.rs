@@ -21,7 +21,7 @@ use super::*;
 /// delimiter of a code span whose last character is `?` (e.g. `` `id = ?` ``
 /// at the very end of the text), exposing that `?` as if it were a bare
 /// trailing question mark and defeating the code guard entirely.
-fn text_looks_like_question(text: &str) -> bool {
+pub(super) fn text_looks_like_question(text: &str) -> bool {
     let trimmed = text
         .trim()
         .trim_end_matches(['"', '\'', ')', ']', '*', '_', '.'])
@@ -112,7 +112,7 @@ fn last_paragraph(text: &str) -> Option<String> {
 /// unanswerable status note — exactly the failure mode this backstop exists
 /// to prevent. So each candidate `?` is additionally required to be
 /// sentence-terminal via [`is_sentence_terminal_question_mark`].
-fn question_mark_outside_code(text: &str) -> bool {
+pub(super) fn question_mark_outside_code(text: &str) -> bool {
     let chars: Vec<char> = text.chars().collect();
     // `Some(n)` while scanning is inside a code span opened by a run of `n`
     // backticks; that span closes only on the next run of exactly `n`.
@@ -185,7 +185,7 @@ const TRAIL_OFF_BLOCKER_TOOLS: &[&str] = &[
 /// falls back to a generic "what should I focus on" question when no such
 /// blocker is found (the model may have simply stopped with nothing to point
 /// to).
-fn build_trail_off_fallback(
+pub(super) fn build_trail_off_fallback(
     history: &[crate::agent::messages::ConversationMessage],
 ) -> String {
     match last_builder_tool_blocker(history) {
@@ -208,7 +208,7 @@ fn build_trail_off_fallback(
 /// context. When `original` is empty/whitespace-only (a genuine silent
 /// turn — there's nothing to preserve), returns the fallback alone rather
 /// than prepending an empty divider.
-fn combine_trail_off_fallback(fallback: &str, original: &str) -> String {
+pub(super) fn combine_trail_off_fallback(fallback: &str, original: &str) -> String {
     let trimmed_original = original.trim();
     if trimmed_original.is_empty() {
         fallback.to_string()

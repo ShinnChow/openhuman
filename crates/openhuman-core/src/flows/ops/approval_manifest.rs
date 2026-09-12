@@ -195,7 +195,7 @@ pub async fn compute_approval_manifest(config: &Config, graph: &WorkflowGraph) -
 /// permissions are authorized on a host that holds no grant for them.
 /// `gate_installed: false` is the caller's single signal, which is exactly what
 /// the sibling `approval_preauthorize_flow` reports for the same condition.
-fn split_manifest_trust(
+pub(super) fn split_manifest_trust(
     entries: &[Value],
     gate_installed: bool,
     trusted: &HashSet<String>,
