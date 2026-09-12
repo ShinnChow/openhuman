@@ -49,16 +49,14 @@ pub(crate) fn parse_source_kind_str(s: &str) -> Option<tinymemory_api::chunks::S
 // Re-exports for `read_rpc_tests.rs`, which drives this module with
 // `use super::*;`.
 //
-// `with_connection` is the raw SQLite door into the engine's chunk store, and
-// it is deliberately the only one left here: the tests use it to assert on rows
-// the RPCs wrote, which is the point of asserting *storage* rather than
-// re-reading through the same handler. It survives the #5560 shed because it is
-// `#[cfg(test)]` — `cfg(test)` code links the `tinymemory-core`
-// **dev-dependency**, which stays after the normal dependency is dropped, so
-// this line does not keep the engine crate in the shipped binary. Nothing
-// production-side in `read_rpc` names the engine any more; `wipe_all`,
+// Only `Config` and `SourceKind` are re-exported, and only under `#[cfg(test)]`.
+// The raw-SQLite `with_connection` door that used to sit here is gone: nothing
+// production-side in `read_rpc` names the engine any more (`wipe_all`,
 // `clear_composio_sync_state` and `delete_source` left for `purge_all`,
-// `kv_list` + `kv_delete` and `forget_matching(Source)`.
+// `kv_list` + `kv_delete` and `forget_matching(Source)`), and the tests assert
+// through the contract instead. `cfg(test)` code links the `tinymemory-core`
+// **dev-dependency**, which stays after the normal dependency was dropped
+// (#5560), so nothing here keeps the engine crate in the shipped binary.
 #[cfg(test)]
 pub(crate) use crate::config::Config;
 #[cfg(test)]

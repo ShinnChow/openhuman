@@ -38,7 +38,8 @@ registry; it rides the same `memory_tree` controller set as the rest of
 ## Tests
 
 Each file has a colocated `*_tests.rs` (`admin_tests.rs`, `chunks_tests.rs`,
-`entities_tests.rs`, `graph_tests.rs`, `vault_tests.rs`); `read_rpc_tests*.rs`
-at the `memory/` root drives cross-file behavior with `use super::*;` against
-this module, including a `#[cfg(test)]`-only `with_connection` door for
-asserting on the rows a handler wrote directly.
+`entities_tests.rs`, `graph_tests.rs`, `vault_tests.rs`). `read_rpc_tests.rs`
+at the `memory/` root (with its `read_rpc_tests_part_0{1,2}_tests.rs`
+continuations) is mounted as this module's `tests` via `#[path]` and drives
+cross-file behavior with `use super::*;`; `mod.rs` re-exports `Config` and
+`SourceKind` under `#[cfg(test)]` for it.
