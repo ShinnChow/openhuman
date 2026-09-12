@@ -206,7 +206,7 @@ prioritization.
    from every build, not just the slim one, and with them the whisper.cpp + GGML
    C++ static link that previously required a platform-specific build workaround.
    Speech-to-text is a hosted call now, with the engine chosen by
-   `voice_server.stt_engine` (see the `voice` gate comment in `crates/openhuman-core/Cargo.toml`). The `inference`
+   `voice_server.stt_engine` (see the `inference` gate comment in `crates/openhuman-core/Cargo.toml`). The `inference`
    feature survives with a narrower job: it gates `cpal` alone, which is what a
    headless library host wanted to shed anyway.
 
