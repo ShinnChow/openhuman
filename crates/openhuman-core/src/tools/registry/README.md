@@ -62,7 +62,7 @@ No owned persistence. `diagnostics()` reads (read-only) the `mcp_writes` table v
 - `crates/openhuman-core/src/core/all.rs` — registers controllers/schemas and routes the `tool_registry` namespace.
 - `crates/openhuman-core/src/agent/tinyagents/middleware.rs` — calls `tool_registry::denials::record(...)` to log agent-tool policy denials.
 - `crates/openhuman-core/src/platform/about_app/catalog.rs` — capability catalog references the registry surface.
-- `crates/openhuman-core/src/mcp/registry/connections.rs` — provides `all_connected_tools()` for registry integration.
+- `crates/openhuman-core/src/mcp/registry/mod.rs` — provides `all_connected_tools()` for registry integration (no-op in `stub.rs` when the `mcp` feature is disabled).
 
 ## Notes / gotchas
 

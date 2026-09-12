@@ -37,9 +37,10 @@ Re-exported from `mod.rs`:
 
 ## Used by
 
-- `crates/openhuman-core/src/agent/harness/session/builder.rs` — builds the `ToolPolicySession` (`ToolPolicyEngine`, `ToolPolicySession`).
-- `crates/openhuman-core/src/agent/harness/session/runtime.rs` — uses `ToolPolicyEngine`.
-- `crates/openhuman-core/src/agent/harness/session/turn.rs` — calls `render_tool_policy_boundary` to inject the boundary into the prompt.
+- `crates/openhuman-core/src/agent/harness/session/builder/builder_build.rs` — builds the `ToolPolicySession` via `ToolPolicyEngine::build_session_from_refs`.
+- `crates/openhuman-core/src/agent/harness/session/builder/mod.rs` — threads `&ToolPolicySession` through the builder helpers.
+- `crates/openhuman-core/src/agent/harness/session/runtime.rs` (via its `runtime_impl_01_part_01.rs` include) — rebuilds the session at runtime with `ToolPolicyEngine::build_session_from_refs`.
+- `crates/openhuman-core/src/agent/harness/session/turn/context.rs` — calls `render_tool_policy_boundary` to inject the boundary into the prompt.
 - `crates/openhuman-core/src/agent/harness/session/types.rs` — carries `ToolPolicySession` on the session.
 
 ## Notes / gotchas
