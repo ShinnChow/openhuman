@@ -24,10 +24,10 @@ computes the active set from all three flags together.
 | `server.rs` | Process lifecycle: `RuntimePythonServer` (spawn, request/response, restart-on-failure, idle expiry), the process-wide `ensure_started`/`status` cache. |
 | `protocol.rs` | JSONL wire types: `PythonServerRequest`, `PythonServerResponse`, `PythonServerError`, `ReadyLine`, `PROTOCOL_VERSION`. |
 | `registry.rs` | `RuntimePythonBackend` enum (`Spacy`, `Kompress`) and `enabled_backends(config)`. |
-| `kompress.rs` | Kompress venv provisioning (`ensure_kompress`, `install_into`) and the compress request (`request_kompress`). |
-| `spacy.rs` | spaCy venv provisioning (`ensure_spacy`) and the extract request (`extract`). |
+| `kompress.rs` | Kompress venv provisioning (`ensure_kompress`, `install_into`, `kompress_provisioned`) and the compress request (`request_kompress`). |
+| `spacy.rs` | spaCy venv provisioning (`ensure_spacy`, `spacy_provisioned`), the extract request (`extract`, re-exported as `extract_spacy`), and `python_server_cache_root`. |
 | `types.rs` | `BackendStatus`, `RuntimePythonServerStatus` serde types. |
-| `server.py` | The worker script itself, embedded via `include_str!` and written to the cache dir at launch. |
+| `server.py` | The worker script itself, embedded via `include_str!` and written to the cache root as `runtime_python_server.py` each time a server is prepared. |
 
 ## Lifecycle
 
@@ -60,7 +60,8 @@ JSONL over the child's stdin/stdout (`protocol.rs`), one line per message:
 
 - Startup handshake: the worker writes a `ReadyLine` (`ready`, `protocol`,
   `backends`, optional `error`) before any request is sent; a `protocol`
-  mismatch against `PROTOCOL_VERSION` or `ready: false` fails the launch.
+  mismatch against `PROTOCOL_VERSION`, `ready: false`, or no line within
+  `HANDSHAKE_TIMEOUT` (30s) fails the launch.
 - Requests: `PythonServerRequest { id, method, params }`, methods namespaced by
   backend (`spacy.extract`, `kompress.compress`).
 - Responses: `PythonServerResponse { id, ok, result, error }`, matched back to
@@ -73,7 +74,7 @@ stderr is drained continuously by a background task and only logged at
 
 ## Backends
 
-**spaCy** (`spacy.rs`): `ensure_spacy` provisions a dedicated or shared venv
+**spaCy** (`spacy.rs`): `ensure_spacy` provisions the `spacy-venv`
 (`pip install spacy click`, `python -m spacy download en_core_web_sm`),
 tracked by a versioned ready marker (`SPACY_READY_MARKER_VERSION`) so a
 package-set change forces re-provisioning; `spacy_provisioned` is a cheap,
@@ -86,7 +87,8 @@ transformers venv and pre-downloads `config.tokenjuice.ml_model_id`;
 `install_into` does the same into an existing (spaCy) venv when both backends
 share one interpreter. The worker loads the model fully offline
 (`HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1`) so startup never depends on the
-network once provisioned. `request_kompress` sends `kompress.compress` with
+network once provisioned. `kompress_provisioned` is the network-free marker check the `kompress` init
+step uses. `request_kompress` sends `kompress.compress` with
 `target_ratio` / `max_input_chars` from `config.tokenjuice`. Called from
 `inference::tokenjuice::ml`.
 
@@ -101,7 +103,7 @@ is returned by `status()` and reflects the cache directly — `Empty` reports
 `disabled`, `Failed` reports the last error, `Ready` reports each backend's
 `ready` flag from the worker's handshake `backends` list. There is no public
 RPC method for this; `crates/openhuman-core/src/agent/harness_init/registry.rs`
-polls it during startup to decide whether the `runtime_python_server` init
+reads `status().running` to decide whether the `runtime_python_server` init
 step is done. The about-app capability catalog
 (`platform/about_app/catalog_part_02.rs`, id `local_ai.python_runtime_installer`,
 domain `runtime_python`) describes the managed-interpreter capability this
@@ -109,21 +111,28 @@ worker depends on, not this module's own status.
 
 ## Persistence
 
-No domain store. Provisioned venvs and the written `server.py` live under
-`runtime_python.cache_dir` (or the OS cache dir, or `workspace_dir` as a last
-resort) via `spacy::python_server_cache_root`; the Kompress HF cache is a
-subdirectory of the same root.
+No domain store. `spacy::python_server_cache_root` picks the root:
+`<runtime_python.cache_dir>/runtime-python-server` when configured, else
+`<OS cache dir>/openhuman/runtime-python-server`, else
+`<workspace_dir>/runtime_python_server`. Under it live `spacy-venv/`,
+`kompress-venv/`, the Kompress HF cache `kompress-hf/`, and the written
+`runtime_python_server.py`.
 
 ## Security
 
 The worker runs under whichever interpreter `runtime::python::PythonBootstrap`
 or the venv provisioning resolved — it does not choose or sandbox that
-interpreter itself. Environment is explicit and minimal: the enabled backend
-list (`OPENHUMAN_RPS_BACKENDS`) and, for Kompress, the model id, device,
-compression settings, and `HF_HOME`/offline flags. `process_util::apply_no_window`
-suppresses the Windows console flash on every spawned step. Sandbox/approval
-policy for what reaches this worker (e.g. text passed to `spacy.extract`) is
-decided by the caller before the request is sent, not here.
+interpreter itself, and it is spawned through
+`runtime::python::process::spawn_stdio_process` with the core's own
+environment inherited (there is no `env_clear`). On top of that the module
+adds `OPENHUMAN_RPS_BACKENDS` (the enabled backend list) and, for Kompress,
+`OPENHUMAN_RPS_KOMPRESS_{MODEL,DEVICE,TARGET_RATIO,MAX_INPUT_CHARS}`,
+`HF_HOME`, `HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1`, and
+`HF_HUB_DISABLE_TELEMETRY=1`. `process_util::apply_no_window` is applied to
+the worker spawn and to every provisioning command so Windows shows no
+console flash. Sandbox/approval policy for what reaches this worker (e.g. text
+passed to `spacy.extract`) is decided by the caller before the request is
+sent, not here.
 
 ## Used by
 
@@ -142,5 +151,9 @@ decided by the caller before the request is sent, not here.
 - Restart-on-failure in `RuntimePythonServer::request` means a transient
   worker crash is invisible to callers except for added latency on the retried
   call.
-- `python_server_cache_root` also holds legacy `memory-nlp` spaCy venvs;
-  `spacy.rs` migrates or reuses them so upgrades don't force re-provisioning.
+- `ensure_spacy` also looks for a legacy spaCy venv at
+  `<cache_dir>/memory-nlp/spacy-venv` (or `<OS cache dir>/openhuman/memory-nlp/spacy-venv`)
+  and `<workspace_dir>/memory_tree/nlp/spacy-venv`; a ready one is renamed into
+  `runtime-python-server/spacy-venv`, or reused in place if the rename fails,
+  so upgrades don't force re-provisioning. `spacy_provisioned` accepts either
+  location.
