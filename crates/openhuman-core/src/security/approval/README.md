@@ -18,7 +18,10 @@ Interactive approval workflow for supervised mode (issue #1339). `ApprovalGate` 
 | File | Role |
 | --- | --- |
 | `crates/openhuman-core/src/security/approval/mod.rs` | Export-focused: module docstring, `pub mod` decls, `pub use` re-exports including the controller-schema pair. |
-| `crates/openhuman-core/src/security/approval/gate.rs` | `ApprovalGate` — the singleton coordinator. `init_global`/`try_global`, `intercept`/`intercept_audited`, `decide`, `record_execution`, `list_pending`, `list_recent_decisions`, the thread→request routing map, `ApprovalChatContext` task-local, and `parse_approval_reply`. |
+| `crates/openhuman-core/src/security/approval/gate.rs` | `ApprovalGate` struct + `DecideMiss`, `DEFAULT_APPROVAL_TTL` (10 minutes), `decide`/`classify_decide_miss`, `list_pending`/`list_recent_decisions`, the thread→request routing map, `ApprovalChatContext` task-local, and `parse_approval_reply`. |
+| `crates/openhuman-core/src/security/approval/gate_setup.rs` | `ApprovalGate::init_global`/`try_global` (process-global install, re-install-safe) and the private constructor. |
+| `crates/openhuman-core/src/security/approval/gate_intercept.rs` | `intercept`/`intercept_audited`/`intercept_audited_bounded` — the origin check, allowlist short-circuit, persist-and-park flow, and cancellation-safe bounded park used by the Flow Canvas copilot live-run path. |
+| `crates/openhuman-core/src/security/approval/gate_state.rs` | `record_execution` — writes the terminal execution outcome onto a decided approval's audit row (best-effort, never propagates a write failure into the tool result). |
 | `crates/openhuman-core/src/security/approval/store.rs` | SQLite persistence (`pending_approvals` table). `insert_pending`, `decide`, `get_decision`, `record_execution`, `list_pending`, `list_recent_decisions`, `purge_session`, `expire_stale`, plus idempotent column migration for the v1 schema. |
 | `crates/openhuman-core/src/security/approval/types.rs` | Serde domain types: `PendingApproval`, `ApprovalAuditEntry`, `ApprovalDecision`, `GateOutcome`, `ExecutionOutcome`. |
 | `crates/openhuman-core/src/security/approval/redact.rs` | `redact_args` (PII/chat-content key scrubbing + home-path stripping) and `summarize_action` (safe-field summary). |
