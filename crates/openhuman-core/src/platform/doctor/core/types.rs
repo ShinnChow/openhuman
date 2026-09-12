@@ -25,14 +25,14 @@ impl DiagnosticItem {
             message: msg.into(),
         }
     }
-    fn warn(category: impl Into<String>, msg: impl Into<String>) -> Self {
+    pub(crate) fn warn(category: impl Into<String>, msg: impl Into<String>) -> Self {
         Self {
             severity: Severity::Warn,
             category: category.into(),
             message: msg.into(),
         }
     }
-    fn error(category: impl Into<String>, msg: impl Into<String>) -> Self {
+    pub(crate) fn error(category: impl Into<String>, msg: impl Into<String>) -> Self {
         Self {
             severity: Severity::Error,
             category: category.into(),
