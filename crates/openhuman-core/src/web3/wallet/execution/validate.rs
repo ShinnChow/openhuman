@@ -12,7 +12,7 @@ use super::LOG_PREFIX;
 /// Test-only. Production never holds a secp256k1 secret: the wallet module
 /// derives the key and reports the public half through `DeriveAccount`.
 #[cfg(test)]
-pub(super) fn compressed_public_key(secret: &[u8]) -> Result<Vec<u8>, String> {
+pub(crate) fn compressed_public_key(secret: &[u8]) -> Result<Vec<u8>, String> {
     let key = k256::ecdsa::SigningKey::from_slice(secret)
         .map_err(|_| "derived key is not a valid secp256k1 scalar".to_string())?;
     Ok(key
