@@ -85,7 +85,7 @@ Slack pair in [`sync/composio/providers/slack/`](sync/composio/providers/slack/)
 (`all_slack_memory_registered_controllers`, reached through the
 `integrations::composio::providers::slack` re-export).
 
-Agent tools reach the same registry through
+Agent tools are re-exported into the crate-wide tool surface by
 [`tools/mod.rs`](../tools/mod.rs): `pub use crate::memory::tools::*`,
 `crate::memory::tools::goals::*`, and `crate::memory::agent::tools::*`.
 
