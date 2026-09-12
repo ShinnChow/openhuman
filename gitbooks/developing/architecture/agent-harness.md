@@ -34,8 +34,8 @@ provider when embedding without app login.
 > harness** via the adapter seam in [`crates/openhuman-core/src/agent/tinyagents/`](../../../crates/openhuman-core/src/agent/tinyagents/)
 > (`run_turn_via_tinyagents_shared`). The legacy `run_turn_engine`, the three
 > hand-rolled loops, `turn_engine_adapter`, and the custom `agent_graph/` engine
-> described later in this page have been **removed**; the surviving shared seams
-> (`CheckpointStrategy`, `TurnProgress`) live in `agent/harness/engine/`. The dead
+> described later in this page have been **removed**; the surviving shared seam,
+> `TurnProgress`, lives in `agent/harness/session/tool_progress.rs`. The dead
 > `token_budget.rs` (context trimming is now `MessageTrimMiddleware`) and the
 > vestigial `interrupt.rs` fence (cancellation is the tinyagents steering channel)
 > are gone; policy **stop hooks** (budget / thread-goal / iteration caps) now fire
