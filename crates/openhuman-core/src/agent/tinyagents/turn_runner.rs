@@ -629,7 +629,7 @@ pub(crate) async fn run_turn_via_tinyagents_shared(
         pause_at_cap,
         turn_journal.as_ref(),
         compression_mw.as_ref(),
-        &prompt_cache_guard,
+        prompt_cache_guard.as_ref(),
         turn_completed_sink,
         bridge,
         early_exit_hook,

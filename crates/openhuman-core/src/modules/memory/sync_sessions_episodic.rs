@@ -198,7 +198,7 @@ impl MemoryCodingSessions for ModuleMemoryProvider {
 /// wall-clock ceiling must be the one that fires, because its message names the
 /// budget rather than the wire member. Anything comfortably longer than the
 /// scheduling jitter between the two `tokio::time::timeout` arms would do.
-const INGEST_BUS_GRACE: std::time::Duration = std::time::Duration::from_secs(30);
+pub(super) const INGEST_BUS_GRACE: std::time::Duration = std::time::Duration::from_secs(30);
 
 #[async_trait]
 impl MemoryEpisodic for ModuleMemoryProvider {
