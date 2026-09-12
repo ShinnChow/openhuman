@@ -93,9 +93,8 @@ returns `HarnessError::AlreadyRunning` rather than letting that happen.
 
 Build the tokio runtime yourself — a turn is a large async state machine that
 overflows tokio's default 2 MiB worker stack once a sub-agent nests inside it —
-using
-[`AGENT_WORKER_STACK_BYTES`](../openhuman-core/src/core/runtime.rs) and
-`MAX_BLOCKING_THREADS` from `openhuman_core::core::runtime`:
+using `AGENT_WORKER_STACK_BYTES` and `MAX_BLOCKING_THREADS` from
+[`openhuman_core::core::runtime`](../openhuman-core/src/core/runtime):
 
 ```rust,no_run
 use openhuman_core::core::runtime::{AGENT_WORKER_STACK_BYTES, MAX_BLOCKING_THREADS};
