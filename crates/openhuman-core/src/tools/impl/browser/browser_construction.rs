@@ -74,11 +74,11 @@ impl BrowserTool {
         BrowserBackendKind::parse(&self.backend)
     }
 
-    fn rust_native_compiled() -> bool {
+    pub(crate) fn rust_native_compiled() -> bool {
         cfg!(feature = "browser-native")
     }
 
-    fn rust_native_available(&self) -> bool {
+    pub(crate) fn rust_native_available(&self) -> bool {
         #[cfg(feature = "browser-native")]
         {
             native_backend::NativeBrowserState::is_available(

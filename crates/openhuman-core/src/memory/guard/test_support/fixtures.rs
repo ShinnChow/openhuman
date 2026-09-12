@@ -42,7 +42,7 @@ pub(super) fn rendered_scope(scope: Option<&SourceScope>) -> Option<String> {
 }
 
 impl Call {
-    fn plain(method: &str) -> Self {
+    pub(crate) fn plain(method: &str) -> Self {
         Self {
             method: method.into(),
             content: None,

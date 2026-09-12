@@ -39,7 +39,7 @@ impl TavilySearchTool {
         }
     }
 
-    fn build_body(&self, args: &Value, query: &str) -> Value {
+    pub(crate) fn build_body(&self, args: &Value, query: &str) -> Value {
         let mut body = json!({
             "query": query,
             "max_results": self.client.requested_results(args),

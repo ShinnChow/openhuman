@@ -50,7 +50,7 @@ impl BrowserTool {
         Ok(endpoint_reachable(&endpoint, Duration::from_millis(500)))
     }
 
-    async fn resolve_backend(&self) -> anyhow::Result<ResolvedBackend> {
+    pub(crate) async fn resolve_backend(&self) -> anyhow::Result<ResolvedBackend> {
         let configured = self.configured_backend()?;
 
         match configured {

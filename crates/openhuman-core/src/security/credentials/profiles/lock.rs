@@ -313,7 +313,7 @@ impl AuthProfilesStore {
     /// [`STALE_LOCK_AGE_MS`] floor (30s) is far longer than the ~10s RPC
     /// timeout, so every `app_state_snapshot` timed out and retry-stormed for
     /// the whole 30s window before age-reclaim kicked in.
-    fn reclaim_self_owned_lock(&self) -> bool {
+    pub(crate) fn reclaim_self_owned_lock(&self) -> bool {
         let me = std::process::id();
         tracing::trace!(
             target: "auth-profiles",

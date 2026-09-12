@@ -40,7 +40,7 @@ macro_rules! decorator {
         }
 
         impl $name {
-            pub(super) fn new(inner: Arc<dyn MemoryProvider>, policy: Arc<GuardPolicy>) -> Self {
+            pub(crate) fn new(inner: Arc<dyn MemoryProvider>, policy: Arc<GuardPolicy>) -> Self {
                 Self { inner, policy }
             }
 

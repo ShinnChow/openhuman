@@ -32,7 +32,7 @@ impl TavilyExtractTool {
 
     /// Accept either a `urls` array or a single `url` string, so the agent can
     /// call this the obvious way for the one-document case.
-    fn collect_urls(args: &Value) -> anyhow::Result<Vec<String>> {
+    pub(crate) fn collect_urls(args: &Value) -> anyhow::Result<Vec<String>> {
         let urls: Vec<String> = match args.get("urls") {
             Some(Value::Array(items)) => items
                 .iter()

@@ -282,7 +282,7 @@ impl ModuleMemoryProvider {
     /// How long `operation` may wait for the module: `None` waits it out.
     ///
     /// Unrecognised operations wait — see [`BOUNDED_READ_OPERATIONS`].
-    fn loading_grace(&self, operation: &str) -> Option<Duration> {
+    pub(crate) fn loading_grace(&self, operation: &str) -> Option<Duration> {
         if BOUNDED_READ_OPERATIONS.contains(&operation) {
             Some(self.loading_grace)
         } else {
