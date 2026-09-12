@@ -26,7 +26,7 @@ Local assistive surfaces for third-party provider apps. This domain owns a norma
 - `types::RespondQueueItem` — queue entry (adds `id` and `status`, default `"pending"`).
 - `types::RespondQueueListResponse` — `{ items, count }`.
 - `ops::ingest_event(ProviderEvent)` / `ops::list_queue(EmptyRequest)` — async handlers returning `RpcOutcome<ApiEnvelope<T>>`.
-- `store::{upsert_queue_item, list_queue_items}` — used directly by `desktop_companion` (see Used by).
+- `store::{upsert_queue_item, list_queue_items}` — internal to `ops.rs`; no external caller reads the store directly today.
 - Re-exported from `mod.rs`: `all_provider_surfaces_controller_schemas`, `all_provider_surfaces_registered_controllers`.
 
 ## RPC / controllers
@@ -63,7 +63,6 @@ In-memory only. State lives in a process-global `RESPOND_QUEUE` (`static OnceLoc
 ## Used by
 
 - `crates/openhuman-core/src/core/all.rs` — registers the controllers/schemas into the global registry (`all_provider_surfaces_registered_controllers`, `all_provider_surfaces_controller_schemas`, and a `"provider_surfaces"` dispatch arm).
-- `crates/openhuman-core/src/desktop_companion/handoff.rs` — reads `store::list_queue_items()` and matches `RespondQueueItem`s to correlate desktop companion handoff actions against the queue (light-touch, read-only against the store).
 - `crates/openhuman-core/src/integrations/task_sources/pipeline_tests.rs` — references the queue in tests.
 
 ## Notes / gotchas
