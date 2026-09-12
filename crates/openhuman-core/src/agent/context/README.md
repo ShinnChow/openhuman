@@ -20,16 +20,22 @@ Global context management for agent sessions: the home for system-prompt assembl
 | `crates/openhuman-core/src/agent/context/mod.rs` | Module docstring + `pub mod` decls + `pub use` re-exports. Export-focused, no logic. |
 | `crates/openhuman-core/src/agent/context/manager.rs` | `ContextManager` — per-session handle agents hold. Owns the default prompt builder, stats/session-memory state, and budget/markdown config. Surfaces `build_system_prompt`, `stats()`, tool-result budget settings, and session-memory triggers. (The former `reduce_before_call`/summarizer dispatch was removed in #4249.) |
 | `crates/openhuman-core/src/agent/context/stats.rs` | `ContextStatsState` — provider usage, context-window utilisation, and shared `SessionMemoryHandle` bookkeeping. Pure state; issues no LLM calls and does not mutate history. |
-| `crates/openhuman-core/src/agent/context/pipeline.rs` | **Removed (#4249).** Live context reduction moved to TinyAgents middleware; stats/session-memory state lives in `context/stats.rs`. |
-| `crates/openhuman-core/src/agent/context/guard.rs` | **Removed (#4249).** The live 0.90 compression threshold is mirrored by `tinyagents::summarize::SUMMARIZE_THRESHOLD_FRACTION`. |
-| `crates/openhuman-core/src/agent/context/microcompact.rs` | **Removed (#4249).** Live tool-result body clearing is owned by TinyAgents `MicrocompactMiddleware`; only shared constants remain in `context/mod.rs`. |
-| `crates/openhuman-core/src/agent/context/tool_result_budget.rs` | **Removed (#4249).** UTF-8-safe per-result truncation moved next to action-workspace artifact preview/fallback handling in `agent/harness/tool_result_artifacts`. |
-| `crates/openhuman-core/src/agent/context/summarizer.rs` | **Removed (#4249).** Live summarization moved to `tinyagents::summarize` (`ModelSummarizer`); the summarizer system prompt was relocated there. |
-| `crates/openhuman-core/src/agent/context/segment_recap_summarizer.rs` | **Removed (#4249).** The archivist-recap-backed compaction wrapper is gone; the archivist still produces durable segment recaps on its own post-turn path. |
 | `crates/openhuman-core/src/agent/context/session_memory.rs` | `SessionMemoryState` / `SessionMemoryConfig` — threshold-gated `should_extract` decision (token growth + tool calls + turns must all cross) and extraction bookkeeping. Holds `ARCHIVIST_EXTRACTION_PROMPT`. State-tracking only; does not spawn the archivist. |
 | `crates/openhuman-core/src/agent/context/prompt.rs` | Compat shim — `pub use crate::agent::prompts::*`. Prompt rendering moved to `agent::prompts`; this keeps `context::prompt::...` as a stable import path. |
 | `crates/openhuman-core/src/agent/context/channels_prompt.rs` | Bespoke free-function `build_system_prompt(...)` for channel runtimes (Discord/Slack/Telegram/…). Byte-stable for prefix-cache hits; injects OpenClaw bootstrap files (`SOUL.md`, `IDENTITY.md`, optional `PROFILE.md`/`MEMORY.md`), tools, safety, skills, runtime, and channel-capabilities sections. |
-| `crates/openhuman-core/src/agent/context/manager_tests.rs` | Sibling test suite wired via `#[cfg(test)] #[path = ...] mod tests`. Other files use inline `#[cfg(test)] mod tests`. (`summarizer_tests.rs` / `segment_recap_summarizer_tests.rs` removed in #4249.) |
+| `crates/openhuman-core/src/agent/context/manager_tests.rs` | Sibling test suite wired via `#[cfg(test)] #[path = ...] mod tests`. Other files use inline `#[cfg(test)] mod tests`. |
+
+## History (#4249)
+
+Live history reduction/summarization moved out of this directory into the tinyagents graph:
+
+- `pipeline.rs` — removed; live context reduction moved to TinyAgents middleware, stats/session-memory state lives in `context/stats.rs`.
+- `guard.rs` — removed; the live 0.90 compression threshold is mirrored by `tinyagents::summarize::SUMMARIZE_THRESHOLD_FRACTION`.
+- `microcompact.rs` — removed; live tool-result body clearing is owned by TinyAgents `MicrocompactMiddleware`, only shared constants remain in `context/mod.rs`.
+- `tool_result_budget.rs` — removed; UTF-8-safe per-result truncation moved next to action-workspace artifact preview/fallback handling in `agent/harness/tool_result_artifacts`.
+- `summarizer.rs` — removed; live summarization moved to `tinyagents::summarize` (`ModelSummarizer`), the summarizer system prompt was relocated there.
+- `segment_recap_summarizer.rs` — removed; the archivist-recap-backed compaction wrapper is gone, the archivist still produces durable segment recaps on its own post-turn path.
+- `summarizer_tests.rs` / `segment_recap_summarizer_tests.rs` — removed along with the files above.
 
 ## Public surface
 
