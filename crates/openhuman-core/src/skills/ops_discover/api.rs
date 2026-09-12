@@ -6,7 +6,7 @@ use std::path::Path;
 
 use crate::skills::ops_types::{Workflow, TRUST_MARKER};
 
-use super::scan::{discover_filtered, RootKind, ALL_ROOT_KINDS, WORKFLOW_ROOT_KINDS};
+use super::scan::{discover_filtered, ALL_ROOT_KINDS, WORKFLOW_ROOT_KINDS};
 
 /// Initialize the legacy skills directory in the specified workspace.
 ///
