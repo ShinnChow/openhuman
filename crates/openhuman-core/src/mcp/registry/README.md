@@ -25,7 +25,7 @@ keep working. The Rust module path is `crate::mcp::registry`.
 | `bus.rs` / `bus_tests.rs` | `McpClientEventSubscriber` — logs lifecycle events for observability. |
 | `tools.rs` / `tools_tests.rs` | Agent-facing `mcp_registry_*` tools, thin shims over `ops.rs`. |
 | `helpers.rs` | Shared identifier validation, workspace-service resolution, and env-key injection used by both `ops.rs` and `setup_ops.rs`. |
-| `stub.rs` | The `mcp`-less mirror of the always-on surface (`connections`, `boot`, `bus`, `supervisor`, `oauth`). |
+| `stub.rs` | The `mcp`-less mirror of the always-on surface: `all_mcp_registry_registered_controllers` (empty), `boot`, `bus`, `supervisor`, `oauth`, and the three `connections` lookups always-on callers name. |
 
 ## Modules re-exported over `tinymcp`
 
@@ -37,11 +37,12 @@ keep working. The Rust module path is `crate::mcp::registry`.
   every call site that nothing checks.
 - `connections` — a thin view over the live connection map the `mcp::host`
   service holds: `connected_overview[_for_config]`,
-  `all_connected_tools[_for_config]`, `server_tools_for_config`,
-  `is_connected[_for_config]`, `auth_hint_for[_config]`,
-  `connect`/`disconnect[_for_config]`, `last_error_for[_config]`. Every
-  function answers "nothing" (empty list / `false` / `None`) when the
-  workspace has no open host yet, rather than erroring.
+  `all_connected_tools[_for_config]`, `tools_for`/`server_tools_for_config`,
+  `is_connected[_for_config]`, `auth_hint_for[_config]`, `connect`,
+  `disconnect[_for_config]`, `last_error_for[_config]`. Every lookup answers
+  "nothing" (empty list / `false` / `None`) when the workspace has no open
+  host yet, rather than erroring; only `connect` returns an error in that
+  case.
 - `store` — the one direct reach into the registry's store that outlived the
   extraction: `set_cached`, used by an end-to-end test to seed the upstream
   response cache without a real catalog call.
@@ -112,8 +113,7 @@ tools live elsewhere and are a distinct surface from these
 ## Compile-time gate (`mcp` feature)
 
 Every member above except `types` is gated on the `mcp` feature; with it
-off, `stub.rs` mirrors the always-on surface (`connections`, `boot`, `bus`,
-`supervisor`, `oauth`) with empty/no-op bodies. `types` stays ungated so
+off, `stub.rs` mirrors the always-on surface with empty/no-op bodies. `types` stays ungated so
 `ConnectedServerOverview` and `McpTool` are the same real type in both
 builds.
 
@@ -134,11 +134,16 @@ builds.
 - `crates/openhuman-core/src/mcp/mod.rs` — `start`/`start_boot_jobs` wire up
   `bus::init()`, `boot::spawn_installed_servers`, and the reconnect
   supervisor.
+- `crates/openhuman-core/src/core/jsonrpc.rs` — the `/oauth/mcp/callback`
+  route calls `oauth::complete`.
+- `crates/openhuman-core/src/tools/impl/network/mcp_setup.rs` — the
+  `mcp_setup_*` agent tools wrap `setup_ops`.
 - `crates/openhuman-core/src/tools/registry/ops.rs` and
   `crates/openhuman-core/src/agent/registry/agents/orchestrator/prompt.rs` —
   read `mcp::registry::connections` to list connected servers/tools for the
   tool catalog and the orchestrator prompt.
 - `crates/openhuman-core/src/agent/harness/session/turn/core_turn.rs` — reads
   `connections::connected_overview()` when assembling a turn.
-- `crates/openhuman-core/src/platform/about_app/` — lists the MCP client
-  capability in the about/capability catalog.
+- `crates/openhuman-core/src/platform/about_app/catalog_part_02.rs` — the
+  `channels.mcp_registry_browse` / `mcp_server_install` /
+  `mcp_server_connect` capability entries.
