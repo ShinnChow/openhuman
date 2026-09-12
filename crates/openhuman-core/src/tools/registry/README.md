@@ -53,7 +53,7 @@ No owned persistence. `diagnostics()` reads (read-only) the `mcp_writes` table v
 - `crate::core::{ControllerSchema, FieldSchema, TypeSchema}` and `core::all::{ControllerFuture, RegisteredController}` — schema model and controller registration contract.
 - `crate::config` (`Config`, `config::schema::CapabilityProviderTrustState`) — autonomy posture, MCP client allowlists, capability-provider config.
 - `crate::mcp::server` (`McpToolSpec`, `tool_specs()`) — MCP stdio tool source for registry entries.
-- `crate::mcp::registry::connections` (`all_connected_tools()`) — live MCP client server tools, fetched via `block_in_place` only on the multi-thread runtime.
+- `crate::mcp::registry` (`all_connected_tools()`, defined in `mcp/registry/mod.rs`; a no-op stub in `mcp/registry/stub.rs` when the `mcp` feature is disabled) — live MCP client server tools, fetched via `block_in_place` only on the multi-thread runtime.
 - `tinymemory_core::store::chunks::store` — read-only `mcp_writes` audit query.
 - `crate::rpc::RpcOutcome` — RPC result envelope.
 
