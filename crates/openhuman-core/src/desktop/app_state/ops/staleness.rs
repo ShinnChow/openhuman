@@ -50,7 +50,7 @@ fn note_current_user_success(api_base: &str, token: &str) {
 
 /// The stamp itself, taking the guard rather than the lock, so a caller that
 /// must decide *under* the lock can do so without re-entering it.
-fn note_current_user_success_locked(
+pub(super) fn note_current_user_success_locked(
     success: &mut Option<CurrentUserSuccess>,
     api_base: &str,
     token: &str,
@@ -64,7 +64,7 @@ fn note_current_user_success_locked(
 
 /// Forget the success stamp on sign-out, so the next account does not inherit
 /// this one's freshness.
-fn clear_current_user_success() {
+pub(super) fn clear_current_user_success() {
     *LAST_CURRENT_USER_SUCCESS.lock() = None;
 }
 
@@ -80,7 +80,7 @@ fn clear_current_user_success() {
 /// this process — the stored snapshot then came off disk, and its true age is
 /// not knowable from here. A success recorded against a different `(api_base,
 /// token)` is somebody else's freshness and is not reported as this one's.
-fn current_user_staleness(api_base: &str, token: &str) -> (bool, Option<u64>) {
+pub(super) fn current_user_staleness(api_base: &str, token: &str) -> (bool, Option<u64>) {
     let stale = CURRENT_USER_FAILURE
         .lock()
         .as_ref()

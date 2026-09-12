@@ -1,7 +1,7 @@
 //! `TavilyExtractTool`: full page content retrieval via `POST /extract`.
 
 use super::client::TavilyClient;
-use super::types::{copy_string, non_empty};
+use super::types::{copy_string, non_empty, TavilyExtractResponse, TavilyExtractResult};
 use crate::tools::traits::{Tool, ToolCallOptions, ToolResult};
 use async_trait::async_trait;
 use serde_json::{json, Value};
