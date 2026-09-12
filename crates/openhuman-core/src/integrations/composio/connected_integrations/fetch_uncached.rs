@@ -9,6 +9,8 @@ use crate::agent::context::prompt::{
 };
 use crate::config::Config;
 
+use super::fetch::{connectable_toolkit_slugs, resolve_toolkit_description};
+
 
 async fn fetch_connected_integrations_uncached(
     config: &Config,

@@ -193,7 +193,7 @@ pub(super) fn clear_current_user_failure() {
 /// refresh does: a sign-out during those `auth_fetch_timeout()` seconds means this
 /// outage belongs to an identity that no longer exists, and recording it would
 /// suppress the first poll of the next session.
-fn note_current_user_timeout(generation: u64, config: &Config, token: &str) {
+pub(super) fn note_current_user_timeout(generation: u64, config: &Config, token: &str) {
     record_current_user_failure_unless_stale(
         generation,
         &current_user_api_base(config),
