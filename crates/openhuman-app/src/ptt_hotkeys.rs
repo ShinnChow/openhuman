@@ -115,6 +115,22 @@ pub(crate) fn expand_ptt_shortcuts(shortcut: &str) -> Result<Vec<String>, PttErr
 }
 
 
+/// Returns `Some(conflicting_variant)` if any expanded PTT variant overlaps
+/// any expanded dictation variant. Comparison is case-insensitive.
+pub(crate) fn first_conflict_with(ptt: &[String], dictation: &[String]) -> Option<String> {
+    for p in ptt {
+        let p_lc = p.to_ascii_lowercase();
+        for d in dictation {
+            if d.to_ascii_lowercase() == p_lc {
+                return Some(p.clone());
+            }
+        }
+    }
+    None
+}
+
+
+
 #[cfg(test)]
 #[path = "ptt_hotkeys_tests.rs"]
 mod tests;
