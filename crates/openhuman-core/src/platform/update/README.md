@@ -44,11 +44,11 @@ All under namespace `update` (i.e. `openhuman.update_*`):
 Not owned here — the domain has no `tools.rs`. Two cross-cutting system tools wrap it: `crates/openhuman-core/src/tools/impl/system/update_check.rs` (read-only, calls `update::rpc::update_check`) and `crates/openhuman-core/src/tools/impl/system/update_apply.rs` (calls `update::rpc::update_run`).
 
 ## Events
-No `bus.rs`. The scheduler *publishes* (via `core::event_bus::publish_global`):
+No `bus.rs`. The scheduler *publishes* (via `crate::core::bus::BUS.publish`):
 - `DomainEvent::SystemStartup { component: "update_checker" }` at startup.
 - `DomainEvent::HealthChanged { component: "update_checker", healthy, message }` after each tick.
 
-It also calls `health::bus::register_health_subscriber()` and `event_bus::init_global(...)` on start.
+It also calls `crate::core::bus::init()` (idempotent against an already-initialised bus) and `health::bus::register_health_subscriber()` on start.
 
 ## Persistence
 None. No `store.rs` — staged binaries are written to the filesystem (current-exe dir by default), but the domain holds no persisted state of its own. Configuration is read from `config.update`.
