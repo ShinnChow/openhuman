@@ -2,8 +2,6 @@
 
 use crate::modules::types::{LoadPolicy, ModuleRecord, PlatformAsset};
 
-use super::types::{LoadPolicy, ModuleRecord, PlatformAsset};
-
 /// The `tinydocs` module: `.docx` / `.pptx` synthesis and `.pdf` extraction.
 ///
 /// Lazy, because a user who never asks for a document should not pay a download,
