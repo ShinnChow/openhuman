@@ -58,7 +58,6 @@ Consumers call `enforce_prompt_input` and treat any non-`Allow` action as a reje
 - `crates/openhuman-core/src/agent/harness/session/runtime.rs` — gates agent session turns; emits `prompt_injection_blocked`.
 - `crates/openhuman-core/src/agent/bus.rs` — screens inbound prompts on the agent event path.
 - `crates/openhuman-core/src/agent/tinyagents/host/security_gate.rs` — `screen_input` stage of the tinyagents security gate.
-- `crates/openhuman-core/src/agent/triage/evaluator_part_01.rs` — screens triage input.
 - `crates/openhuman-core/src/mcp/registry/mod.rs` — `scan_tool_definition` on remote tool metadata at registration.
 - `crates/openhuman-core/src/web_chat/` — screens chat payloads at the web channel ingress (`start_chat`).
 - `crates/openhuman-core/src/inference/local/ops.rs` — rejects injected prompts before local-AI runtime execution.
