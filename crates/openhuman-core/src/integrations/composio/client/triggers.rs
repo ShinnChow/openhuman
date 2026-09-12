@@ -4,6 +4,7 @@
 //! latter via the shared `raw_delete` helper in [`super::connections`]).
 
 use anyhow::Result;
+use serde_json::json;
 
 use super::super::types::{
     ComposioActiveTriggersResponse, ComposioAvailableTriggersResponse,
