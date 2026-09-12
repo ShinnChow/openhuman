@@ -2,7 +2,6 @@ mod command_checks;
 mod enforcement;
 mod path_checks;
 
-#[path = "policy_command.rs"]
 mod policy_command;
 
 mod types;
