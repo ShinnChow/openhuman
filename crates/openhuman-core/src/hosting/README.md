@@ -1,7 +1,7 @@
 # hosting
 
 Puts a workspace on the internet. This domain is the seam between OpenHuman and
-[`tinyhosts`](../../../vendor/tinyhosts), the unified hosting API: TinyHosts owns
+[`tinyhosts`](../../../../vendor/tinyhosts), the unified hosting API: TinyHosts owns
 everything about a provider, and this module owns everything about OpenHuman.
 
 ## Responsibilities
@@ -21,8 +21,10 @@ mock of the provider's REST API. Nothing here knows the word `readyState`.
 | File | Role |
 | --- | --- |
 | `mod.rs` | `Account` (credential resolution + the shared `dyn Host`) and `resolve_in_workspace`. |
-| `tools.rs` | The ten agent tools. |
-| `test.rs` | Account resolution, workspace containment, and each tool's contract. |
+| `tools.rs` | Module docs, then `include!`s the two parts below. |
+| `tools_part_01.rs` | `hosting_launch_site`, `hosting_deployment_status`, `hosting_list_deployments`, `hosting_deployment_logs`, `hosting_rollback`, `hosting_list_sites`. |
+| `tools_part_02.rs` | `hosting_set_env`, `hosting_add_domain`, `hosting_domain_status`, `hosting_analytics`. |
+| `hosting_tests.rs` | Account resolution, workspace containment, and each tool's contract. |
 
 ## Agent tools
 

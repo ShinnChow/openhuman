@@ -87,8 +87,9 @@ consumers: the agent harness (`agent/harness/session/builder/factory.rs`,
 - `ops_tests*.rs`, `ops/http_error_tests.rs`, `ops/models_tests.rs` — error
   classification and model listing.
 - `error_classify_tests.rs`, `error_code_tests.rs`, `config_rejection_tests.rs`,
-  `billing_error_tests.rs`, `chat_template_tests.rs`,
-  `fallback_diagnostics_tests.rs` — per-classifier behavior.
+  `billing_error_tests.rs`, `fallback_diagnostics_tests.rs` — per-classifier
+  behavior (`chat_template.rs` has inline `#[cfg(test)]` coverage, no separate
+  file).
 - `claude_code/*_tests.rs` — per-file coverage of the CC provider (auth,
   driver, event mapper, stream parser, session store, settings, version
   check).
