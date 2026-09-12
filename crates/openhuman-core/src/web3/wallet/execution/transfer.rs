@@ -9,11 +9,10 @@ use crate::rpc::RpcOutcome;
 use super::super::defaults::{evm_asset_catalog, find_asset_for_network, EvmNetwork};
 use super::super::ops::WalletChain;
 use super::accounts::require_account;
-use super::quotes::{current_owner, next_quote_id, store_quote, QUOTE_TTL_MS};
+use super::quotes::{current_owner, next_quote_id, now_ms, store_quote, QUOTE_TTL_MS};
 use super::types::{PrepareTransferParams, PreparedKind, PreparedStatus, PreparedTransaction};
 use super::validate::{chain_str, estimated_fee_raw, format_amount, validate_address, validate_amount};
 use super::LOG_PREFIX;
-use crate::web3::wallet::execution::quotes::now_ms;
 
 pub async fn prepare_transfer(
     params: PrepareTransferParams,
