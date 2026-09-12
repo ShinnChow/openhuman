@@ -24,8 +24,7 @@ mod tests;
 pub use extract_tool::TavilyExtractTool;
 pub use search_tool::TavilySearchTool;
 pub use types::{
-    TavilyExtractResponse, TavilyExtractResult, TavilyImage, TavilyResultItem,
-    TavilySearchResponse,
+    TavilyExtractResponse, TavilyExtractResult, TavilyImage, TavilyResultItem, TavilySearchResponse,
 };
 
 // Re-exported only for the test module (`super::*`), which builds real

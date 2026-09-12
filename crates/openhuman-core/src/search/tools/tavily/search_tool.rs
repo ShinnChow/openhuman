@@ -6,7 +6,6 @@ use crate::tools::traits::{Tool, ToolCallOptions, ToolResult};
 use async_trait::async_trait;
 use serde_json::{json, Value};
 
-
 /// Web / news / finance search via the Tavily API (`POST /search`).
 pub struct TavilySearchTool {
     tool_name: &'static str,
@@ -216,4 +215,3 @@ impl Tool for TavilySearchTool {
         Ok(result)
     }
 }
-
