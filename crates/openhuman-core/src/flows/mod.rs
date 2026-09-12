@@ -19,7 +19,7 @@
 //! every symbol reached from outside is a *registration site* (`core::all`,
 //! `core::jsonrpc`'s `FlowTriggerSubscriber`, `core::runtime::services`' boot
 //! reconcile, the agent-tool `vec!` in `tools::ops`, the `workflow_builder` /
-//! `flow_discovery` entries in `agent_registry`), and a registration site wants
+//! `flow_discovery` entries in `agent::registry`'s `BUILTINS`), and a registration site wants
 //! *absence*, not a disabled-error stub — otherwise `flows.*` becomes a known
 //! method that fails at runtime.
 //!
@@ -66,7 +66,7 @@ pub use schemas::{
 };
 // `kv_get`/`kv_set` are re-exported (not just `pub(crate)`-visible within this
 // domain's own module tree) because `tinyflows::caps::FlowStateStore`
-// (`crates/openhuman-core/src/flows/tinyflows/caps.rs`) lives in a sibling domain and needs
+// (`crates/openhuman-core/src/flows/tinyflows/caps/state.rs`) lives in a sibling module and needs
 // them to implement `tinyflows::caps::StateStore` without duplicating the
 // `flow_state` table's persistence logic.
 // `upsert_flow_run_step` is likewise re-exported for the tinyflows seam: the
