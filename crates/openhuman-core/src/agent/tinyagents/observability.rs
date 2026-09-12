@@ -14,9 +14,15 @@ mod event_projection;
 mod graph_tracing;
 
 #[cfg(test)]
+use std::sync::Arc;
+
+#[cfg(test)]
 use tinyagents_harness::events::AgentEvent;
 #[cfg(test)]
 use tinyinference::usage::Usage;
+
+#[cfg(test)]
+use crate::agent::progress::AgentProgress;
 
 pub(crate) use cap_pauser::{
     CapPauser, IterationCursor, ProviderUsageCarry, SubagentScope, ToolFailureMap, ToolNameMap,
