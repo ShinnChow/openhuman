@@ -15,7 +15,7 @@ Canonical mapping of every product feature to its test source(s). Drives gap-fil
 
 | Code | Layer                                                                                |
 | ---- | ------------------------------------------------------------------------------------ |
-| `RU` | Rust unit (sibling `*_tests.rs` files under `crates/openhuman-core/src/`)             |
+| `RU` | Rust unit (sibling `*_tests.rs` under `crates/openhuman-core/src/`, or under `vendor/` where marked vendored) |
 | `RI` | Rust integration (`tests/*.rs`)                                                      |
 | `VU` | Vitest unit (`app/src/**/*.test.ts(x)`)                                              |
 | `WD` | WDIO E2E (`app/test/e2e/specs/*.spec.ts`) — Linux `tauri-driver` + macOS Appium Mac2 |
