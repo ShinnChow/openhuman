@@ -119,8 +119,8 @@ Other invariants worth knowing before wiring either entry point:
   sets both for `Workspace::Ephemeral` and `Workspace::Dir`.
 - A turn runs under the access tier *and* the turn origin. `Access::full()`
   sets both (`AutonomyLevel::Full` plus a `TrustedAutomation` origin);
-  `Access::readonly()` and `Access::supervised()` set no origin, so their
-  turns stay behind the approval gate.
+  `Access::readonly()` and `Access::supervised()` set no origin and leave the
+  approval gate on.
 - Supply skills through `HarnessBuilder::skills_dir`, which copies the
   bundles into the workspace. Skill discovery rejects symlinked bundles, so
   linking them in does not work.
