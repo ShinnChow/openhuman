@@ -1,5 +1,41 @@
 //! Config loading, snapshotting, and core runtime-flag helpers.
 
+mod load;
+mod paths;
+mod reset_local_data;
+mod runtime_flags;
+mod snapshot;
+
+pub use load::{
+    load_config_for_workspace_with_timeout, load_config_with_timeout, reload_config_from_paths,
+    reload_config_snapshot_with_timeout,
+};
+pub(crate) use paths::{
+    active_workspace_marker_path, config_openhuman_dir, default_openhuman_dir,
+    env_scoped_fallback_root_dir, fallback_workspace_dir,
+};
+pub use reset_local_data::{get_data_paths, get_data_paths_for_user, reset_local_data};
+pub(crate) use reset_local_data::{
+    is_windows_file_lock_error, reset_local_data_for_paths, reset_local_data_marker_remove_error,
+    reset_local_data_remove_error,
+};
+pub use runtime_flags::{
+    agent_server_status, core_rpc_url_from_env, get_runtime_flags, set_browser_allow_all,
+    RuntimeFlagsOut,
+};
+pub(crate) use runtime_flags::{
+    env_flag_enabled, runtime_flags, BROWSER_ALLOW_ALL_ENV, BROWSER_ALLOW_ALL_RPC_ENABLE_ENV,
+};
+pub use snapshot::{
+    client_config_json, get_config_snapshot, get_dashboard_settings,
+    load_and_get_client_config_snapshot, load_and_get_config_snapshot, snapshot_config_json,
+};
+
+#[cfg(test)]
+pub(crate) use crate::config::Config;
+#[cfg(test)]
+pub(super) use load::seed_and_enrich_model_registry;
+
 #[cfg(test)]
 #[path = "loader_model_registry_seed_tests_tests.rs"]
 mod model_registry_seed_tests;
@@ -7,5 +43,3 @@ mod model_registry_seed_tests;
 #[cfg(test)]
 #[path = "loader_loader_io_chain_tests_tests.rs"]
 mod loader_io_chain_tests;
-include!("loader_part_01.rs");
-include!("loader_part_02.rs");

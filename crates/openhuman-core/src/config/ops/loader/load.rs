@@ -5,7 +5,7 @@ use std::path::Path;
 
 use crate::config::Config;
 
-pub(super) const CONFIG_LOAD_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(30);
+pub(crate) const CONFIG_LOAD_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(30);
 
 /// Loads persisted config with a 30s timeout.
 ///
@@ -175,7 +175,7 @@ async fn normalize_loaded_config(config: &mut Config) {
 ///   ([`catalog::enrich_entry`]).
 ///
 /// Idempotent: re-running over an already-priced registry is a no-op.
-fn seed_and_enrich_model_registry(config: &mut Config) {
+pub(super) fn seed_and_enrich_model_registry(config: &mut Config) {
     use crate::platform::cost::catalog;
 
     if config.model_registry.is_empty() {
