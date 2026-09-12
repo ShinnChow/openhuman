@@ -104,10 +104,10 @@ These are subscriber registrations rather than a single `bus.rs`; subscriptions 
 - `crate::inference::provider` / `inference::local` — LLM calls for reflection and profile summarisation.
 - `crate::config` — `Config` / `LearningConfig` / `ReflectionSource` feature flags and `config::rpc` loader.
 - `crate::agent::context::prompt` — `PromptContext` / `PromptSection` / `LearnedContextData` for prompt injection.
-- `crate::integrations::composio` — `composio::client` (Gmail fetch for enrichment) and `composio::providers::profile_md` (`replace_managed_block` for `PROFILE.md`).
+- `crate::integrations::composio` — `composio::client` (Gmail fetch for enrichment) and `composio::profile_md` (`replace_managed_block` for `PROFILE.md`).
 - `crate::integrations` — `build_client` / `IntegrationClient` for the Apify scrape call.
-- `crate::core::event_bus` — publish/subscribe + `EventHandler` for `CacheRebuilt` and trigger handlers.
-- `crate::core::all` / `crate::rpc` — controller registry types (`RegisteredController`, `ControllerFuture`) and `RpcOutcome`.
+- `crate::core::bus` / `crate::core::events` — `BUS.publish` / `BUS.subscribe`, `EventHandler`, and `DomainEvent::CacheRebuilt`.
+- `crate::core::all` / `crate::rpc` — controller registry types (`RegisteredController`, `ControllerFuture`) and `RpcOutcome` (the latter re-exported from the `openhuman-rpc` crate via `pub use openhuman_rpc as rpc` in `lib.rs`).
 
 ## Used by
 
