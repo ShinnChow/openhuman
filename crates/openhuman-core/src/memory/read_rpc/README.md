@@ -6,8 +6,8 @@ not for an LLM tool loop. All methods share the existing `memory_tree`
 JSON-RPC namespace with the rest of [`memory/tree/`](../tree/), so they get
 the same authentication, telemetry, and discovery.
 
-Distinct from [`memory::ops`](../ops/) (re-exported as `memory::rpc`, the
-write/ingest surface) and [`memory::tree::retrieval`](../tree/retrieval/)
+Distinct from [`memory::ops`](../ops/) (re-exported as `memory::rpc`: the
+`memory_*` document/KV/graph handlers) and [`memory::tree::retrieval`](../tree/retrieval/)
 (LLM-callable retrieval primitives) — see `mod.rs`'s module doc for how the
 three surfaces divide the space.
 

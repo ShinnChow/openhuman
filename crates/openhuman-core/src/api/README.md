@@ -176,9 +176,14 @@ inference proxy and cloud transcription/embeddings).
 
 ## Tests
 
-`rest_tests.rs` covers `BackendOAuthClient::new` base stripping,
-`finish_authed_json` classification (transport vs status, 401/404 typed
-errors), `flatten_authed_error`, `user_id_from_*_payload`,
+`rest_tests.rs` covers `BackendOAuthClient::new` base stripping, the
+`x-core-version` / `x-tauri-version` / `x-sdk-name` default headers on both
+the SDK and `raw_client` paths, `authed_json` 401/404 classification into
+`BackendApiError` (including the route-absence vs message-gone split for
+channel edits), `flatten_authed_error`, `user_id_from_*_payload`,
 `sanitize_client_version`, `backend_api_body_shape`, and
-`decrypt_handoff_blob`. `config.rs`, `jwt.rs`, `product.rs`, and `socket.rs`
-carry their own `#[cfg(test)]` modules.
+`decrypt_handoff_blob`. Transient-transport classification is not unit
+tested here; it relies on
+`core::observability::contains_transient_transport_phrase`. `config.rs`,
+`jwt.rs`, `product.rs`, and `socket.rs` carry their own `#[cfg(test)]`
+modules.

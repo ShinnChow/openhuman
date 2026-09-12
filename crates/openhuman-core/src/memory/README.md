@@ -79,8 +79,11 @@ aliases re-exported from [`mod.rs`](mod.rs) — `core_recall`, `documents`,
 plus [`goals`](goals/)'s, [`people`](people/)'s, and
 [`tree`](tree/)'s own `all_memory_tree_*`, `all_retrieval_*`, and
 `all_tree_summarizer_*` registered-controller functions,
-[`sync/sync_status`](sync/sync_status.rs)'s `all_memory_sync_status_registered_controllers`,
-and [`sources`](sources/)'s `all_memory_sources_registered_controllers`.
+[`sync/sync_status/`](sync/sync_status/)'s `all_memory_sync_status_registered_controllers`,
+[`sources`](sources/)'s `all_memory_sources_registered_controllers`, and the
+Slack pair in [`sync/composio/providers/slack/`](sync/composio/providers/slack/)
+(`all_slack_memory_registered_controllers`, reached through the
+`integrations::composio::providers::slack` re-export).
 
 Agent tools reach the same registry through
 [`tools/mod.rs`](../tools/mod.rs): `pub use crate::memory::tools::*`,
@@ -91,14 +94,15 @@ Agent tools reach the same registry through
 
 ## Domains that kept their RPC surface here
 
-Each is the RPC surface for a family the *driver* serves: the handler and
-schema modules that name `RpcOutcome` and `ControllerSchema`, resolving through
-the bound provider rather than through a linked engine. Before the engine left,
-each was a thin wrapper over `pub use tinymemory_core::<domain>::*;` as well.
+Each (bar `conversations/`, which is a host-owned store) is the RPC surface
+for a family the *driver* serves: the handler and schema modules that name
+`RpcOutcome` and `ControllerSchema`, resolving through the bound provider
+rather than through a linked engine. Before the engine left, each was a thin
+wrapper over `pub use tinymemory_core::<domain>::*;` as well.
 
 | Module                          | Role                                                     |
 | -------------------------------- | --------------------------------------------------------- |
-| [`conversations/`](conversations/) | Conversation-scoped memory RPC.                          |
+| [`conversations/`](conversations/) | Workspace-backed thread/message store + `core::bus` subscriber; no RPC surface of its own (see its README). |
 | [`goals/`](goals/)               | Goal tracking RPC.                                       |
 | [`people/`](people/)             | People/contacts RPC.                                     |
 | [`sources/`](sources/)           | Source-registration RPC.                                 |

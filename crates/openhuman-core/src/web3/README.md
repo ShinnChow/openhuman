@@ -16,8 +16,8 @@ keys never leave the wallet.
 
 ## Five family members
 
-The `web3` family has five members, three of them (`swap`, `bridge`, `dapp`)
-documented by this README and two with their own README each:
+Three members (`swap`, `bridge`, `dapp`) are documented here; `wallet` and
+`x402` each have their own README:
 
 | Module | Namespace | Purpose |
 | --- | --- | --- |
@@ -57,8 +57,9 @@ is the only thing that catches drift between the real and stub signatures.
 | `store.rs` | In-memory prepared-quote store (TTL'd, capped, chat-thread owner-bound like the wallet) + the shared confirm→execute path. |
 | `ops.rs` | Shared op logic: `routes`, `quote_swap`, `quote_bridge`, `prepare_dapp_call` (address defaulting, backend call, unsigned-tx extraction). |
 | `stub.rs` | Disabled facade compiled when `web3` is off; empty `all_web3_registered_controllers` / `all_web3_controller_schemas` / `all_web3_agent_tools`. See Compile-time gate above. |
-| `web3_tests.rs` | `#[cfg(all(test, feature = "web3"))]` behavior tests for the swap/bridge/dapp aggregation logic in `mod.rs`. |
-| `ops_tests.rs` | Tests for the shared op logic in `ops.rs`. |
+| `web3_tests.rs` | `#[cfg(all(test, feature = "web3"))]` tests for `chain_family` mapping and the quote store's confirm/execute gate. |
+| `ops_tests.rs` | Tests for the shared op logic in `ops.rs` (unsigned-tx extraction, dapp/swap/bridge param rejection). |
+| `stub_tests.rs` | Runs only in the disabled build; pins that the three stub entry points return empty collections. |
 | `{swap,bridge,dapp}/schemas.rs` | Per-namespace RPC controllers + handlers. |
 | `{swap,bridge,dapp}/tools.rs` | Per-namespace agent tools. |
 
@@ -99,7 +100,7 @@ rejected at quote time.
 - [`crate::integrations`] (`IntegrationClient`, `build_client`) — backend auth + transport.
 - `crate::security::approval::APPROVAL_CHAT_CONTEXT` — quote-owner binding.
 - `crate::core::all` / `crate::core` — RPC controller registry wiring.
-- `tinywallet-bus` (`crates/openhuman-core/Cargo.toml` ~line 864, optional, gated by the `web3` feature; features `btc`, `evm`, `solana`, `tron`, `keccak`, `net`, `wire`, `eip712`, `abi`, `tx-codec`) — the contract crate the wallet's signing primitives (and the x402 payment path's EIP-712/ERC-20 encoders) build on: address formats, wire types crossing the `Transport` seam, and the Tron verifier.
+- `tinywallet-bus` (`crates/openhuman-core/Cargo.toml` ~line 864, optional, gated by the `web3` feature; features `btc`, `evm`, `solana`, `tron`, `keccak`, `net`, `wire`, `eip712`, `abi`, `tx-codec`) — not imported by `web3/*.rs` itself, but the contract crate its `wallet/` and `x402/` members build on: address validation, the `SecretMaterial`/`TransactionSpec` wire types handed to the wallet module, the `Transport` seam, the EIP-712/ERC-20 encoders used by x402, and the Tron verifier.
 
 ## Notes / gotchas
 

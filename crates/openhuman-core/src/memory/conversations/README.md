@@ -36,13 +36,16 @@ repeated here.
 
 `store/` also builds a trigram/CJK-bigram inverted index over message content
 in memory for cross-thread search (`inverted_index.rs`, `tokenize.rs`); the
-index is not itself persisted, it is rebuilt from the JSONL on load.
+index is not persisted. It is primed from the JSONL on the first search per
+workspace root and then kept warm in a process-wide cache (`store_index.rs`,
+`prime_index_if_cold`).
 
 ## Callers
 
 Async request paths use the `blocking` wrappers. Grepping
 `memory::conversations::` finds the store used directly by
-[`threads/`](../../threads/) (`ops_part_01.rs`, `turn_state/store.rs`), by
+[`threads/`](../../threads/) (`mod.rs`, `ops_part_01.rs`, `turn_state/store.rs`,
+`welcome_migration.rs`), by
 [`channels/`](../../channels/) (`host/adapters.rs`,
 `providers/telegram/remote_control.rs`, `runtime/startup_part_01.rs`) for
 mirroring channel turns, and by the agent harness/orchestration layer
