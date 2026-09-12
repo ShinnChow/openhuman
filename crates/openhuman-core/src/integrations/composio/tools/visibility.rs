@@ -104,7 +104,7 @@ async fn evaluate_tool_visibility(config: &Config, slug: &str) -> ToolDecision {
 /// `toolkit_from_slug` already lowercases its result, so the comparison
 /// is direct against entries the caller has already lowercased.
 fn retain_connected_tools(
-    resp: &mut super::types::ComposioToolsResponse,
+    resp: &mut super::super::types::ComposioToolsResponse,
     connected: &HashSet<String>,
 ) -> usize {
     let before = resp.tools.len();
@@ -160,12 +160,12 @@ fn empty_uncurated_toolkits_message(toolkits: &[String]) -> Option<String> {
     ))
 }
 
-/// Filter a freshly-fetched [`super::types::ComposioToolsResponse`] in
+/// Filter a freshly-fetched [`super::super::types::ComposioToolsResponse`] in
 /// place: drop tools that aren't curated for their toolkit and tools
 /// whose scope is disabled in the user's pref.
 async fn filter_list_tools_response(
     config: &Config,
-    resp: &mut super::types::ComposioToolsResponse,
+    resp: &mut super::super::types::ComposioToolsResponse,
 ) {
     let before = resp.tools.len();
     // Compute keep/drop decisions sequentially (the await means we
@@ -239,7 +239,7 @@ fn split_arg_names(parameters: Option<&Value>) -> (Vec<String>, Vec<String>) {
 /// only what the agent needs to pick a slug and call `composio_execute`:
 /// the slug, a one-line description, and the names of required +
 /// optional top-level arguments. Tools are grouped by toolkit prefix.
-fn render_tools_markdown(resp: &super::types::ComposioToolsResponse) -> String {
+fn render_tools_markdown(resp: &super::super::types::ComposioToolsResponse) -> String {
     use std::collections::BTreeMap;
     use std::fmt::Write as _;
 
@@ -249,7 +249,7 @@ fn render_tools_markdown(resp: &super::types::ComposioToolsResponse) -> String {
 
     // Group by toolkit slug (lowercase prefix). Use BTreeMap for stable
     // ordering so the agent sees the same shape across calls.
-    let mut by_toolkit: BTreeMap<String, Vec<&super::types::ComposioToolSchema>> = BTreeMap::new();
+    let mut by_toolkit: BTreeMap<String, Vec<&super::super::types::ComposioToolSchema>> = BTreeMap::new();
     for t in &resp.tools {
         let toolkit = toolkit_from_slug(&t.function.name).unwrap_or_else(|| "other".to_string());
         by_toolkit.entry(toolkit).or_default().push(t);
@@ -291,7 +291,7 @@ fn render_tools_markdown(resp: &super::types::ComposioToolsResponse) -> String {
 }
 
 // `execute_direct` was previously defined locally here; it now lives
-// in `super::client::direct_execute` so the ops.rs RPC handler and the
+// in `super::super::client::direct_execute` so the ops.rs RPC handler and the
 // agent-tool path share a single direct-mode envelope reshaper.
 // See `direct_execute`'s rustdoc for the v3 → ComposioExecuteResponse
 // translation contract.
