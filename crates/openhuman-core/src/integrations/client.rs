@@ -18,7 +18,7 @@ pub(crate) use errors::{extract_error_detail, MAX_ERROR_BODY_LEN};
 #[cfg(test)]
 use construct::sanitize_backend_url;
 #[cfg(test)]
-use errors::{extract_error_detail, is_composio_soft_auth_path};
+use errors::is_composio_soft_auth_path;
 #[cfg(test)]
 use requests::{backend_egress_descriptor, enforce_backend_egress, managed_budget_applies_to_path};
 
