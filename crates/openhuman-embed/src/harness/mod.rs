@@ -77,8 +77,9 @@
 //! global event bus and the `Once`-guarded domain subscribers are all
 //! process-scoped, so two harnesses would silently share them while believing
 //! they had separate workspaces. [`HarnessBuilder::build`] returns
-//! [`HarnessError::AlreadyRunning`] rather than letting that happen. Lifting the
-//! restriction is phase 3 of `docs/plans/pluggable-core/`.
+//! [`HarnessError::AlreadyRunning`] rather than letting that happen. See
+//! [`openhuman_core::core::runtime`] for how the underlying process-scoped
+//! state is composed.
 
 mod access;
 mod builder;
