@@ -1,3 +1,129 @@
+//! Commit-on-success half of the `dedup` node's exactly-once contract:
+//! [`DedupCommitSubscriber`] settles every `dedup` node's tentative key set
+//! when a run finishes, serialized per flow through [`FLOW_COMMIT_LOCKS`].
+
+use crate::config::Config;
+use crate::core::events::DomainEvent;
+use crate::flows::store;
+use async_trait::async_trait;
+use serde_json::Value;
+use std::collections::{HashMap, HashSet};
+use std::sync::{Arc, LazyLock, Mutex};
+use tinybus::EventHandler;
+use tinyflows::model::NodeKind;
+use tinyflows::nodes::control_flow::dedup as dedup_node;
+
+/// Listens for `DomainEvent::FlowRunFinished` and settles every `dedup` node
+/// in the finished flow's graph — the host half of the commit-on-success
+/// exactly-once contract the tinyflows `dedup` node depends on (issue #5263
+/// PR2; the filter half — `DedupNode` — is PR1, already in `vendor/tinyflows`;
+/// see `tinyflows::nodes::control_flow::dedup`'s module docs for the full
+/// two-sided contract this subscriber implements).
+///
+/// For every `dedup` node found in the flow's saved graph:
+/// - **Success** (`"completed"` / `"completed_with_warnings"`): unions the
+///   node's `tentative` key set into its `committed` set, then clears
+///   `tentative`. `completed_with_warnings` counts as success — the run
+///   reached a terminal, non-retried outcome, so the items it processed are
+///   genuinely done even if some non-fatal step warned.
+/// - **Anything else** (`"failed"` / `"cancelled"` / `"interrupted"`, or any
+///   future/unrecognized status string): clears `tentative` only, leaving
+///   `committed` untouched, so the released keys are exactly as unseen as
+///   before this run and the flow's next run reprocesses them. An
+///   unrecognized status is deliberately treated as failure, not success —
+///   "retry an already-done item" is always safe, "silently mark an
+///   uncertain outcome as done" is not.
+///
+/// `StateStore` exposes no prefix-scan, so the only way to know which
+/// `dedup:<node_id>:*` keys exist for a flow is to derive `<node_id>` from
+/// the flow's own saved graph — this subscriber loads `flow_id`'s graph on
+/// every event rather than trying to infer node ids from the event itself.
+///
+/// Reuses the exact same per-flow `StateStore` namespace
+/// (`"flow:<flow_id>"`, see `tinyflows::caps::build_capabilities` in
+/// `crates/openhuman-core/src/flows/tinyflows/caps.rs`) the engine's `FlowStateStore` hands the
+/// `dedup` node during the run — that collision with the node's own keys is
+/// the entire point.
+///
+/// Best-effort throughout: every failure here is logged via `tracing::warn!`
+/// and swallowed, never propagated — by the time this subscriber observes
+/// `FlowRunFinished`, the run has already settled its own `flow_runs` row, so
+/// a state-store hiccup here must never retroactively affect run status. A
+/// failed commit degrades to "retry next run" (an item is reprocessed, never
+/// lost); a failed release degrades to "stays tentative", which the `dedup`
+/// node treats as unseen anyway since it only ever consults `committed` —
+/// neither failure mode risks silently dropping an item.
+///
+/// **Commit atomicity (issue #5265, CodeRabbit "Major" on the dedup engine
+/// PR):** the per-node commit itself is a read-modify-write
+/// (`load(committed) → union(tentative) → store(committed) → delete
+/// (tentative)`), not a compare-and-swap. Two overlapping `FlowRunFinished`
+/// events for the SAME `flow_id` (e.g. a scheduled run and a manual re-run
+/// racing each other) could otherwise interleave their read-modify-writes
+/// and have the second writer's `store(committed)` clobber the first
+/// writer's union, silently losing that run's committed keys
+/// (last-writer-wins). [`handle_finished`](Self::handle_finished) closes
+/// that DURABLE half of the race by serializing all of a given flow's
+/// dedup-node settlement through a per-`flow_id` lock (see
+/// [`FLOW_COMMIT_LOCKS`]) — different flows never contend. This does NOT
+/// fix the node-side half: the `dedup` node's own in-run `StateStore`
+/// read-modify-write (a single run unioning its own newly-seen items into
+/// `tentative`) is a separate, still-open limitation documented on
+/// `tinyflows::nodes::control_flow::dedup`'s side; a full CAS-based
+/// `StateStore` is deferred.
+pub struct DedupCommitSubscriber {
+    config: Arc<Config>,
+    /// Test-only instrumentation — see [`CommitTestHooks`]. Always `None` in
+    /// production (`DedupCommitSubscriber::new`).
+    #[cfg(test)]
+    test_hooks: Option<Arc<CommitTestHooks>>,
+}
+
+/// Process-global registry of per-flow commit locks (issue #5265). Keyed by
+/// `flow_id` so unrelated flows never contend with each other; the shared
+/// `tokio::sync::Mutex<()>` per key lets [`DedupCommitSubscriber::
+/// handle_finished`] hold a guard across its whole (synchronous)
+/// read-modify-write section for that flow. Mirrors the same
+/// `LazyLock<Mutex<HashMap<K, Arc<tokio::sync::Mutex<()>>>>>` keyed-lock
+/// idiom `update_memory_md`'s `WORKSPACE_WRITE_LOCKS` uses for an analogous
+/// read-modify-write race (#4458) — grepped for an existing pattern before
+/// adding this one; that's the closest match in the crate.
+///
+/// Deliberately unbounded, matching that precedent: flow ids are bounded in
+/// practice (a user's saved flow set), so an evicting map would be
+/// complexity this doesn't need yet.
+pub(super) static FLOW_COMMIT_LOCKS: LazyLock<Mutex<HashMap<String, Arc<tokio::sync::Mutex<()>>>>> =
+    LazyLock::new(|| Mutex::new(HashMap::new()));
+
+/// Returns (creating if needed) the shared async commit lock for `flow_id`.
+pub(super) fn flow_commit_lock(flow_id: &str) -> Arc<tokio::sync::Mutex<()>> {
+    let mut map = FLOW_COMMIT_LOCKS
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner());
+    Arc::clone(
+        map.entry(flow_id.to_string())
+            .or_insert_with(|| Arc::new(tokio::sync::Mutex::new(()))),
+    )
+}
+
+/// Test-only scheduling/witness hooks for proving [`FLOW_COMMIT_LOCKS`]'
+/// mutual exclusion. Deliberately **instance-scoped** (owned by one
+/// [`DedupCommitSubscriber`], via [`DedupCommitSubscriber::with_test_hooks`])
+/// rather than a process-global static: cargo's test harness runs different
+/// `#[tokio::test]` functions concurrently on separate OS threads, and a
+/// global counter would have unrelated tests' ordinary (unarmed,
+/// effectively-instant) commits interleave with — and pollute — a
+/// concurrency test's high-water-mark measurement purely by scheduling
+/// chance. Scoping the hooks to one test's own `Arc` means only tasks that
+/// share that specific subscriber instance can ever touch its counters.
+#[cfg(test)]
+#[derive(Default)]
+pub(super) struct CommitTestHooks {
+    pub(super) delay_ms: std::sync::atomic::AtomicU64,
+    pub(super) concurrent: std::sync::atomic::AtomicUsize,
+    pub(super) max_concurrent: std::sync::atomic::AtomicUsize,
+}
+
 
 impl DedupCommitSubscriber {
     pub fn new(config: Arc<Config>) -> Self {
@@ -12,7 +138,7 @@ impl DedupCommitSubscriber {
     /// delay inside the commit critical section and observe how many
     /// `handle_finished` calls were concurrently inside it.
     #[cfg(test)]
-    fn with_test_hooks(config: Arc<Config>, hooks: Arc<CommitTestHooks>) -> Self {
+    pub(super) fn with_test_hooks(config: Arc<Config>, hooks: Arc<CommitTestHooks>) -> Self {
         Self {
             config,
             test_hooks: Some(hooks),

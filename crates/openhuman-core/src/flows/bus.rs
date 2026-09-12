@@ -13,5 +13,20 @@
 #[cfg(test)]
 #[path = "bus_tests.rs"]
 mod tests;
-include!("bus_part_01.rs");
-include!("bus_part_02.rs");
+
+mod dedup_commit;
+mod run_digest;
+mod trigger;
+
+pub use dedup_commit::DedupCommitSubscriber;
+pub use run_digest::FlowRunDigestSubscriber;
+pub use trigger::FlowTriggerSubscriber;
+pub(crate) use trigger::{extract_trigger_config, extract_trigger_kind};
+
+// Private helpers the colocated tests reach through `use super::*`.
+#[cfg(test)]
+use dedup_commit::{flow_commit_lock, CommitTestHooks, FLOW_COMMIT_LOCKS};
+#[cfg(test)]
+use run_digest::{render_run_digest, truncate_chars, DIGEST_MAX_CHARS};
+#[cfg(test)]
+use trigger::{matches_app_event, pinned_trigger_inputs};
