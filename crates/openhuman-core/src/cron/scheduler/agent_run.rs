@@ -266,8 +266,8 @@ pub(super) fn resolve_cron_profile(
 }
 
 pub(super) struct BuiltCronAgent {
-    agent: Agent,
-    profile: Option<crate::agent::profiles::AgentProfile>,
+    pub(crate) agent: Agent,
+    pub(crate) profile: Option<crate::agent::profiles::AgentProfile>,
 }
 
 pub(super) fn apply_cron_profile_runtime_defaults(
