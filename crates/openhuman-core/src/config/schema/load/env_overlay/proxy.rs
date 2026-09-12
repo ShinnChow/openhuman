@@ -1,6 +1,5 @@
 //! Env overrides for the outbound proxy configuration.
 
-use crate::config::schema::load::env::parse_env_bool;
 use crate::config::schema::load::env::EnvLookup;
 use crate::config::schema::proxy::{
     normalize_no_proxy_list, normalize_proxy_url_option, normalize_service_list,

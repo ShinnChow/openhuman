@@ -52,9 +52,6 @@ pub(crate) use cost_budget::CostBudgetMiddleware;
 pub(crate) use credential_scrub::CredentialScrubMiddleware;
 pub(crate) use embedder_hooks::EmbedderToolHooksMiddleware;
 pub(crate) use final_call_wrap_up::FinalCallWrapUpMiddleware;
-pub(crate) use loop_guards::{
-    is_repeat_call_exempt, terminal_inference_failure_kind, TerminalInferenceFailure,
-};
 pub use memory_protocol::MemoryProtocolMiddleware;
 pub(crate) use message_trim::{legacy_max_input_tokens, ImageAwareMessageTrimMiddleware};
 pub(crate) use prompt_cache::PromptCacheSegmentMiddleware;
@@ -62,10 +59,9 @@ pub(crate) use repeat_progress::RepeatProgressMiddleware;
 pub(crate) use repeated_failure::RepeatedToolFailureMiddleware;
 pub(crate) use tool_exposure::OpenHumanToolExposureShadowMiddleware;
 pub(crate) use tool_outcome_capture::ToolOutcomeCaptureMiddleware;
-pub(crate) use tool_output::ToolOutputMiddleware;
 pub(crate) use tool_policy::ToolPolicyMiddleware;
 pub(crate) use turn_context::{
-    HandoffConfig, HandoffMiddleware, TranscriptSnapshotMiddleware, TranscriptSnapshotSink,
+    HandoffConfig, TranscriptSnapshotSink,
     TurnContextMiddleware,
 };
 

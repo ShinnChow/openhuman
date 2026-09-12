@@ -2,7 +2,7 @@
 
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 
-use super::super::helpers::{json_output, optional_bool, optional_json, optional_string};
+use super::super::helpers::{json_output, optional_bool, optional_string};
 
 pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
     match function {

@@ -49,20 +49,6 @@ pub use registry::all_composio_agent_tools;
 // — can still reach these via a plain `use super::*;`, exactly as when
 // this was one un-split file. See each item's `pub(super)` in its owning
 // submodule.
-use crate::tools::traits::{PermissionLevel, Tool, ToolCategory, ToolResult};
+use crate::tools::traits::Tool;
 
-use authorize::ComposioAuthorizeTool;
-use connect::{
-    canonicalize_toolkit_slug, composio_connect_timeout, connection_is_active,
-    parse_composio_connect_timeout, ComposioConnectTool, DEFAULT_COMPOSIO_CONNECT_TIMEOUT_SECS,
-};
-use execute::ComposioExecuteTool;
-use list_connections::ComposioListConnectionsTool;
-use list_toolkits::ComposioListToolkitsTool;
-use list_tools::ComposioListToolsTool;
 pub(super) use visibility::{action_mutates_external_state, resolve_action_scope};
-use visibility::{
-    empty_uncurated_toolkits_message, evaluate_tool_visibility, normalized_scope_toolkits,
-    render_tools_markdown, retain_connected_tools, scope_error_message, uncatalogued_toolkits,
-    ToolDecision,
-};

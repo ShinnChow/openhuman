@@ -15,4 +15,4 @@ mod composio;
 mod registry;
 mod web_search;
 
-pub use registry::{all_controller_schemas, all_registered_controllers, tools_schemas};
+pub use registry::{all_controller_schemas, all_registered_controllers};

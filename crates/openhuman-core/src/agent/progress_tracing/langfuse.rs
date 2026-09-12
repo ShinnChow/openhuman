@@ -26,7 +26,7 @@ mod span_export;
 
 pub(crate) use environment::{environment_for_base, ingestion_url};
 pub(crate) use journal_export::push_observations;
-pub(crate) use span_export::{push_spans, spans_to_langfuse_batch};
+pub(crate) use span_export::push_spans;
 
 use super::{SpanStatus, TraceContext, TraceSpan};
 use environment::skip_push;
@@ -34,9 +34,7 @@ use environment::skip_push;
 #[cfg(test)]
 use crate::config::Config;
 #[cfg(test)]
-use crate::security::credentials::session_support::require_live_session_token;
-#[cfg(test)]
-use environment::{push_allowed, LANGFUSE_PUSH_ENVIRONMENTS};
+use environment::push_allowed;
 #[cfg(test)]
 use ingestion_batch::{iso_millis, split_ingestion_batch};
 #[cfg(test)]

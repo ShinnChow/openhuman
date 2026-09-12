@@ -6,7 +6,7 @@
 
 use serde_json::Value;
 
-use super::contract::{CacheEntry, ToolContract, COMPOSIO_CATALOG_CACHE_TTL};
+use super::contract::{CacheEntry, ToolContract};
 use crate::config::Config;
 use crate::integrations::composio::client::{
     create_composio_client, direct_execute, ComposioClientKind,

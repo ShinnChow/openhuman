@@ -206,7 +206,7 @@ impl MemoryDocuments for GuardedDocuments {
 
 // ── Tree ─────────────────────────────────────────────────────────────────────
 
-#[async_trait]
+Pin<Box<(dyn futures::Future<Output = std::result::Result<Vec<tinymemory_api::chunks::Chunk>, tinymemory_api::error::MemoryError>> + std::marker::Send + 'async_trait)>>
 impl MemoryTree for GuardedTree {
     async fn append(&self, mut request: IngestRequest) -> Result<(), MemoryError> {
         self.policy
@@ -246,7 +246,7 @@ impl MemoryTree for GuardedTree {
         source_id: &str,
         limit: usize,
         scope: Option<&SourceScope>,
-    ) -> Result<Vec<Chunk>, MemoryError> {
+    ) -> Result<Vec<crate::memory::ExtractionMode>, MemoryError> {
         self.policy
             .admit_read(Capability::Tree, "tree.query_source", namespace, false)?;
         let ambient = self.policy.ambient_scope();

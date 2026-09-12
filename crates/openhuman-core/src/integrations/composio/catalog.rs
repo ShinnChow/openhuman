@@ -43,10 +43,10 @@ pub use contract::{
     fetch_live_toolkit_catalog, seed_live_catalog_cache, seed_live_catalog_cache_expired,
     ToolContract,
 };
-pub use lookups::{composio_required_args, composio_response_fields};
+pub use lookups::composio_required_args;
 pub use probe::{
-    apply_probe_override, probe_tool_output_sample, probed_output_sample, seed_probe_cache,
-    seed_probe_cache_expired, ProbedOutputSample, COMPOSIO_ENVELOPE_META_KEYS_AT_ROOT,
+    apply_probe_override, probe_tool_output_sample, seed_probe_cache,
+    seed_probe_cache_expired,
 };
 
 // Brought into this module's own namespace (private `use`, not `pub use`) so
@@ -55,8 +55,6 @@ pub use probe::{
 // implementation details they exercise via a plain `use super::*;`, exactly
 // as when this was one un-split file. See each item's `pub(super)` in its
 // owning submodule.
-use contract::{compute_composio_array_path, live_catalog_fetch_lock};
-use probe::{cache_probe_result, resolve_composio_action_scope};
 #[cfg(test)]
 use crate::config::Config;
 #[cfg(test)]

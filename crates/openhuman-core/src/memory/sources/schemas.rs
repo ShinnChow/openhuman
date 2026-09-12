@@ -13,7 +13,7 @@
 use serde::de::DeserializeOwned;
 use serde_json::Value;
 
-use crate::core::all::{ControllerFuture, RegisteredController};
+use crate::core::all::RegisteredController;
 use crate::core::ControllerSchema;
 use crate::rpc::RpcOutcome;
 

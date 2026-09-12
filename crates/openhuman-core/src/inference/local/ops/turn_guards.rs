@@ -3,7 +3,6 @@
 //! the origin label an agent chat runs under.
 
 use crate::config::Config;
-use crate::inference::local as local_ai;
 use crate::security::prompt_injection::{
     enforce_prompt_input, PromptEnforcementAction, PromptEnforcementContext,
 };

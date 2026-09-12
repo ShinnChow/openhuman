@@ -1,5 +1,5 @@
 use super::approval::approval_tool_name;
-use super::artifact_index_toc::{FOOTER_ALLOWANCE, NO_WINDOW_ALLOWANCE};
+use super::artifact_index_toc::NO_WINDOW_ALLOWANCE;
 use super::message_trim::{estimate_message_tokens, estimate_text_tokens, IMAGE_MARKER_TOKEN_COST};
 use super::repeated_failure::{is_body_level_failure, user_actionable_escalation};
 use super::tool_output::{
@@ -14,7 +14,7 @@ use std::sync::Arc;
 use async_trait::async_trait;
 
 use tinyagents_harness::middleware::{
-    AgentRun, BudgetTracker, Middleware, MiddlewareToolOutcome, ToolHandler, ToolMiddleware,
+    AgentRun, BudgetTracker, Middleware, ToolMiddleware,
 };
 use tinyagents_harness::steering::{SteeringCommand, SteeringHandle};
 use tinyagents_harness::tool::{ToolPolicy as TaToolPolicy, ToolResult as TaToolResult};
@@ -23,7 +23,6 @@ use tinyinference::model::{ModelResponse, SegmentRole};
 use tinyinference::tool::{ToolCall as TaToolCall, ToolSchema};
 
 use crate::agent::context::CLEARED_PLACEHOLDER;
-use crate::agent::harness::tool_result_artifacts::TINYAGENTS_TOOL_RESULT_ARTIFACT_STORE;
 use crate::agent::tinyagents::payload_summarizer::{
     PayloadSummarizer, SummarizeOutcome, UnavailableReason,
 };

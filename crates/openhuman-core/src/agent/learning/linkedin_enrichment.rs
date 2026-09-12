@@ -18,7 +18,6 @@ mod profile_markdown;
 use crate::config::Config;
 use crate::integrations::build_client;
 use regex::Regex;
-use serde_json::json;
 use std::sync::LazyLock;
 
 pub use gmail_discovery::scrape_linkedin_profile;

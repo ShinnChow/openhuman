@@ -38,7 +38,6 @@ pub use parsing::{merge_openai_codex_model_hints, model_items_from_body, parse_m
 
 // Cross-submodule wiring: each submodule reaches these through `use super::*;`
 // (mirrors the pre-split `include!`-shared scope).
-use catalog_listing::resolve_local_runtime_key;
 use managed_provider::{
     managed_401_means_signed_out, managed_session_attaches, synthesize_managed_entry,
     url_is_credential_safe,

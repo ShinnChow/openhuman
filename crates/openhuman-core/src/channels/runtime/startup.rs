@@ -15,7 +15,7 @@ pub use start_channels::start_channels;
 #[cfg(test)]
 use chat_workload::{resolve_chat_workload, ChatWorkloadResolution};
 #[cfg(any(test, debug_assertions))]
-use credentials::{resolve_email_password, resolve_yuanbao_app_secret};
+use credentials::resolve_yuanbao_app_secret;
 #[cfg(test)]
 use relay::RelayInboundMessageHandler;
 #[cfg(test)]

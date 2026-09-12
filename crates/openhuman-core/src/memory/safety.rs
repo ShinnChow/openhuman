@@ -47,7 +47,7 @@ mod tests;
 mod pii;
 mod secrets;
 
-pub use pii::{has_likely_email, has_likely_pii, redact_pii};
+pub use pii::{has_likely_email, has_likely_pii};
 pub use secrets::{
     has_likely_secret, sanitize_json, sanitize_text, SanitizationReport, Sanitized,
 };

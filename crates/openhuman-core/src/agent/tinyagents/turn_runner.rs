@@ -23,14 +23,13 @@ use crate::agent::messages::ChatMessage;
 use crate::agent::progress::AgentProgress;
 use crate::agent::tinyagents::harness_assembly::{assemble_turn_harness, AssembledTurnHarness};
 use crate::agent::tinyagents::middleware::TurnContextMiddleware;
-use crate::agent::tinyagents::model::{ProfileOverrideModel, TurnChatModel};
 use crate::agent::tinyagents::observability::{CapPauser, OpenhumanEventBridge, SubagentScope};
 use crate::agent::tinyagents::run_cancellation_context::with_run_cancellation;
 #[cfg(test)]
 use crate::agent::tinyagents::tools::ToolAdapter;
 use crate::agent::tinyagents::turn_models::TurnModels;
 use crate::agent::tinyagents::turn_outcome::TinyagentsTurnOutcome;
-use crate::agent::tinyagents::turn_policy::{effective_max_iterations, run_policy_for};
+use crate::agent::tinyagents::turn_policy::effective_max_iterations;
 use crate::agent::tinyagents::turn_run_error::map_turn_run_error;
 use crate::agent::tinyagents::turn_run_finalize::finalize_turn_outcome;
 use crate::agent::tinyagents::{journal, orchestration, routes, steering_forwarder};

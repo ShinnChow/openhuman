@@ -1,6 +1,5 @@
 //! Synthesized `cloud_providers` entries for well-known local-runtime slugs.
 
-use super::*;
 
 /// Synthesize a transient [`CloudProviderCreds`] entry for the well-known
 /// local-runtime slugs (`ollama`, `lmstudio`) so [`super::list_configured_models`]

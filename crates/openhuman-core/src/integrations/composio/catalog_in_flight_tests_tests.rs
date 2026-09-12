@@ -1,4 +1,3 @@
-use super::*;
 
 #[test]
 fn catalog_miss_locks_are_shared_per_toolkit_only() {

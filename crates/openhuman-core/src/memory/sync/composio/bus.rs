@@ -69,8 +69,6 @@ pub use trigger_subscriber::ComposioTriggerSubscriber;
 // under the submodule that owns each helper) and reaches these through
 // `use super::*;`. Private `use` is enough — a descendant module can see
 // everything visible in its ancestors.
-use connection_created_subscriber::{toolkit_is_memory_source_registrable, WaitError};
-use trigger_subscriber::{triage_disabled, TRIAGE_DISABLED_ENV};
 
 #[cfg(test)]
 #[path = "bus_tests.rs"]

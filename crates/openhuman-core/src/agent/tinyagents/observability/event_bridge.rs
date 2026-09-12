@@ -7,13 +7,10 @@ use std::sync::{Arc, Mutex};
 
 use tokio::sync::mpsc::Sender;
 
-use tinyagents_harness::cache::CacheLayoutEvent;
-use tinyagents_harness::events::{AgentEvent, EventListener, EventRecord};
 use tinyinference::usage::Usage;
 
 use crate::agent::progress::AgentProgress;
 use crate::inference::provider::UsageInfo;
-use crate::tools::traits::humanize_tool_name;
 
 use super::cap_pauser::{
     IterationCursor, ProviderUsageCarry, SubagentScope, ToolFailureMap, ToolNameMap,

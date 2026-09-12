@@ -33,7 +33,6 @@ mod source;
 mod subagents;
 mod tier;
 
-pub(crate) use agent_definition::defaults;
 pub use agent_definition::{
     AgentDefinition, IterationPolicy, TriggerMemoryAgent, EXTENDED_MAX_TOOL_ITERATIONS,
 };

@@ -14,7 +14,7 @@ use crate::memory::api::provider::types::{
 };
 use crate::memory::api::provider::{
     MemoryCore, MemoryDiff, MemoryDocuments, MemoryEntities, MemoryGoals, MemoryGraph,
-    MemoryIngest, MemoryPortability, MemoryProvider, MemoryRecall, MemoryToolMemory, MemoryTree,
+    MemoryIngest, MemoryPortability, MemoryRecall, MemoryToolMemory, MemoryTree,
 };
 use crate::memory::api::recall::OwnedRecallOpts;
 use crate::memory::api::tool_memory::ToolMemoryRule;

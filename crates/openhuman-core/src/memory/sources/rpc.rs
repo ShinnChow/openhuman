@@ -85,7 +85,6 @@ pub use source_sync::{
     reconcile_rpc, sync_rpc, ReconcileRequest, ReconcileResponse, ReconcileScopeReport,
     SyncRequest, SyncResponse,
 };
-pub(crate) use source_sync::{sync_dispatch, SyncDispatch};
 pub use status_toolkits::{
     status_list_rpc, supported_toolkits_rpc, StatusListResponse, SupportedToolkitsResponse,
 };
@@ -94,11 +93,6 @@ pub use status_toolkits::{
 // under `rpc` (not under the submodule that owns each helper) and reach these
 // through `use super::*;`. Private `use` is enough — a descendant module can
 // see everything visible in its ancestors, `unserved` and friends included.
-use coding_sessions::unserved;
-use cost_reporting::summarise_month;
-use registry_crud::filter_to_active_composio_sources;
-use source_sync::describe_source_sync_failure;
-use apply_all::trigger_enabled_syncs;
 
 #[cfg(test)]
 #[path = "rpc_filter_tests_tests.rs"]

@@ -31,7 +31,6 @@ pub use factory::{
 // above — can still reach these via a plain `use super::*;`, exactly as
 // when this was one un-split file. See each item's `pub(super)` in its
 // owning submodule.
-use execute::is_post_oauth_auth_readiness_error;
 #[cfg(test)]
 use std::sync::Arc;
 #[cfg(test)]

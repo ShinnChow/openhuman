@@ -1,7 +1,6 @@
 //! Loading a prior session transcript for KV-cache resume, and the locator
 //! that finds it.
 
-use crate::agent::harness::session::transcript;
 use crate::agent::harness::session::transcript_history::{
     FileTranscriptLocator, SessionHistoryLocator,
 };

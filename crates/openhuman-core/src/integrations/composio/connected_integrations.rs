@@ -17,9 +17,8 @@ mod catalog_description_tests;
 #[cfg(test)]
 pub(crate) use cache::composio_cache_test_lock;
 pub(crate) use cache::{
-    cache_key, cached_active_integrations, cached_active_integrations_including_expired,
+    cached_active_integrations, cached_active_integrations_including_expired,
     connected_set_hash, invalidate_connected_integrations_cache, sync_cache_with_connections,
-    CachedIntegrations, CACHE_TTL, INTEGRATIONS_CACHE,
 };
 pub(crate) use fetch::{
     fetch_connected_integrations, fetch_connected_integrations_status, fetch_toolkit_actions,
@@ -32,4 +31,3 @@ pub(crate) use fetch::{
 // direct child modules of `connected_integrations` above — can still reach
 // these via a plain `use super::<name>;`, exactly as when this was one
 // un-split file. See each item's `pub(super)` in its owning submodule.
-use fetch::{connectable_toolkit_slugs, resolve_toolkit_description};

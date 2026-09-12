@@ -4,7 +4,7 @@ mod cache_helpers;
 mod facet_handlers;
 mod profile_handlers;
 
-use crate::core::all::{ControllerFuture, RegisteredController};
+use crate::core::all::RegisteredController;
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 
 use cache_helpers::{facet_to_json, forget_facet_log, full_key, get_cache};

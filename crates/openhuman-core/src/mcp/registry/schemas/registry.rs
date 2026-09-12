@@ -2,7 +2,7 @@
 //! ([`schemas`]) and the two entry points that assemble the controller
 //! list ([`all_controller_schemas`], [`all_registered_controllers`]).
 
-use crate::core::all::{ControllerFuture, RegisteredController};
+use crate::core::all::RegisteredController;
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 
 use super::handlers::{

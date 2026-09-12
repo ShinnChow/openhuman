@@ -36,8 +36,6 @@ pub use registry::{all_controller_schemas, all_registered_controllers};
 // above — can still reach these via a plain `use super::*;`, exactly as
 // when this was one un-split file. See each item's `pub(super)` in its
 // owning submodule.
-use definitions::schemas;
-use util::{read_optional, read_required, read_required_non_empty, to_json};
 #[cfg(test)]
 use crate::rpc::RpcOutcome;
 #[cfg(test)]

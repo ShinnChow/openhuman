@@ -19,13 +19,8 @@ pub use subscriber::ChannelInboundSubscriber;
 // items reached only through their owning submodule) so the `#[path]`
 // test modules below — which share this module's scope via `super::*` —
 // can see them exactly as they could when this was one unsplit file.
-pub(crate) use thread_id::{derive_inbound_client_id, derive_inbound_thread_id};
-use delivery::channel_message_body_with_idempotency;
+pub(crate) use thread_id::derive_inbound_thread_id;
 use draft::extract_message_id;
-use progressive_ui::{
-    channel_edits_unsupported, channel_supports_progressive_ui, classify_edit_failure,
-    edit_capability_key, mark_channel_edits_unsupported, EditFailure,
-};
 use streaming_state::StreamingState;
 use thinking::latest_thinking_snippet;
 

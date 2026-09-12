@@ -20,7 +20,6 @@
 //! [`set_enabled`] (the scheduler-gate toggle). Every handler keeps its
 //! original `rpc::<name>` path through the re-exports below.
 
-use crate::config::Config;
 
 mod backfill;
 mod chunks;
@@ -44,17 +43,11 @@ pub use pipeline_status::{
 };
 pub use retry_failed::{retry_failed_rpc, RetryFailedResponse};
 pub use set_enabled::{set_enabled_rpc, SetEnabledRequest, SetEnabledResponse};
-pub(crate) use stall::{queue_is_stalled, QUEUE_STALL_THRESHOLD_MS};
 
 // Test-only visibility: `tests` below is declared directly under `rpc` (not
 // under the submodule that owns each helper) and reaches these through
 // `use super::*;`. Private `use` is enough — a descendant module can see
 // everything visible in its ancestors.
-use backfill::backfill_in_progress;
-use ingest::document_item;
-use pipeline_status::{gate_pause_state, latest_quarantine};
-use retry_failed::{blocking_cause, latest_failed_job_failure};
-use stall::{derive_pipeline_status, queue_idle_ms};
 
 #[cfg(test)]
 #[path = "rpc_tests.rs"]

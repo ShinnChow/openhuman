@@ -78,13 +78,12 @@ mod run_control;
 mod tool_contract;
 
 pub use catalog_search::SearchToolCatalogTool;
-pub(crate) use catalog_search::{search_catalog, search_live_catalog, CatalogSearchOutcome};
+pub(crate) use catalog_search::search_live_catalog;
 pub use connection_reads::{ListConnectableToolkitsTool, ListFlowConnectionsTool};
 pub use draft_edit::EditWorkflowTool;
 pub use draft_revise::ReviseWorkflowTool;
 pub use draft_validate::ValidateWorkflowTool;
 pub use dry_run::DryRunWorkflowTool;
-pub(crate) use dry_run_diagnostics::CapturingObserver;
 pub use flow_reads::{
     GetFlowHistoryTool, GetFlowRunTool, GetFlowTool, ListFlowRunsTool, ListFlowsTool,
 };

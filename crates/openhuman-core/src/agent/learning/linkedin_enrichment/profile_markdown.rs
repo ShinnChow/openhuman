@@ -3,7 +3,6 @@
 
 use crate::config::Config;
 
-use super::LINKEDIN_SCRAPER_ACTOR;
 
 // ── PROFILE.md generation ────────────────────────────────────────────
 

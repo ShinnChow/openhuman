@@ -1,5 +1,4 @@
 use super::*;
-use super::*;
 
 #[test]
 fn help_flag_short_circuits_without_probing_a_driver() {

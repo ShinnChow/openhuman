@@ -26,7 +26,7 @@ use crate::memory::api::provider::{
 use crate::memory::api::types::NamespaceMemoryHit;
 use async_trait::async_trait;
 
-use super::super::audit::{trace_allowed, NO_NAMESPACE};
+use super::super::audit::NO_NAMESPACE;
 use super::types::{
     GuardedCodingSessions, GuardedEpisodic, GuardedProfile, GuardedRetrieval, GuardedScoring,
     GuardedSourceSync,

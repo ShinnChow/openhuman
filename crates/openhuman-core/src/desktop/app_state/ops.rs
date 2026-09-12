@@ -46,30 +46,13 @@ mod tests;
 // inside a submodule is private to it and is not picked up by a glob import
 // of that submodule.
 #[cfg(test)]
-use crate::api::rest::user_id_from_profile_payload;
-#[cfg(test)]
-use crate::config::rpc as config_rpc;
-#[cfg(test)]
 use crate::config::Config;
-#[cfg(test)]
-use crate::inference::LocalAiStatus;
-#[cfg(test)]
-use crate::platform::service::{ServiceState, ServiceStatus};
-#[cfg(test)]
-use crate::rpc::RpcOutcome;
-#[cfg(test)]
-use crate::security::credentials::session_support::{
-    is_local_session_token, load_app_session_profile, session_state_from_profile,
-    session_token_from_profile,
-};
 #[cfg(test)]
 use crate::security::credentials::{AuthService, APP_SESSION_PROVIDER, DEFAULT_AUTH_PROFILE_NAME};
 #[cfg(test)]
 use serde_json::Value;
 #[cfg(test)]
 use std::collections::{BTreeMap, HashMap};
-#[cfg(test)]
-use std::sync::atomic::{AtomicU64, Ordering};
 #[cfg(test)]
 use std::time::{Duration, Instant};
 
@@ -86,13 +69,9 @@ use pending_session::*;
 #[cfg(test)]
 use runtime_snapshot::*;
 #[cfg(test)]
-use snapshot::*;
-#[cfg(test)]
 use staleness::*;
 #[cfg(test)]
 use state_file::*;
-#[cfg(test)]
-use types::*;
 
 /// Shared log prefix for every `[app_state]`-tagged debug/warn line across
 /// these submodules.

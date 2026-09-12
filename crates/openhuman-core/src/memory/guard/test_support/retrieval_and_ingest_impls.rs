@@ -11,12 +11,11 @@
 use crate::memory::api::chunks::Chunk;
 use crate::memory::api::error::MemoryError;
 use crate::memory::api::provider::chunks::{
-    ChunkDetail, ChunkEmbedding, ChunkQuery, ChunkScore, SourceIngestQuery, SourceIngestStatus,
+    ChunkDetail, ChunkEmbedding, ChunkQuery,
 };
-use crate::memory::api::provider::episodic::{ConversationSegment, EpisodicTurn};
 use crate::memory::api::provider::operations::{
-    AnswerRequest, AnswerResponse, MemoryAnswer, MemoryConversationIngest, MemoryDocumentIngest,
-    MemoryEventIngest, MemoryLearningIngest, RawMemoryEvent,
+    MemoryAnswer, MemoryConversationIngest, MemoryDocumentIngest,
+    MemoryEventIngest, MemoryLearningIngest,
 };
 use crate::memory::api::provider::people::{
     AddressBookSeedOutcome, PersonHandle, PersonInteraction, PersonRecord, PersonScore,
@@ -33,7 +32,6 @@ use crate::memory::api::provider::{
     MemoryScoring,
 };
 use async_trait::async_trait;
-use tinymemory_api::learning::LearningCandidate;
 
 use super::fixtures::{rendered_scope, Call, RecordingProvider};
 

@@ -19,7 +19,7 @@ mod tool_impl;
 mod types;
 
 pub use connections::ComposioConnectedAccount;
-pub use discovery::{ComposioAction, ComposioToolSchemaV3};
+pub use discovery::ComposioAction;
 pub use types::ComposioTool;
 
 // Test-only bridges: the flat `direct_tests.rs` module (kept as a rename-only

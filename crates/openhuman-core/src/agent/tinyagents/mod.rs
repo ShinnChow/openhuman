@@ -77,14 +77,12 @@ pub use resolved_route::{
     current_resolved_provider_route, current_route_slot, record_resolved_provider_route,
     with_resolved_provider_route_scope, with_route_slot, ResolvedProviderRoute, RouteSlot,
 };
-pub(crate) use run_cancellation_context::{current_run_cancellation, with_run_cancellation};
+pub(crate) use run_cancellation_context::current_run_cancellation;
 pub(crate) use topology::all_graph_topologies;
 pub use turn_models::TurnModelSource;
 pub(crate) use turn_models::TurnModels;
 pub(crate) use turn_outcome::{HaltSummarySlot, TinyagentsTurnOutcome, ToolCallOutcome, ToolOutcomeSink};
 pub(crate) use turn_policy::{agent_turn_wall_clock_ms, ToolPolicyEnforcement};
-#[cfg(test)]
-pub(crate) use turn_runner::run_turn_via_tinyagents;
 pub(crate) use turn_runner::run_turn_via_tinyagents_shared;
 
 // Test-only glue so `tinyagents_tests.rs`'s `use super::*;` sees the

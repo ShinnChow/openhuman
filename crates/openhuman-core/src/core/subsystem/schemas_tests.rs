@@ -1,5 +1,4 @@
 use super::*;
-use super::*;
 
 #[test]
 fn status_schema_shape() {

@@ -2,7 +2,6 @@
 
 use crate::agent::Agent;
 use crate::config::Config;
-use crate::inference::local as local_ai;
 use crate::inference::provider as providers;
 use crate::rpc::RpcOutcome;
 
