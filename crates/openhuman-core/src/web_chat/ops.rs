@@ -12,26 +12,20 @@ mod state;
 mod test_hooks;
 mod turn_guards;
 
-pub(super) use budget_correlation::{classify_budget_correlation, BudgetCorrelation};
-#[cfg(test)]
-pub(super) use budget_correlation::{clear_budget_signal, has_fresh_budget_signal, record_budget_signal};
-#[cfg(not(test))]
-pub(super) use budget_correlation::{clear_budget_signal, has_fresh_budget_signal, record_budget_signal};
+pub(super) use budget_correlation::{
+    classify_budget_correlation, clear_budget_signal, has_fresh_budget_signal,
+    record_budget_signal, BudgetCorrelation,
+};
 
 pub use channel_ops::{
     cancel_chat, cancel_chat_scoped, channel_web_cancel, channel_web_chat,
     channel_web_queue_clear, channel_web_queue_status,
 };
 
-#[cfg(any(test, debug_assertions))]
-pub use parallel_turn::spawn_parallel_turn as _spawn_parallel_turn_for_test_visibility;
-
 pub use start_chat::start_chat;
 
 pub(super) use state::{cancel_in_flight_gracefully, event_session_id_for, key_for};
-pub use state::{
-    cancel_should_target, in_flight_entries_for_test, invalidate_thread_sessions,
-};
+pub use state::{cancel_should_target, in_flight_entries_for_test, invalidate_thread_sessions};
 #[cfg(any(test, debug_assertions))]
 pub use state::parallel_in_flight_entries_for_test;
 pub(super) use state::{IN_FLIGHT, PARALLEL_IN_FLIGHT, THREAD_SESSIONS};

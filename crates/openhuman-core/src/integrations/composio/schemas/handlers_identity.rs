@@ -29,15 +29,9 @@ pub(super) fn handle_sync(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let config = config_rpc::load_config_with_timeout().await?;
         let connection_id = read_required_non_empty(&params, "connection_id")?;
-        let reason = read_optional_reason(&params)?;
+        let reason = read_optional::<String>(&params, "reason")?;
         to_json(ops::composio_sync(&config, &connection_id, reason).await?)
     })
-}
-
-/// Local alias so this file needs only one extra import — `reason` is the
-/// only optional-param read outside the connection-id/toolkit path here.
-fn read_optional_reason(params: &Map<String, Value>) -> Result<Option<String>, String> {
-    super::util::read_optional::<String>(params, "reason")
 }
 
 pub(super) fn handle_get_user_scopes(params: Map<String, Value>) -> ControllerFuture {

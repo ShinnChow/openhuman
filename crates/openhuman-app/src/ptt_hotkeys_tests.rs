@@ -67,20 +67,6 @@ fn malformed_shortcut_with_empty_tokens_is_rejected() {
         Err(PttError::EmptyShortcut)
     );
 }
-}
-
-/// Returns `Some(conflicting_variant)` if any expanded PTT variant overlaps
-/// any expanded dictation variant. Comparison is case-insensitive.
-pub(crate) fn first_conflict_with(ptt: &[String], dictation: &[String]) -> Option<String> {
-for p in ptt {
-    let p_lc = p.to_ascii_lowercase();
-    for d in dictation {
-        if d.to_ascii_lowercase() == p_lc {
-            return Some(p.clone());
-        }
-    }
-}
-None
 
 // -- from conflict_tests --
 
@@ -145,3 +131,4 @@ fn cas_false_to_true_succeeds_then_repeat_fails() {
         "stale swap should return false"
     );
 }
+
