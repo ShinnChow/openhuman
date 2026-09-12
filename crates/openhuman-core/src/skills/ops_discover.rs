@@ -6,10 +6,16 @@
 //! [`collision`] holds cross-scope name-collision resolution, and
 //! [`resource`] holds bundled-resource reading.
 
+use std::path::Path;
+
+use super::ops_types::{Workflow, WorkflowScope};
+
 mod api;
 mod collision;
 mod resource;
 mod scan;
+
+use collision::precedence;
 
 pub use api::{
     discover_automations, discover_workflows, discover_workflows_with_profile,
