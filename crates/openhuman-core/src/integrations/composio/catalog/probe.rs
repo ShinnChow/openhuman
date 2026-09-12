@@ -6,10 +6,7 @@
 
 use serde_json::Value;
 
-use super::contract::{
-    compute_composio_array_path, fetch_live_toolkit_catalog, CacheEntry, ToolContract,
-    COMPOSIO_CATALOG_CACHE_TTL,
-};
+use super::contract::{CacheEntry, ToolContract, COMPOSIO_CATALOG_CACHE_TTL};
 use crate::config::Config;
 use crate::json_schema::compute_primary_array_path_from_value;
 use crate::integrations::composio::client::{create_composio_client, direct_execute, ComposioClientKind};
