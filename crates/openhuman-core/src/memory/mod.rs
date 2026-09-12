@@ -1,7 +1,8 @@
 //! Memory orchestration — the **host layer** over `tinymemory-core`.
 //!
 //! The substance of the memory subsystem was extracted into
-//! [`tinymemory_core`]: the SQLite/vector store, the markdown summary tree, the
+//! `tinymemory-core` (not linked by this crate — see the block at the bottom of
+//! this file): the SQLite/vector store, the markdown summary tree, the
 //! provider sync pipelines, ingestion, recall/query/search, the ingest queue,
 //! conversations, people, goals and the tool-memory rules. That crate names no
 //! OpenHuman type.
@@ -13,7 +14,7 @@
 //! | [`schemas`] / [`read_rpc`] | the JSON-RPC surface and its controller registration |
 //! | [`tools`] | the memory agent tools |
 //! | [`guard`] | the taint/scope/budget policy gate over every provider call |
-//! | [`driver`] | driver binding — which provider backs this workspace |
+//! | [`driver`] | the driver namespace — no in-process engine driver; points at [`api`] and [`binding`] |
 //! | [`ops`] | RPC handlers, delegating into the core |
 //! | [`agent`] | the memory agent and its prompt |
 //! | [`binding`] | the workspace-keyed driver binding (`for_config`) |
