@@ -82,7 +82,7 @@ in `crates/openhuman-core/src/core/all.rs`.
   the importer converts from.
 - `crates/openhuman-core/src/agent/harness/session/turn/session_io_impl_01_part_02.rs`
   — calls `live::write_live_turn` after each transcript write and
-  `live::shadow_read_compare` on resume.
+  `live::shadow_read_compare` after each transcript load, both on background tasks.
 - `crates/openhuman-core/src/agent/tinyagents/mod_part_02.rs` — registers
   `live::session_kv_store` on the per-turn `RunContext`.
 - `open_session_stores` is reused by `agent/tinyagents/{journal,reaper,todos,replay/ops}.rs`
