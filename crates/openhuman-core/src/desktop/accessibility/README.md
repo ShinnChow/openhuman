@@ -23,7 +23,8 @@ Re-exported from `mod.rs`:
 
 ## Called by
 
-- `crates/openhuman-core/src/voice/` — microphone permission and focused-text helpers (indirect, via re-exports).
+- `crates/openhuman-core/src/voice/` (`server_part_01.rs`, `always_on_part_02.rs`, `audio_capture.rs`, `text_input.rs`) — microphone permission, focused-text, and terminal-context helpers.
+- `crates/openhuman-core/src/core/all_tests.rs` — registry-level test coverage.
 
 ## Tests
 
