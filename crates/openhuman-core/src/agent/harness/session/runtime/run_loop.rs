@@ -1,160 +1,17 @@
+//! `run_single` / `run_interactive`: the single-shot and CLI entry points
+//! that wrap [`Agent::turn`] with prompt-injection enforcement, telemetry
+//! events, and error sanitisation.
+
+use super::super::types::Agent;
+use crate::agent::error::AgentError;
+use crate::core::bus::BUS;
+use crate::core::events::DomainEvent;
+use crate::security::prompt_injection::{
+    enforce_prompt_input, PromptEnforcementAction, PromptEnforcementContext,
+};
+use anyhow::Result;
 
 impl Agent {
-    /// Borrow the holistic token/cost/context totals for the latest completed
-    /// turn (parent + sub-agents) **without consuming them**. `None` until a
-    /// turn has run.
-    ///
-    /// This is the public, non-draining counterpart to
-    /// [`take_last_turn_usage_totals`](Self::take_last_turn_usage_totals): a
-    /// downstream crate embedding OpenHuman as a library (e.g. the OpenCompany
-    /// hosting platform's cost-metering hook) can read per-turn token and USD
-    /// totals after [`Agent::turn`](crate::agent::Agent) returns,
-    /// while leaving the value in place for the web-channel drain path.
-    pub fn last_turn_usage(
-        &self,
-    ) -> Option<&crate::agent::harness::turn_subagent_usage::LastTurnUsage> {
-        self.last_turn_usage_totals.as_ref()
-    }
-
-    /// Drain and return the holistic token/cost/context totals for the latest
-    /// completed turn (parent + sub-agents). `None` until a turn has run.
-    /// Consumed by web-channel delivery to populate the `chat_done` usage fields.
-    pub(crate) fn take_last_turn_usage_totals(
-        &mut self,
-    ) -> Option<crate::agent::harness::turn_subagent_usage::LastTurnUsage> {
-        self.last_turn_usage_totals.take()
-    }
-
-    /// Whether the most recently completed [`Self::turn`] / [`Self::run_single`]
-    /// paused because it hit `max_tool_iterations`, rather than finishing
-    /// naturally (see the field doc on `last_turn_hit_cap`). `false` before
-    /// any turn has run. Not draining — unlike the usage totals above, a
-    /// caller may reasonably check this more than once per turn.
-    pub fn last_turn_hit_cap(&self) -> bool {
-        self.last_turn_hit_cap
-    }
-
-    // ─────────────────────────────────────────────────────────────────
-    // Static helpers for turn parsing + telemetry
-    // ─────────────────────────────────────────────────────────────────
-
-    pub(super) fn count_iterations(messages: &[ConversationMessage]) -> usize {
-        messages
-            .iter()
-            .filter(|message| matches!(message, ConversationMessage::AssistantToolCalls { .. }))
-            .count()
-            + 1
-    }
-
-    fn conversation_message_eq(left: &ConversationMessage, right: &ConversationMessage) -> bool {
-        serde_json::to_string(left).ok() == serde_json::to_string(right).ok()
-    }
-
-    fn message_slice_eq(left: &[ConversationMessage], right: &[ConversationMessage]) -> bool {
-        left.len() == right.len()
-            && left
-                .iter()
-                .zip(right.iter())
-                .all(|(left, right)| Self::conversation_message_eq(left, right))
-    }
-
-    pub(super) fn new_entries_for_turn<'a>(
-        history_snapshot: &[ConversationMessage],
-        current_history: &'a [ConversationMessage],
-    ) -> &'a [ConversationMessage] {
-        let common_prefix_len = history_snapshot
-            .iter()
-            .zip(current_history.iter())
-            .take_while(|(left, right)| Self::conversation_message_eq(left, right))
-            .count();
-
-        if common_prefix_len == history_snapshot.len() {
-            return &current_history[common_prefix_len..];
-        }
-
-        let max_overlap = history_snapshot.len().min(current_history.len());
-        for overlap in (0..=max_overlap).rev() {
-            let snapshot_suffix = &history_snapshot[history_snapshot.len() - overlap..];
-            let current_prefix = &current_history[..overlap];
-            if Self::message_slice_eq(snapshot_suffix, current_prefix) {
-                return &current_history[overlap..];
-            }
-        }
-
-        current_history
-    }
-
-    pub(super) fn sanitize_event_error_message(err: &anyhow::Error) -> String {
-        let kind = match err.downcast_ref::<AgentError>() {
-            Some(AgentError::ProviderError { .. }) => Some("provider_error"),
-            Some(AgentError::ContextLimitExceeded { .. }) => Some("context_limit_exceeded"),
-            Some(AgentError::ToolExecutionError { .. }) => Some("tool_execution_error"),
-            Some(AgentError::CostBudgetExceeded { .. }) => Some("cost_budget_exceeded"),
-            Some(AgentError::MaxIterationsExceeded { .. }) => Some("max_iterations_exceeded"),
-            Some(AgentError::EmptyProviderResponse { .. }) => Some("empty_provider_response"),
-            Some(AgentError::CompactionFailed { .. }) => Some("compaction_failed"),
-            Some(AgentError::PermissionDenied { .. }) => Some("permission_denied"),
-            Some(AgentError::RegistryValidationFailed { .. }) => Some("registry_validation_failed"),
-            Some(AgentError::Other(_)) | None => None,
-        };
-
-        if let Some(kind) = kind {
-            return kind.to_string();
-        }
-
-        let scrubbed = provider::sanitize_api_error(&err.to_string())
-            .replace(['\n', '\r', '\t'], " ")
-            .split_whitespace()
-            .collect::<Vec<_>>()
-            .join(" ");
-        truncate_with_ellipsis(&scrubbed, Self::EVENT_ERROR_MAX_CHARS)
-    }
-
-    /// Injects unique IDs into tool calls that are missing them.
-    ///
-    /// This is necessary for some tool dispatchers to correctly track and
-    /// associate results.
-    pub(super) fn with_fallback_tool_call_ids(
-        mut parsed_calls: Vec<ParsedToolCall>,
-        iteration: usize,
-    ) -> Vec<ParsedToolCall> {
-        for (idx, call) in parsed_calls.iter_mut().enumerate() {
-            if call.tool_call_id.is_none() {
-                call.tool_call_id = Some(format!("parsed-{}-{}", iteration + 1, idx + 1));
-            }
-        }
-        parsed_calls
-    }
-
-    /// Converts parsed tool calls into the provider-standard `ToolCall` format.
-    ///
-    /// If the provider response already contains native tool calls, they are
-    /// returned as-is.
-    pub(super) fn persisted_tool_calls_for_history(
-        response: &crate::inference::provider::ChatResponse,
-        parsed_calls: &[ParsedToolCall],
-        iteration: usize,
-    ) -> Vec<ToolCall> {
-        if !response.tool_calls.is_empty() {
-            return response.tool_calls.clone();
-        }
-
-        parsed_calls
-            .iter()
-            .enumerate()
-            .map(|(idx, call)| ToolCall {
-                id: call
-                    .tool_call_id
-                    .clone()
-                    .unwrap_or_else(|| format!("parsed-{}-{}", iteration + 1, idx + 1)),
-                name: call.name.clone(),
-                arguments: call.arguments.to_string(),
-                // Prompt-based tool calls carry no provider extra_content.
-                extra_content: None,
-            })
-            .collect()
-    }
-
     // ─────────────────────────────────────────────────────────────────
     // Run helpers — single-shot and interactive loops
     // ─────────────────────────────────────────────────────────────────

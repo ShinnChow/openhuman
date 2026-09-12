@@ -1,4 +1,6 @@
 use super::*;
+use super::super::types::Agent;
+use crate::agent::messages::ConversationMessage;
 use crate::agent::dispatcher::XmlToolDispatcher;
 use crate::agent::error::AgentError;
 use crate::agent::messages::ChatMessage;
