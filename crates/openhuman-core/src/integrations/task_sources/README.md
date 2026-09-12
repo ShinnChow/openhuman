@@ -103,7 +103,8 @@ Subscribes:
 
 - `DomainEvent::ComposioConnectionCreated` (domain filter `["composio"]`) via `TaskSourcesConnectionSubscriber` — fires a one-shot `ConnectionCreated` fetch for matching enabled sources. Registered once at startup (`register_task_sources_subscriber`, idempotent `OnceLock` handle).
 
-Startup wiring is split across two sites:
+Startup wiring is split across three sites; both entry points are idempotent
+(`OnceLock`), so the overlap is harmless:
 
 - `crates/openhuman-core/src/core/jsonrpc.rs` (~2159) calls
   `crate::integrations::task_sources::bus::register_task_sources_subscriber()`.
@@ -111,6 +112,9 @@ Startup wiring is split across two sites:
   `crate::integrations::task_sources::start_periodic_poll()` (alongside
   `agent::task_dispatcher::start_board_poller()`) when the `ServiceSet`'s
   `proactive_task_pollers` bootstrap job is enabled (documented at ~212).
+- `crates/openhuman-core/src/channels/runtime/startup_part_01.rs`
+  (`start_channels`, ~182) calls both `register_task_sources_subscriber()`
+  and `start_periodic_poll()` again for the channels runtime path.
 
 ## Persistence
 
@@ -136,6 +140,7 @@ Additive idempotent column migrations (`add_column_if_missing`) backfill `ingest
 - `crates/openhuman-core/src/core/all.rs` — registers controllers + schemas into the global RPC registry.
 - `crates/openhuman-core/src/core/jsonrpc.rs` — at startup registers the connection subscriber (bus.rs).
 - `crates/openhuman-core/src/core/runtime/services.rs` — at startup starts the periodic poll as part of the `proactive_task_pollers` bootstrap job.
+- `crates/openhuman-core/src/channels/runtime/startup_part_01.rs` — `start_channels` registers the subscriber and starts the poll for the channels runtime.
 - `crates/openhuman-core/src/core/events.rs` — defines/classifies the three `TaskSource*` event variants under domain `"task_sources"`.
 - `crates/openhuman-core/src/tools/mod.rs` — re-exports `tools.rs`'s agent tools into the global tool registry.
 - `crates/openhuman-core/src/config/schema/` — `TaskSourcesConfig` block feeding domain defaults.
