@@ -73,7 +73,6 @@ pub(crate) struct OpenhumanEventBridge {
     /// Shared FIFO carry of the per-call provider `UsageInfo` the model adapter
     /// observed; drained in `record_usage` to restore backend-charged USD +
     /// context-window + cache-creation/reasoning tokens the crate `Usage` drops.
-    #[allow(dead_code)]
     pub(super) usage_carry: ProviderUsageCarry,
     /// Model-call iterations whose `UsageRecorded` has already been folded into
     /// the global cost tracker (W2-budget-dedupe). A single model call can now

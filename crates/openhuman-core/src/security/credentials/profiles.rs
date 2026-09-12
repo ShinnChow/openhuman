@@ -295,10 +295,6 @@ fn write_owner_only(path: &Path, bytes: &[u8]) -> std::io::Result<()> {
         fs::write(path, bytes)
     }
 }
-include!("profiles_impl_01_part_01.rs");
-include!("profiles_impl_01_part_02.rs");
-include!("profiles_impl_01_part_03.rs");
-
 /// Cross-platform best-effort check that a given OS process id is currently
 /// running. Used by [`AuthProfilesStore::clear_lock_if_stale`] to decide
 /// whether a recorded lock owner is still alive; a false negative just

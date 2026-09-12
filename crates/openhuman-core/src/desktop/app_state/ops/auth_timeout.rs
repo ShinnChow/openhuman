@@ -47,7 +47,7 @@ pub fn parse_auth_fetch_timeout_secs(raw: Option<&str>) -> u64 {
 /// Split from [`parse_auth_fetch_timeout_secs`] so the resolver can tell
 /// "accepted" from "fell back" without re-deriving it by comparing strings —
 /// which would report a valid `05` as ignored.
-fn auth_fetch_timeout_override(raw: Option<&str>) -> Option<u64> {
+pub(super) fn auth_fetch_timeout_override(raw: Option<&str>) -> Option<u64> {
     raw.map(str::trim)
         .and_then(|s| s.parse::<u64>().ok())
         .filter(|n| (MIN_AUTH_FETCH_TIMEOUT_SECS..=MAX_AUTH_FETCH_TIMEOUT_SECS).contains(n))
@@ -87,7 +87,7 @@ pub(super) fn auth_fetch_timeout() -> Duration {
 /// (#5624 — 51 timeouts in one session, ~5s each). Making the timeout
 /// configurable (#5930) without deriving this would let an operator re-open
 /// that bug by widening the timeout past a fixed 10s step.
-fn current_user_backoff_base_for(fetch_timeout: Duration) -> Duration {
+pub(super) fn current_user_backoff_base_for(fetch_timeout: Duration) -> Duration {
     CURRENT_USER_BACKOFF_BASE_FLOOR.max(fetch_timeout.saturating_mul(2))
 }
 
