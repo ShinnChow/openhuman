@@ -1,8 +1,8 @@
 # local
 
-Local AI runtime manager: Ollama, LM Studio, and Piper sub-process
-lifecycle, plus the RPC surface used to prompt/summarize/embed against the
-active local model. Was previously `local_ai/` (pre-consolidation
+Local AI runtime manager: `ollama serve` and Piper sub-process lifecycle,
+LM Studio reachability over HTTP (LM Studio is never spawned), plus the RPC
+surface used to prompt/summarize/embed against the active local model. Was previously `local_ai/` (pre-consolidation
 `src/openhuman/` layout); see `../README.md` for the wider `inference` domain.
 
 ## Key files
@@ -13,13 +13,13 @@ active local model. Was previously `local_ai/` (pre-consolidation
 | `core.rs` | `LocalAiService` singleton (`global`/`try_global`), `model_artifact_path`. |
 | `ops.rs` + `ops_part_0{1,2}.rs` | RPC entry points: `local_ai_status/prompt/summarize/vision_prompt/embed/transcribe[_bytes]/tts/chat`, `agent_chat[_simple]`, `local_ai_should_react` (`ReactionDecision`), assets/downloads status. |
 | `schemas.rs` | Local-runtime `inference.*` controller schemas + handlers (see RPC below); exported as `all_local_inference_controller_schemas` / `all_local_inference_registered_controllers`. |
-| `ollama.rs` | `ollama_base_url[_from_config]`, `validate_ollama_url`. |
-| `lm_studio.rs` | LM Studio base-url resolution, adopt vs spawn. |
+| `ollama.rs` | Ollama HTTP JSON types, `DEFAULT_OLLAMA_BASE_URL`, `ollama_base_url[_from_config]`, `validate_ollama_url`. |
+| `lm_studio.rs` | LM Studio OpenAI-compatible wire types, `lm_studio_base_url[_from_local_ai]`, URL normalisation and auth header; the daemon is only probed, never started. |
 | `install.rs`, `install_piper.rs`, `voice_install_common.rs` | Ollama/Piper download and install; shared download-progress plumbing. No Whisper install any more — local STT was retired (`config/migrations/retire_local_whisper_stt.rs`). |
 | `model_requirements.rs` | `MIN_CONTEXT_TOKENS`, `evaluate_context`, `ContextEligibility` — minimum-context-window floor enforcement. |
 | `profile.rs` | `LocalProviderProfile` per-provider-type capability metadata (tool-dispatch strategy, context-window defaults, request-body extras like `options.num_ctx`, `think` suppression) consulted by the factory and agent harness. |
 | `process_util.rs` | Shared subprocess helpers (`pub(crate)`, notably the Windows `CREATE_NO_WINDOW` flag) reused by `agent::host_runtime`. |
-| `provider.rs` | `LocalAiProvider` (Ollama / LM Studio) selection helper. |
+| `provider.rs` | `pub(crate)` `LocalAiProvider` (Ollama / LM Studio), `normalize_provider`, `provider_from_config`; `omlx` is preserved as a slug for the factory rather than collapsed to Ollama. |
 | `service/` | `LocalAiService` impl, split by concern (below). |
 
 ## `service/` split
@@ -27,15 +27,15 @@ active local model. Was previously `local_ai/` (pre-consolidation
 | File | Role |
 | --- | --- |
 | `mod.rs` | `LocalAiService` struct (`status`, `bootstrap_lock`, `http`, `owned_ollama`), `has_owned_ollama`, `inject_owned_ollama` (test bridge). |
-| `bootstrap.rs` | Detect/spawn/adopt the local runtime on first use. |
+| `bootstrap.rs` | `new`, `bootstrap` (first-use detect/spawn/adopt behind `bootstrap_lock`), and the `LocalAiStatus` state machine (`idle` → `loading` → `ready` / `degraded` / `disabled`; a `degraded` service is not retried automatically). |
 | `lm_studio.rs`, `model_rpc.rs` | LM Studio-specific and generic model-RPC plumbing. |
 | `public_infer.rs` | Chat/vision/summarize/embed entry points called from `ops.rs`. |
 | `speech.rs` | `transcribe`, `transcribe_with_prompt`, `tts` — delegates STT to `crate::voice::create_stt_provider` (cloud/engine-configurable) and TTS to the local Piper install. |
 | `transcription.rs` | `TranscriptionResult` — provider-neutral transcription result type. It outlived the bundled whisper.cpp engine that introduced it; the shape is still the contract with `channels::host::adapters`. |
 | `vision_embed.rs` | Vision-prompt and embedding entry points. |
-| `spawn_marker.rs` | Marks/detects an OpenHuman-spawned child so ownership survives a process restart. |
+| `spawn_marker.rs` | Writes a marker file (PID, binary, owning process) for each `ollama serve` this process spawned so a daemon orphaned by a crash can be reclaimed (`ollama_admin/server.rs::reclaim_orphan_if_ours`) instead of leaked or blanket-killed. |
 | `assets.rs` + `assets_impl_01_part_0{1,2}.rs` | Asset status and download-progress tracking. |
-| `ollama_admin/` | Ollama daemon lifecycle, split by concern: `binary` (resolve/verify the executable), `diagnostics`, `health` (`test_ollama_connection` in `util.rs`), `model_pull`, `server` (start/stop, adopt vs own). |
+| `ollama_admin/` | Ollama daemon lifecycle, split by concern: `binary` (`resolve_or_install_ollama_binary`), `diagnostics`, `health` (`ollama_healthy*`, `has_model*`, `kill_ollama_server`, `shutdown_owned_ollama`), `model_pull`, `server` (`ensure_ollama_server[_fresh]`, `reclaim_orphan_if_ours`, `start_and_wait_for_server` — adopt vs own), `util` (`test_ollama_connection`, the only item re-exported from `ollama_admin/mod.rs`). |
 
 ## Singleton lifecycle
 
@@ -68,11 +68,17 @@ into `local::rpc` (`ops.rs`).
 ## Consumers
 
 `grep -rn 'inference::local::' crates/openhuman-core/src` shows the main
-callers outside this module: `voice/ops.rs` (STT/TTS RPC), `inference/ops.rs`
-and `inference/provider/factory_part_0{1,3,4}.rs` (routing into the local
-runtime as a chat-model backend), `inference/embeddings/factory.rs` (Ollama
-embedding provider), `agent/host_runtime.rs` and `agent/tinyagents/mod_part_03.rs`
-(local-provider-aware agent tooling), and `runtime/python_server/{kompress,spacy}.rs`.
+callers outside this module: `agent/schemas.rs` (registers `agent.chat` /
+`agent.chat_simple` over `local::rpc::agent_chat*`), `inference/ops.rs` and
+`inference/provider/factory_part_0{1,3,4}.rs` (`profile::is_local_provider_string`,
+base-url resolution when routing into a local runtime), `inference/embeddings/factory.rs`
+(Ollama embedding base url), `agent/learning/reflection.rs` and
+`security/credentials/ops_part_01.rs` (`local::global`), `core/runtime/builder.rs`
+(`local::try_global` on shutdown), `config/ops/model.rs` (`provider::normalize_provider`,
+`validate_ollama_url`), `agent/tinyagents/mod_part_03.rs` and `agent/triage/routing.rs`
+(`profile::is_local_provider_string`), `voice/ops.rs` (`model_ids`, `paths`), and
+`agent/host_runtime.rs`, `runtime/python/process.rs`, `runtime/python_server/{kompress,spacy}.rs`
+(`process_util::apply_no_window`).
 
 ## Tests
 
