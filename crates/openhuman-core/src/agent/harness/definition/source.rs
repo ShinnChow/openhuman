@@ -2,6 +2,7 @@
 //! config-backed custom registry.
 
 use serde::{Deserialize, Serialize};
+use std::path::PathBuf;
 
 /// Where an [`super::AgentDefinition`] was loaded from. Used for telemetry and
 /// the `agent::list_definitions` RPC reply.
