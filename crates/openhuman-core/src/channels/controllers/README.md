@@ -30,7 +30,7 @@ Owns the `channels.*` RPC namespace: provider metadata, connect/disconnect lifec
 
 ## Wiring
 
-`crates/openhuman-core/src/core/all.rs` pushes `crate::channels::controllers::all_channels_registered_controllers()` into the global registry behind `#[cfg(feature = "channels")]`. The in-app web chat (`web_chat`, RPC namespace `channel`) is registered separately and is not gated.
+`crates/openhuman-core/src/core/all.rs` pushes `crate::channels::controllers::all_channels_registered_controllers()` under `DomainGroup::Channels` behind `#[cfg(feature = "channels")]`. The in-app web chat (`web_chat`, RPC namespace `channel`) is pushed under the same `DomainGroup::Channels` just above it and is not gated.
 
 ## Tests
 
