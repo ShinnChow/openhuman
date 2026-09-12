@@ -35,4 +35,34 @@
 mod tests;
 
 mod records_docs_wallet;
-mod records_マcp_connectors_placeholder; // removed below
+mod records_mcp_connectors;
+mod records_memory_juice;
+mod records_runtime;
+mod records_voice;
+
+use crate::modules::types::ModuleRecord;
+use records_docs_wallet::{TINYDOCS, TINYWALLET};
+use records_mcp_connectors::{TINYCONNECTORS, TINYMCP};
+use records_memory_juice::{TINYJUICE, TINYMEMORY};
+use records_runtime::{TINYRUNTIME, TINYRUNTIME_NODEJS, TINYRUNTIME_PYTHON};
+use records_voice::TINYVOICE;
+
+/// Every module this build can load.
+pub const ALL: &[ModuleRecord] = &[
+    TINYDOCS,
+    TINYWALLET,
+    TINYMEMORY,
+    TINYJUICE,
+    TINYVOICE,
+    TINYRUNTIME,
+    TINYRUNTIME_NODEJS,
+    TINYRUNTIME_PYTHON,
+    TINYMCP,
+    TINYCONNECTORS,
+];
+
+/// The record for `id`, if this build knows it.
+#[must_use]
+pub fn find(id: &str) -> Option<&'static ModuleRecord> {
+    ALL.iter().find(|record| record.id == id)
+}
