@@ -1,7 +1,7 @@
 ---
 description: >-
-  Why OpenHuman ships its own Chromium runtime, what we use it for today, and
-  what the same CDP surface unlocks next.
+  Historical design notes from when OpenHuman shipped its own Chromium (CEF)
+  runtime. The shell now runs on stock Tauri (Wry); kept as background only.
 icon: chrome
 ---
 
@@ -49,11 +49,11 @@ Every connected provider that runs as a hosted web app gets its own child CEF we
 - Google Messages
 - browserscan
 
-Per-account storage is isolated to `{app_local_data_dir}/webview_accounts/{id}/`. Two Slack workspaces, two browser profiles. Code: [`crates/openhuman-app/src/webview_accounts/mod.rs`](../../crates/openhuman-app/src/webview_accounts/mod.rs).
+Per-account storage is isolated to `{app_local_data_dir}/webview_accounts/{id}/`. Two Slack workspaces, two browser profiles. Code (removed): `crates/openhuman-app/src/webview_accounts/mod.rs`.
 
 ### CDP-driven scanners
 
-Each provider has a **scanner module** in [`crates/openhuman-app/src/`](https://github.com/tinyhumansai/openhuman/tree/main/crates/openhuman-app/src). Every scanner holds a long-lived WebSocket to CEF's `--remote-debugging-port=19222` and ticks on a fixed schedule:
+Each provider had a **scanner module** in `crates/openhuman-app/src/` (all removed except `imessage_scanner/`). Every scanner holds a long-lived WebSocket to CEF's `--remote-debugging-port=19222` and ticks on a fixed schedule:
 
 | Scanner             | Cadence                         | What it does                                                         |
 | ------------------- | ------------------------------- | -------------------------------------------------------------------- |
@@ -78,7 +78,7 @@ The flashiest CEF trick. The Meet agent doesn't just _attend_ a meeting, it **br
 
 There's also a build-time path that rasterizes the mascot SVG to Y4M and uses CEF's native `--use-file-for-fake-video-capture` flag, a fully native fake-camera source with no JS at all.
 
-Code: [`crates/openhuman-app/src/meet_video/`](https://github.com/tinyhumansai/openhuman/tree/main/crates/openhuman-app/src/meet_video).
+Code (removed): `crates/openhuman-app/src/meet_video/`.
 
 ### Native notification interception
 
