@@ -38,3 +38,7 @@ pub use registry::{all_controller_schemas, all_registered_controllers};
 // owning submodule.
 use definitions::schemas;
 use util::{read_optional, read_required, read_required_non_empty, to_json};
+#[cfg(test)]
+use crate::rpc::RpcOutcome;
+#[cfg(test)]
+use serde_json::{Map, Value};
