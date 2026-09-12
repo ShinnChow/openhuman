@@ -1,48 +1,12 @@
-use super::*;
+//! The persisted [`Config`] document and the helper types nested directly in
+//! it, plus the serde default functions its attributes reference.
 
-use directories::UserDirs;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::PathBuf;
 
-/// Standard model identifiers matching the backend model registry.
-pub const MODEL_AGENTIC_V1: &str = "agentic-v1";
-pub const MODEL_REASONING_V1: &str = "reasoning-v1";
-/// Low-latency conversational tier.
-pub const MODEL_CHAT_V1: &str = "chat-v1";
-/// Legacy low-latency chat tier slug retained for older persisted configs.
-pub const MODEL_REASONING_QUICK_V1: &str = "reasoning-quick-v1";
-pub const MODEL_CODING_V1: &str = "coding-v1";
-/// High-throughput "burst" tier served by the managed backend. Cheap, fast,
-/// non-reasoning, text-only, 128k context, no prompt cache; used by fast
-/// high-fanout workers. Managed-backend only (no BYOK knob).
-pub const MODEL_BURST_V1: &str = "burst-v1";
-pub const MODEL_SUMMARIZATION_V1: &str = "summarization-v1";
-/// Multimodal (image-input) tier. Managed backend serves this with the vision
-/// flag enabled; the vision sub-agent rides this tier via `hint:vision`.
-pub const MODEL_VISION_V1: &str = "vision-v1";
-/// Default model used when no explicit model is configured.
-///
-/// Set to `chat-v1`, the backend's low-latency conversational tier. The
-/// orchestrator (user-facing front-line agent) rides on this tier by default
-/// via `hint:chat`; reach for the slower `reasoning-v1` only when deep
-/// reasoning is needed.
-pub const DEFAULT_MODEL: &str = MODEL_CHAT_V1;
-
-/// Effective default global memory-sync cadence (seconds) used when
-/// [`Config::memory_sync_interval_secs`] is `None` — i.e. the user has not
-/// explicitly picked a schedule. 24h, matching the "Sync every 24h" preset
-/// surfaced in the Memory Sources UI. See issue #3302.
-///
-/// Defined in `tinymemory_api::host` and re-exported here: the extracted memory
-/// subsystem applies this fallback too, and two `86_400`s that must agree is a
-/// drift waiting to happen.
-pub use tinymemory_api::host::DEFAULT_MEMORY_SYNC_INTERVAL_SECS;
-
-/// Preset memory-sync cadences (seconds) offered in the UI: 4h / 12h / 24h.
-/// "Manual only" is represented separately by `Some(0)`. See issue #3302.
-pub const MEMORY_SYNC_INTERVAL_PRESETS_SECS: [u64; 3] = [14_400, 43_200, 86_400];
+use crate::config::schema::*;
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, JsonSchema)]
 pub struct ModelRegistryEntry {
@@ -118,7 +82,7 @@ pub struct Config {
     #[serde(skip)]
     #[schemars(skip)]
     #[doc(hidden)]
-    pub cli_inference_snapshot: Option<super::AppliedInferenceOverride>,
+    pub cli_inference_snapshot: Option<AppliedInferenceOverride>,
     /// Runtime only — `true` when this config was produced by the loader's
     /// corruption-recovery path: the on-disk `config.toml` was unreadable
     /// (non-UTF-8) or unparseable, so it was renamed to `.corrupted.<ts>` and the
@@ -171,9 +135,9 @@ pub struct Config {
 
     /// Host-level switches for the configurable hook system. The hooks
     /// themselves live in `hooks.json` files, not here — see
-    /// [`super::HooksConfig`].
+    /// [`HooksConfig`].
     #[serde(default)]
-    pub hooks: super::HooksConfig,
+    pub hooks: HooksConfig,
 
     /// Data-egress posture (Privacy Mode). Distinct from `autonomy` (which
     /// governs agent *act* power). Missing `[privacy]` block → `Standard`
@@ -322,7 +286,7 @@ pub struct Config {
     /// them, and where a developer's own build lives. The loadable *set* is
     /// compiled in, not configured: see `openhuman::modules::registry`.
     #[serde(default)]
-    pub modules: super::ModulesConfig,
+    pub modules: ModulesConfig,
 
     /// Trust metadata for external capability providers. Empty by default so
     /// existing installations keep the same tool-discovery behavior.
@@ -577,7 +541,7 @@ fn default_temperature_value() -> f64 {
 /// as well as Moonshot's Kimi K2 family which only accepts `temperature: 1`
 /// (see #2076 — 146 Sentry events from users in China hitting *"invalid
 /// temperature: only 1 is allowed for this model"* on `kimi-k2.6`).
-fn default_temperature_unsupported_models() -> Vec<String> {
+pub(super) fn default_temperature_unsupported_models() -> Vec<String> {
     vec![
         "o1*".to_string(),
         "o3*".to_string(),
@@ -593,62 +557,4 @@ fn default_temperature_unsupported_models() -> Vec<String> {
         "moonshot*".to_string(),
         "moonshotai/*".to_string(),
     ]
-}
-
-/// Normalize a configured output language into a display name suitable for
-/// prompt directives. Unknown non-empty values are treated as user-provided
-/// language names after stripping control characters.
-pub fn normalize_output_language(language: &str) -> Option<String> {
-    let trimmed = language.trim();
-    if trimmed.is_empty() {
-        return None;
-    }
-
-    let tag = trimmed.to_ascii_lowercase().replace('_', "-");
-    let mapped = match tag.as_str() {
-        "ar" | "arabic" => Some("Arabic"),
-        "bn" | "bengali" | "bangla" => Some("Bengali"),
-        "de" | "german" => Some("German"),
-        "en" | "en-us" | "en-gb" | "english" => Some("English"),
-        "es" | "spanish" => Some("Spanish"),
-        "fr" | "french" => Some("French"),
-        "hi" | "hindi" => Some("Hindi"),
-        "id" | "indonesian" | "bahasa indonesia" => Some("Indonesian"),
-        "it" | "italian" => Some("Italian"),
-        "ja" | "japanese" => Some("Japanese"),
-        "ko" | "korean" => Some("Korean"),
-        "pt" | "pt-br" | "pt-pt" | "portuguese" => Some("Portuguese"),
-        "ru" | "russian" => Some("Russian"),
-        "th" | "thai" => Some("Thai"),
-        "tr" | "turkish" => Some("Turkish"),
-        "vi" | "vietnamese" => Some("Vietnamese"),
-        "zh" | "zh-cn" | "zh-hans" | "chinese" | "simplified chinese" => Some("Simplified Chinese"),
-        "zh-tw" | "zh-hant" | "traditional chinese" => Some("Traditional Chinese"),
-        _ => None,
-    };
-    if let Some(language) = mapped {
-        return Some(language.to_string());
-    }
-
-    let cleaned: String = trimmed
-        .chars()
-        .filter(|c| !c.is_control())
-        .take(80)
-        .collect();
-    let cleaned = cleaned.trim();
-    if cleaned.is_empty() {
-        None
-    } else {
-        Some(cleaned.to_string())
-    }
-}
-
-/// Build a shared instruction for non-chat background prompts. JSON keys and
-/// enum values stay stable; only user-visible prose changes language.
-pub fn output_language_directive(language: Option<&str>) -> Option<String> {
-    let language = normalize_output_language(language?)?;
-    Some(format!(
-        "Output language: write all natural-language output in {language}. \
-         Keep JSON keys, enum values, proper nouns, code, commands, and quoted source text unchanged."
-    ))
 }

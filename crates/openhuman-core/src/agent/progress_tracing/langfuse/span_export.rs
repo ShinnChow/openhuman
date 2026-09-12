@@ -12,8 +12,6 @@ use super::ingestion_batch::{iso_millis, new_event_id};
 use super::{environment_for_base, ingestion_url, skip_push, LOG_TARGET, PUSH_TIMEOUT};
 use super::{SpanStatus, TraceSpan};
 
-
-
 /// Langfuse observation level for a span status. Only `Error` is elevated so
 /// failed tool calls / turns surface in the Langfuse UI.
 fn level_for(status: SpanStatus) -> &'static str {
