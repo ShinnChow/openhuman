@@ -31,7 +31,7 @@ pub type Tag<'a> = (&'a str, &'a str);
 /// - **504** Gateway Timeout
 ///
 /// Single source of truth for both the call-site classifier
-/// (`openhuman::inference::provider::ops::should_report_provider_http_failure`) and the
+/// (`crate::inference::provider::ops::should_report_provider_http_failure`) and the
 /// `before_send` filter (`is_transient_provider_http_failure`). Update here
 /// and both sites pick it up — keeps the two layers from drifting.
 pub const TRANSIENT_PROVIDER_HTTP_STATUSES: &[u16] = &[408, 429, 502, 503, 504, 520];
@@ -167,7 +167,7 @@ pub enum ExpectedErrorKind {
     /// /Users/<user>/Documents/<vault>`, observed on
     /// `openhuman@0.56.0`) and preempts the symmetric
     /// `hosted path is not a directory:` shape from
-    /// `openhuman::http_host::path_utils` once it starts surfacing.
+    /// `crate::http_host::path_utils` once it starts surfacing.
     /// See [`is_filesystem_user_path_invalid_message`] for the polarity
     /// contract — the safety-guard variant in `skills::ops_install`
     /// (`{path} is not a directory — refusing to remove`) is
@@ -1638,7 +1638,7 @@ fn is_upstream_edge_block_message(lower: &str) -> bool {
 /// 5xx is intentionally **not** classified here — server-side failures from
 /// our backend are real bugs that should reach Sentry. The transient
 /// 502/503/504 deduplication is handled by the threshold logic in callers
-/// (see e.g. `openhuman::platform::socket::ws_loop::FAIL_ESCALATE_THRESHOLD`).
+/// (see e.g. `crate::platform::socket::ws_loop::FAIL_ESCALATE_THRESHOLD`).
 fn is_backend_user_error_message(lower: &str) -> bool {
     let Some(rest) = lower.split_once("backend returned ").map(|(_, r)| r) else {
         return false;
@@ -2719,7 +2719,7 @@ pub(crate) fn report_warning_message(
 /// that the reliable-provider layer already handles via retry + fallback.
 ///
 /// The primary suppression lives at the call site
-/// (`openhuman::inference::provider::ops::should_report_provider_http_failure`),
+/// (`crate::inference::provider::ops::should_report_provider_http_failure`),
 /// which short-circuits transient codes before `report_error` ever fires.
 /// This helper is intended for use inside the `sentry::ClientOptions`
 /// `before_send` hook as defense-in-depth — it catches any future call
@@ -2850,7 +2850,7 @@ fn all_provider_attempts_are_transient(message: &str) -> bool {
 
 /// Returns true when a Sentry event's message/exception text contains the
 /// canonical max-tool-iterations cap phrase (see
-/// `openhuman::agent::error::MAX_ITERATIONS_ERROR_PREFIX`).
+/// `crate::agent::error::MAX_ITERATIONS_ERROR_PREFIX`).
 ///
 /// Defense-in-depth filter for the Sentry `before_send` hook: the primary
 /// suppression lives at the call sites in `agent::harness::session::
@@ -2931,7 +2931,7 @@ pub fn is_session_expired_event(event: &sentry::protocol::Event<'_>) -> bool {
 /// RPC failures whose message body has been collapsed to just the bare
 /// HTTP method + path (`"GET /auth/me"`) with no underlying transport error.
 ///
-/// Pairs with the primary fix at `openhuman::security::credentials::ops::auth_get_me`,
+/// Pairs with the primary fix at `crate::security::credentials::ops::auth_get_me`,
 /// which replaced `e.to_string()` with `format!("{e:#}")` so the full
 /// `anyhow` context chain reaches the rpc dispatcher. Before that
 /// fix, every transient network failure under this RPC — reqwest timeout,
@@ -3255,7 +3255,7 @@ pub fn is_budget_event(event: &sentry::protocol::Event<'_>) -> bool {
 /// digits `402`) is not swallowed and keeps reaching Sentry.
 ///
 /// Single source of truth shared by the message-level cron halt
-/// (`openhuman::cron::scheduler`'s `is_insufficient_credits_failure`, which
+/// (`crate::cron::scheduler`'s `is_insufficient_credits_failure`, which
 /// stops retrying a permanent 402 and skips its `report_error`) and the
 /// event-level `before_send` filter [`is_insufficient_credits_event`] — the
 /// same split as [`is_session_expired_message`] ↔ [`is_session_expired_event`].

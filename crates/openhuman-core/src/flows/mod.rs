@@ -47,7 +47,7 @@ mod schemas;
 #[cfg(feature = "skills")]
 pub mod skills;
 mod store;
-/// The tinyflows engine seam (formerly `openhuman::tinyflows`).
+/// The tinyflows engine seam (formerly `crate::tinyflows`).
 pub mod tinyflows;
 pub mod tools;
 
