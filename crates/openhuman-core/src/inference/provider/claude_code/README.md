@@ -1,93 +1,116 @@
 # claude_code
 
-`ChatModel` implementation that drives Anthropic's `claude` CLI as a
+`ChatModel<()>` implementation that drives Anthropic's `claude` CLI as a
 subprocess instead of calling the Messages API directly. Selected by the
-`claude-code:<model>` provider string in `../factory.rs`
-(`p.starts_with(crate::inference::provider::claude_code::PROVIDER_PREFIX)`).
+`claude-code:<model>` provider string (`PROVIDER_PREFIX`) — see
+[Selection](#selection).
 
-> v2 will expose OpenHuman's native Rust tools back into the CLI over MCP;
-> this Phase 2 cut runs the driver end-to-end with native CC built-ins
-> disabled at the caller (no `--allowedTools` set means CC's own tools simply
-> don't fire during a non-interactive `-p` turn). — `mod.rs`
+`mod.rs`'s module doc still describes the original Phase 2 cut ("native CC
+built-ins disabled at the caller; v2 will expose OpenHuman's tools back over
+MCP"). `driver.rs` has since moved past that: the loopback MCP bridge is in
+place, and CC's built-in tools do run — under a user-chosen permission
+posture (below).
 
 ## CLI invocation
 
-`ClaudeCodeProvider::run_chat` spawns `claude` with
-`-p --output-format stream-json --verbose --include-partial-messages
---resume <uuid>` (the resume UUID comes from `session_store.rs`, keyed by a
-stable hash of the conversation's first user message — real OpenHuman
-thread ids are not yet plumbed through `ChatRequest`). Up to
-`MAX_CONCURRENT_TURNS` (4) child processes run at once, gated by a
-`Semaphore` held on the provider.
+`ClaudeCodeProvider::run_chat` acquires one of `MAX_CONCURRENT_TURNS` (4)
+`Semaphore` permits, then `driver::run_turn` spawns
+`claude -p --input-format stream-json --output-format stream-json --verbose
+--include-partial-messages --add-dir <action_dir> --permission-mode
+<acceptEdits|bypassPermissions> --session-id <uuid>|--resume <uuid> --model
+<model>`, plus `--append-system-prompt` (written to a per-turn scratch file),
+`--mcp-config <scratch>/openhuman-mcp-config.json --strict-mcp-config` when the
+loopback MCP server started, and `--disallowedTools Bash,BashOutput,KillShell,
+WebFetch,WebSearch,Task` (`DISALLOWED_CC_BUILTINS`) unless full access is on.
+`--session-id` is used on a new CC session and `--resume` afterwards; the UUID
+comes from `session_store.rs`, keyed by a SHA-256 hash of the conversation's
+first user message (`thread_key_from_messages`) because the real OpenHuman
+thread id is not yet plumbed through `ChatRequest`. `cwd` is
+`config.action_dir` (the project root the CLI's file tools operate in).
 
 ## File map
 
 | File | Role |
 | --- | --- |
-| `mod.rs` | `ClaudeCodeProvider` (`ChatModel<()>` impl), `PROVIDER_PREFIX`, `workspace_dir_from_config`, `from_env` (CLI discovery + version gate), `run_chat`, `thread_key_from_messages`. |
-| `auth.rs` | Resolve `ANTHROPIC_API_KEY` for the spawned CLI. |
-| `auth_status.rs` | Report the CLI's own auth state (subscription vs API key vs signed out) for the settings UI. |
-| `driver.rs` | Subprocess lifecycle: turn timeout, macOS Seatbelt jail, MCP config, stdin/stdout piping. |
-| `event_mapper.rs` | `ClaudeCodeEvent` → `ProviderDelta` / aggregated `ChatResponse`; tool-call blocks are tracked but deliberately not surfaced (CC's own tools don't fire in `-p` mode). |
-| `input_builder.rs` | Builds the stream-json stdin payload (`--input-format stream-json`); full history on a new session, only the last user turn on `--resume`. |
-| `session_store.rs` | Thread id → CC session UUID persistence (`claude-code-sessions.json`). |
-| `settings.rs` | Persisted `claude_code_settings.json` — the one user-facing toggle (`bypassPermissions`/full-access vs default `acceptEdits`). |
-| `stream_parser.rs` | Line-buffered JSONL parser for `claude --output-format stream-json`; permissive `serde_json::Value` payloads so a minor CLI schema bump doesn't break parsing. |
-| `types.rs` | `MIN_CLI_VERSION`, `CliStatus`. |
-| `version_check.rs` | Probes the `claude` binary and its version against `MIN_CLI_VERSION`. |
+| `mod.rs` | `ClaudeCodeProvider` (`ChatModel<()>` impl), `PROVIDER_PREFIX`, `MAX_CONCURRENT_TURNS`, `workspace_dir_from_config` (= parent of `config.config_path`, i.e. `~/.openhuman` — deliberately *not* `Config::workspace_dir` or `action_dir`), `from_env` (CLI discovery + version gate + key resolution), `run_chat`, `thread_key_from_messages`. |
+| `auth.rs` | `resolve()` → `(AuthSource, Option<key>)`: which credential the spawned CLI will use. |
+| `auth_status.rs` | `probe()` — the CLI's own auth state (API key env / subscription login / signed out / unknown) for the settings UI, via `claude auth status --json`. |
+| `driver.rs` | `run_turn`: per-turn scratch dir, permission posture, macOS Seatbelt jail, MCP config, argv, stdin/stdout piping, `DEFAULT_TURN_TIMEOUT_SECS` (900, override `OPENHUMAN_CLAUDE_CODE_TURN_TIMEOUT_SECS`), stderr diagnostics cap. |
+| `event_mapper.rs` | `ClaudeCodeEvent` → `ProviderDelta` / aggregated `ChatResponse`. `tool_use` blocks are tracked only to keep their `input_json_delta`s out of the visible text and are **not** surfaced as `ToolCall`s: the CLI is self-executing, so a tool block in the stream has already run; surfacing it would make the tinyagents harness try to dispatch `Read`/`Bash`/… and loop on "unknown tool". |
+| `input_builder.rs` | `build_stdin`: JSONL user turns for `--input-format stream-json` — full history on a new session, only the last user turn on `--resume`; inline images re-hydrated from `agent::multimodal` markers (5 MiB cap). |
+| `session_store.rs` | `SessionStore`: thread key → CC session UUID v4, persisted in `<workspace>/claude-code-sessions.json`. |
+| `settings.rs` | `ClaudeCodeSettings { full_access }` persisted in `<workspace>/claude_code_settings.json` next to `config.toml`; written by the `inference.claude_code_set_full_access` RPC. |
+| `stream_parser.rs` | Line-buffered JSONL parser for `--output-format stream-json`; permissive `serde_json::Value` payloads so a minor CLI schema bump does not break parsing. |
+| `types.rs` | `MIN_CLI_VERSION` (`2.0.0`), `CliStatus`, `BRAND_LABEL`. |
+| `version_check.rs` | `resolve_binary` (`OPENHUMAN_CLAUDE_CLI` env → `PATH` → well-known install dirs, because GUI launches inherit a stripped launchd `PATH`) and `probe()` against `MIN_CLI_VERSION`. |
 
 ## Auth resolution order
 
-1. Process env `ANTHROPIC_API_KEY` (highest precedence) — `auth.rs::resolve`.
-2. `~/.claude/.credentials.json`, passed through transparently by *not*
-   setting the env var — the CLI reads its own credentials file.
-3. `auth_status.rs` reports richer state for the UI by spawning
-   `claude auth status --json` (bounded to `AUTH_STATUS_TIMEOUT` = 10s) rather
-   than reading the credentials file directly, because on macOS the CLI
-   stores credentials in the Keychain (service `Claude Code-credentials`),
-   not in that file — a logged-in macOS user would otherwise be
-   misreported as signed out. Older CLIs without `auth status` map to
-   `AuthSource::Unknown`, never to "signed out".
-4. Auth-profile-store integration (an Anthropic key from OpenHuman settings)
-   and full Claude Pro/Max OAuth are both future work (v1.1 / v2 per
-   `auth.rs`'s module doc).
+1. Process env `ANTHROPIC_API_KEY` (highest precedence) — `auth.rs::resolve`
+   returns `AuthSource::EnvApiKey` and the key is set on the child at spawn.
+2. Otherwise `AuthSource::CliCredentials`: the env var is *not* set and the
+   CLI uses its own login (`~/.claude/.credentials.json`, or the Keychain on
+   macOS).
+3. `auth_status.rs` reports the richer state for the UI by spawning
+   `claude auth status --json` (bounded by `AUTH_STATUS_TIMEOUT` = 10 s)
+   rather than reading the credentials file, because on macOS the CLI stores
+   credentials in the Keychain (service `Claude Code-credentials`) — a
+   logged-in macOS user would otherwise be misreported as signed out. Older
+   CLIs without `auth status` map to `AuthSource::Unknown`, never to
+   "signed out".
+4. Picking up an Anthropic key from OpenHuman's auth-profile store and
+   Claude Pro/Max OAuth are both future work (v1.1 / v2 per `auth.rs`).
 
-Env resolution races on `ANTHROPIC_API_KEY`/`OPENHUMAN_CLAUDE_CODE_*` between
-parallel tests are serialized through `mod.rs::ENV_TEST_LOCK`.
+Tests that touch `ANTHROPIC_API_KEY` / `OPENHUMAN_CLAUDE_CODE_*` serialize
+through `mod.rs::ENV_TEST_LOCK`.
 
-## Sandbox and loopback MCP
+## Permission posture, sandbox, and loopback MCP
 
-On macOS, `driver.rs` wraps the `claude` spawn in a Seatbelt (`sandbox-exec`)
-jail by default (opt out via `OPENHUMAN_CLAUDE_CODE_*`), denying the CLI's own
-tools read/write access to the *entire* `~/.openhuman[-staging]` tree — not
-just the per-user workspace subdir, since `workspace_dir` for a given user is
-a subdirectory of that root and a narrower deny would leave siblings
-readable.
+The user opts into Claude Code explicitly, so its toolset is not restricted
+beyond a permission posture that is the user's choice
+(`driver.rs::claude_code_full_access`):
 
-That would also block the coding agent from OpenHuman's memory and tools, so
-`driver.rs` points the CLI at the in-process HTTP MCP server
-(`crate::mcp::server::local`, `ensure_local_http`) instead, via a per-turn
-`--mcp-config` JSON written to a scratch dir. The MCP server runs in the
-**unjailed core process** — not as a child of the sandboxed `claude` — and is
-reached over an authenticated loopback HTTP connection
-(`127.0.0.1:<port>`), so it keeps full access to `~/.openhuman` for memory
-while CC's own raw tools stay denied that path by the jail. See
-`crate::mcp::server::local`'s module doc for the same arrangement from the
-server side.
+- default: `--permission-mode acceptEdits` plus `--disallowedTools` for
+  shell, network, and `Task` fan-out — file reads/edits in `action_dir` only;
+- full access (`settings.rs` toggle, or `OPENHUMAN_CLAUDE_CODE_PERMISSION_MODE=
+  bypass|bypassPermissions|full`): `--permission-mode bypassPermissions` and
+  the entire CC toolset including Bash.
 
-`MAX_CONCURRENT_TURNS`, `DEFAULT_TURN_TIMEOUT_SECS` (900s, overridable via
-`OPENHUMAN_CLAUDE_CODE_TURN_TIMEOUT_SECS`), and the jail are all defined in
-`driver.rs`.
+On macOS the spawn is additionally wrapped in a Seatbelt jail
+(`sandbox-exec -p <profile>`, on by default when `/usr/bin/sandbox-exec`
+exists; opt out with `OPENHUMAN_CLAUDE_CODE_SANDBOX=0`). The profile allows
+everything the user can do *except* reads and writes under the entire
+`~/.openhuman[-staging]` tree — the whole root, not just the per-user
+workspace subdir, because `workspace_dir` is a subdirectory of it and a
+narrower deny would leave siblings readable. This is the OS-level counterpart
+of `is_workspace_internal_path`. Linux and Windows have no OS wall yet; CC
+runs unconfined there.
+
+That deny would also cut the coding agent off from OpenHuman's memory and
+tools, so `driver.rs` calls `crate::mcp::server::ensure_local_http()` and
+writes a per-turn `--mcp-config` pointing at the in-process HTTP MCP server
+(`crate::mcp::server::local`). The MCP server runs in the **unjailed core
+process**, not as a child of the sandboxed `claude`, and is reached over
+loopback with a per-process bearer token carried in the config's
+`Authorization` header, so it keeps full access to `~/.openhuman` while CC's
+raw tools stay denied that path. If `ensure_local_http` fails (for example a
+build without the `http-server` feature), CC runs without OpenHuman MCP tools
+and the turn still proceeds.
 
 ## Selection
 
-`../factory_part_01.rs` routes a `claude-code:<model>` provider string to this
-module wherever the factory needs to special-case CC alongside
-`claude_agent_sdk` — e.g. `is_raw_passthrough_model`, `external_provider_label`
-(labels it "Claude Code CLI" for Privacy Mode messages), and the
-local/cloud/CLI dispatch branch in `create_chat_model*`.
-`ClaudeCodeProvider::from_env` fails fast with an actionable error when the
-CLI is missing or below `MIN_CLI_VERSION`.
+`../factory_part_02.rs` (`create_chat_model*`) calls
+`try_create_claude_code_chat_model`, defined in `../factory_part_03.rs`: it
+strips `PROVIDER_PREFIX` from the resolved provider string, rejects an empty
+model id, runs `enforce_local_only_inference` and `verify_session_active`,
+emits the inference egress descriptor, and builds
+`ClaudeCodeProvider::from_env(model, workspace_dir_from_config(config),
+config.action_dir)`. An `@<temp>` suffix is accepted but ignored (logged).
+`from_env` fails fast with an actionable error when the CLI is missing,
+outdated (`MIN_CLI_VERSION`), or unusable. `../factory_part_01.rs` also
+special-cases the prefix in `route_has_usable_credentials` (a CC route carries
+its own credentials) and `external_provider_label` ("Claude Code CLI" in
+Privacy-Mode messages).
 
 ## Tests
 
@@ -95,4 +118,4 @@ Per-file `*_tests.rs` alongside each module (`auth_tests.rs`,
 `auth_status_tests.rs`, `driver_tests.rs`, `event_mapper_tests.rs`,
 `input_builder_tests.rs`, `session_store_tests.rs`, `settings_tests.rs`,
 `stream_parser_tests.rs`, `version_check_tests.rs`) plus `mod_tests.rs` for
-the provider's `ChatModel` impl and session-key hashing.
+the `ModelProfile` and session-key hashing.
