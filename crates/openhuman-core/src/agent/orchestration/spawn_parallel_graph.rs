@@ -35,9 +35,9 @@ mod workers;
 pub(crate) use collect::{format_spawn_parallel_success, SpawnParallelGraphOutcome};
 pub(crate) use graph::spawn_parallel_graph_topology;
 pub(crate) use request::{ParallelAgentTask, SpawnParallelTaskValidationError};
-pub(crate) use run::run_spawn_parallel_graph_with_cancellation_and_workspace;
+pub(crate) use run::{
+    run_spawn_parallel_graph, run_spawn_parallel_graph_with_cancellation,
+    run_spawn_parallel_graph_with_cancellation_and_workspace,
+};
 pub(crate) use staging::with_ownership_boundary;
 pub(crate) use types::{ParallelAgentLineage, ParallelAgentResult};
-
-#[cfg(test)]
-pub(crate) use run::{run_spawn_parallel_graph, run_spawn_parallel_graph_with_cancellation};

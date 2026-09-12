@@ -40,7 +40,7 @@ pub static CURRENT_USER_SESSION_MUTATION_LOCK: Lazy<tokio::sync::Mutex<()>> =
 
 /// The failure write itself, taking the guard rather than the lock, so a caller
 /// that must decide *under* the lock can do so without re-entering it.
-fn record_current_user_failure_locked(
+pub(super) fn record_current_user_failure_locked(
     failure: &mut Option<CurrentUserFailure>,
     api_base: &str,
     token: &str,
