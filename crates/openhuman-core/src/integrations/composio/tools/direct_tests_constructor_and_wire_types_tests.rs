@@ -1,5 +1,6 @@
 use super::*;
 
+use std::sync::Arc;
 // ── Constructor ───────────────────────────────────────────
 
 #[test]

@@ -1,3 +1,4 @@
+use crate::memory::sources::sync::SourceScope;
 //! Guarded `Retrieval`, `Episodic`, `Profile`, `SourceSync`, `Scoring`, and
 //! `CodingSessions` — the read/query families.
 //!

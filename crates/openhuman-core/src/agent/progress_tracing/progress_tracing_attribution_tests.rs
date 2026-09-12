@@ -1,5 +1,6 @@
 use super::*;
 
+use crate::agent::progress_tracing::types::SpanKind;
 // ── identity / attribution / content capture ───────────────────────────────
 
 #[test]

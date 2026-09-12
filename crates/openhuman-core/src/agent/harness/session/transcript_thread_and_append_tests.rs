@@ -1,5 +1,6 @@
 use super::*;
 
+use std::fs;
 // ── find_root_transcript_for_thread: scope isolation ────────────────────────
 
 /// An empty or blank `thread_id` must not match any transcript — the

@@ -1,6 +1,7 @@
 use super::*;
 use serde_json::json;
 
+use crate::memory::safety::pii::redact_pii;
 // `pii`'s internals (checksum validators, the normalization pass) are test-only
 // re-exports at the `pii` module level; pull them in here so the nested test
 // submodules below can reach them through their own `use super::*;`.

@@ -1,5 +1,8 @@
 use super::*;
 
+use crate::agent::progress_tracing::export::export_spans;
+use crate::agent::progress_tracing::serialize::spans_to_ndjson;
+use crate::agent::progress_tracing::types::SpanKind;
 // ── config ────────────────────────────────────────────────────────────────
 
 #[test]

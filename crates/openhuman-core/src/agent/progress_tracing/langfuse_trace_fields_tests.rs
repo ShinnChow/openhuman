@@ -1,5 +1,6 @@
 use super::*;
 
+use crate::agent::progress_tracing::langfuse::span_export::spans_to_langfuse_batch;
 /// An unparseable base is the fail-closed default rather than a panic or a
 /// pushable bucket. `ingestion_url` returns a non-URL placeholder when no
 /// backend host resolves.

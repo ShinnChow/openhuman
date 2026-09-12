@@ -1,3 +1,4 @@
+use crate::memory::sources::sync::SourceScope;
 //! `RecordingProvider`'s `Episodic`, `Profile`, `Chunks`, `Retrieval`,
 //! `People`, `Scoring`, `Answer`, and typed-ingestion (`DocumentIngest`,
 //! `ConversationIngest`, `LearningIngest`, `EventIngest`) family

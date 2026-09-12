@@ -1,5 +1,9 @@
 use super::*;
 
+use crate::cron::CronJob;
+use crate::cron::CronJobPatch;
+use crate::cron::Schedule;
+use crate::cron::SessionTarget;
 // ── agent-job minimum interval (#6158) ──────────────────────────
 
 fn utc_cron(expr: &str) -> Schedule {

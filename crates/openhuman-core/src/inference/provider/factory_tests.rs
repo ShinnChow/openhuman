@@ -4,6 +4,7 @@ use crate::config::Config;
 use crate::security::credentials::AuthService;
 use tempfile::TempDir;
 
+use crate::inference::provider::factory::access_gates::host_requires_session;
 fn create_test_chat_model_from_string(
     role: &str,
     provider: &str,

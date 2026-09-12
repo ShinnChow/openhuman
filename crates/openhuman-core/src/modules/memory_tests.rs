@@ -1,3 +1,4 @@
+use crate::modules::memory::capabilities::capabilities_for;
 //! Tests for the memory module client.
 //!
 //! Nothing here loads a module. What is testable without one is what decides a

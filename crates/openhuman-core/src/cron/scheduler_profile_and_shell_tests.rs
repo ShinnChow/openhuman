@@ -1,5 +1,7 @@
 use super::*;
 
+use crate::cron::JobType;
+use crate::cron::SessionTarget;
 #[tokio::test]
 async fn resolve_cron_profile_present_and_deleted_fallback() {
     let tmp = TempDir::new().unwrap();

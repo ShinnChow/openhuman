@@ -1,3 +1,4 @@
+use crate::config::schema::load::env::parse_env_bool;
 //! Env overrides for web search: SearXNG, Seltz, Tavily, and the search engine selection.
 
 use crate::config::schema::load::env::EnvLookup;

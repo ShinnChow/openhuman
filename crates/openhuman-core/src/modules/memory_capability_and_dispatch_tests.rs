@@ -1,3 +1,4 @@
+use crate::modules::memory::capabilities::capabilities_for;
 //! Split off memory_tests.rs to stay under the repo's line-count gate.
 //! Same module, same imports — see memory_tests.rs for what this covers.
 use super::*;

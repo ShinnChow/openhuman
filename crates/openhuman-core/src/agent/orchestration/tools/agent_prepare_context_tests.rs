@@ -1,5 +1,7 @@
 use super::*;
 
+use crate::agent::harness::AgentContextPreparedSource;
+use crate::agent::harness::SubagentRunError;
 #[test]
 fn schema_requires_question_and_makes_focus_optional() {
     let tool = AgentPrepareContextTool::new();

@@ -4,6 +4,10 @@ use crate::cron::ActiveHours;
 use chrono::Duration as ChronoDuration;
 use tempfile::TempDir;
 
+use crate::cron::CronJobPatch;
+use crate::cron::JobType;
+use crate::cron::Schedule;
+use crate::cron::SessionTarget;
 fn test_config(tmp: &TempDir) -> Config {
     let config = Config {
         workspace_dir: tmp.path().join("workspace"),

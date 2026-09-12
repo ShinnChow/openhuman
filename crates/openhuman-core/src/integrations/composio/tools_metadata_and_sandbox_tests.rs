@@ -1,5 +1,6 @@
 use super::*;
 
+use crate::agent::harness::SandboxMode;
 /// Every composio tool must report `ToolCategory::Workflow` so the
 /// skills sub-agent (`category_filter = "skill"`) picks them up.
 ///

@@ -5,6 +5,8 @@ use tokio_tungstenite::tungstenite::http::{header::LOCATION, Response, StatusCod
 
 use crate::platform::socket::token_provider::{is_invalid_token_error, static_token_provider};
 
+use crate::platform::socket::manager::SharedState;
+use std::sync::Arc;
 fn make_shared() -> Arc<SharedState> {
     Arc::new(SharedState {
         webhook_router: RwLock::new(None),

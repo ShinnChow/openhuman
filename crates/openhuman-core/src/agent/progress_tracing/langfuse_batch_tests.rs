@@ -1,5 +1,6 @@
 use super::*;
 
+use crate::agent::progress_tracing::langfuse::span_export::spans_to_langfuse_batch;
 #[test]
 fn split_ingestion_batch_chunks_over_the_limit() {
     // 1201 events with max 500 -> chunks of 500, 500, 201.

@@ -1,3 +1,4 @@
+use ForgetOutcome;
 //! Guarded `Entities`, `Graph`, `Diff`, `Goals`, `ToolMemory`, `Sources`,
 //! `Maintenance`, and `People` — the knowledge-graph and bookkeeping
 //! families.

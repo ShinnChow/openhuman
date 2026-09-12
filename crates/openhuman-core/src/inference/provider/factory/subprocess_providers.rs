@@ -1,3 +1,4 @@
+use crate::inference::provider::factory::access_gates::verify_session_active;
 //! Subprocess-backed providers: the Claude Agent SDK and the Claude Code CLI.
 
 use super::*;

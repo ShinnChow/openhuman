@@ -1,5 +1,6 @@
 use super::*;
 
+use crate::memory::safety::pii::redact_pii;
 #[test]
 fn sanitize_text_redacts_bearer_and_openai_key() {
     let input = "Authorization: Bearer abcdefghijklmnop and sk-1234567890123456789012345";

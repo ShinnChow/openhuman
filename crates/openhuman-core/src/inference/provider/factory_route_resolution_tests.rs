@@ -1,5 +1,6 @@
 use super::*;
 
+use crate::inference::provider::factory::access_gates::local_only_violation;
 /// When the provider string includes a model id the factory should build
 /// successfully and return that model id unchanged.
 #[test]

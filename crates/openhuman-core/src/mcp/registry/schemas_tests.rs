@@ -1,6 +1,7 @@
 use super::*;
 use serde_json::json;
 
+use std::iter::Map;
 // ── schemas() coverage ────────────────────────────────────────────────────
 
 #[test]

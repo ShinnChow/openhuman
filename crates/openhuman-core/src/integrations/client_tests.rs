@@ -1,3 +1,4 @@
+use std::sync::Arc;
 //! Tests for the shared integrations HTTP client.
 //!
 //! Focus: backend error body propagation. Pre-fix, non-2xx responses

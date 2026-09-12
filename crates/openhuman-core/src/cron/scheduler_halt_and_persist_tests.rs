@@ -1,5 +1,8 @@
 use super::*;
 
+use crate::cron::JobType;
+use crate::cron::Schedule;
+use crate::cron::SessionTarget;
 // TAURI-RUST-514 — a BYO provider insufficient-credits 402 ("requires more
 // credits") leaks from a cron-fired agent job through `last_agent_error`.
 // `is_insufficient_credits_failure` must consult the message classifier so the

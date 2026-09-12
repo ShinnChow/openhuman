@@ -1,5 +1,6 @@
 use super::*;
 
+use std::sync::Arc;
 // ── Redirect resolution (the real fix for OPENHUMAN-TAURI-9X) ──
 
 #[test]

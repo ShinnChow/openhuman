@@ -1,3 +1,5 @@
+use crate::json_schema::compute_primary_array_path_from_value;
+use probe_tool_output_sample;
 //! Unit tests for the live Composio catalog and the real-output probe.
 //!
 //! Moved here with the code they exercise. Two of them

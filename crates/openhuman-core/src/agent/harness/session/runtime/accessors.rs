@@ -1,3 +1,4 @@
+use crate::agent::messages::ConversationMessage;
 //! Public getters and setters on [`Agent`]: tool registry views, config
 //! snapshots, session identity, and the per-session tool-visibility filter
 //! (which rebuilds the tool policy snapshot on every change).
