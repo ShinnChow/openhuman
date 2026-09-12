@@ -1,33 +1,35 @@
 # util
 
-Kernel helper family — always compiled, never feature-gated. These are
-dependency-free helpers reused across domains; nothing here may reach into a
-domain (`use crate::<domain>::...`). `bm25` and `redact` say why explicitly in
-their own module docs; the same rule applies to every file in this directory.
+Kernel helper family — `pub mod util;` in `lib.rs` is unconditional, never
+feature-gated. Helpers reused across domains; nothing here may reach into a
+domain. No file in this directory has a `use crate::` line, and that is the
+rule: a helper that needs config, a `Tool`, a workspace, or security policy
+belongs in the domain that owns those, not here. New external crates are also
+off-limits — this is kernel surface under the `scripts/kernel-floor.limits`
+dependency ratchet, which is why `bm25` is hand-rolled and `redact` is a
+six-line copy rather than an engine link.
 
 ## Layout
 
 | File | Purpose |
 | --- | --- |
-| `bm25.rs` | BM25 ranking over short documents, shared by `tool_search` and `skill_search`. Deliberately names nothing from `crate::` so it stays extraction-ready for a loadable module. |
-| `redact.rs` | `redact()` — SHA-256-based PII redaction for log output (source ids, entity ids, content paths). Kept independent of `tinymemory_core::util::redact`, the engine's own copy, so the host does not link the memory engine just for a log formatter. |
-| `retry.rs` | `retry_with_backoff` / `retry_with_backoff_async` and `is_transient_fs_error` — exponential-backoff retry for filesystem operations, mainly to ride out Windows mandatory-file-locking errors (`ERROR_SHARING_VIOLATION`, `ERROR_ACCESS_DENIED`). |
-| `sanitize.rs` | Re-exports `tinymcp_bus::sanitize` (`sanitize_for_llm`, `strip_control_chars`, `strip_instruction_fences`, `truncate_utf8_safe`, `MAX_DESCRIPTION_BYTES`, `MAX_TITLE_BYTES`) under the path callers have always used. LLM-facing text sanitization for tool and skill descriptions; the real implementation lives in `tinymcp_bus` so MCP transports and the orchestrator prompt builder share one stripping rule. |
-| `text.rs` | UTF-8-safe string helpers: `truncate_with_ellipsis` / `truncate_with_suffix` (char-boundary-safe truncation), `floor_char_boundary` / `ceil_char_boundary` / `utf8_safe_prefix_at_byte_boundary` (byte-boundary rounding), `provenance_tag` (non-leaky `chat:xxxxxxxx` tag hashed from a session id for the cross-chat context block). |
-| `types.rs` | `MaybeSet<T>` — tri-state `Set(T)` / `Unset` / `Null` for optional-update payloads. |
-| `tls/` | Platform-conditional TLS backend selection for `reqwest` clients — see [tls/README.md](tls/README.md). |
+| `bm25.rs` | `Bm25Index` + `tokenize` — BM25 ranking over `(id, text)` pairs, the shared core behind `tools/impl/meta/tool_search.rs` and `skills/search.rs`. Names nothing from `crate::` so it can move into a loadable module unchanged. |
+| `redact.rs` | `redact()` — SHA-256 → 8 hex chars for source ids, entity ids, and content paths in log lines. Same helper as `tinymemory_core::util::redact`, kept as a local copy so the host does not link the memory engine for a log formatter; the two copies never need to agree. |
+| `retry.rs` | `retry_with_backoff` / `retry_with_backoff_async` (`base_ms * 2^i` backoff, `warn!` per retry) and `is_transient_fs_error` — for Windows mandatory-locking errors (`ERROR_SHARING_VIOLATION`, `ERROR_ACCESS_DENIED`) on a tree another handle still holds. |
+| `sanitize.rs` | Pure re-export of `tinymcp_bus::sanitize` (`sanitize_for_llm`, `strip_control_chars`, `strip_instruction_fences`, `truncate_utf8_safe`, `MAX_DESCRIPTION_BYTES`, `MAX_TITLE_BYTES`) at the path callers already use. The rule lives in `tinymcp_bus` so MCP tool descriptions and the orchestrator prompt builder's skill descriptions get the same stripping; do not fork it back here. |
+| `text.rs` | `truncate_with_ellipsis` / `truncate_with_suffix` (char-count truncation), `truncate_at_byte_boundary` (byte-cap with `…`), `floor_char_boundary` / `ceil_char_boundary` / `utf8_safe_prefix_at_byte_boundary` (byte-index rounding), `provenance_tag` (`chat:xxxxxxxx` hash of a session id for the cross-chat context block, so the raw `client_id` never reaches a prompt). |
+| `types.rs` | `MaybeSet<T>` — `Set(T)` / `Unset` / `Null`, distinguishing "field absent" from "field explicitly null" in partial-update payloads (see `tools/impl/system/proxy_config.rs`). |
+| `tls/` | `tls_client_builder()` — platform-conditional TLS backend for `reqwest` clients. See [tls/README.md](tls/README.md). |
+
+`*_tests.rs` files sit beside each module.
 
 ## Public surface
 
-Everything is re-exported at the module root (`pub use` in `mod.rs`), so
-`crate::util::<fn>` resolves for every helper above without naming the
-submodule.
-
-## Notes
-
-- No file here may depend on another domain. `bm25` and `redact` exist as
-  separate copies from otherwise-similar engine/vendor code specifically to
-  avoid pulling in a dependency for a few lines of logic — keep new additions
-  to the same standard.
-- `sanitize.rs` is a thin re-export; the sanitization rule itself is owned by
-  `tinymcp_bus` and must not be forked back into this crate.
+`mod.rs` re-exports `retry`, `text`, and `types` items at the module root, so
+`crate::util::truncate_with_ellipsis`, `crate::util::retry_with_backoff`, and
+`crate::util::MaybeSet` resolve without the submodule. `bm25`, `redact`,
+`sanitize`, and `tls` are reached through their submodule:
+`crate::util::bm25::Bm25Index`, `crate::util::redact::redact`,
+`crate::util::sanitize::sanitize_for_llm`, `crate::util::tls::tls_client_builder`.
+From outside the crate the lib is `openhuman_core`, which is the path the
+`truncate_with_ellipsis` doctest uses.
