@@ -164,10 +164,3 @@ pub fn discover_automations(
     );
     discover_filtered(home_dir, workspace_dir, None, trusted, WORKFLOW_ROOT_KINDS)
 }
-
-// `RootKind` variants are matched by name in `discover_filtered`'s callers
-// only indirectly (via the `ALL_ROOT_KINDS` / `WORKFLOW_ROOT_KINDS` constants
-// above), so nothing here names it directly — the import keeps this module's
-// intent ("select all root kinds" vs. "workflow roots only") legible.
-#[allow(unused_imports)]
-use RootKind as _RootKindDocAnchor;
