@@ -126,7 +126,7 @@ impl ComposioClient {
     /// composio route actually requires a DELETE. We re-implement the
     /// envelope handling here so we don't have to widen the shared
     /// client's public surface just for one caller.
-    async fn raw_delete<T: serde::de::DeserializeOwned>(&self, path: &str) -> Result<T> {
+    pub(super) async fn raw_delete<T: serde::de::DeserializeOwned>(&self, path: &str) -> Result<T> {
         #[derive(serde::Deserialize)]
         struct Envelope<T> {
             #[serde(default)]
