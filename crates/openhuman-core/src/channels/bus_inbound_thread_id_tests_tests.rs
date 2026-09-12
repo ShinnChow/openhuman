@@ -1,5 +1,4 @@
 use super::{
-use derive_inbound_thread_id;
     channel_message_body_with_idempotency, channel_supports_progressive_ui,
     derive_inbound_client_id, derive_inbound_thread_id,
 };

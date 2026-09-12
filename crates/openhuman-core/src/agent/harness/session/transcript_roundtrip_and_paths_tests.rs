@@ -1,6 +1,5 @@
 use super::*;
 
-use resolve_keyed_transcript_path;
 use std::fs;
 use std::path::PathBuf;
 #[test]

@@ -6,7 +6,6 @@
 //! scaffolding these `impl` blocks build on.
 
 
-use ForgetOutcome;
 use crate::memory::api::capabilities::Capability;
 use crate::memory::api::error::MemoryError;
 use crate::memory::api::goals::GoalsDoc;

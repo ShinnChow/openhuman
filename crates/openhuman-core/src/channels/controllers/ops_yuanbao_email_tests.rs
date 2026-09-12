@@ -1,6 +1,5 @@
 use super::*;
 
-use build_email_config;
 #[tokio::test]
 async fn connect_yuanbao_persists_when_credentials_valid() {
     use wiremock::matchers::{method, path};
