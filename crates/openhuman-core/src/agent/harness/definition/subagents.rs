@@ -41,7 +41,9 @@ pub struct SkillsWildcard {
     pub skills: String,
 }
 
-fn deserialize_subagent_entries<'de, D>(deserializer: D) -> Result<Vec<SubagentEntry>, D::Error>
+pub(super) fn deserialize_subagent_entries<'de, D>(
+    deserializer: D,
+) -> Result<Vec<SubagentEntry>, D::Error>
 where
     D: Deserializer<'de>,
 {
