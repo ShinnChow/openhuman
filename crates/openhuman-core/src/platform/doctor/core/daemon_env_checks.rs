@@ -9,7 +9,7 @@ use super::types::DiagnosticItem;
 const DAEMON_STALE_SECONDS: i64 = 30;
 const SCHEDULER_STALE_SECONDS: i64 = 120;
 const CHANNEL_STALE_SECONDS: i64 = 300;
-const COMMAND_VERSION_PREVIEW_CHARS: usize = 60;
+pub(super) const COMMAND_VERSION_PREVIEW_CHARS: usize = 60;
 
 pub(super) fn check_daemon_state(config: &Config, items: &mut Vec<DiagnosticItem>) {
     let cat = "daemon";
