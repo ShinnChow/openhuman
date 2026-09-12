@@ -87,6 +87,17 @@ pub(crate) use turn_policy::{agent_turn_wall_clock_ms, ToolPolicyEnforcement};
 pub(crate) use turn_runner::run_turn_via_tinyagents;
 pub(crate) use turn_runner::run_turn_via_tinyagents_shared;
 
+// Test-only glue so `tinyagents_tests.rs`'s `use super::*;` sees the
+// lower-level policy helpers it exercises directly (they otherwise stay
+// private to `turn_policy`, which is the correct production visibility).
+#[cfg(test)]
+use tinyagents_harness::runtime::InvalidArgsPolicy;
+#[cfg(test)]
+use turn_policy::{
+    model_call_wall_clock_ms, parse_agent_turn_wall_clock_ms, parse_model_call_wall_clock_ms,
+    DEFAULT_AGENT_TURN_TIMEOUT_SECS, DEFAULT_MODEL_CALL_TIMEOUT_SECS,
+};
+
 #[cfg(test)]
 #[path = "tinyagents_tests.rs"]
 mod tests;
