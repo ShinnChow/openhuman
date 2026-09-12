@@ -53,10 +53,9 @@ pub(crate) fn parse_source_kind_str(s: &str) -> Option<tinymemory_api::chunks::S
 // The raw-SQLite `with_connection` door that used to sit here is gone: nothing
 // production-side in `read_rpc` names the engine any more (`wipe_all`,
 // `clear_composio_sync_state` and `delete_source` left for `purge_all`,
-// `kv_list` + `kv_delete` and `forget_matching(Source)`), and the tests assert
-// through the contract instead. `cfg(test)` code links the `tinymemory-core`
-// **dev-dependency**, which stays after the normal dependency was dropped
-// (#5560), so nothing here keeps the engine crate in the shipped binary.
+// `kv_list` + `kv_delete` and `forget_matching(Source)`), and the tests go
+// through the same handlers. Nothing here keeps the engine crate in the
+// shipped binary (#5560).
 #[cfg(test)]
 pub(crate) use crate::config::Config;
 #[cfg(test)]
