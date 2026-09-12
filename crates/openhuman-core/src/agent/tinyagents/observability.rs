@@ -8,8 +8,16 @@
 //! live tool timeline, streaming text, and the cost/token footer on the
 //! tinyagents path — and feeds per-call usage into the global cost tracker.
 
+mod cap_pauser;
+mod event_bridge;
+mod graph_tracing;
+
+pub(crate) use cap_pauser::{
+    CapPauser, IterationCursor, ProviderUsageCarry, SubagentScope, ToolFailureMap, ToolNameMap,
+};
+pub(crate) use event_bridge::{surface_cache_layout_events, OpenhumanEventBridge};
+pub(crate) use graph_tracing::GraphTracingSink;
+
 #[cfg(test)]
 #[path = "observability_tests.rs"]
 mod tests;
-include!("observability_part_01.rs");
-include!("observability_part_02.rs");
