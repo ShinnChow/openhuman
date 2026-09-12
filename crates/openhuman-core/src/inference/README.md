@@ -1,6 +1,6 @@
 # inference
 
-Unified inference domain: the canonical home for everything LLM/STT/TTS/embedding-related. It owns the local-runtime manager (Ollama / LM Studio / Piper), native TinyAgents `ChatModel` construction for managed/cloud/local/CLI routes, host credential and access policy, voice transcription and TTS inference, OpenAI/Codex subscription OAuth, and an OpenAI-compatible `/v1/chat/completions` HTTP endpoint. It consolidates the previously separate `local_ai/`, `providers/`, and inference parts of `voice/` under one domain root. The RPC surface is `inference.*`; older `local_ai_*` method names are compatibility aliases in `crates/openhuman-core/src/core/legacy_aliases.rs`.
+Unified inference domain: the canonical home for everything LLM/STT/TTS/embedding-related. It owns the local-runtime manager (Ollama / LM Studio / Piper), native TinyAgents `ChatModel` construction for managed/cloud/local/CLI routes, host credential and access policy, voice transcription and TTS inference, OpenAI/Codex subscription OAuth, and an OpenAI-compatible `/v1/chat/completions` HTTP endpoint. It consolidates the previously separate `local_ai/`, `providers/`, and inference parts of `voice/` (all from the pre-crates `src/openhuman/` layout) under one domain root. The RPC surface is `inference.*`; older `local_ai_*` method names are compatibility aliases in `crates/openhuman-core/src/core/legacy_aliases.rs`.
 
 ## Responsibilities
 
@@ -126,7 +126,7 @@ Widely depended on by the agent layer (`agent/harness`, `agent/harness/session`,
 
 ## Notes / gotchas
 
-- `mod.rs` re-exports `super::{device, model_ids, parse, paths, presets, sentiment, types}` under `local::` so files migrated from the old `local_ai/` keep compiling without rewriting `super::` paths.
+- `local/mod.rs` re-exports `super::{device, model_ids, parse, paths, presets, sentiment, types}` under `local::` so files migrated from the old `local_ai/` keep compiling without rewriting `super::` paths.
 - Provider strings carry an optional `@<temp>` suffix that pins a per-workload temperature; the suffix is stripped before the model id is sent upstream.
 - `update_model_settings` silently drops reserved cloud-provider slugs (`openhuman`/`cloud`/`pid` built-ins the frontend echoes back); `apply_model_settings` re-injects them from stored config so they aren't lost.
 - `ops.rs` deliberately demotes known provider/user-config failures (unknown cloud provider, 401/429, model-not-found) to `warn!` to keep them out of Sentry; only unclassified failures escalate to `error!`.

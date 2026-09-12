@@ -6,7 +6,8 @@
 //! - `provider/` — native chat models, cloud/local routing, auth and errors
 //!                 (was `providers/`)
 //! - `voice/`    — transcription (STT) and TTS inference implementations
-//!                 (moved from `crates/openhuman-core/src/voice/`)
+//!                 (moved from `voice/`; audio I/O and the voice RPC surface
+//!                 stay in `crate::voice`)
 //! - `http/`     — OpenAI-compatible `/v1/chat/completions` endpoint
 //!
 //! The RPC surface is `inference.*`; old `local_ai_*` RPC names are resolved
