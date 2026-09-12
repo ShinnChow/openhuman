@@ -9,7 +9,7 @@ use super::{
 /// Builds the schema for `function` when this group owns it.
 pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
     match function {
-"build" => Some( ControllerSchema {
+        "build" => Some(ControllerSchema {
             namespace: "flows",
             function: "build",
             description: "Run the workflow_builder agent for one authoring turn. `mode` selects \
@@ -81,7 +81,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"build_cancel" => Some( ControllerSchema {
+        "build_cancel" => Some(ControllerSchema {
             namespace: "flows",
             function: "build_cancel",
             description: "Cancel the in-flight `flows_build` (Workflow Copilot) turn streaming \
@@ -123,7 +123,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"search_tool_catalog" => Some( ControllerSchema {
+        "search_tool_catalog" => Some(ControllerSchema {
             namespace: "flows",
             function: "search_tool_catalog",
             description: "Search the live Composio tool catalog (secret-free) for the in-canvas \
@@ -155,7 +155,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"get_tool_contract" => Some( ControllerSchema {
+        "get_tool_contract" => Some(ControllerSchema {
             namespace: "flows",
             function: "get_tool_contract",
             description: "Fetch one Composio action's full contract (secret-free) for the canvas \
@@ -173,7 +173,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"discover" => Some( ControllerSchema {
+        "discover" => Some(ControllerSchema {
             namespace: "flows",
             function: "discover",
             description: "Run the read-only Flow Scout: it reads the user's \
@@ -185,7 +185,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
             inputs: vec![stream_thread_id_input(), stream_request_id_input()],
             outputs: vec![suggestions_output()],
         }),
-"list_suggestions" => Some( ControllerSchema {
+        "list_suggestions" => Some(ControllerSchema {
             namespace: "flows",
             function: "list_suggestions",
             description: "List persisted workflow suggestions. Filter by lifecycle `status` \
@@ -199,7 +199,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
             }],
             outputs: vec![suggestions_output()],
         }),
-"dismiss_suggestion" => Some( ControllerSchema {
+        "dismiss_suggestion" => Some(ControllerSchema {
             namespace: "flows",
             function: "dismiss_suggestion",
             description: "Dismiss a workflow suggestion (the user rejected the card). The row is \
@@ -213,7 +213,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"mark_suggestion_built" => Some( ControllerSchema {
+        "mark_suggestion_built" => Some(ControllerSchema {
             namespace: "flows",
             function: "mark_suggestion_built",
             description: "Mark a suggestion as built — called after the user saves a flow authored \

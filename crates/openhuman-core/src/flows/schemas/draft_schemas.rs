@@ -9,7 +9,7 @@ use super::{
 /// Builds the schema for `function` when this group owns it.
 pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
     match function {
-"draft_create" => Some( ControllerSchema {
+        "draft_create" => Some(ControllerSchema {
             namespace: "flows",
             function: "draft_create",
             description: "Create a core-managed draft (a durable, non-live working copy of a graph) \
@@ -42,14 +42,14 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
             ],
             outputs: vec![draft_output()],
         }),
-"draft_get" => Some( ControllerSchema {
+        "draft_get" => Some(ControllerSchema {
             namespace: "flows",
             function: "draft_get",
             description: "Fetch a draft by id.",
             inputs: vec![id_input("Identifier of the draft to fetch.")],
             outputs: vec![draft_output()],
         }),
-"draft_update" => Some( ControllerSchema {
+        "draft_update" => Some(ControllerSchema {
             namespace: "flows",
             function: "draft_update",
             description: "Patch a draft's name/graph/flow_id (any provided field) and bump its \
@@ -77,7 +77,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
             ],
             outputs: vec![draft_output()],
         }),
-"draft_list" => Some( ControllerSchema {
+        "draft_list" => Some(ControllerSchema {
             namespace: "flows",
             function: "draft_list",
             description: "List all drafts, newest-updated first.",
@@ -89,7 +89,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"draft_delete" => Some( ControllerSchema {
+        "draft_delete" => Some(ControllerSchema {
             namespace: "flows",
             function: "draft_delete",
             description: "Delete a draft by id (idempotent).",
@@ -101,7 +101,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"draft_promote" => Some( ControllerSchema {
+        "draft_promote" => Some(ControllerSchema {
             namespace: "flows",
             function: "draft_promote",
             description: "Promote a draft into a saved flow through the same create/update gates \

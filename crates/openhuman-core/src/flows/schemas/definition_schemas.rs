@@ -10,7 +10,7 @@ use super::{
 /// Builds the schema for `function` when this group owns it.
 pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
     match function {
-"create" => Some( ControllerSchema {
+        "create" => Some(ControllerSchema {
             namespace: "flows",
             function: "create",
             description: "Create a new saved automation workflow from a tinyflows graph.",
@@ -33,7 +33,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
             ],
             outputs: vec![flow_output()],
         }),
-"duplicate" => Some( ControllerSchema {
+        "duplicate" => Some(ControllerSchema {
             namespace: "flows",
             function: "duplicate",
             description: "Duplicate a saved flow: create an independent copy of its graph under a \
@@ -43,7 +43,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
             inputs: vec![id_input("Identifier of the flow to duplicate.")],
             outputs: vec![flow_output()],
         }),
-"validate" => Some( ControllerSchema {
+        "validate" => Some(ControllerSchema {
             namespace: "flows",
             function: "validate",
             description: "Validate a tinyflows graph without saving it: reports structural \
@@ -77,7 +77,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 },
             ],
         }),
-"import" => Some( ControllerSchema {
+        "import" => Some(ControllerSchema {
             namespace: "flows",
             function: "import",
             description: "Import a workflow definition WITHOUT saving it: parse a native tinyflows \
@@ -121,14 +121,14 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 },
             ],
         }),
-"get" => Some( ControllerSchema {
+        "get" => Some(ControllerSchema {
             namespace: "flows",
             function: "get",
             description: "Load one saved flow by id.",
             inputs: vec![id_input("Identifier of the flow to load.")],
             outputs: vec![flow_output()],
         }),
-"list" => Some( ControllerSchema {
+        "list" => Some(ControllerSchema {
             namespace: "flows",
             function: "list",
             description: "List all saved flows.",
@@ -140,7 +140,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"list_connections" => Some( ControllerSchema {
+        "list_connections" => Some(ControllerSchema {
             namespace: "flows",
             function: "list_connections",
             description: "List the connection sources a flow node's `connection_ref` can attach \
@@ -161,7 +161,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"update" => Some( ControllerSchema {
+        "update" => Some(ControllerSchema {
             namespace: "flows",
             function: "update",
             description: "Update a saved flow's name and/or graph; re-validates before persisting.",
@@ -185,7 +185,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
             ],
             outputs: vec![flow_output()],
         }),
-"delete" => Some( ControllerSchema {
+        "delete" => Some(ControllerSchema {
             namespace: "flows",
             function: "delete",
             description: "Delete a saved flow by id.",
@@ -212,7 +212,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"set_enabled" => Some( ControllerSchema {
+        "set_enabled" => Some(ControllerSchema {
             namespace: "flows",
             function: "set_enabled",
             description: "Enable or disable a saved flow.",
@@ -227,7 +227,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
             ],
             outputs: vec![flow_output()],
         }),
-"get_history" => Some( ControllerSchema {
+        "get_history" => Some(ControllerSchema {
             namespace: "flows",
             function: "get_history",
             description: "List a flow's revision history — prior graph snapshots captured on each \
@@ -248,7 +248,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"rollback" => Some( ControllerSchema {
+        "rollback" => Some(ControllerSchema {
             namespace: "flows",
             function: "rollback",
             description: "Roll a flow back to a prior revision (restores that revision's graph \
@@ -266,7 +266,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
             ],
             outputs: vec![flow_output()],
         }),
-"required_connections" => Some( ControllerSchema {
+        "required_connections" => Some(ControllerSchema {
             namespace: "flows",
             function: "required_connections",
             description: "Compute which Composio toolkits a candidate graph needs and whether each \
@@ -285,7 +285,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"approval_manifest" => Some( ControllerSchema {
+        "approval_manifest" => Some(ControllerSchema {
             namespace: "flows",
             function: "approval_manifest",
             description:

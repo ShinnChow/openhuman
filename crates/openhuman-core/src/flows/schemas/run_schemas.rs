@@ -8,7 +8,7 @@ use super::{
 /// Builds the schema for `function` when this group owns it.
 pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
     match function {
-"run" => Some( ControllerSchema {
+        "run" => Some(ControllerSchema {
             namespace: "flows",
             function: "run",
             description:
@@ -41,7 +41,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"run_detached" => Some( ControllerSchema {
+        "run_detached" => Some(ControllerSchema {
             namespace: "flows",
             function: "run_detached",
             description: "Start a saved flow WITHOUT waiting for it to finish: validates + \
@@ -76,7 +76,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"resume" => Some( ControllerSchema {
+        "resume" => Some(ControllerSchema {
             namespace: "flows",
             function: "resume",
             description: "Resume a flow run paused at a human-in-the-loop approval gate, \
@@ -117,7 +117,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"cancel_run" => Some( ControllerSchema {
+        "cancel_run" => Some(ControllerSchema {
             namespace: "flows",
             function: "cancel_run",
             description: "Cancel a flow run: settle it to a terminal `cancelled` status, abort \
@@ -160,7 +160,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"list_runs" => Some( ControllerSchema {
+        "list_runs" => Some(ControllerSchema {
             namespace: "flows",
             function: "list_runs",
             description: "List the most recent runs for a flow, newest first.",
@@ -180,7 +180,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"list_all_runs" => Some( ControllerSchema {
+        "list_all_runs" => Some(ControllerSchema {
             namespace: "flows",
             function: "list_all_runs",
             description: "List the most recent runs across all flows, newest first.",
@@ -197,7 +197,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"get_run" => Some( ControllerSchema {
+        "get_run" => Some(ControllerSchema {
             namespace: "flows",
             function: "get_run",
             description: "Load one persisted flow run record by its (checkpoint thread) id.",
@@ -214,7 +214,7 @@ pub(super) fn lookup(function: &str) -> Option<ControllerSchema> {
                 required: true,
             }],
         }),
-"prune_runs" => Some( ControllerSchema {
+        "prune_runs" => Some(ControllerSchema {
             namespace: "flows",
             function: "prune_runs",
             description: "Manually prune a flow's run history down to the retention cap, deleting \
