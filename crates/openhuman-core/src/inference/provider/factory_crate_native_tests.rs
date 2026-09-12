@@ -1,5 +1,6 @@
 use super::*;
 
+use crate::inference::provider::factory::cloud_slug::try_create_cloud_slug_chat_model_from_string_with_native_tools;
 #[test]
 fn enforce_local_only_inference_errors_on_external_when_local_only() {
     // Drive the live-policy-backed wrapper: install a LocalOnly policy, then

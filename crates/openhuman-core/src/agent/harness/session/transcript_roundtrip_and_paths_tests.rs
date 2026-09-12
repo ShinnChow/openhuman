@@ -2,6 +2,7 @@ use super::*;
 
 use resolve_keyed_transcript_path;
 use std::fs;
+use std::path::PathBuf;
 #[test]
 fn intermediate_assistant_reasoning_is_lifted_without_turn_usage() {
     let mut message = ChatMessage::assistant("I will inspect the repository.");

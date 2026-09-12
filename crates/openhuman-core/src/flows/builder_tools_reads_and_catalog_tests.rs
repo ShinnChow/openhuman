@@ -1,5 +1,6 @@
 use super::*;
 
+use crate::flows::builder_tools::catalog_search::search_catalog;
 // ── revise_workflow ──────────────────────────────────────────────────────────
 
 #[tokio::test]

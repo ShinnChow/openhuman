@@ -1,4 +1,5 @@
 use turn_usage_from_line;
+use crate::agent::harness::session::transcript::metadata::turn_usage_from_metadata;
 //! JSONL line shapes (`_meta`, message, and compaction records) and the
 //! conversions between them and the public [`ChatMessage`] /
 //! [`TranscriptMeta`] / [`DisplayMessage`] types.

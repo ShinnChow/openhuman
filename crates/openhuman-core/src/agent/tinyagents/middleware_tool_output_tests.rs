@@ -1,3 +1,4 @@
+use crate::agent::tinyagents::middleware::tool_output::ToolOutputMiddleware;
 // Imported here rather than in the middleware module since #6014: the
 // production install site moved to `assemble_turn_harness` (which names it
 // fully-qualified), so the module itself no longer references the type.

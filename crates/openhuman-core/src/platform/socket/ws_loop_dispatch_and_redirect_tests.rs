@@ -1,6 +1,7 @@
 use super::*;
 
 use std::sync::Arc;
+use crate::platform::socket::types::ConnectionStatus;
 // ── Redirect resolution (the real fix for OPENHUMAN-TAURI-9X) ──
 
 #[test]

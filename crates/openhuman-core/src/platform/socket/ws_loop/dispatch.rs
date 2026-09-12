@@ -1,5 +1,6 @@
 use crate::platform::socket::manager::emit_state_change;
 use crate::platform::socket::medulla::workflows;
+use crate::platform::socket::types::ConnectionStatus;
 //! Incoming-message dispatch: Engine.IO framing and Socket.IO packet/ack
 //! parsing.
 
