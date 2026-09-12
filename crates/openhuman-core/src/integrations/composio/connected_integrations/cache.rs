@@ -203,7 +203,7 @@ fn read_cached_integrations(
 ///     hashes within one process lifetime.
 ///
 /// Only `connected == true` entries contribute. Unconnected toolkits are
-/// stripped by [`crate::integrations::composio::tools::orchestrator_tools::collect_orchestrator_tools`]
+/// stripped by [`crate::tools::orchestrator_tools::collect_orchestrator_tools`]
 /// anyway, so churn among the unconnected set never changes the agent's
 /// surface and shouldn't trigger a refresh.
 pub fn connected_set_hash(integrations: &[ConnectedIntegration]) -> u64 {
