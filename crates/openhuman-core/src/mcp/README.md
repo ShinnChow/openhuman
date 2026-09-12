@@ -35,8 +35,10 @@ than protocol:
   description.
 - **Events.** `tinymcp` reports what happened in its return values;
   translating that into a `DomainEvent` happens here, where the vocabulary is
-  known (`registry::bus`, `registry::supervisor_events`, `audit`'s schema
-  layer).
+  known (`registry::ops`/`setup_ops` for the RPC-driven lifecycle events,
+  `registry::supervisor_events` for what the reconnect supervisor observed,
+  `registry::tools_safe_for_agent` for `McpToolRejected`). `audit` publishes
+  nothing.
 - **The proxy decision.** Whether a proxy applies to MCP traffic is decided
   by this application's proxy scope setting, per-service list and no-proxy
   list — `host::proxy_for_mcp` consults them and hands `tinymcp` the answer.
@@ -61,8 +63,8 @@ longer hold transport source, only `pub use` re-exports of `tinymcp`:
   `tinymcp::Error` as `McpError`, `redact_endpoint`, `render_tool_result`, and
   the `tinymcp_bus` wire types (`McpRemoteTool`, `McpServerToolResult`,
   `McpSseEvent`, the OAuth challenge/metadata types). Always compiled because
-  always-on consumers outside the MCP subsystem name it — including
-  `mcp::server`'s test-only HTTP round-trip.
+  the ungated `gitbooks` tool (`tools/impl/network/gitbooks.rs`) dials
+  `McpHttpClient`; `mcp::server`'s test-only HTTP round-trip names it too.
 - `config_servers` (`mcp` feature) — the statically declared, TOML-configured
   server set: `tinymcp::transport::stdio::McpStdioClient`,
   `McpRegistrySource`, `McpServerDefinition`, `McpServerRegistry`,
@@ -88,9 +90,10 @@ idempotent so the two callers can't double-register or double-spawn.
 
 `pub mod mcp;` is always compiled — the family root is a facade. `host` and
 `http_client` are ungated because the startup path and always-on consumers
-reach them unconditionally. `registry`, `audit`, `server`, and
-`config_servers` keep their own gate and their own `stub.rs`, so a build
-without the feature still serves `/rpc` without those namespaces.
+reach them unconditionally. `registry`, `audit`, and `server` keep
+their own gate and their own `stub.rs`, so a build without the feature still
+serves `/rpc` without those namespaces; `config_servers` is simply
+`#[cfg(feature = "mcp")]` with no stub.
 
 ## Dependencies
 
@@ -107,5 +110,6 @@ without the feature still serves `/rpc` without those namespaces.
 
 See `Cargo.toml` (`crates/openhuman-core/Cargo.toml`, the `tinymcp` block)
 for why this stays a path dependency rather than the pinned release, and
-`crates/openhuman-core/src/modules/registry.rs` for the release version this
-application does pin for the loadable-module path.
+`crates/openhuman-core/src/modules/registry_part_02.rs` (included from
+`modules/registry.rs`) for the release version this application does pin for
+the loadable-module path.
