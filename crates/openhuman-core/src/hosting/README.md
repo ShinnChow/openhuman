@@ -14,13 +14,14 @@ everything about a provider, and this module owns everything about OpenHuman.
 Everything else — Vercel's endpoints, the upload-then-build deployment protocol,
 how a marketplace database is provisioned and connected, the order a launch runs
 in — belongs to the crate, where it is provider-independent and tested against a
-mock of the provider's REST API. Nothing here knows the word `readyState`.
+mock of the provider's REST API. Outside the mock responses in
+`hosting_tests.rs`, nothing here knows the word `readyState`.
 
 ## Key files
 
 | File | Role |
 | --- | --- |
-| `mod.rs` | `Account` (credential resolution + the shared `dyn Host`) and `resolve_in_workspace`. |
+| `mod.rs` | `Account` (`from_config` credential resolution, `connect` for embedders that hold their own key, the shared `dyn Host`) and `resolve_in_workspace`. |
 | `tools.rs` | Module docs, then `include!`s the two parts below. |
 | `tools_part_01.rs` | `hosting_launch_site`, `hosting_deployment_status`, `hosting_list_deployments`, `hosting_deployment_logs`, `hosting_rollback`, `hosting_list_sites`. |
 | `tools_part_02.rs` | `hosting_set_env`, `hosting_add_domain`, `hosting_domain_status`, `hosting_analytics`. |
