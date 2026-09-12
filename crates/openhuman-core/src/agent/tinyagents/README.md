@@ -70,7 +70,7 @@ Responses project the crate's own `AgentObservation` and `HarnessRunStatus` serd
 
 ## Dependencies
 
-- The vendored crates under `vendor/tinyagents/`: `tinyagents-harness`, `tinyagents-graph`, `tinyagents-registry`, and (through `vendor/tinyagents/vendor/tinyinference`) `tinyinference` and `tinytools`, all declared as path dependencies in `crates/openhuman-core/Cargo.toml`. Per AGENTS.md, use this vendored copy; a second path to the same crates creates incompatible Rust types.
+- The vendored crates under `vendor/tinyagents/`: `tinyagents-harness`, `tinyagents-graph`, `tinyagents-registry`, plus `tinyinference` and `tinytools` from `vendor/tinyagents/vendor/`, all declared as path dependencies in `crates/openhuman-core/Cargo.toml`. Per AGENTS.md, use this vendored copy; a second path to the same crates creates incompatible Rust types.
 - `crate::agent::message_convert` for `ChatMessage` ↔ crate `Message` conversion.
 - `crate::agent::harness::{run_queue, tool_result_artifacts, subagent_runner}` and `crate::agent::{messages, progress, stop_hooks, cost, hooks}`: the OpenHuman-side turn plumbing this seam plugs into.
 - `crate::tools`: the `Tool` trait wrapped by `SharedToolAdapter`, and `tools::registry::denials` for recording policy blocks.
