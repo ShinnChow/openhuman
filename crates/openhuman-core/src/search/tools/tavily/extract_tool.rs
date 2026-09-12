@@ -6,6 +6,7 @@ use crate::tools::traits::{Tool, ToolCallOptions, ToolResult};
 use async_trait::async_trait;
 use serde_json::{json, Value};
 
+/// Retrieve full page contents for a list of URLs (`POST /extract`).
 pub struct TavilyExtractTool {
     client: TavilyClient,
 }
