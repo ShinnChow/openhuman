@@ -156,8 +156,8 @@ graph create/run/schedule + `workflow_builder`/`flow_discovery` agents).
 ## Test verification
 
 The disabled-build test gotcha (AGENTS.md says to test both enabled and disabled
-builds after changing a gate because CI's smoke lane runs `cargo check` only and
-never compiles `--no-default-features` test code) was checked directly:
+builds after changing a gate; CI's `cargo check` lanes never compile
+`--no-default-features` test code) was checked directly:
 
 ```bash
 cargo test -p openhuman --lib --no-default-features --features "skills,flows" core::
