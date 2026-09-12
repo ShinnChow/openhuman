@@ -24,7 +24,8 @@ The subsystem is organised in phases (issue #566): **Phase 1** the candidate tax
 | `cache.rs` | `FacetCache` — typed wrapper over `user_profile_facets`; class↔key helpers (`class_from_key`, `key_with_class`, `class_prefix`). Delegates to the `MemoryProfile` family via `crate::memory::guard::MemoryGuard`. |
 | `stability_detector.rs` | Phase 3 `StabilityDetector::rebuild` — the scoring/budget/state-assignment cycle; thresholds, half-lives, budgets, and the `stability()` formula. Publishes `CacheRebuilt`. |
 | `scheduler.rs` | Periodic rebuild loop (`spawn_rebuild_loop`, default 30 min) + event-driven debounced trigger (`register_event_trigger`) subscribing to memory/tree-summarizer events. |
-| `schemas.rs` | All RPC controller schemas + `handle_*` async handlers for the `learning.*` namespace. |
+| `schemas.rs` | `include!`s `schemas_part_01.rs` (controller schema list) and `schemas_part_02.rs` (the `handle_*` async handlers) for the `learning.*` namespace. |
+| `tools.rs` | The 11 `Learning*Tool`s mirroring the RPC surface (see "Agent tools" below). |
 | `reflection.rs` | `ReflectionHook` post-turn hook: heuristic reflection-cue capture + LLM reflection, stores observations/patterns/preferences/reflections, emits Goal/Style candidates. |
 | `tool_tracker.rs` | `ToolTrackerHook` post-turn hook + `ToolStats`; per-tool running success/failure/duration tallies in the `tool_effectiveness` memory category. |
 | `user_profile.rs` | `UserProfileHook` post-turn hook; Aho-Corasick DFA over curated preference phrases, stores matches in the `user_profile` category. |
@@ -37,7 +38,8 @@ The subsystem is organised in phases (issue #566): **Phase 1** the candidate tax
 | `extract/summary_facets.rs` | Parses the LLM summariser's structured JSON block; `route_facets_to_buffer` pushes validated candidates (requires `evidence_chunks`). |
 | `transcript_ingest/` | Transcript→memory pipeline (`mod.rs`, `extract.rs`, `dedupe.rs`, `persist.rs`, `types.rs`). |
 | `transcript_ingest/mod.rs` | `ingest_transcript_path` / `ingest_session_transcript`; extract→dedupe→persist into `conversation_memory` + `conversation_reflections` namespaces. |
-| `*_tests.rs` | Sibling test suites (`cache`, `reflection`, `prompt_sections`, `linkedin_enrichment`). |
+| `test_profile.rs` | In-memory `MemoryProfile` test double (`HashMap` behind a mutex) mimicking the engine's facet ordering, for tests that don't need a real store. Not `#[cfg(test)]`-gated so integration tests under `tests/` (compiled without `cfg(test)`) can still use it. |
+| `*_tests.rs` | Sibling test suites (`cache`, `candidate`, `reflection`, `prompt_sections`, `linkedin_enrichment`, `startup`, `tools`, `schemas`, …). |
 
 ## Public surface
 
