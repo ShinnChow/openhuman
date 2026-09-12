@@ -25,7 +25,7 @@ of `mod.rs`.
 | `reconcile.rs` | Startup/list-time reconciliation of active Composio connections into the registry, built on `memory::sync::composio::scan_active_sync_targets`. |
 | `readers/mod.rs` | `SourceReader` trait (takes `&Config`, unlike the crate's `&Path` trait) plus one implementation per `SourceKind`: `composio`, `conversation`, `folder`, `github`, `rss`, `twitter`, `web_page`. This module's `reader_for` hands out all seven, network kinds included, because its callers are RPC handlers acting on an explicit user request; the crate's `reader_for` returns `None` for network kinds. Do not call it from a polling loop. |
 
-## RPC surface (`memory_sources_*`)
+## RPC surface (`memory_sources.*`)
 
 `list`, `get`, `add`, `update`, `remove`, `list_items`, `read_item`, `sync`,
 `reconcile`, `status_list`, `supported_toolkits`, `sync_audit_log`,
@@ -40,14 +40,16 @@ re-exported from `schemas::all_registered_controllers`.
 
 ## Related modules
 
-- [`../sync/`](../sync/) — the bus-driven side: Composio subscribers and
-  providers (including Slack) that actually move data, plus `sync_status/`
-  for per-connection sync progress. `sources/` owns *which* connectors are
-  configured and *what* they map onto; `sync/` owns moving data for them.
+- [`../sync/`](../sync/) — the bus-driven side: the Composio trigger and
+  config-changed subscribers, `list_sync_targets` (which reads this registry
+  first, then falls back to a live scan), the Slack RPC pair, and
+  `sync_status/` for per-connection progress. The data movement itself is
+  `integrations::composio::ops::providers_ops::run_sync_pass`. `sources/`
+  owns *which* connectors are configured and *what* they map onto.
 - [`../read_rpc/`](../read_rpc/) — the Memory tab's read RPCs
   (list/inspect/search over the tree, under the `memory_tree` namespace).
-  `sources.status_list` is the one status read that lives here instead,
-  because it is keyed on the registry.
+  `memory_sources.status_list` is the one status read that lives here
+  instead, because it is keyed on the registry.
 
 ## Tests
 
