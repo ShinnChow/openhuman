@@ -43,4 +43,3 @@ fn unbundled_executable_is_rejected() {
         "/tmp/openhuman/target/debug/OpenHuman"
     )));
 }
-}
