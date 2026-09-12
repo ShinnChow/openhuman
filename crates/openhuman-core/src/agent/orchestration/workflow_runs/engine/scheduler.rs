@@ -9,10 +9,8 @@ use anyhow::{anyhow, Result};
 use tinyagents_session::run_ledger::{get_workflow_run, WorkflowRunStatus};
 
 use super::super::types::{WorkflowDefinition, WorkflowPhase};
-use super::cancel::lookup_cancel_signal_unused as _; // silence unused-module lints when reordered
-use super::state::{
-    all_phases_completed, next_runnable_phase, persist, synthesize_summary, LOG_TARGET,
-};
+use super::state::{all_phases_completed, next_runnable_phase, persist, synthesize_summary};
+use super::LOG_TARGET;
 use crate::config::Config;
 
 /// What the scheduler's `dispatch` step decided.
