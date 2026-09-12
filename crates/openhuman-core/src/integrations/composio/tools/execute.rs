@@ -346,3 +346,18 @@ impl Tool for ComposioExecuteTool {
         }
     }
 }
+
+// NOTE: A `composio_enable_scope` agent-callable meta-tool used to live
+// here. It was removed deliberately: scope elevation is a
+// security-sensitive, cross-session state change that unlocks
+// destructive actions, and putting that flip behind LLM-mediated
+// "user consent" both (a) made the safety contract depend on model
+// behavior — the weakest place for it — and (b) was a soft gate the
+// model could route around (e.g. trash-via-label). The user must
+// toggle scopes themselves in **Connections → {toolkit} → {scope}
+// row**; the agent only describes the gated capability and points at
+// that UI path.
+//
+// Two surfaces name this policy; keep them in sync:
+//   - `GatedIntegrationTool.unlock_paths` populated in `composio::ops`
+//   - `scope_error_message` returned from `composio_execute` blocks
