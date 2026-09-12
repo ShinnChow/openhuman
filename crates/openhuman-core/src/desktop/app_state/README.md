@@ -23,7 +23,7 @@ Aggregator that the React shell polls every few seconds to render the OS-level c
 
 ## Called by
 
-- `crates/openhuman-core/src/agent/harness/session/builder.rs` — agent builder reads cached app state when resolving identity.
+- `crates/openhuman-core/src/agent/harness/session/builder/factory.rs` — agent builder reads cached app state (`load_stored_app_state`) when resolving identity.
 - `crates/openhuman-core/src/core/all.rs` — registers `all_app_state_*` controllers; the shell hits these via `core_rpc_relay`.
 - `app/src/` — Tauri shell consumes the snapshot in its polling loops (out of scope for this README).
 

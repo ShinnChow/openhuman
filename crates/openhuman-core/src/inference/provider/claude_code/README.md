@@ -81,11 +81,11 @@ server side.
 
 ## Selection
 
-`../factory_part_01.rs` and `../factory_part_02.rs` route a `claude-code:<model>`
-provider string to this module wherever the factory needs to special-case CC
-alongside `claude_agent_sdk` — e.g. `is_raw_passthrough_model`,
-`external_provider_label` (labels it "Claude Code CLI" for Privacy Mode
-messages), and the local/cloud/CLI dispatch branch in `create_chat_model*`.
+`../factory_part_01.rs` routes a `claude-code:<model>` provider string to this
+module wherever the factory needs to special-case CC alongside
+`claude_agent_sdk` — e.g. `is_raw_passthrough_model`, `external_provider_label`
+(labels it "Claude Code CLI" for Privacy Mode messages), and the
+local/cloud/CLI dispatch branch in `create_chat_model*`.
 `ClaudeCodeProvider::from_env` fails fast with an actionable error when the
 CLI is missing or below `MIN_CLI_VERSION`.
 

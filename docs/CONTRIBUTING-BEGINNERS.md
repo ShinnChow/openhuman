@@ -71,7 +71,7 @@ Verify everything is installed:
 ```bash
 node --version     # should be v24.x.x or higher
 pnpm --version     # should be 10.10.0
-rustc --version    # should be 1.93.0
+rustc --version    # should match rust-toolchain.toml
 cmake --version    # any recent version
 ```
 
@@ -152,15 +152,15 @@ npm install -g pnpm@10.10.0
 
 # Rust via rustup
 sudo pacman -S --needed rustup
-rustup toolchain install 1.93.0 --profile minimal
-rustup component add rustfmt clippy --toolchain 1.93.0
+rustup toolchain install --profile minimal
+rustup component add rustfmt clippy
 
 # Build tools required by native Rust crates (whisper-rs, cpal, enigo, etc.)
 sudo pacman -S --needed base-devel cmake pkgconf clang openssl \
   alsa-lib xdotool libxtst libxi libevdev
 ```
 
-For desktop (Tauri/CEF) builds, also install:
+For desktop (Tauri) builds, also install:
 
 ```bash
 sudo pacman -S --needed gtk3 webkit2gtk-4.1 libayatana-appindicator \
@@ -174,7 +174,7 @@ Verify everything is installed:
 ```bash
 node --version     # should be v24.x.x or higher
 pnpm --version     # should be 10.10.0
-rustc --version    # should be 1.93.0
+rustc --version    # should match rust-toolchain.toml
 cmake --version    # any recent version
 ```
 
@@ -205,8 +205,8 @@ Install Rust:
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-rustup toolchain install 1.93.0 --profile minimal
-rustup component add rustfmt clippy --toolchain 1.93.0
+rustup toolchain install --profile minimal
+rustup component add rustfmt clippy
 ```
 
 Install native build dependencies:
@@ -219,7 +219,7 @@ sudo apt-get install -y \
   libstdc++-14-dev
 ```
 
-For desktop (Tauri/CEF) builds, also install:
+For desktop (Tauri) builds, also install:
 
 ```bash
 sudo apt-get install -y \
@@ -234,7 +234,7 @@ Verify everything is installed:
 ```bash
 node --version     # should be v24.x.x or higher
 pnpm --version     # should be 10.10.0
-rustc --version    # should be 1.93.0
+rustc --version    # should match rust-toolchain.toml
 cmake --version    # any recent version
 ```
 
@@ -281,7 +281,12 @@ git remote -v
 
 ### 3a. Initialize submodules
 
-The project includes vendored Tauri and CEF code as git submodules. You must do this before installing dependencies or desktop builds will fail:
+The project vendors several supporting crates as git submodules under `vendor/`
+(tinyagents, tinyflows, tinychannels, tinyhumans-sdk, tinybus, tinymemory,
+tinywallet, tinyhosts, tinymcp, tinybox, tinyruntime, tinydocs, tinyvoice,
+tinyjuice, tinyconnectors — see `.gitmodules`). The desktop shell itself uses
+Tauri with the Wry webview, not CEF. You must initialize the submodules before
+installing dependencies or desktop builds will fail:
 
 ```bash
 git submodule update --init --recursive

@@ -4,7 +4,7 @@ Thank you for your interest in contributing to OpenHuman. This guide is the fast
 
 > **New to open source or coding?** Start with [`docs/CONTRIBUTING-BEGINNERS.md`](docs/CONTRIBUTING-BEGINNERS.md) — it walks you through every step from installing tools to opening your first PR.
 
-For deeper architecture and subsystem references, use the GitBook under [`gitbooks/developing/`](gitbooks/developing/). For coding-agent and repository-specific implementation rules, see [`AGENTS.md`](AGENTS.md) and [`CLAUDE.md`](CLAUDE.md).
+For deeper architecture and subsystem references, use the GitBook under [`gitbooks/developing/`](gitbooks/developing/). For coding-agent and repository-specific implementation rules, see [`AGENTS.md`](AGENTS.md) (`CLAUDE.md` is a symlink to the same file).
 
 ## Table of Contents
 
@@ -40,9 +40,9 @@ This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDU
 | pnpm | `pnpm@10.10.0` from [`package.json`](package.json) | The repo enforces pnpm via the root `packageManager` field. |
 | Rust | `1.96.1` from [`rust-toolchain.toml`](rust-toolchain.toml) | Install with `rustup`; `rustfmt` and `clippy` are required components. |
 | CMake | Current stable | Required by native Rust dependencies such as Whisper bindings. |
-| Ninja | Current stable | Required on macOS and Windows to build the bundled CEF helper. CMake delegates the actual compile to Ninja; without it the `cef-dll-sys` build script aborts. |
+| Ninja | Current stable | Required on Windows as the CMake generator for native crates built by `scripts/run-dev-win.sh` (e.g. Whisper bindings). |
 | ripgrep (`rg`) | Current stable | Used by the `lint:commands-tokens` pre-push step (scans `app/src/components/commands/`). Without it, `git push` fails the hook with `rg: command not found`. |
-| Tauri vendored sources | Git submodules under `crates/openhuman-app/vendor/` | Required for the CEF-aware Tauri CLI and notification plugin patches. |
+| Vendored module sources | Git submodules under `vendor/` | The `tiny*` module crates patched into the Rust workspace. Run `git submodule update --init --recursive vendor/` before building. |
 | macOS tools | Xcode Command Line Tools | Needed for local desktop builds on macOS. |
 | Linux desktop packages | System GTK/WebKit/AppIndicator build deps | Install the package set Tauri requires for your distro before attempting desktop builds. |
 
