@@ -12,10 +12,9 @@ backend and passes the response through verbatim.
 - Resolve and require a live backend session token before calling out; fail
   closed with a clear error when none is stored.
 - Fold the backend's 404 (`BackendApiError::AnnouncementNotFound`, no
-  qualifying announcement) into the same "no announcement" success outcome
-  instead of surfacing it as an error — this is a best-effort/cosmetic
-  feature and treating the 404 as a failure only flooded Sentry with no
-  actionable signal.
+  qualifying announcement) into the same `null` "no announcement" success
+  outcome instead of surfacing it as an error — the feature is cosmetic and
+  the 404 is a normal outcome, not a failure worth reporting.
 
 ## Key files
 
@@ -24,21 +23,23 @@ backend and passes the response through verbatim.
 | `mod.rs` | Re-exports `ops::*` and the schema/controller pair. |
 | `ops.rs` | `require_token`, `get_latest_announcement`. Builds a `BackendOAuthClient` against the effective backend URL and issues the authed GET. |
 | `schemas.rs` | Controller schema + handler that loads `Config` and delegates to `ops`. |
+| `ops_tests.rs`, `schemas_tests.rs` | Focused tests for the 404 fold, token guard, and schema shape. |
 
 ## RPC / controllers
 
-One controller in the `announcements` namespace, registered into the global
-registry via `crates/openhuman-core/src/core/all.rs`:
+One controller in the `announcements` namespace (schema `function: "get_latest"`),
+registered into the global registry via `crates/openhuman-core/src/core/all.rs`:
 
-| Method | Inputs | Output | Backend call |
+| Wire method | Inputs | Output | Backend call |
 | --- | --- | --- | --- |
-| `announcements_get_latest` (`announcements.get_latest`) | none | `announcement` (JSON, may be `null`) | `GET /announcements/latest` |
+| `openhuman.announcements_get_latest` | none | `announcement` (JSON, may be `null`) | `GET /announcements/latest` |
 
 ## Persistence
 
 None. The domain reads the stored session token but does not persist
-anything; the UI is responsible for tracking dismissal locally by
-announcement id — this module has no notion of "dismissed".
+anything. Dismissal is tracked client-side by announcement id
+(`app/src/store/announcementSlice.ts`, `shownIds`, persisted through
+`userScopedStorage`) — this module has no notion of "dismissed".
 
 ## Dependencies
 
@@ -51,7 +52,8 @@ announcement id — this module has no notion of "dismissed".
   call.
 - `crate::api::flatten_authed_error` — flattens any non-404 backend/session
   error for the RPC caller.
-- `crate::rpc::RpcOutcome` — return wrapper carrying value + log line.
+- `crate::rpc::RpcOutcome` (re-export of `openhuman_rpc`) — return wrapper
+  carrying value + log line.
 
 ## Gating
 
