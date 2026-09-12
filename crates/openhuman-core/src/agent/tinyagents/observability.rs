@@ -12,6 +12,11 @@ mod cap_pauser;
 mod event_bridge;
 mod graph_tracing;
 
+#[cfg(test)]
+use tinyagents_harness::events::AgentEvent;
+#[cfg(test)]
+use tinyinference::usage::Usage;
+
 pub(crate) use cap_pauser::{
     CapPauser, IterationCursor, ProviderUsageCarry, SubagentScope, ToolFailureMap, ToolNameMap,
 };
