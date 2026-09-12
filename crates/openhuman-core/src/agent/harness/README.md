@@ -8,8 +8,10 @@ legacy-format migration, sub-agent dispatch, agent archetypes, post-turn
 memory/archival hooks, mid-turn message steering, and oversized-tool-result
 handling.
 
-Cancellation is the tinyagents steering channel (`run_queue` below) — there
-is no in-house interrupt fence.
+Cancellation is the tinyagents steering channel (`SteeringCommand` in
+`crate::agent::tinyagents`); there is no in-house interrupt fence or
+cancellation token owned here. `run_queue` only queues messages between
+iterations.
 
 ## Responsibilities
 
@@ -24,7 +26,8 @@ is no in-house interrupt fence.
   (`definition*.rs`, `builtin_definitions.rs`, `fork_context.rs`,
   `sandbox_context.rs`, `spawn_depth_context.rs`, `task_recency_context.rs`,
   `turn_attachments_context.rs`).
-- Drive channel turns through the agent graph (`agent_graph.rs`, `graph.rs`).
+- Run the channel/CLI turn graph (`graph.rs`) and let a built-in agent
+  select a bespoke sub-agent turn graph (`agent_graph.rs`).
 - Extract lessons and episodic memory after each turn as a `PostTurnHook`
   (`archivist/`).
 - Offload oversized worker artifacts to the filesystem, and persist oversized
@@ -41,15 +44,17 @@ is no in-house interrupt fence.
 | `subagent_runner/` | `run_subagent`/`SubagentRunOptions`/`SubagentRunError` and the build pipeline around the tinyagents graph: model resolution, tool filtering, sandbox/action-root narrowing, checkpoint/handback, transcript mirroring (`autonomous.rs`, `extract_tool.rs`, `handoff.rs`, `tool_prep.rs`, `ops/{provider,prompt,runner,graph,checkpoint,pause_checkpoint}.rs`). |
 | `definition*.rs`, `builtin_definitions.rs`, `definition_loader.rs` | `AgentDefinition`/`AgentDefinitionRegistry`/`SandboxMode`/`ToolScope`/`PromptSource`/`ModelSpec`; loads built-ins from `crate::agent::registry::agents` and user TOML from the workspace/home `agents/` directory. |
 | `fork_context.rs`, `sandbox_context.rs`, `spawn_depth_context.rs`, `task_recency_context.rs`, `turn_attachments_context.rs` | `ParentExecutionContext` and other task-locals a spawned tool reads to see its parent's provider, tools, sandbox mode, spawn depth (capped by `MAX_SPAWN_DEPTH`), and recent-task window. |
-| `agent_graph.rs`, `graph.rs` | `AgentGraph`/`AgentTurnRequest` and `run_channel_turn_via_graph`, the entry point channels use to run a turn. |
-| `archivist/` | `ArchivistHook` — post-turn boundary detection, LLM recap (heuristic fallback), lesson extraction, and raw-prose ingestion into the memory tree (`boundary.rs`, `lifecycle.rs`, `recap.rs`, `resummarise.rs`, `store.rs`, `tree_ingest.rs`, `events_heuristic.rs`). |
+| `graph.rs` | `run_channel_turn_via_graph` (`pub(crate)`) — the channel/CLI turn graph, thin over `run_turn_via_tinyagents_shared`; called by the `agent.run_turn` native-bus handler in `agent/bus.rs`. |
+| `agent_graph.rs` | `AgentGraph` (`Default`/`Custom`), `AgentTurnRequest`, `AgentTurnResult`, `AgentTurnUsage` — per-agent sub-agent turn-graph selection consulted by `subagent_runner`'s `run_typed_mode`. Every built-in agent currently selects `Default`. |
+| `archivist/` | `ArchivistHook` (`types.rs`, `PostTurnHook` impl in `hook_impl.rs`) — post-turn episodic insert, segment boundary detection + lifecycle, LLM recap with heuristic fallback, lesson extraction from tool failures, and raw-prose ingestion into the memory tree when `config.learning.chat_to_tree_enabled` (`boundary.rs`, `lifecycle.rs`, `recap.rs`, `resummarise.rs`, `store.rs`, `tree_ingest.rs`, `events_heuristic.rs`). |
 | `artifact_offload/` | The `outputs/` / `workspace/` convention under `action_dir`: prompt half (`contract.rs`) and host policy half (`policy.rs`); mechanics (thresholds, path resolution, pointer rendering, the writer) live in `tinyagents_harness::artifacts` and are re-exported here. |
 | `run_queue/` | `RunQueue` and `QueuedMessage` — steer/followup/collect lanes wrapping `tinyagents_harness::run_queue`; `QueueStatus` is re-exported from the crate. |
 | `tool_result_artifacts/` | Persists oversized individual and aggregate tool outputs under `action_dir/artifacts/tool-results/`, replacing them with a bounded `[tool_result_preview]` envelope pointing at the full, redacted file. |
 | `memory_context*.rs`, `memory_protocol.rs` | Memory/context injection policy for turns and sub-agent prompts. |
-| `tool_filter.rs`, `instructions.rs`, `parse.rs`, `required_output.rs` | Tool visibility filtering, tool-instruction section assembly, `parse_tool_calls_with_pformat`, and required-output enforcement. |
-| `credentials.rs` | Credential lookup used when assembling sub-agent context. |
-| `turn_dispatch_guard.rs`, `turn_subagent_usage.rs` | Per-turn dispatch guard rails and `LastTurnUsage`/`SubagentUsageEntry` accounting. |
+| `tool_filter.rs` | `filter_actions_by_prompt` — host adapter turning `ConnectedIntegrationTool` (Composio action shape) into `tinyagents_harness::tool::SelectableTool` for the upstream fuzzy toolkit-action ranker. |
+| `instructions.rs`, `parse.rs`, `required_output.rs` | Text-mode `<tool_call>` protocol section (`build_tool_instructions*`), `parse_tool_calls_with_pformat`, and required structured-output validation/repair. |
+| `credentials.rs` | `scrub_credentials` — regex scrubbing of credential-shaped text (key/value secrets, AWS access-key IDs, `sk-…` keys). Applied to every tool result by the middleware in `agent/tinyagents/`. |
+| `turn_dispatch_guard.rs`, `turn_subagent_usage.rs` | Turn-scoped guard that refuses a new sub-agent dispatch once the run's remaining wall-clock/cap budget cannot fit it (issue #5804), and `LastTurnUsage`/`SubagentUsageEntry` accounting. |
 
 ## Public surface
 
@@ -70,7 +75,7 @@ is no in-house interrupt fence.
   task-local accessors.
 - `AgentGraph`, `AgentTurnRequest`, `AgentTurnResult`, `AgentTurnUsage`.
 - `LastTurnUsage`, `SubagentUsageEntry`.
-- `artifact_offload::{ArtifactKind, OffloadedArtifact, new_artifact_offload, offload_oversized_result, render_artifact_offload_contract, ...}` — not glob-re-exported at the `harness` level (would shadow `agent::artifacts::ArtifactKind`); import via the `artifact_offload::` path.
+- `artifact_offload::{ArtifactKind, OffloadedArtifact, new_artifact_offload, offload_oversized_result, render_artifact_offload_contract, ...}` — import via the `artifact_offload::` path (see Notes).
 - `run_queue::{RunQueue, QueueMode, QueuedMessage, QueueStatus}`.
 
 ## Dependencies
@@ -91,10 +96,16 @@ is no in-house interrupt fence.
 
 ## Used by
 
-- `crate::agent::mod` re-exports `Agent`/`AgentBuilder` for the rest of the
+- `agent/mod.rs` re-exports `Agent`/`AgentBuilder` for the rest of the
   crate.
-- `cron/scheduler_part_02.rs`, `web_chat/`, `channels/runtime/dispatch/`,
-  `inference/local/ops.rs` (`agent_chat`) drive turns through this module.
+- `agent/bus.rs` serves the `agent.run_turn` native request through
+  `run_channel_turn_via_graph`; channels reach the harness through that bus.
+- `cron/scheduler_part_02.rs`, `web_chat/`, `inference/local/ops.rs`
+  (`agent_chat`, in `ops_part_01.rs`) build and drive `Agent` turns directly;
+  `channels/runtime/dispatch/routing.rs` consults `AgentDefinitionRegistry`/
+  `ToolScope`.
+- `agent/tinyagents/` middleware calls `credentials::scrub_credentials` on
+  every tool result.
 - `agent/orchestration/tools/*` (`spawn_subagent`, `spawn_parallel_agents`,
   `spawn_async_subagent`, `continue_subagent`, `steer_subagent`, …) and
   `agent/task_dispatcher/executor.rs` call into `subagent_runner` and the
@@ -111,14 +122,17 @@ is no in-house interrupt fence.
 
 ## Notes / gotchas
 
-- `session/mod.rs` and `artifact_offload/mod.rs` reference
-  `docs/tinyagents-harness-migration-audit.md` and `docs/specs/plan-agents.md`
-  as the migration plan for moving durable state and offload mechanics onto
-  TinyAgents primitives. Neither file is checked into this repo; treat the
-  plan as undocumented rather than following a broken link.
+- `session/mod.rs` cites `docs/tinyagents-harness-migration-audit.md`, and
+  `artifact_offload/mod.rs`, `agent_graph.rs`, `subagent_runner/ops/runner.rs`
+  cite `plan-agents.md` (`docs/specs/plan-agents.md`) as the plan for moving
+  durable state, the sub-agent graph, and offload mechanics onto TinyAgents
+  primitives. Neither file is checked into this repo; the plan is not
+  documented here.
 - `artifact_offload` deliberately has no flat `ArtifactKind` re-export at the
   `harness` level — it would shadow `agent::artifacts::ArtifactKind` for glob
   importers. Use the `artifact_offload::` path.
-- No in-house turn-interrupt mechanism: steering goes through
-  `tinyagents_harness::run_queue` (wrapped by `run_queue::RunQueue`), not a
-  cancellation token owned here.
+- `run_queue::RunQueue::push` logs and drops `QueueMode::Interrupt` and
+  `QueueMode::Parallel` messages: interrupts and forked turns are handled at
+  the caller, never queued.
+
+Related: [`gitbooks/developing/architecture/agent-harness.md`](../../../../../gitbooks/developing/architecture/agent-harness.md).
