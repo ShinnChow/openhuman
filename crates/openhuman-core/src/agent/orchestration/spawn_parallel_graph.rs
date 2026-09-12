@@ -17,14 +17,16 @@
 //!
 //! - [`request`] — request decoding and structural validation.
 //! - [`types`] — shared worker/result/lineage types.
-//! - [`staging`] — OpenHuman policy admission, shared-workspace arbitration,
-//!   worktree preflight, and progress projection for the `dispatch` phase.
+//! - [`staging`] — OpenHuman policy admission and shared-workspace arbitration.
+//! - [`dispatch`] — worktree preflight and progress projection for the
+//!   `dispatch` phase, turning admitted tasks into staged workers.
 //! - [`workers`] — the serial and `map_reduce` worker fanout.
 //! - [`collect`] — collecting fanned-out results into the tool's final shape.
 //! - [`graph`] — the fixed phase-graph scaffold and topology export.
 //! - [`run`] — the public entry points that tie the above together.
 
 mod collect;
+mod dispatch;
 mod graph;
 mod request;
 mod run;
