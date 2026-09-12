@@ -19,19 +19,20 @@ more.
 | File | Role |
 | --- | --- |
 | `mod.rs` | Facade: re-exports the payload types (`types` module, from `tinymcp_bus`), `record_write`/`list_writes` (delegating to the `mcp::host` service's `AuditStore`), and the schema re-exports. |
-| `schemas.rs` / `schemas_tests.rs` | The `mcp_audit.list` controller: schema (`limit`/`offset`/`since_ms`/`client_filter`/`tool_filter`/`success_only` inputs, `records` output) and its handler. |
+| `schemas.rs` / `schemas_tests.rs` | The `mcp_audit.list` controller: schema (`limit`/`offset`/`since_ms`/`client_filter`/`tool_filter`/`success_only` inputs, `records` output) and its handler, which loads the config, deserializes the params into `McpWriteListQuery`, and calls `list_writes`. |
 | `stub.rs` | The `mcp`-less mirror: `record_write` is a no-op returning `Ok(0)`, `list_writes` returns `Ok(vec![])`. |
 
 ## RPC surface
 
-`mcp_audit.list` is the only controller, registered as **internal-only**
-(`all_mcp_audit_internal_controllers`, used by the desktop UI/CLI, not the
-public schema) at `core/all.rs` (~lines 1015-1020). Its filter and limit
-semantics (`limit` default 50 / max 500, `offset`, `since_ms`,
-`client_filter`, `tool_filter`, `success_only`) are enforced by the handler
-in `schemas.rs` against the query it hands `list_writes`; whether the
-underlying `tinymcp::AuditStore` applies those same bounds internally is the
-contract's concern, not this layer's.
+`mcp_audit.list` is the only controller, registered through
+`all_mcp_audit_internal_controllers` in `build_internal_only_controllers`
+(`core/all.rs`, ~line 1020): routable over RPC for the desktop UI/CLI, but
+not exposed to agents. The handler deserializes its params straight into
+`tinymcp_bus::McpWriteListQuery` and hands them to `list_writes`; the
+filter and limit semantics (`limit` default 50 / max 500 via
+`resolved_limit`, `offset`, `since_ms`, `client_filter`, `tool_filter`,
+`success_only`) are the contract's and the store's, not this layer's. The
+schema's field comments repeat them for `/schema` readers only.
 
 ## Compile-time gate (`mcp` feature)
 
@@ -48,17 +49,18 @@ appears never to have happened, rather than erroring.
 - `tinymcp_bus` — `McpWriteListQuery`, `McpWriteRecord`, `NewMcpWriteRecord`.
 - `crate::mcp::host` — resolves the per-workspace `AuditStore` via
   `for_config`.
-- `crate::core::all` — `ControllerSchema`, `RegisteredController` types for
-  the internal-controller registration.
-- `crate::rpc::RpcOutcome` — the response envelope other RPC domains use;
-  `mcp_audit.list`'s handler returns a raw JSON object rather than
-  `RpcOutcome` (see `schemas.rs::handle_list`).
+- `crate::core::all` (`RegisteredController`, `ControllerFuture`) and
+  `crate::core` (`ControllerSchema`, `FieldSchema`, `TypeSchema`) — the
+  controller registration types. Unlike the other RPC domains the handler
+  returns a raw `{ "records": [...] }` object, not an `RpcOutcome`.
 
 ## Used by
 
-- `crates/openhuman-core/src/mcp/server/write_dispatch.rs` — calls
-  `audit::record_write` for every MCP write-tool attempt (success and
-  rejection), which opens the per-workspace `mcp::host` service and writes
-  through its `AuditStore`.
+- `crates/openhuman-core/src/mcp/server/write_dispatch.rs` — `audit_write`
+  / `audit_write_rejection[_without_config]` call `audit::record_write` off
+  the hot path (`spawn_blocking`, or a thread when no runtime is current)
+  for every MCP write-tool attempt, success and rejection; `record_write`
+  resolves the per-workspace `mcp::host` service and writes through its
+  `AuditStore`.
 - `crates/openhuman-core/src/core/all.rs` — registers
   `all_mcp_audit_internal_controllers()`.
