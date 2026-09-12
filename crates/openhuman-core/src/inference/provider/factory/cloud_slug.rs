@@ -143,7 +143,7 @@ pub(super) fn resolve_cloud_slug<'a>(
             entry.auth_style.as_str(),
             implicit_fallback
         );
-        super::fallback_diagnostics::missing_provider_credentials_message(role, slug, local_chat)
+        fallback_diagnostics::missing_provider_credentials_message(role, slug, local_chat)
     };
 
     let key = lookup_key_for_slug(slug, config)
@@ -314,7 +314,7 @@ pub(super) fn try_create_cloud_slug_chat_model_from_string_with_native_tools(
             // tools) is only implemented on the Chat Completions adapter, so
             // that rare case keeps the compat path.
             if native_tool_calling
-                && super::crate_anthropic::endpoint_is_anthropic_messages(&endpoint)
+                && crate_anthropic::endpoint_is_anthropic_messages(&endpoint)
             {
                 crate::security::egress::emit_external_transfer(
                     crate::security::egress::EgressDescriptor::inference(
@@ -323,8 +323,8 @@ pub(super) fn try_create_cloud_slug_chat_model_from_string_with_native_tools(
                         true,
                     ),
                 );
-                let chat = super::crate_anthropic::build_crate_anthropic_model(
-                    super::crate_anthropic::CrateAnthropicConfig {
+                let chat = crate_anthropic::build_crate_anthropic_model(
+                    crate_anthropic::CrateAnthropicConfig {
                         endpoint: endpoint.as_str(),
                         api_key: key.as_str(),
                         model: effective_model.as_str(),
@@ -394,7 +394,7 @@ pub(super) fn try_create_cloud_slug_chat_model_from_string_with_native_tools(
 
     let unsupported = config.temperature_unsupported_models.clone();
     let chat =
-        super::crate_openai::build_crate_openai_model(super::crate_openai::CrateOpenAiConfig {
+        crate_openai::build_crate_openai_model(crate_openai::CrateOpenAiConfig {
             provider_name: slug.as_str(),
             endpoint: endpoint.as_str(),
             api_key: key.as_str(),
@@ -417,7 +417,7 @@ pub(super) fn try_create_cloud_slug_chat_model_from_string_with_native_tools(
             // and Gemini, which cache nothing through a Chat Completions relay
             // without them; hosted OpenAI rejects unknown part fields, so the
             // flag is keyed on the relay, not on by default.
-            explicit_cache_control: super::crate_openai::endpoint_is_openrouter(&endpoint),
+            explicit_cache_control: crate_openai::endpoint_is_openrouter(&endpoint),
         });
     Some(Ok((chat, effective_model)))
 }

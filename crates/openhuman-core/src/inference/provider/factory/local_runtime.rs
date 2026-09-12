@@ -105,7 +105,7 @@ pub(super) fn try_create_local_runtime_chat_model_from_string(
         let base_url = crate::inference::local::ollama_base_url_from_config(config);
         let normalized = base_url.trim_end_matches('/').trim_end_matches("/v1");
         let endpoint = format!("{normalized}/v1");
-        let chat = super::crate_openai::make_crate_local_runtime_chat_model(
+        let chat = crate_openai::make_crate_local_runtime_chat_model(
             "ollama",
             &endpoint,
             "",
@@ -124,7 +124,7 @@ pub(super) fn try_create_local_runtime_chat_model_from_string(
         }
         let endpoint = crate::inference::local::lm_studio::lm_studio_base_url(config);
         let (api_key, auth) = keyed_auth();
-        let chat = super::crate_openai::make_crate_local_runtime_chat_model(
+        let chat = crate_openai::make_crate_local_runtime_chat_model(
             "lmstudio",
             &endpoint,
             &api_key,
@@ -142,7 +142,7 @@ pub(super) fn try_create_local_runtime_chat_model_from_string(
             return Some(Err(empty_model_err(&p, "mlx:<model-id>")));
         }
         let endpoint = env_or_config_url("MLX_SERVER_URL", MLX_PROFILE.default_base_url);
-        let chat = super::crate_openai::make_crate_local_runtime_chat_model(
+        let chat = crate_openai::make_crate_local_runtime_chat_model(
             "mlx",
             &endpoint,
             "",
@@ -161,7 +161,7 @@ pub(super) fn try_create_local_runtime_chat_model_from_string(
         }
         let endpoint = env_or_config_url("OMLX_SERVER_URL", OMLX_PROFILE.default_base_url);
         let (api_key, auth) = keyed_auth();
-        let chat = super::crate_openai::make_crate_local_runtime_chat_model(
+        let chat = crate_openai::make_crate_local_runtime_chat_model(
             "omlx",
             &endpoint,
             &api_key,
@@ -180,7 +180,7 @@ pub(super) fn try_create_local_runtime_chat_model_from_string(
         }
         let endpoint = env_or_config_url("LOCAL_OPENAI_URL", LOCAL_OPENAI_PROFILE.default_base_url);
         let (api_key, auth) = keyed_auth();
-        let chat = super::crate_openai::make_crate_local_runtime_chat_model(
+        let chat = crate_openai::make_crate_local_runtime_chat_model(
             "local-openai",
             &endpoint,
             &api_key,

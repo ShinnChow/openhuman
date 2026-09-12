@@ -47,7 +47,7 @@ pub(super) fn configured_route_for_role<'a>(role: &str, config: &'a Config) -> O
 /// fallback, so a credential failure there must not be explained as "your local
 /// chat model cannot do this".
 pub(crate) fn role_uses_implicit_cloud_fallback(role: &str, config: &Config) -> bool {
-    if !super::fallback_diagnostics::role_falls_back_to_cloud(role) {
+    if !fallback_diagnostics::role_falls_back_to_cloud(role) {
         return false;
     }
     let route = configured_route_for_role(role, config).unwrap_or("").trim();
@@ -101,13 +101,13 @@ pub fn provider_for_role(role: &str, config: &Config) -> String {
         // error naming a provider they never configured. Emit the same
         // user-facing sentence the error path uses, so the routing decision is
         // visible in logs and support transcripts before anything goes wrong.
-        if super::fallback_diagnostics::role_falls_back_to_cloud(role) {
+        if fallback_diagnostics::role_falls_back_to_cloud(role) {
             if let Some(chat) = config.chat_provider.as_deref() {
                 if crate::inference::local::profile::is_local_provider_string(chat) {
                     log::info!(
                         "[providers][local-fallback] role={} {}",
                         role,
-                        super::fallback_diagnostics::cloud_fallback_notice(role, chat, &resolved)
+                        fallback_diagnostics::cloud_fallback_notice(role, chat, &resolved)
                     );
                 }
             }
