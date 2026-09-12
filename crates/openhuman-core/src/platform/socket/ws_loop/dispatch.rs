@@ -50,7 +50,7 @@ pub(super) fn handle_eio_message(
 }
 
 /// Handle a Socket.IO packet (after stripping the Engine.IO '4' prefix).
-fn handle_sio_packet(
+pub(super) fn handle_sio_packet(
     text: &str,
     emit_tx: &mpsc::UnboundedSender<String>,
     shared: &Arc<SharedState>,
@@ -124,7 +124,7 @@ fn handle_sio_packet(
     }
 }
 
-fn parse_sio_ack(text: &str) -> Option<(u64, serde_json::Value)> {
+pub(super) fn parse_sio_ack(text: &str) -> Option<(u64, serde_json::Value)> {
     let json_start = text.find('[')?;
     if json_start == 0 {
         return None;

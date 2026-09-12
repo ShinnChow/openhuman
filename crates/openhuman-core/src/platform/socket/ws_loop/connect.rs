@@ -281,7 +281,7 @@ async fn read_sio_connect_ack(
 ///
 /// On non-redirect failures the original error is returned and the caller
 /// counts it toward the exponential backoff like before.
-async fn connect_with_redirects(
+pub(super) async fn connect_with_redirects(
     ws_url: &mut String,
     shared: &Arc<SharedState>,
 ) -> Result<WsStream, WsError> {
@@ -348,7 +348,7 @@ async fn connect_with_redirects(
 /// 308 (Permanent Redirect) and 307 (Temporary Redirect) explicitly preserve
 /// the method; 301/302 historically do too for upgrade requests in practice.
 /// Anything else (300, 304, ...) stays an error.
-fn is_redirect_status(status: StatusCode) -> bool {
+pub(super) fn is_redirect_status(status: StatusCode) -> bool {
     matches!(
         status,
         StatusCode::MOVED_PERMANENTLY
@@ -358,7 +358,7 @@ fn is_redirect_status(status: StatusCode) -> bool {
     )
 }
 
-fn extract_location_header(
+pub(super) fn extract_location_header(
     response: &tokio_tungstenite::tungstenite::http::Response<Option<Vec<u8>>>,
 ) -> Option<String> {
     response
@@ -374,7 +374,7 @@ fn extract_location_header(
 /// `location` may be absolute (`https://host/path?q=1`) or relative
 /// (`/socket.io/?EIO=4`). We use the `url` crate's relative-URL parser to do
 /// the join the same way browsers do, then map `http`→`ws` / `https`→`wss`.
-fn resolve_redirect_target(current_ws_url: &str, location: &str) -> Result<String, String> {
+pub(super) fn resolve_redirect_target(current_ws_url: &str, location: &str) -> Result<String, String> {
     let base = url::Url::parse(current_ws_url).map_err(|e| format!("invalid current URL: {e}"))?;
     let resolved = base
         .join(location)
@@ -396,7 +396,7 @@ fn resolve_redirect_target(current_ws_url: &str, location: &str) -> Result<Strin
 /// Persist a one-shot, user-visible warning that the backend redirected the
 /// configured socket URL. Subsequent redirects in the same connect attempt
 /// don't overwrite — the first hop carries the actionable signal.
-fn record_redirect_warning(shared: &Arc<SharedState>, original: &str, resolved: &str) {
+pub(super) fn record_redirect_warning(shared: &Arc<SharedState>, original: &str, resolved: &str) {
     let mut slot = shared.error.write();
     if slot.is_some() {
         return;

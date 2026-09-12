@@ -31,7 +31,7 @@ use crate::platform::socket::types::ConnectionOutcome;
 ///
 /// See OPENHUMAN-TAURI-8M — a single gateway 503 incident generated 549
 /// Sentry events because every retry was logged at `error`.
-const FAIL_ESCALATE_THRESHOLD: u32 = 5;
+pub(super) const FAIL_ESCALATE_THRESHOLD: u32 = 5;
 
 /// Background loop that manages the WebSocket connection and reconnection.
 ///
@@ -332,7 +332,7 @@ pub(super) async fn ws_loop(
 ///
 /// Extracted as a pure function so it can be unit-tested without running an
 /// async event loop or touching the WS stack.
-fn log_connection_failure(consecutive: u32, reason: &str) {
+pub(super) fn log_connection_failure(consecutive: u32, reason: &str) {
     if consecutive == FAIL_ESCALATE_THRESHOLD {
         // Route the one-shot sustained-outage escalation through the
         // observability classifier so an offline user (no wifi / airplane mode
@@ -371,7 +371,7 @@ fn log_connection_failure(consecutive: u32, reason: &str) {
 
 /// Action the reconnect loop should take after receiving an "Invalid token"
 /// rejection from the server.
-enum InvalidTokenAction {
+pub(super) enum InvalidTokenAction {
     /// A genuinely different token is available — retry the connection
     /// immediately (no backoff sleep). The fresh token is carried forward so
     /// the next `run_connection` uses **exactly** the validated value, not
@@ -395,7 +395,7 @@ enum InvalidTokenAction {
 /// - Provider returns the **same** token → `Escalate` (no point retrying).
 /// - Provider returns an **empty** token → `Escalate` (treat as no session).
 /// - Provider returns `Err` → `Escalate` with the provider error as reason.
-fn decide_after_invalid_token(
+pub(super) fn decide_after_invalid_token(
     previous_token: &str,
     provider: &TokenProvider,
 ) -> InvalidTokenAction {
@@ -428,7 +428,7 @@ fn decide_after_invalid_token(
 ///
 /// A free function rather than an inline loop so the behaviour is directly
 /// testable without standing up a socket.
-fn drain_pending_emits(rx: &mut mpsc::UnboundedReceiver<String>) -> usize {
+pub(super) fn drain_pending_emits(rx: &mut mpsc::UnboundedReceiver<String>) -> usize {
     let mut dropped = 0usize;
     while rx.try_recv().is_ok() {
         dropped += 1;
