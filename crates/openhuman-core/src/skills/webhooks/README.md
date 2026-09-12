@@ -2,6 +2,8 @@
 
 Client-side webhook **tunnel routing** for OpenHuman. The backend provisions and hosts the actual tunnels (ngrok / cloudflare / etc.) and forwards incoming HTTP requests to the app over Socket.IO; this module maps each backend tunnel UUID to its owning target (a skill, the built-in echo responder, or the agent triage pipeline), dispatches incoming requests, builds responses, captures debug logs, and exposes both local routing RPCs and thin proxies to the backend's tunnel-management API.
 
+`webhooks` is nested under `skills/` for historical reasons but is **not** gated by the `skills` Cargo feature — it has always-compiled callers in `crates/openhuman-core/src/core/` and stays outside the `skills` feature gate (see `crates/openhuman-core/src/skills/mod.rs`).
+
 ## Responsibilities
 
 - Maintain an in-memory, ownership-enforced map of `tunnel_uuid → TunnelRegistration` (`WebhookRouter`), persisted to disk as JSON.
@@ -21,7 +23,7 @@ Client-side webhook **tunnel routing** for OpenHuman. The backend provisions and
 | `crates/openhuman-core/src/skills/webhooks/ops.rs` | RPC handler logic returning `RpcOutcome<T>`: local routing ops (`list_registrations`, `list_logs`, `clear_logs`, `register_echo`, `unregister_echo`, `register_agent`, `trigger_agent`), `build_echo_response`, and backend-proxied tunnel CRUD (`list/create/get/update/delete_tunnel`, `get_bandwidth`). |
 | `crates/openhuman-core/src/skills/webhooks/schemas.rs` | Controller schemas + `handle_*` fns + `all_controller_schemas` / `all_registered_controllers`; deserializes params, delegates to `ops.rs`. |
 | `crates/openhuman-core/src/skills/webhooks/bus.rs` | `WebhookRequestSubscriber` (`EventHandler`) — the incoming-request routing flow; helpers `decode_webhook_body`, `run_agent_trigger`, `build_agent_response`. Inline tests. |
-| `crates/openhuman-core/src/skills/webhooks/{tests,ops_tests,router_tests,schemas_tests}.rs` | Test suites (module-level + per-file via `#[path]`). |
+| `crates/openhuman-core/src/skills/webhooks/{webhooks_tests,bus_tests,ops_tests,router_tests,schemas_tests,types_tests}.rs` | Test suites (module-level + per-file via `#[path]`). |
 
 ## Public surface
 
