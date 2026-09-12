@@ -66,9 +66,16 @@ Namespace `threads` (JSON-RPC `openhuman.threads_<function>`). Schemas + handler
 
 Wired into the registry from `crates/openhuman-core/src/core/all.rs` (controllers + schemas extended with the `all_threads_*` pair).
 
+The `goals/` and `todos/` submodules register their own controller namespaces from the same call site:
+
+| Namespace | Functions |
+| --- | --- |
+| `thread_goals` (`openhuman.thread_goals_<function>`) | `get`, `set`, `complete`, `pause`, `resume`, `clear` — thread-level goal CRUD over `tinyagents_graph::goals`, via `goals::all_thread_goals_registered_controllers`. |
+| `todos` (`openhuman.todos_<function>`) | 14 functions covering task-board CRUD, plan decisions, claims, and run-ledger operations over `tinyagents_graph::todos`, via `todos::schemas` (split `schemas_part_01.rs`/`schemas_part_02.rs`). |
+
 ## Persistence
 
-- **Threads + messages**: delegated to `memory::conversations` (JSONL store under the workspace), not owned here. Every call goes through `memory_conversations::blocking::*` (`tokio::task::spawn_blocking`) — **never** the sync entry points directly, see the note below.
+- **Threads + messages**: delegated to `memory::conversations` (JSONL store under the workspace), not owned here. Every call goes through `crate::memory::conversations::blocking::*` (`tokio::task::spawn_blocking`) — **never** the sync entry points directly, see the note below.
 - **Turn snapshots** (`turn_state/store.rs`): one JSON file per thread at `<workspace>/memory/conversations/turn_states/<hex(thread_id)>.json`. Whole-file atomic overwrite (tempfile → fsync → persist → best-effort dir fsync), serialized through a process-wide `parking_lot::Mutex`. A non-terminal file surviving cold boot is marked `Interrupted`; a `Completed` snapshot is intentionally retained (for processing replay) and skipped by startup interrupted-marking. The next turn on the thread overwrites it.
 - **Task board**: persisted by `agent::task_board::TaskBoardStore` under the workspace (this module only proxies).
 - **Migration marker**: `state/migrations/welcome_to_orchestrator_v1.done` guards the welcome migration.
