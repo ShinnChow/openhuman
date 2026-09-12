@@ -49,7 +49,6 @@ use crate::memory::source_scope::as_bus_scope;
 use crate::tools::{Tool, ToolCategory, ToolSpec};
 use tinyagents_harness::tool::SandboxMode as TinyagentsSandboxMode;
 
-include!("runner_part_01.rs");
 use tinyagents_harness::workspace::WorkspaceDescriptor;
 
 use super::prompt::{
