@@ -70,8 +70,8 @@ Both `enforce_egress` and `local_only_tool_block` read the live mode via
 - `search/tools/{tavily_part_01,exa}.rs`, `inference/embeddings/cloud_adapter.rs`,
   `inference/provider/factory_part_0{1,2,3,4}.rs` — search and cloud
   inference/embedding providers.
-- `web_chat` surfaces the disclosed descriptor to the frontend (see the
-  `ExternalTransferPending` chat-routed fields).
+- `web_chat/event_bus.rs` — subscribes to `ExternalTransferPending` and
+  bridges it to the `external_transfer_pending` socket event for the frontend.
 
 ## Tests
 
