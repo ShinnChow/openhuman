@@ -57,8 +57,9 @@ as `GLOBAL_STYLE_SUFFIX`. Two uses:
   user edit survives until the next release that touches that asset. Only
   absolute `workspace_dir`s are seeded. `IdentitySection` syncs
   `SOUL.md`/`IDENTITY.md`/`ROLE.md` (`ROLE.md` is injected only when
-  `visible_tool_names` is non-empty, i.e. for the orchestrator); `builder.rs` syncs `STYLE.md` on every build so agents that
-  set `omit_identity` still get the style rules.
+  `visible_tool_names` is non-empty, i.e. for the orchestrator); `builder.rs`
+  syncs `STYLE.md` on every build so agents that set `omit_identity` still get
+  the style rules.
 - **Compile-time fallback** — `GLOBAL_STYLE_SUFFIX` is used when the
   workspace `STYLE.md` cannot be read.
 
@@ -84,14 +85,14 @@ Other domains contribute prompt content without living in this directory:
 
 - `agent/learning/prompt_sections.rs` — `LearnedContextSection`,
   `UserProfileSection`, `MemoryAccessSection`, `MemoryWriteSection`
-  (`PromptSection` impls, config-gated; `session/builder/factory.rs` and
-  `session/builder/helpers.rs` append them with `add_section` /
+  (`PromptSection` impls, config-gated; `agent/harness/session/builder/factory.rs`
+  and `.../builder/helpers.rs` append them with `add_section` /
   `insert_section_before` when learning or explicit preferences are enabled).
 - `agent/profiles/prompt_section.rs` — `AgentProfilePromptSection`, the
   `## Agent profile` persona body plus the optional cross-profile workspace
-  notice; added by `session/builder/factory.rs`.
+  notice; added by `agent/harness/session/builder/factory.rs`.
 - `tools/agent_policy/prompt.rs` — `render_tool_policy_boundary` is not a
-  section: `session/turn/context.rs` string-appends its `## Tool Policy
+  section: `agent/harness/session/turn/context.rs` string-appends its `## Tool Policy
   Boundary` block after the builder output so the session-scoped bytes land
   at the tail of the prompt.
 
@@ -99,7 +100,7 @@ Built-in archetype system prompts (orchestrator, welcome, integrations_agent,
 …) live in `agent/registry/agents/<name>/prompt.rs` and
 `flows/agents/{flow_discovery,workflow_builder}/prompt.rs`, not here. Each is a
 `PromptSource::Dynamic` function that hand-assembles its body via the
-`render_*` helpers; `session/builder/factory.rs` wraps it with
+`render_*` helpers; `agent/harness/session/builder/factory.rs` wraps it with
 `SystemPromptBuilder::from_dynamic`.
 
 ## Builder entry points
