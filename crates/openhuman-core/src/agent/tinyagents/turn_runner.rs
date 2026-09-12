@@ -7,7 +7,7 @@
 
 use crate::agent::tinyagents::model::ProfileOverrideModel;
 use crate::agent::tinyagents::model::TurnChatModel;
-use crate::agent::tinyagents::run_policy_for;
+use crate::agent::tinyagents::turn_policy::run_policy_for;
 use std::collections::HashSet;
 use std::sync::Arc;
 
