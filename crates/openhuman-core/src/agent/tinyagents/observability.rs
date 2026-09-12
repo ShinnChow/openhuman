@@ -10,6 +10,7 @@
 
 mod cap_pauser;
 mod event_bridge;
+mod event_projection;
 mod graph_tracing;
 
 #[cfg(test)]
@@ -20,7 +21,8 @@ use tinyinference::usage::Usage;
 pub(crate) use cap_pauser::{
     CapPauser, IterationCursor, ProviderUsageCarry, SubagentScope, ToolFailureMap, ToolNameMap,
 };
-pub(crate) use event_bridge::{surface_cache_layout_events, OpenhumanEventBridge};
+pub(crate) use event_bridge::OpenhumanEventBridge;
+pub(crate) use event_projection::surface_cache_layout_events;
 pub(crate) use graph_tracing::GraphTracingSink;
 
 #[cfg(test)]

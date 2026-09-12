@@ -54,7 +54,7 @@ const VOICE_ACK_DEADLINE_SECS: u64 = 8;
 ///
 /// The answer itself still arrives on both delivery paths — posted to chat and,
 /// while the call is still up, read aloud.
-const VOICE_HANDOFF_LINES: [&str; 4] = [
+pub(super) const VOICE_HANDOFF_LINES: [&str; 4] = [
     "Still on it. ",
     "Still going. ",
     "Still working on it. ",
@@ -63,7 +63,7 @@ const VOICE_HANDOFF_LINES: [&str; 4] = [
 static VOICE_HANDOFF_CURSOR: AtomicUsize = AtomicUsize::new(0);
 
 /// Next handoff line, rotating. Pure apart from the cursor; unit-tested.
-fn next_handoff_line() -> &'static str {
+pub(super) fn next_handoff_line() -> &'static str {
     VOICE_HANDOFF_LINES
         [VOICE_HANDOFF_CURSOR.fetch_add(1, Ordering::Relaxed) % VOICE_HANDOFF_LINES.len()]
 }
