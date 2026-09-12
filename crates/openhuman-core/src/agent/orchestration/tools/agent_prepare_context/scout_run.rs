@@ -35,7 +35,7 @@ const SCOUT_AGENT_ID: &str = "context_scout";
 /// model's free-form prose. We still reject genuinely unusable output —
 /// absent, unterminated/reversed, or duplicated (where we can't tell which
 /// envelope is authoritative) — by returning `None`.
-fn extract_context_bundle(output: &str) -> Option<String> {
+pub(super) fn extract_context_bundle(output: &str) -> Option<String> {
     const OPEN: &str = "[context_bundle]";
     const CLOSE: &str = "[/context_bundle]";
     // Exactly one open + one close tag. Duplicates are a contract violation we
@@ -142,7 +142,7 @@ pub async fn run_context_scout_with_catalog(
 /// Walk `anyhow`'s chain for that variant; every other variant is a flat
 /// `thiserror` message already. Used for classification only — the
 /// user-visible `message` stays `err.to_string()`, unchanged.
-fn scout_failure_signal(err: &SubagentRunError) -> String {
+pub(super) fn scout_failure_signal(err: &SubagentRunError) -> String {
     let SubagentRunError::Provider(inner) = err else {
         return err.to_string();
     };
@@ -165,7 +165,7 @@ fn scout_failure_signal(err: &SubagentRunError) -> String {
 ///
 /// Both delegate to the crate's single-source classifiers so the phrase sets
 /// can't drift from the cron halt / `before_send` nets that share them.
-fn is_expected_billing_failure(message: &str) -> bool {
+pub(super) fn is_expected_billing_failure(message: &str) -> bool {
     crate::inference::provider::is_budget_exhausted_message(message)
         || crate::core::observability::is_insufficient_credits_message(message)
 }
@@ -187,7 +187,7 @@ fn is_expected_billing_failure(message: &str) -> bool {
 /// keeps the local log line (and the Sentry breadcrumb trail for any *real*
 /// error that follows) without raising an issue. Every other cause still
 /// `error!`s and keeps paging.
-fn log_scout_failure(error_kind: &str, message: &str) {
+pub(super) fn log_scout_failure(error_kind: &str, message: &str) {
     if is_expected_billing_failure(message) {
         // Metadata-only — never log the raw provider body (see CLAUDE.md).
         tracing::warn!(

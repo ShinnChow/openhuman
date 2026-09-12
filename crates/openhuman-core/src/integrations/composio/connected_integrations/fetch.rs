@@ -117,17 +117,6 @@ pub async fn fetch_connected_integrations_status(
     }
 }
 
-/// The actual backend fetch, called on cache miss.
-///
-/// Returns `Some(vec)` when the backend was reachable. The returned
-/// vector is the merged **integration overview** — every toolkit in
-/// the backend allowlist appears as one entry, with a `connected`
-/// flag indicating whether the user has an active OAuth connection.
-/// Connected entries also carry the per-action tool catalogue
-/// (fetched in a single batched call).
-///
-/// Returns `None` when we couldn't even build a client (no auth),
-/// signalling the caller should NOT cache this result.
 /// The connectable toolkit slugs to surface in the agent prompt, aligned
 /// with the backend's execution gate.
 ///
