@@ -122,7 +122,7 @@ recipe; the RSS win is real but secondary.
 
 ## What is functionally absent in this build
 
-Summarized from the per-gate behavior notes in AGENTS.md. Dropped domains fail
+Summarized from the per-gate comments in `crates/openhuman-core/Cargo.toml`. Dropped domains fail
 *closed and cleanly* — controllers become unknown-method, tools are simply absent
 from the tool list (not degraded to runtime errors), CLI subcommands report a
 build-fact error:
@@ -155,8 +155,9 @@ graph create/run/schedule + `workflow_builder`/`flow_discovery` agents).
 
 ## Test verification
 
-The disabled-build test gotcha (AGENTS.md: CI's smoke lane runs `cargo check`
-only and never compiles `--no-default-features` test code) was checked directly:
+The disabled-build test gotcha (AGENTS.md says to test both enabled and disabled
+builds after changing a gate because CI's smoke lane runs `cargo check` only and
+never compiles `--no-default-features` test code) was checked directly:
 
 ```bash
 cargo test -p openhuman --lib --no-default-features --features "skills,flows" core::
@@ -205,7 +206,7 @@ prioritization.
    from every build, not just the slim one, and with them the whisper.cpp + GGML
    C++ static link that previously required a platform-specific build workaround.
    Speech-to-text is a hosted call now, with the engine chosen by
-   `voice_server.stt_engine` (see the AGENTS.md scope note). The `inference`
+   `voice_server.stt_engine` (see the `voice` gate comment in `crates/openhuman-core/Cargo.toml`). The `inference`
    feature survives with a narrower job: it gates `cpal` alone, which is what a
    headless library host wanted to shed anyway.
 
