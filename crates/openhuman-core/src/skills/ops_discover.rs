@@ -6,15 +6,20 @@
 //! [`collision`] holds cross-scope name-collision resolution, and
 //! [`resource`] holds bundled-resource reading.
 
-use std::path::Path;
-
-use super::ops_types::{Workflow, WorkflowScope};
-
 mod api;
 mod collision;
 mod resource;
 mod scan;
 
+// Re-imported here (rather than only inside the submodules that need them)
+// so `use super::*` in the `#[path]`-included test files below still finds
+// `Path`, `Workflow`, `WorkflowScope`, and `precedence` exactly as it did
+// before this module was split into submodules.
+#[cfg(test)]
+use std::path::Path;
+#[cfg(test)]
+use super::ops_types::{Workflow, WorkflowScope};
+#[cfg(test)]
 use collision::precedence;
 
 pub use api::{
