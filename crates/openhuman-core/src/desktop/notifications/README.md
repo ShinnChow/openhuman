@@ -85,7 +85,7 @@ SQLite DB at `{workspace_dir}/notifications/notifications.db`, opened per-call v
 
 ## Dependencies
 
-- `crate::core::event_bus` — `DomainEvent`, `EventHandler`, `publish_global`, `subscribe_global` for bridge subscription and triage-result publishing.
+- `crate::core::bus::BUS` and `crate::core::events::DomainEvent` — `EventHandler`, `BUS.publish`, `BUS.subscribe` for bridge subscription and triage-result publishing.
 - `crate::core::all` (`ControllerFuture`, `RegisteredController`) and `crate::core` (`ControllerSchema`, `FieldSchema`, `TypeSchema`) — controller registry contract.
 - `crate::config` — `Config` (workspace dir for the DB path) and `config::rpc::load_config_with_timeout` in handlers.
 - `crate::agent::triage` — `run_triage`, `apply_decision`, `TriageOutcome`, `TriggerEnvelope`, `TriggerSource`, `TriageAction` for the background scoring/routing pipeline.
@@ -97,7 +97,7 @@ SQLite DB at `{workspace_dir}/notifications/notifications.db`, opened per-call v
 - `crates/openhuman-core/src/core/all.rs` — registers the controllers/schemas into the RPC registry.
 - `crates/openhuman-core/src/core/jsonrpc.rs` — calls `register_notification_bridge_subscriber()` at startup.
 - `crates/openhuman-core/src/core/socketio.rs` — calls `subscribe_core_notifications()` to forward events to web clients.
-- `crates/openhuman-core/src/cron/scheduler.rs` and `crates/openhuman-core/src/heartbeat/planner/*` reference the notification surface (e.g. triggering/observing notifications).
+- `crates/openhuman-core/src/cron/scheduler_part_03.rs` and its test siblings — read `notifications::store` directly to list cron-triggered notifications.
 
 ## Notes / gotchas
 

@@ -11,9 +11,11 @@
 //! - [`tls`]      — TLS client/connector construction
 //! - [`types`]    — shared utility types
 //!
-//! Everything is re-exported at the module root, so the pre-reorg
-//! `openhuman::util::<fn>` paths (including the `truncate_with_ellipsis`
-//! doctest) still resolve.
+//! Everything is re-exported at the module root, so
+//! `crate::util::<fn>` paths (including the `truncate_with_ellipsis`
+//! doctest) resolve without naming the submodule.
+//!
+//! See [`README.md`](README.md) for a per-file breakdown.
 
 /// BM25 ranking over short documents, shared by `tool_search` and
 /// `skill_search`. Deliberately names nothing from `crate::` — see its docs.

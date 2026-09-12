@@ -15,8 +15,10 @@ Test-support domain: wipe-and-reset plus read-only introspection RPCs that let E
 | File | Role |
 | --- | --- |
 | `crates/openhuman-core/src/test_support/mod.rs` | Export-only module: declares `introspect`, `rpc`, `schemas`; re-exports `all_test_support_controller_schemas` / `all_test_support_registered_controllers`. |
-| `crates/openhuman-core/src/test_support/rpc.rs` | `openhuman.test_reset` implementation — `reset()` wipes cron, memory tree, config fields, and active user; returns a `ResetSummary`. Includes the `OPENHUMAN_E2E_MODE` guard and inline tests. |
+| `crates/openhuman-core/src/test_support/rpc.rs` | `openhuman.test_reset` implementation — `reset()` wipes cron, memory tree, config fields, and active user; returns a `ResetSummary`. Includes the `OPENHUMAN_E2E_MODE` guard. |
+| `crates/openhuman-core/src/test_support/rpc_tests.rs` | Behavior tests for `rpc::reset` (the `OPENHUMAN_E2E_MODE` guard, wipe coverage). |
 | `crates/openhuman-core/src/test_support/introspect.rs` | Read-only introspection RPCs: `workspace_root`, `list_workspace_files`, `read_workspace_file`, `in_flight_chats`, `wallet_prepared_quotes`, plus the `resolve_workspace_relative` path guard and BFS `walk_dir`. |
+| `crates/openhuman-core/src/test_support/introspect_tests.rs` | Behavior tests for the introspection RPCs and the path-jail guard. |
 | `crates/openhuman-core/src/test_support/schemas.rs` | `ControllerSchema` definitions, the registered-controller list, and `handle_*` dispatchers that delegate to `rpc`/`introspect` and serialize via `RpcOutcome::into_cli_compatible_json`. |
 
 ## Public surface
@@ -65,7 +67,7 @@ This module owns no state of its own — it mutates/reads state owned by other d
 ## Used by
 
 - `crates/openhuman-core/src/core/all.rs` — registers this module's controllers and schemas into the global RPC registry (`all_test_support_registered_controllers` / `all_test_support_controller_schemas`).
-- `crates/openhuman-core/src/mod.rs` — declares `pub mod test_support`.
+- `crates/openhuman-core/src/lib.rs` — declares `pub mod test_support;` behind `#[cfg(feature = "e2e-test-support")]`. The feature is off in the contributor default set (`default = [...]` in `crates/openhuman-core/Cargo.toml`) and absent from `scripts/ci/product-features.txt`; only the E2E build (`app/scripts/e2e-build.sh`) turns it on, so shipped and default-cargo builds don't compile this module at all.
 - Consumed at runtime by E2E specs (WDIO) calling `openhuman.test_reset` and `openhuman.test_support_*` over JSON-RPC.
 
 ## Notes / gotchas

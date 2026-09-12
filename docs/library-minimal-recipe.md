@@ -163,7 +163,7 @@ cargo test -p openhuman --lib --no-default-features --features "skills,flows" co
 # result: ok. 660 passed; 0 failed; 1 ignored; 10513 filtered out
 ```
 
-The both-ways gate tests in `src/core/all_tests.rs` (which assert dropped domains
+The both-ways gate tests in `crates/openhuman-core/src/core/all_tests.rs` (which assert dropped domains
 become unknown-method) pass under this recipe. No pre-existing failures.
 
 ## CI note
@@ -235,6 +235,7 @@ prioritization.
 
 - [`docs/library-benchmarking.md`](library-benchmarking.md) — the benchmark
   environment, scenario definitions, and default/slim baselines.
-- `docs/resource-profiling-session-2026-07-21.md`
-  — deep memory/CPU attribution (why RSS is mostly not live heap).
+- The original profiling session write-up covering deep memory/CPU attribution
+  (why RSS is mostly not live heap) was removed from the tree; see git history
+  at `0017c58d86~1`.
 - AGENTS.md "Compile-time domain gates" — the per-gate behavior and dependency notes.

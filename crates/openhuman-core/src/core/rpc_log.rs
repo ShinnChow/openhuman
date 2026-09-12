@@ -1,3 +1,18 @@
+//! Request-id formatting and parameter redaction for RPC log lines.
+//!
+//! Used by `core::dispatch`'s `[rpc:dispatch]` trace logs and by
+//! `core::jsonrpc` when logging request/response summaries, so that neither
+//! call site has to re-implement redaction. [`redact_params_for_log`] and
+//! [`redact_result_for_trace`] strip the same set of sensitive keys —
+//! `api_key`, `apikey`, `token`, `access_token`, `refresh_token`,
+//! `authorization`, `password`, `secret`, `client_secret` — from JSON objects
+//! (recursing into nested objects/arrays) before a log line is emitted, since
+//! `serde_json::Value` params/results routinely embed provider credentials.
+//!
+//! This is the log-side counterpart of `core::log_redaction::scrub_secrets`,
+//! which pattern-matches secrets embedded in free-text error strings; this
+//! module instead redacts by JSON *key name* in structured params/results.
+
 use serde_json::Value;
 
 /// Formats a JSON-RPC request ID into a human-readable string.
