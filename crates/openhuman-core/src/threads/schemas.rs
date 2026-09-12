@@ -13,6 +13,12 @@ pub use registry::{all_controller_schemas, all_registered_controllers};
 #[cfg(test)]
 pub(crate) use schema_defs::schemas;
 #[cfg(test)]
-use handlers::{handle_task_board_get, handle_task_board_put};
+use handlers::{handle_task_board_get, handle_task_board_put, parse};
 #[cfg(test)]
 use serde_json::{Map, Value};
+#[cfg(test)]
+use crate::memory::{
+    AppendConversationMessageRequest, ConversationMessagesRequest, DeleteConversationThreadRequest,
+    EmptyRequest, GenerateConversationThreadTitleRequest, UpdateConversationMessageRequest,
+    UpsertConversationThreadRequest,
+};
