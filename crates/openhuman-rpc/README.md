@@ -26,11 +26,15 @@ HTTP client.
   (`rustls-tls`, no default features) and `url`, and adds `client.rs`'s
   surface. Without it the crate is `serde`/`serde_json` only.
 - The root workspace declares `openhuman-rpc = { path = ..., default-features
-  = false }`, so consumers opt into `http-client` explicitly:
-  `crates/openhuman-app/Cargo.toml` enables it (the shell talks to the core
-  over HTTP); `crates/openhuman-core/Cargo.toml` and
-  `crates/openhuman-tui/Cargo.toml` use `openhuman-rpc.workspace = true`,
-  which also carries `http-client` through the default feature set.
+  = false }`, so a consumer gets `http-client` only by asking for it.
+  `crates/openhuman-app/Cargo.toml` (outside the workspace) enables it
+  explicitly: `openhuman-rpc = { path = "../openhuman-rpc", features =
+  ["http-client"] }`. `crates/openhuman-core/Cargo.toml` and
+  `crates/openhuman-tui/Cargo.toml` use `openhuman-rpc.workspace = true` and
+  therefore build the crate with **no** features — they only need the
+  envelope and error types. `cargo tree -p openhuman -e normal -f "{p} [{f}]"
+  --depth 1` shows `openhuman-rpc [...] []` for both; the app's tree shows
+  `[default,http-client]`.
 
 ## Consumers
 
