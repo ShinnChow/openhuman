@@ -33,18 +33,18 @@ This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDU
 
 ### 1. Prerequisites
 
-| Requirement | Version / source of truth | Notes |
-| --- | --- | --- |
-| Git | Current stable | Required for cloning and updating vendored submodules. |
-| Node.js | `>=24.0.0` from [`app/package.json`](app/package.json) | Install the current Node 24 release or newer. |
-| pnpm | `pnpm@10.10.0` from [`package.json`](package.json) | The repo enforces pnpm via the root `packageManager` field. |
-| Rust | `1.96.1` from [`rust-toolchain.toml`](rust-toolchain.toml) | Install with `rustup`; `rustfmt` and `clippy` are required components. |
-| CMake | Current stable | Required by native Rust dependencies such as Whisper bindings. |
-| Ninja | Current stable | Required on Windows as the CMake generator for native crates built by `scripts/run-dev-win.sh` (e.g. Whisper bindings). |
-| ripgrep (`rg`) | Current stable | Used by the `lint:commands-tokens` pre-push step (scans `app/src/components/commands/`). Without it, `git push` fails the hook with `rg: command not found`. |
-| Vendored module sources | Git submodules under `vendor/` | The `tiny*` module crates patched into the Rust workspace. Run `git submodule update --init --recursive vendor/` before building. |
-| macOS tools | Xcode Command Line Tools | Needed for local desktop builds on macOS. |
-| Linux desktop packages | System GTK/WebKit/AppIndicator build deps | Install the package set Tauri requires for your distro before attempting desktop builds. |
+| Requirement             | Version / source of truth                                  | Notes                                                                                                                                                        |
+| ----------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Git                     | Current stable                                             | Required for cloning and updating vendored submodules.                                                                                                       |
+| Node.js                 | `>=24.0.0` from [`app/package.json`](app/package.json)     | Install the current Node 24 release or newer.                                                                                                                |
+| pnpm                    | `pnpm@10.10.0` from [`package.json`](package.json)         | The repo enforces pnpm via the root `packageManager` field.                                                                                                  |
+| Rust                    | `1.96.1` from [`rust-toolchain.toml`](rust-toolchain.toml) | Install with `rustup`; `rustfmt` and `clippy` are required components.                                                                                       |
+| CMake                   | Current stable                                             | Required by native Rust dependencies such as Whisper bindings.                                                                                               |
+| Ninja                   | Current stable                                             | Required on Windows as the CMake generator for native crates built by `scripts/run-dev-win.sh` (e.g. Whisper bindings).                                      |
+| ripgrep (`rg`)          | Current stable                                             | Used by the `lint:commands-tokens` pre-push step (scans `app/src/components/commands/`). Without it, `git push` fails the hook with `rg: command not found`. |
+| Vendored module sources | Git submodules under `vendor/`                             | The `tiny*` module crates patched into the Rust workspace. Run `git submodule update --init --recursive vendor/` before building.                            |
+| macOS tools             | Xcode Command Line Tools                                   | Needed for local desktop builds on macOS.                                                                                                                    |
+| Linux desktop packages  | System GTK/WebKit/AppIndicator build deps                  | Install the package set Tauri requires for your distro before attempting desktop builds.                                                                     |
 
 #### Windows-specific setup
 
@@ -242,16 +242,16 @@ If you only changed docs in a normal local workflow, `pnpm format:check` is usua
 
 ### 6. Run tests and checks
 
-| Goal | Command | Notes |
-| --- | --- | --- |
-| Frontend typecheck | `pnpm typecheck` | Runs the app workspace TypeScript compile check. |
-| Frontend lint | `pnpm lint` | ESLint over `app/`. |
-| Formatting | `pnpm format:check` | Runs Prettier plus Rust format checks. |
-| Frontend unit tests | `pnpm test` or `pnpm test:coverage` | Vitest in `app/`. |
-| Rust tests | `pnpm test:rust` | Uses the shared mock backend wrapper. |
-| Desktop E2E | `pnpm test:e2e` | Builds the app and runs the desktop flow suites. |
-| One-off Vitest debug runs | `pnpm debug unit ...` | Preferred for bounded logs during iteration. |
-| One-off Rust debug runs | `pnpm debug rust ...` | Preferred wrapper around focused Rust tests. |
+| Goal                      | Command                             | Notes                                            |
+| ------------------------- | ----------------------------------- | ------------------------------------------------ |
+| Frontend typecheck        | `pnpm typecheck`                    | Runs the app workspace TypeScript compile check. |
+| Frontend lint             | `pnpm lint`                         | ESLint over `app/`.                              |
+| Formatting                | `pnpm format:check`                 | Runs Prettier plus Rust format checks.           |
+| Frontend unit tests       | `pnpm test` or `pnpm test:coverage` | Vitest in `app/`.                                |
+| Rust tests                | `pnpm test:rust`                    | Uses the shared mock backend wrapper.            |
+| Desktop E2E               | `pnpm test:e2e`                     | Builds the app and runs the desktop flow suites. |
+| One-off Vitest debug runs | `pnpm debug unit ...`               | Preferred for bounded logs during iteration.     |
+| One-off Rust debug runs   | `pnpm debug rust ...`               | Preferred wrapper around focused Rust tests.     |
 
 Merge-gate context:
 
