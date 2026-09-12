@@ -8,7 +8,10 @@ use crate::rpc::RpcOutcome;
 
 // ── Param helpers ─────────────────────────────────────────────────────────────
 
-pub(super) fn read_required<T: DeserializeOwned>(params: &Map<String, Value>, key: &str) -> Result<T, String> {
+pub(super) fn read_required<T: DeserializeOwned>(
+    params: &Map<String, Value>,
+    key: &str,
+) -> Result<T, String> {
     let value = params
         .get(key)
         .cloned()
@@ -28,11 +31,17 @@ pub(super) fn read_optional<T: DeserializeOwned>(
     }
 }
 
-pub(super) fn read_optional_string(params: &Map<String, Value>, key: &str) -> Result<Option<String>, String> {
+pub(super) fn read_optional_string(
+    params: &Map<String, Value>,
+    key: &str,
+) -> Result<Option<String>, String> {
     read_optional::<String>(params, key)
 }
 
-pub(super) fn read_optional_u32(params: &Map<String, Value>, key: &str) -> Result<Option<u32>, String> {
+pub(super) fn read_optional_u32(
+    params: &Map<String, Value>,
+    key: &str,
+) -> Result<Option<u32>, String> {
     match params.get(key) {
         None | Some(Value::Null) => Ok(None),
         Some(Value::Number(n)) => n
@@ -47,7 +56,10 @@ pub(super) fn read_optional_u32(params: &Map<String, Value>, key: &str) -> Resul
     }
 }
 
-pub(super) fn read_optional_json(params: &Map<String, Value>, key: &str) -> Result<Option<Value>, String> {
+pub(super) fn read_optional_json(
+    params: &Map<String, Value>,
+    key: &str,
+) -> Result<Option<Value>, String> {
     match params.get(key) {
         None | Some(Value::Null) => Ok(None),
         Some(v) => Ok(Some(v.clone())),
@@ -68,4 +80,3 @@ pub(super) fn type_name(value: &Value) -> &'static str {
         Value::Object(_) => "object",
     }
 }
-

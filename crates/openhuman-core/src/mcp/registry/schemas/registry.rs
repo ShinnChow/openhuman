@@ -7,9 +7,9 @@ use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 
 use super::handlers::{
     handle_config_assist, handle_connect, handle_detect_auth, handle_disconnect, handle_install,
-    handle_installed_list, handle_oauth_begin, handle_registry_get,
-    handle_registry_settings_get, handle_registry_settings_set, handle_registry_search,
-    handle_set_enabled, handle_status, handle_tool_call, handle_uninstall, handle_update_env,
+    handle_installed_list, handle_oauth_begin, handle_registry_get, handle_registry_search,
+    handle_registry_settings_get, handle_registry_settings_set, handle_set_enabled, handle_status,
+    handle_tool_call, handle_uninstall, handle_update_env,
 };
 use super::setup_handlers::{
     handle_setup_get, handle_setup_install_and_connect, handle_setup_request_secret,
@@ -46,7 +46,6 @@ pub fn all_controller_schemas() -> Vec<ControllerSchema> {
         setup_schemas("install_and_connect"),
     ]
 }
-
 
 pub fn all_registered_controllers() -> Vec<RegisteredController> {
     vec![
@@ -140,7 +139,6 @@ pub fn all_registered_controllers() -> Vec<RegisteredController> {
         },
     ]
 }
-
 
 pub fn schemas(function: &str) -> ControllerSchema {
     match function {
@@ -677,4 +675,3 @@ pub fn schemas(function: &str) -> ControllerSchema {
         },
     }
 }
-

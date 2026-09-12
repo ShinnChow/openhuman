@@ -6,7 +6,10 @@ use serde_json::{Map, Value};
 use crate::config::rpc as config_rpc;
 use crate::core::all::ControllerFuture;
 
-use super::params::{read_optional, read_optional_json, read_optional_string, read_optional_u32, read_required, to_json};
+use super::params::{
+    read_optional, read_optional_json, read_optional_string, read_optional_u32, read_required,
+    to_json,
+};
 
 // ── Handler implementations ──────────────────────────────────────────────────
 
@@ -30,10 +33,7 @@ pub(super) fn handle_registry_get(params: Map<String, Value>) -> ControllerFutur
     Box::pin(async move {
         let config = config_rpc::load_config_with_timeout().await?;
         let qualified_name = read_required::<String>(&params, "qualified_name")?;
-        to_json(
-            crate::mcp::registry::ops::mcp_clients_registry_get(&config, qualified_name)
-                .await?,
-        )
+        to_json(crate::mcp::registry::ops::mcp_clients_registry_get(&config, qualified_name).await?)
     })
 }
 
@@ -68,10 +68,7 @@ pub(super) fn handle_update_env(params: Map<String, Value>) -> ControllerFuture 
         let config = config_rpc::load_config_with_timeout().await?;
         let server_id = read_required::<String>(&params, "server_id")?;
         let env = read_required::<std::collections::HashMap<String, String>>(&params, "env")?;
-        to_json(
-            crate::mcp::registry::ops::mcp_clients_update_env(&config, server_id, env)
-                .await?,
-        )
+        to_json(crate::mcp::registry::ops::mcp_clients_update_env(&config, server_id, env).await?)
     })
 }
 
@@ -79,9 +76,7 @@ pub(super) fn handle_uninstall(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let config = config_rpc::load_config_with_timeout().await?;
         let server_id = read_required::<String>(&params, "server_id")?;
-        to_json(
-            crate::mcp::registry::ops::mcp_clients_uninstall(&config, server_id).await?,
-        )
+        to_json(crate::mcp::registry::ops::mcp_clients_uninstall(&config, server_id).await?)
     })
 }
 
@@ -89,10 +84,7 @@ pub(super) fn handle_detect_auth(params: Map<String, Value>) -> ControllerFuture
     Box::pin(async move {
         let config = config_rpc::load_config_with_timeout().await?;
         let server_id = read_required::<String>(&params, "server_id")?;
-        to_json(
-            crate::mcp::registry::ops::mcp_clients_detect_auth(&config, server_id)
-                .await?,
-        )
+        to_json(crate::mcp::registry::ops::mcp_clients_detect_auth(&config, server_id).await?)
     })
 }
 
@@ -100,10 +92,7 @@ pub(super) fn handle_oauth_begin(params: Map<String, Value>) -> ControllerFuture
     Box::pin(async move {
         let config = config_rpc::load_config_with_timeout().await?;
         let server_id = read_required::<String>(&params, "server_id")?;
-        to_json(
-            crate::mcp::registry::ops::mcp_clients_oauth_begin(&config, server_id)
-                .await?,
-        )
+        to_json(crate::mcp::registry::ops::mcp_clients_oauth_begin(&config, server_id).await?)
     })
 }
 
@@ -111,9 +100,7 @@ pub(super) fn handle_connect(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let config = config_rpc::load_config_with_timeout().await?;
         let server_id = read_required::<String>(&params, "server_id")?;
-        to_json(
-            crate::mcp::registry::ops::mcp_clients_connect(&config, server_id).await?,
-        )
+        to_json(crate::mcp::registry::ops::mcp_clients_connect(&config, server_id).await?)
     })
 }
 
@@ -121,10 +108,7 @@ pub(super) fn handle_disconnect(params: Map<String, Value>) -> ControllerFuture 
     Box::pin(async move {
         let config = config_rpc::load_config_with_timeout().await?;
         let server_id = read_required::<String>(&params, "server_id")?;
-        to_json(
-            crate::mcp::registry::ops::mcp_clients_disconnect(&config, server_id)
-                .await?,
-        )
+        to_json(crate::mcp::registry::ops::mcp_clients_disconnect(&config, server_id).await?)
     })
 }
 
@@ -134,10 +118,7 @@ pub(super) fn handle_set_enabled(params: Map<String, Value>) -> ControllerFuture
         let server_id = read_required::<String>(&params, "server_id")?;
         let enabled = read_required::<bool>(&params, "enabled")?;
         to_json(
-            crate::mcp::registry::ops::mcp_clients_set_enabled(
-                &config, server_id, enabled,
-            )
-            .await?,
+            crate::mcp::registry::ops::mcp_clients_set_enabled(&config, server_id, enabled).await?,
         )
     })
 }
@@ -173,9 +154,8 @@ pub(super) fn handle_config_assist(params: Map<String, Value>) -> ControllerFutu
         let config = config_rpc::load_config_with_timeout().await?;
         let qualified_name = read_required::<String>(&params, "qualified_name")?;
         let user_message = read_required::<String>(&params, "user_message")?;
-        let history = read_optional::<Vec<crate::mcp::registry::types::ChatTurn>>(
-            &params, "history",
-        )?;
+        let history =
+            read_optional::<Vec<crate::mcp::registry::types::ChatTurn>>(&params, "history")?;
         to_json(
             crate::mcp::registry::ops::mcp_clients_config_assist(
                 &config,
@@ -192,10 +172,7 @@ pub(super) fn handle_registry_settings_get(params: Map<String, Value>) -> Contro
     Box::pin(async move {
         let _ = params;
         let config = config_rpc::load_config_with_timeout().await?;
-        to_json(
-            crate::mcp::registry::ops::mcp_clients_registry_settings_get(&config)
-                .await?,
-        )
+        to_json(crate::mcp::registry::ops::mcp_clients_registry_settings_get(&config).await?)
     })
 }
 
@@ -216,5 +193,3 @@ pub(super) fn handle_registry_settings_set(params: Map<String, Value>) -> Contro
         )
     })
 }
-
-

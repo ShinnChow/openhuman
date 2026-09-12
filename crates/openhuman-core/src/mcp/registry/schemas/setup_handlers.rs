@@ -15,10 +15,8 @@ pub(super) fn handle_setup_search(params: Map<String, Value>) -> ControllerFutur
         let page = read_optional_u32(&params, "page")?;
         let page_size = read_optional_u32(&params, "page_size")?;
         to_json(
-            crate::mcp::registry::setup_ops::mcp_setup_search(
-                &config, query, page, page_size,
-            )
-            .await?,
+            crate::mcp::registry::setup_ops::mcp_setup_search(&config, query, page, page_size)
+                .await?,
         )
     })
 }
@@ -27,10 +25,7 @@ pub(super) fn handle_setup_get(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let config = config_rpc::load_config_with_timeout().await?;
         let qualified_name = read_required::<String>(&params, "qualified_name")?;
-        to_json(
-            crate::mcp::registry::setup_ops::mcp_setup_get(&config, qualified_name)
-                .await?,
-        )
+        to_json(crate::mcp::registry::setup_ops::mcp_setup_get(&config, qualified_name).await?)
     })
 }
 
@@ -40,10 +35,8 @@ pub(super) fn handle_setup_request_secret(params: Map<String, Value>) -> Control
         let prompt = read_required::<String>(&params, "prompt")?;
         let config = config_rpc::load_config_with_timeout().await?;
         to_json(
-            crate::mcp::registry::setup_ops::mcp_setup_request_secret(
-                &config, key_name, prompt,
-            )
-            .await?,
+            crate::mcp::registry::setup_ops::mcp_setup_request_secret(&config, key_name, prompt)
+                .await?,
         )
     })
 }
@@ -54,10 +47,8 @@ pub(super) fn handle_setup_submit_secret(params: Map<String, Value>) -> Controll
         let value = read_required::<String>(&params, "value")?;
         let config = config_rpc::load_config_with_timeout().await?;
         to_json(
-            crate::mcp::registry::setup_ops::mcp_setup_submit_secret(
-                &config, ref_id, value,
-            )
-            .await?,
+            crate::mcp::registry::setup_ops::mcp_setup_submit_secret(&config, ref_id, value)
+                .await?,
         )
     })
 }
@@ -95,5 +86,3 @@ pub(super) fn handle_setup_install_and_connect(params: Map<String, Value>) -> Co
         )
     })
 }
-
-

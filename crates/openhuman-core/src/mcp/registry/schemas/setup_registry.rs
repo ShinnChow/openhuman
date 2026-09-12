@@ -247,5 +247,3 @@ pub(super) fn setup_schemas(function: &str) -> ControllerSchema {
         },
     }
 }
-
-
