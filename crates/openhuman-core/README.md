@@ -3,9 +3,9 @@
 Cargo package `openhuman`, library `openhuman_core`, binary `openhuman-core`
 (`src/main.rs`). Owns business rules, persistence, execution policy, the
 JSON-RPC/Socket.IO server, and the CLI for OpenHuman. Hosted in-process by
-`crates/openhuman-app` (the Tauri shell, in-process), `crates/openhuman-embed`
-(the typed facade for third-party embedders such as Medulla and OpenCompany),
-and `crates/openhuman-tui` (in-process).
+`crates/openhuman-app` (the Tauri shell), `crates/openhuman-embed` (the typed
+facade for third-party embedders such as Medulla and OpenCompany), and
+`crates/openhuman-tui`.
 
 See `crates/openhuman-core/src/lib.rs` for the crate-level doc comment and
 AGENTS.md ("Rust domain structure") for the preferred per-domain module shape.
@@ -13,21 +13,23 @@ AGENTS.md ("Rust domain structure") for the preferred per-domain module shape.
 ## Layout
 
 Business logic lives one directory per domain under `src/<domain>/`. `*` marks
-modules gated behind a Cargo feature of the same (or noted) name in
-`lib.rs`; see the `[features]` block in `Cargo.toml` for what each gate pulls
-in.
+modules whose `pub mod` declaration in `lib.rs` is itself `#[cfg(feature)]`-
+gated (feature of the same name unless noted). `channels`, `mcp`, `medulla`,
+`skills`, `voice` and `web3` are always declared but gate most of their
+contents inside `mod.rs` behind the feature of the same name. See the
+`[features]` block in `Cargo.toml` for what each gate pulls in.
 
 | Domain | Purpose | README |
 | --- | --- | --- |
 | `agent` | Multi-agent orchestration, tool execution, session management | [README](src/agent/README.md) |
-| `api` | HTTP and Socket.IO helpers for the TinyHumans / AlphaHuman hosted API | |
+| `api` | HTTP and Socket.IO helpers for the TinyHumans / AlphaHuman hosted API | [README](src/api/README.md) |
 | `channels` | Channel implementations and runtime orchestration | [README](src/channels/README.md) |
 | `config` | Configuration management for the core | [README](src/config/README.md) |
-| `core` | Transport, dispatch, controller registry (`core::all`), CLI, event bus, runtime composition — not a domain | |
-| `cron` | Scheduled work and host-condition ("may this job run now?") policy | [README](src/cron/README.md) |
+| `core` | Transport, dispatch, controller registry (`core::all`), auth, CLI, event bus, runtime composition (`core::runtime`) — not a domain | [README](src/core/README.md) |
+| `cron` | Scheduled-job runtime: cron/human-delay parsing, job + run store, polling scheduler, output delivery | [README](src/cron/README.md) |
 | `desktop` | Desktop-shell-facing surfaces | |
-| `flows`* | Saved automation workflows (tinyflows graphs) | |
-| `hooks` | User-authored scripts that observe and gate the agent | |
+| `flows`* | Saved automation workflows (tinyflows graphs) | [README](src/flows/README.md) |
+| `hooks` | User-authored scripts that observe and gate the agent | [README](src/hooks/README.md) |
 | `hosted` | Clients of the hosted TinyHumans backend | |
 | `hosting`* | Putting a workspace on the internet | [README](src/hosting/README.md) |
 | `http_host`* (feature `http-server`) | Static directory hosting over ad-hoc HTTP listeners | [README](src/http_host/README.md) |
@@ -35,22 +37,23 @@ in.
 | `integrations` | Agent integration tools | [README](src/integrations/README.md) |
 | `json_schema` | Vendor-neutral JSON Schema and JSON value walking | |
 | `mcp` | Host half of Model Context Protocol support | [README](src/mcp/README.md) |
-| `media`* | Media generation and image tool contracts | |
-| `medulla` | Medulla cloud client and its wire vocabulary | |
+| `media`* | Media generation and image tool contracts | [README](src/media/README.md) |
+| `medulla` | Medulla cloud client, its wire vocabulary, and the shared harness contract types | [README](src/medulla/README.md) |
 | `memory` | Memory orchestration — the host layer over `tinymemory-core` | [README](src/memory/README.md) |
-| `modules`* | Loadable native modules — capabilities that live outside this binary | |
-| `platform` | Host-platform services: process lifecycle, self-update, diagnostics | |
-| `sandbox` | Sandbox execution backends for agent tool isolation | |
+| `modules`* | Loadable native modules — capabilities that live outside this binary | [README](src/modules/README.md) |
+| `platform` | Host-platform services: process lifecycle, self-update, diagnostics, local transport surfaces | |
+| `runtime` | Code-execution runtimes, client side (toolchain download/warm workers live in the `tinyruntime` module) | |
+| `sandbox` | Sandbox execution backends for agent tool isolation | [README](src/sandbox/README.md) |
 | `search` | Unified search domain | [README](src/search/README.md) |
 | `security` | Autonomy/risk policy, sandbox selection, audit log, secret store | [README](src/security/README.md) |
 | `skills` | Skills metadata: discovery, parse, install, run | [README](src/skills/README.md) |
 | `test_support`* (feature `e2e-test-support`) | Wipe-and-reset hooks for E2E specs | [README](src/test_support/README.md) |
 | `threads` | Conversation thread and message management | [README](src/threads/README.md) |
 | `tools` | Agent tool implementations and policy | [README](src/tools/README.md) |
-| `util` | Utility functions | |
-| `voice`* | Hosted speech-to-text and text-to-speech (local piper / hosted) | [README](src/voice/README.md) |
-| `web3`* | High-level web3 surface built on the wallet layer | [README](src/web3/README.md) |
-| `web_chat` | Web-channel delivery formatting | |
+| `util` | Utility functions | [README](src/util/README.md) |
+| `voice` | Speech-to-text and text-to-speech (local piper / hosted) | [README](src/voice/README.md) |
+| `web3` | High-level web3 surface built on the wallet layer | [README](src/web3/README.md) |
+| `web_chat` | Web/desktop channel turn runner (`channel.web_*` RPC, `WebChannelEvent` bus) | [README](src/web_chat/README.md) |
 
 RPC contract types (`RpcOutcome`, `StructuredRpcError`, the HTTP client) live
 in `crates/openhuman-rpc` and are re-exported here as `openhuman_core::rpc` —
@@ -67,9 +70,10 @@ they are not redefined in this crate.
 | `library-profile` | `src/bin/library_profile/main.rs` | `rss-bench` |
 
 `openhuman-fleet` is a process-per-user supervisor and reverse proxy, part of
-the pluggable-core work (see `crates/openhuman-core/src/core/runtime`).
-`rss-bench` and `library-profile` are dev-only profiling harnesses; see
-`scripts/profile/`.
+the pluggable-core work (see `src/core/runtime/`). `test-mcp-stub` is the
+stdio MCP server `tests/mcp_registry_e2e.rs` spawns. `rss-bench` and
+`library-profile` are dev-only profiling harnesses; see `scripts/profile/`.
+Details for each are in [`src/bin/README.md`](src/bin/README.md).
 
 ## Feature flags
 
@@ -87,9 +91,9 @@ Gate names (see `Cargo.toml` for the full rationale behind each): `http-server`,
 `crash-reporting`, `medulla`, `channels`, `sandbox-landlock`,
 `sandbox-bubblewrap`, `peripheral-rpi`, `browser-native`, `fantoccini`,
 `landlock`, `whatsapp-web`, `e2e-test-support`, `rss-bench`,
-`rss-bench-dhat`, `file-logging`, `scheduler-gate`, `bin-tools`. Do not
-paraphrase the policy comments above `[features]` in `Cargo.toml` — read them
-before changing either feature list.
+`rss-bench-dhat`, `file-logging`, `scheduler-gate`, `bin-tools`. Read the
+policy comments above `[features]` in `Cargo.toml` before changing either
+feature list.
 
 ## Build and test
 
@@ -115,9 +119,10 @@ what ships.
 ## Public entry points
 
 - [`run_core_from_args`](src/lib.rs) — the CLI entry point used by both
-  `src/main.rs` and the desktop shell.
-- [`CoreBuilder`] → [`CoreRuntime`] — the embeddable composition API
-  (`crates/openhuman-core/src/core/runtime/`); `openhuman-embed` layers a
-  typed facade over it.
-- `openhuman-core serve` — the standalone JSON-RPC/Socket.IO server. Public
-  endpoints: `GET /health`, `GET /schema`, `GET /events`.
+  `src/main.rs` and the desktop shell binary's `core` and `mcp` subcommands.
+  Order: load dotenv, apply the startup restart delay, initialize the keyring
+  master key, then dispatch to `core::cli`.
+- [`CoreBuilder` → `CoreRuntime`](src/core/runtime/builder.rs) — the
+  embeddable composition API; `openhuman-embed` layers a typed facade over it.
+- `openhuman-core serve` (alias `run`) — the standalone JSON-RPC/Socket.IO
+  server. Public endpoints: `GET /health`, `GET /schema`, `GET /events`.
