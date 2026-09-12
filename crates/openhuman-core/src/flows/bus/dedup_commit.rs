@@ -124,7 +124,6 @@ pub(super) struct CommitTestHooks {
     pub(super) max_concurrent: std::sync::atomic::AtomicUsize,
 }
 
-
 impl DedupCommitSubscriber {
     pub fn new(config: Arc<Config>) -> Self {
         Self {

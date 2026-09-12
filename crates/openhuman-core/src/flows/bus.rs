@@ -23,10 +23,25 @@ pub use run_digest::FlowRunDigestSubscriber;
 pub use trigger::FlowTriggerSubscriber;
 pub(crate) use trigger::{extract_trigger_config, extract_trigger_kind};
 
-// Private helpers the colocated tests reach through `use super::*`.
+// Private helpers and shared imports the colocated tests reach through
+// `use super::*`.
+#[cfg(test)]
+use crate::config::Config;
+#[cfg(test)]
+use crate::core::events::DomainEvent;
+#[cfg(test)]
+use crate::flows::flow_namespace;
+#[cfg(test)]
+use crate::flows::store;
 #[cfg(test)]
 use dedup_commit::{flow_commit_lock, CommitTestHooks, FLOW_COMMIT_LOCKS};
 #[cfg(test)]
 use run_digest::{render_run_digest, truncate_chars, DIGEST_MAX_CHARS};
+#[cfg(test)]
+use serde_json::Value;
+#[cfg(test)]
+use std::sync::Arc;
+#[cfg(test)]
+use tinybus::EventHandler;
 #[cfg(test)]
 use trigger::{matches_app_event, pinned_trigger_inputs};

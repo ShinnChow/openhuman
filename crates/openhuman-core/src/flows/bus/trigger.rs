@@ -204,9 +204,7 @@ impl FlowTriggerSubscriber {
             // on panic) by `InFlightGuard`.
             let _guard = guard;
             tracing::info!(target: "flows", %flow_id, "[flows] trigger fired — starting run");
-            match crate::flows::ops::flows_run(&config, &flow_id, input, inputs, trigger)
-                .await
-            {
+            match crate::flows::ops::flows_run(&config, &flow_id, input, inputs, trigger).await {
                 Ok(_) => {
                     tracing::info!(target: "flows", %flow_id, "[flows] trigger-driven run finished")
                 }
@@ -283,4 +281,3 @@ impl EventHandler<DomainEvent> for FlowTriggerSubscriber {
         }
     }
 }
-

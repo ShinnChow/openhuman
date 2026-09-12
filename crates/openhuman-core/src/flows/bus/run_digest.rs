@@ -238,4 +238,3 @@ pub(super) fn render_run_digest(flow_name: &str, run: &FlowRun) -> String {
     }
     truncate_chars(&out, DIGEST_MAX_CHARS)
 }
-

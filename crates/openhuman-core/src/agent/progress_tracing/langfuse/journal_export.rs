@@ -14,9 +14,8 @@ use crate::config::Config;
 use crate::security::credentials::session_support::require_live_session_token;
 
 use super::ingestion_batch::{new_event_id, split_ingestion_batch, LANGFUSE_MAX_BATCH_EVENTS};
-use super::{environment_for_base, ingestion_url, skip_push, LOG_TARGET, PUSH_TIMEOUT};
 use super::TraceContext;
-
+use super::{environment_for_base, ingestion_url, skip_push, LOG_TARGET, PUSH_TIMEOUT};
 
 /// Enrich `trace_ctx` with the run lineage (`run_id` / `parent_run_id` /
 /// `root_run_id`) carried by the run's journalled `observations` (#4657).
@@ -26,7 +25,7 @@ use super::TraceContext;
 /// is representative. For a spawned sub-agent that lineage points back at the
 /// spawning turn, which is exactly what links the sub-agent's trace to its
 /// parent. Returns the context unchanged when there are no observations.
-fn trace_ctx_with_run_lineage(
+pub(super) fn trace_ctx_with_run_lineage(
     trace_ctx: &TraceContext,
     observations: &[AgentObservation],
 ) -> TraceContext {
@@ -43,7 +42,10 @@ fn trace_ctx_with_run_lineage(
     )
 }
 
-fn trace_config_from_context(trace_ctx: &TraceContext, environment: &str) -> LangfuseTraceConfig {
+pub(super) fn trace_config_from_context(
+    trace_ctx: &TraceContext,
+    environment: &str,
+) -> LangfuseTraceConfig {
     let mut metadata = Map::new();
     if let Some(client_id) = &trace_ctx.client_id {
         metadata.insert("client.id".into(), json!(client_id));
@@ -93,7 +95,7 @@ fn trace_config_from_context(trace_ctx: &TraceContext, environment: &str) -> Lan
     }
 }
 
-fn observations_for_export<'a>(
+pub(super) fn observations_for_export<'a>(
     trace_ctx: &TraceContext,
     observations: &'a [AgentObservation],
 ) -> Cow<'a, [AgentObservation]> {
@@ -122,7 +124,10 @@ fn strip_observation_content(mut observation: AgentObservation) -> AgentObservat
     observation
 }
 
-fn insert_run_telemetry_generation(payload: &mut Value, telemetry: Option<&RunTelemetry>) -> bool {
+pub(super) fn insert_run_telemetry_generation(
+    payload: &mut Value,
+    telemetry: Option<&RunTelemetry>,
+) -> bool {
     let Some(telemetry) = telemetry else {
         return false;
     };
@@ -201,7 +206,6 @@ fn insert_run_telemetry_generation(payload: &mut Value, telemetry: Option<&RunTe
     );
     true
 }
-
 
 /// Push durable journal observations through the tinyagents crate Langfuse
 /// exporter. The journal is already redacted before persistence, and this
