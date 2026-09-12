@@ -1,7 +1,7 @@
 //! Pre-turn context injection: agent-experience retrieval and the triggered
 //! memory-agent block prepended to the enriched user message.
 
-use super::super::super::types::Agent;
+use crate::agent::harness::session::types::Agent;
 use crate::agent::experience::{
     prepend_experience_block, render_experience_hits, retrieve_across_stores, AgentExperienceStore,
     ExperienceQuery,

@@ -216,4 +216,10 @@ fn render_agent_context_status_note(sources: &[harness::AgentContextPreparedSour
 }
 
 include!("core_turn.rs");
-include!("core_session.rs");
+
+// `Agent`'s tinyagents-backed chat turn and the pre-turn context injection it
+// calls, split by responsibility into real submodules. Their `impl Agent`
+// blocks complement `turn()` above.
+mod experience_context;
+mod harness_turn;
+mod resumed_prefix;

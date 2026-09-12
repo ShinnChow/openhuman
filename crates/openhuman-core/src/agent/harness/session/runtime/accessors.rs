@@ -166,9 +166,7 @@ impl Agent {
     /// the session already holds, so constructing one is a refcount bump, and
     /// storing it would create a second handle that could drift from
     /// `self.memory` if the backend were ever swapped.
-    pub fn host_agent_memory(
-        &self,
-    ) -> crate::agent::tinyagents::host::OpenHumanAgentMemory {
+    pub fn host_agent_memory(&self) -> crate::agent::tinyagents::host::OpenHumanAgentMemory {
         crate::agent::tinyagents::host::OpenHumanAgentMemory::new(self.memory_arc())
     }
 
@@ -226,9 +224,7 @@ impl Agent {
     }
 
     /// Active Composio integrations fetched at session start.
-    pub fn connected_integrations(
-        &self,
-    ) -> &[crate::agent::context::prompt::ConnectedIntegration] {
+    pub fn connected_integrations(&self) -> &[crate::agent::context::prompt::ConnectedIntegration] {
         &self.connected_integrations
     }
 
@@ -256,9 +252,7 @@ impl Agent {
         self.connected_integrations = integrations;
         self.connected_integrations_initialized = true;
         self.last_seen_integrations_hash =
-            crate::integrations::composio::connected_set_hash(
-                &self.connected_integrations,
-            );
+            crate::integrations::composio::connected_set_hash(&self.connected_integrations);
     }
 
     /// The agent's runtime config snapshot.
@@ -437,12 +431,14 @@ impl Agent {
             &all_tools,
             &self.visible_tool_names,
         );
-        let visible_specs = super::builder::visible_tool_specs_for_policy(
+        let visible_specs = super::super::builder::visible_tool_specs_for_policy(
             self.tool_specs.as_slice(),
             &self.visible_tool_names,
             &self.tool_policy_session,
         );
-        self.visible_tool_specs = Arc::new(super::builder::dedup_visible_tool_specs(visible_specs));
+        self.visible_tool_specs = Arc::new(super::super::builder::dedup_visible_tool_specs(
+            visible_specs,
+        ));
     }
 
     /// Clears the agent's conversation history.
@@ -456,10 +452,10 @@ impl Agent {
     /// single turn, then reset to the default), so a caller running a chat /
     /// small-talk turn calls this immediately before [`Self::turn`]. Callers
     /// that never touch this get the unchanged full-agentic behaviour. See
-    /// [`TurnOverrides`](super::types::TurnOverrides) for the fields and the
+    /// [`TurnOverrides`](super::super::types::TurnOverrides) for the fields and the
     /// motivating case (#1725: a bare greeting must not run the task loop nor
     /// inherit a prior task's goal / tools / memory).
-    pub fn set_next_turn_overrides(&mut self, overrides: super::types::TurnOverrides) {
+    pub fn set_next_turn_overrides(&mut self, overrides: super::super::types::TurnOverrides) {
         self.pending_turn_overrides = overrides;
     }
 }

@@ -4,7 +4,7 @@
 //! the agent's tools, applies the deterministic cap / final-answer fallbacks,
 //! persists the transcript, and fires post-turn hooks.
 
-use super::super::super::types::Agent;
+use crate::agent::harness::session::types::Agent;
 use super::{
     checkpoint_results_from_conversation, is_empty_assistant_chat, replace_last_assistant_reply,
     stamp_tool_failures, tool_records_from_conversation,

@@ -52,15 +52,11 @@ impl Agent {
 
         let mut cached: Vec<crate::agent::messages::ChatMessage> =
             Vec::with_capacity(prior.len() + 1);
-        cached.push(crate::agent::messages::ChatMessage::system(
-            system_prompt,
-        ));
+        cached.push(crate::agent::messages::ChatMessage::system(system_prompt));
         for (role, content) in prior {
             let chat = match role.as_str() {
                 "user" => crate::agent::messages::ChatMessage::user(content),
-                "agent" | "assistant" => {
-                    crate::agent::messages::ChatMessage::assistant(content)
-                }
+                "agent" | "assistant" => crate::agent::messages::ChatMessage::assistant(content),
                 // Fall back to user role for unknown senders rather than
                 // dropping the message — losing context is worse than
                 // mislabelling a system/tool message.

@@ -15,7 +15,9 @@ impl Agent {
     // Static helpers for turn parsing + telemetry
     // ─────────────────────────────────────────────────────────────────
 
-    pub(in crate::agent::harness::session) fn count_iterations(messages: &[ConversationMessage]) -> usize {
+    pub(in crate::agent::harness::session) fn count_iterations(
+        messages: &[ConversationMessage],
+    ) -> usize {
         messages
             .iter()
             .filter(|message| matches!(message, ConversationMessage::AssistantToolCalls { .. }))
@@ -61,7 +63,9 @@ impl Agent {
         current_history
     }
 
-    pub(in crate::agent::harness::session) fn sanitize_event_error_message(err: &anyhow::Error) -> String {
+    pub(in crate::agent::harness::session) fn sanitize_event_error_message(
+        err: &anyhow::Error,
+    ) -> String {
         let kind = match err.downcast_ref::<AgentError>() {
             Some(AgentError::ProviderError { .. }) => Some("provider_error"),
             Some(AgentError::ContextLimitExceeded { .. }) => Some("context_limit_exceeded"),

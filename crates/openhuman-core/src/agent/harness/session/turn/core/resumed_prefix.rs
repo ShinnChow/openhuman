@@ -1,6 +1,6 @@
 //! Folding a resumed session's replayed transcript prefix into the live history.
 
-use super::super::super::types::Agent;
+use crate::agent::harness::session::types::Agent;
 use crate::agent::messages::ConversationMessage;
 
 impl Agent {
