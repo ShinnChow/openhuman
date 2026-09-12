@@ -33,7 +33,7 @@ mod tx_lookup;
 mod types;
 mod validate;
 
-pub use accounts::require_evm_account;
+pub(crate) use accounts::require_evm_account;
 pub(crate) use broadcast::{sign_and_broadcast_evm, sign_and_broadcast_solana};
 pub use broadcast::execute_prepared;
 pub use quotes::prepared_quotes_for_test;
