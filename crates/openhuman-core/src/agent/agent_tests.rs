@@ -29,7 +29,7 @@ use crate::agent::dispatcher::{
 };
 use crate::agent::harness::session::Agent;
 use crate::agent::messages::{ChatMessage, ConversationMessage, ToolResultMessage};
-use crate::config::{AgentConfig, MemoryConfig};
+use crate::config::AgentConfig;
 use crate::inference::provider::{ChatResponse, ToolCall};
 use crate::memory::Memory;
 use crate::tools::{Tool, ToolResult};
