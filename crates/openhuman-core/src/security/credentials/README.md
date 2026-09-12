@@ -5,8 +5,8 @@ Credential management for the OpenHuman app session and provider/OAuth auth prof
 ## Responsibilities
 
 - Store and validate the app session JWT (`app-session` provider, `default` profile), including local offline sessions and backend `GET /auth/me` validation.
-- On login: activate the user-scoped openhuman directory, purge pre-login (anonymous) conversation threads on first activation, bind memory/conversation persistence, bootstrap subconscious, and start login-gated services (local AI, voice, dictation, autocomplete).
-- On logout / session-expiry: remove the JWT, clear the active-user marker, stop login-gated services, reset subconscious, and flip the scheduler-gate signed-out override.
+- On login: activate the user-scoped openhuman directory, purge pre-login (anonymous) conversation threads on first activation, bind memory/conversation persistence, and start login-gated services (local AI, voice server, dictation listener, always-on voice).
+- On logout / session-expiry: remove the JWT, clear the active-user marker, stop login-gated services, and flip the scheduler-gate signed-out override.
 - Persist arbitrary provider credentials (token + metadata fields) as named auth profiles; list/remove/set-active; prefix-list profiles for grouped namespaces (e.g. `channel:*`).
 - Run backend OAuth flows: connect URL, list integrations, fetch integration handoff tokens, fetch one-time client key, revoke integration.
 - Store/read/clear the Composio direct-mode API key (`composio-direct` provider).
@@ -87,8 +87,7 @@ None. This module owns no agent tools (`tools.rs` does not exist).
 - `crate::cron::scheduler_gate` — signed-out override flipped on login/logout/session-expiry.
 - `crate::memory::conversations` — purge pre-login threads, bind conversation persistence after login.
 - `crate::memory` — bind memory client to the active workspace after login.
-- `crate::subconscious` — post-login bootstrap / user-switch reset.
-- `crate::inference`, `::voice`, `::autocomplete` — login-gated services started/stopped.
+- `crate::inference::local`, `crate::voice::{server,dictation_listener,always_on}` — login-gated services started/stopped.
 - `crate::api::config`, `::jwt`, `::rest` — backend API URL, session-token read, `BackendOAuthClient` + OAuth/handoff types.
 - `crate::core::all` (`ControllerFuture`, `RegisteredController`), `crate::core` (`ControllerSchema`/`FieldSchema`/`TypeSchema`), `crate::core::events::DomainEvent` + `tinybus::EventHandler`, `crate::rpc::RpcOutcome` (`crate::rpc` is the `pub use openhuman_rpc as rpc` alias in `lib.rs`, so this is the `openhuman-rpc` crate's type) — controller registry + RPC envelope + event bus.
 
