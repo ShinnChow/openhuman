@@ -9,41 +9,39 @@ icon: plug
 
 # MCP Registry (`crates/openhuman-core/src/mcp/registry/`)
 
-`crates/openhuman-core/src/mcp/registry/` is the **dynamic, user-facing** half of OpenHuman's Model Context Protocol client support. It lets a user browse the supported upstream registries (Smithery and the official modelcontextprotocol registry), install a chosen server, persist that choice to SQLite, and (for servers launched as local subprocesses or HTTP-remote endpoints) supervise the connection lifecycle. Installed servers' tools are surfaced to agents via the unified tool registry (`crate::tools::registry`).
+`crates/openhuman-core/src/mcp/registry/` is the **host half** of the dynamic, user-facing side of OpenHuman's Model Context Protocol client support: browsing the supported upstream registries (Smithery and the official modelcontextprotocol registry), installing a chosen server, persisting that choice, and (for servers launched as local subprocesses or HTTP-remote endpoints) supervising the connection lifecycle. Installed servers' tools are surfaced to agents via the unified tool registry (`crate::tools::registry`).
 
-> **Naming note**: the Rust module path is `mcp_registry`, but the RPC namespace and on-disk SQLite filename are still `mcp_clients` for backward compatibility with existing frontend code and stored user state. Grep both names when chasing call sites.
+The **client half** — both transports, the Smithery/official catalogs, the SQLite store, the live connection map, the subprocess supervisor, browser sign-in, and the write-audit log — moved to the vendored `tinymcp` crate (`vendor/tinymcp`). What lives in this directory is only what belongs to this application:
 
-This module is paired with `crates/openhuman-core/src/mcp/config_servers/` + `crates/openhuman-core/src/mcp/http_client/`: the **transport library** (HTTP + stdio primitives) plus the _static, config-declared_ server set read from `[[mcp_client.servers]]` in `config.toml`. Agents reach that static set through generic bridge tools. The static set is intentionally separate from this dynamic registry; both kinds will eventually share the transport primitives from `mcp::http_client`.
+- `host.rs` (one level up, `crates/openhuman-core/src/mcp/host.rs`): the one `tinymcp` service this process holds per workspace, and config-to-`tinymcp` conversion.
+- `registry/`: the `mcp_clients` and `mcp_setup` RPC surface, the agent-facing tools, and the prompt-injection scan applied to remote tool definitions.
+- `audit/` (sibling of `registry/`): the RPC surface over `tinymcp`'s write-audit log.
+- `server/` (sibling of `registry/`): the `openhuman-core mcp` stdio/HTTP server that exposes this application's own tools to external MCP hosts — see [MCP Server](../mcp-server.md). This is the *server* side and did not move.
+
+> **Naming note**: the Rust module path is `crate::mcp::registry` (`crates/openhuman-core/src/mcp/registry/`), but the RPC namespace and on-disk SQLite filename stay `mcp_clients` for backward compatibility with existing frontend code and stored user state. Grep both names when chasing call sites.
+
+All payload types (`InstalledServer`, `McpTool`, `ConnStatus`, the Smithery/official-registry DTOs) come from `tinymcp_bus` and are re-exported under `registry::types`, not redefined here. Types for the *static, config-declared* server set (`[[mcp_client.servers]]` in `config.toml`) and the shared HTTP/stdio transport primitives are re-exported from `crate::mcp::config_servers` and `crate::mcp::http_client` (thin `pub use tinymcp::...` modules in `mcp/mod.rs`, not directories).
 
 ```text
-                 ┌───────────────────────────────────────────────┐
-   Registries ───► registries/ + registry.rs (10-min SQLite cache)│
-                 └────────────────────┬──────────────────────────┘
+                 ┌────────────────────────────────────────────────┐
+   Registries ───►         tinymcp (catalogs, store, supervisor)   │
+                 └────────────────────┬───────────────────────────┘
                                       │ browse / install
                                       ▼
                           ┌──────────────────────┐
-   Frontend (Skills UI) ─►│  ops.rs / schemas.rs │  RPC controllers
+   Frontend (Skills UI) ─►│  ops.rs / schemas.rs │  RPC controllers (mcp_clients_*)
                           └──────────┬───────────┘
-                                     │
+                                     │ delegates to
                                      ▼
                           ┌──────────────────────┐
-                          │      store.rs        │  mcp_clients.db (SQLite)
-                          │  InstalledServer rows│
+                          │   host::for_config    │  the tinymcp service this
+                          │   / host::try_service │  workspace's host holds
                           └──────────┬───────────┘
-                                     │ at boot
-                                     ▼
-                          ┌──────────────────────┐
-                          │       boot.rs        │  spawn_installed_servers
-                          └──────────┬───────────┘
-                                     │ for each local-spawn
-                                     ▼
-                          ┌──────────────────────┐
-                          │   connections.rs     │  wraps http_client::
-                          │  (global registry)   │  McpStdioClient
-                          └──────────┬───────────┘
-                                     │ surfaces tools to
+                                     │ tools_safe_for_agent (prompt-injection scan)
                                      ▼
                           tool_registry (agents)
+
+                          supervisor_events.rs ── reconnect-supervisor ticks → DomainEvent
 ```
 
 ## Server transport model
