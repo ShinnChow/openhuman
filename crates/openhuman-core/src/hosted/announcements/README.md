@@ -1,9 +1,9 @@
 # announcements
 
 Thin RPC adapter for the product-announcements feed. Like its `hosted`
-siblings (`billing`, `referral`, `team`) it owns no business logic, state, or
-authorization — it forwards an authenticated request to the TinyHumans
-backend and passes the response through verbatim.
+siblings it owns no business logic, state, or authorization — it forwards an
+authenticated request to the TinyHumans backend and passes the response
+through verbatim.
 
 ## Responsibilities
 
@@ -23,7 +23,7 @@ backend and passes the response through verbatim.
 | `mod.rs` | Re-exports `ops::*` and the schema/controller pair. |
 | `ops.rs` | `require_token`, `get_latest_announcement`. Builds a `BackendOAuthClient` against the effective backend URL and issues the authed GET. |
 | `schemas.rs` | Controller schema + handler that loads `Config` and delegates to `ops`. |
-| `ops_tests.rs`, `schemas_tests.rs` | Focused tests for the 404 fold, token guard, and schema shape. |
+| `ops_tests.rs`, `schemas_tests.rs` | 404-detection and schema/registration tests. |
 
 ## RPC / controllers
 
@@ -58,6 +58,5 @@ anything. Dismissal is tracked client-side by announcement id
 ## Gating
 
 `announcements` is part of `DomainGroup::Hosted` (`crates/openhuman-core/src/core/all.rs`).
-A build that never dials the managed backend — including `DomainSet::embedded` —
-drops the whole `Hosted` group together, so this controller and its
-`hosted` siblings simply don't register.
+`DomainSet::embedded` sets `hosted: false`, dropping the whole `Hosted` group
+as a unit, so this controller and its siblings do not register there.
