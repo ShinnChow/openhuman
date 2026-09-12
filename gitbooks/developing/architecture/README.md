@@ -17,7 +17,7 @@ OpenHuman is a **React + Tauri v2 desktop app** with a **Rust core** that does t
 ┌──────────────────────────────────────────────────┐
 │ Tauri shell (crates/openhuman-app/) │
 │ • windowing, OS integration, core lifecycle (tokio task) │
-│ • CEF child webviews for integration providers │
+│ • Wry child webviews for integration providers │
 └──────────────────────────────────────────────────┘
  │ JSON-RPC (HTTP) ↕
 ┌──────────────────────────────────────────────────┐
