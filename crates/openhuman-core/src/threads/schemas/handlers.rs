@@ -222,7 +222,7 @@ pub(super) fn handle_transcript_get(params: Map<String, Value>) -> ControllerFut
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
-fn parse<T: DeserializeOwned>(params: Map<String, Value>) -> Result<T, String> {
+pub(super) fn parse<T: DeserializeOwned>(params: Map<String, Value>) -> Result<T, String> {
     serde_json::from_value(Value::Object(params)).map_err(|e| format!("invalid params: {e}"))
 }
 
