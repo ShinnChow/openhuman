@@ -266,11 +266,11 @@ pub struct ComposioConnectedAccount {
     /// Toolkit may be a plain string slug or a nested
     /// `ComposioToolkitRef`. Extracted via [`Self::toolkit_slug`].
     #[serde(default)]
-    toolkit: Option<serde_json::Value>,
+    pub(super) toolkit: Option<serde_json::Value>,
     /// Older payload shape — a top-level `app_name` string. Used as
     /// a fallback when `toolkit` is absent or unparseable.
     #[serde(default, rename = "appName", alias = "app_name")]
-    app_name: Option<String>,
+    pub(super) app_name: Option<String>,
 }
 
 impl ComposioConnectedAccount {
