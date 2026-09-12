@@ -254,7 +254,7 @@ fn check_command_available(
 ///
 /// The driver probe always runs regardless of file existence, so a bound driver
 /// that does not use SQLite still surfaces its health here.
-fn truncate_for_display(text: &str, max_len: usize) -> String {
+pub(super) fn truncate_for_display(text: &str, max_len: usize) -> String {
     if text.chars().count() <= max_len {
         return text.to_string();
     }
