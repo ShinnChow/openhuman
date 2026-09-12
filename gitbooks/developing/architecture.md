@@ -89,7 +89,7 @@ OpenHuman chose Tauri + Rust over Electron for fundamental performance and secur
 
 | Metric                    | OpenHuman (Tauri + Rust)                                                   | Typical Electron App                     |
 | ------------------------- | -------------------------------------------------------------------------- | ---------------------------------------- |
-| Binary size               | Feature-dependent (CEF runtime dominates)                                  | ~150 MB+                                 |
+| Binary size               | Feature-dependent (native Wry webview; no bundled Chromium)                 | ~150 MB+                                 |
 | Memory per tool execution | Native Rust (no per-tool VM); shared managed Node runtime for helper calls | ~150 MB+ (Chromium renderer per process) |
 | Cold startup              | Sub-500ms                                                                  | 2-5 seconds                              |
 | Garbage collection pauses | None (Rust ownership model)                                                | V8 GC pauses                             |
@@ -315,7 +315,7 @@ Core subsystems run on published `tiny*` crates, vendored as git submodules unde
 | **HTTP**       | reqwest                            | Async HTTP with rustls + native-tLS dual support          |
 | **Encryption** | aes-gcm + argon2                   | AES-256-GCM encryption, Argon2id key derivation           |
 | **Scheduling** | cron crate + `cron` domain         | Standard cron expressions, `scheduler_gate`-gated         |
-| **Telegram**   | CEF webview provider               | Embedded webview + `telegram_scanner` (no bot API client) |
+| **Telegram**   | Embedded (Wry) webview provider    | Embedded webview + `telegram_scanner` (no bot API client) |
 | **Realtime**   | Socket.io (client)                 | Bidirectional event-based communication                   |
 | **AI**         | MCP (JSON-RPC 2.0)                 | Standardized tool protocol for LLM integration            |
 | **Search**     | OpenAI embeddings + SQLite FTS5    | Hybrid semantic + keyword search                          |

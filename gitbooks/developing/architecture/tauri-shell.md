@@ -245,7 +245,7 @@ Registered in **`lib.rs`** at startup under the event-bus native-request method
 main thread.
 
 Why: enigo's macOS keyboard-layout lookup (`TSMGetInputSourceProperty`) traps
-(`_dispatch_assert_queue_fail` / `EXC_BREAKPOINT`) and crashes the CEF host when
+(`_dispatch_assert_queue_fail` / `EXC_BREAKPOINT`) and crashes the desktop host when
 called off the main thread. The `mouse` / `keyboard` tools therefore never call
 enigo on their tokio worker; they build a closure and dispatch it here, where
 the shell runs it via `AppHandle::run_on_main_thread`.

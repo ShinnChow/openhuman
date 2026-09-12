@@ -113,7 +113,7 @@ App.tsx
   └─ AppShell (desktop or mobile)
        ├─ AppRoutes - PublicRoute / ProtectedRoute / DefaultRedirect
        ├─ SettingsModal - overlay mounted when the URL is /settings/*
-       └─ WebviewHost - active connected-app CEF webview overlay
+       └─ WebviewHost - active connected-app (Wry) webview overlay
 ```
 
 ### Services layer (conceptual)
@@ -160,7 +160,7 @@ Authoritative list = the `reducer` map in `store/index.ts`. One-line purposes:
 
 | Slice                | Purpose                                                                 | Persisted?                                                     |
 | -------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------- |
-| `accounts`           | Connected web-app (CEF webview) accounts + rail ordering                | `accounts`, `order`, `lastActiveAccountId` (not the active id) |
+| `accounts`           | Connected web-app (Wry webview) accounts + rail ordering                | `accounts`, `order`, `lastActiveAccountId` (not the active id) |
 | `agentProfiles`      | Agent profile data                                                      | no                                                             |
 | `announcement`       | Harness-init announcement banner, seen ids                              | `shownIds`                                                     |
 | `backendMeet`        | Backend-driven Google Meet call state (join/leave, transcript, replies) | no                                                             |
@@ -363,7 +363,7 @@ mascot context value is deliberately non-reactive — reactive state lives in
 Redux or in the send-binding external store instead. A reactive context value
 would reconcile the whole chat tree every frame, which is the stall #5357 had to
 fix. And the overlay only mounts while the agent account is selected: HTML paints
-_behind_ the native CEF provider webviews, so a fixed overlay left alive under
+_behind_ the native (Wry) provider webviews, so a fixed overlay left alive under
 WhatsApp/Slack would be an invisible canvas still burning frames.
 
 The mascot face comes from `useHumanMascot`, which subscribes to chat lifecycle

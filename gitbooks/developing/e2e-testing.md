@@ -14,7 +14,7 @@ Desktop E2E tests use **WebDriverIO (WDIO)** to drive the Tauri app through Appi
 | **Linux / Appium Chromium** | Appium Chromium | 4723 | Debug binary  | CSS / DOM |
 | **macOS / Appium Chromium** | Appium Chromium | 4723 | `.app` bundle | CSS / DOM |
 
-OpenHuman's desktop app currently uses the CEF runtime (`tauri-runtime-cef`). CI drives the Linux debug binary with Appium's Chromium driver; manual macOS and Windows E2E use the same Chromium-driver backend.
+OpenHuman's desktop app runs on Tauri's native Wry webview (the CEF runtime was removed in #5478). CI drives the Linux debug binary under Xvfb; the macOS / Windows Chromium-driver backend attached over CEF's remote-debugging port and no longer works — those platforms have no desktop E2E coverage until a native driver (Appium Mac2 / WinAppDriver) lands (#5485).
 
 ---
 
