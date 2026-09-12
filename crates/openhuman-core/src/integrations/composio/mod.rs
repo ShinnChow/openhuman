@@ -70,7 +70,7 @@ pub use crate::memory::sync::composio::bus::{
 pub use action_tool::ComposioActionTool;
 pub use client::ComposioClient;
 pub use identity::connection_identity;
-pub use ops::{
+pub(crate) use ops::{
     cached_active_integrations, cached_active_integrations_including_expired, connected_set_hash,
     fetch_connected_integrations, fetch_connected_integrations_status, fetch_toolkit_actions, FetchConnectedIntegrationsStatus,
 };
