@@ -40,3 +40,5 @@ pub use test_hooks::{set_test_run_chat_task_block, TestRunChatTaskBlock};
 pub(super) use test_hooks::{TEST_FORCED_RUN_CHAT_TASK_ERROR, TEST_RUN_CHAT_TASK_BLOCK};
 
 pub(crate) use turn_guards::sentry_suppression_reason;
+#[cfg(test)]
+pub(crate) use turn_guards::timeout_bound_tag;
