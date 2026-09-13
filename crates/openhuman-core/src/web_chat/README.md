@@ -112,11 +112,11 @@ Namespace `channel`, registered via
 - Broadcasts `WebChannelEvent` (defined in `core/socketio.rs`) over an
   in-process `tokio::sync::broadcast` channel. `core/socketio.rs` forwards it
   to the connected Socket.IO client; `core/jsonrpc.rs` forwards the same
-  stream to the JSON-RPC `/events` SSE endpoint; `channels/bus_part_01.rs`
+  stream to the JSON-RPC `/events` SSE endpoint; `channels/bus/subscriber.rs`
   subscribes to collect the reply for an inbound provider message.
 - Subscribes to `DomainEvent` on `crate::core::bus::BUS` via three
   process-lifetime, `OnceLock`-guarded subscribers registered at startup from
-  `core/jsonrpc.rs` and `channels/runtime/startup_part_01.rs`:
+  `core/jsonrpc.rs` and `channels/runtime/startup/start_channels.rs`:
   `register_approval_surface_subscriber`
   (`ApprovalRequested`/`PlanReviewRequested` → `approval_request` /
   `plan_review_request`), `register_artifact_surface_subscriber`
