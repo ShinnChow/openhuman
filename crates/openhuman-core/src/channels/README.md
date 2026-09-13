@@ -58,5 +58,5 @@ Flat files: `bus.rs` (`ChannelInboundSubscriber`, handles `DomainEvent::ChannelI
 - Cross-channel integration suite (`tests/`, see its module doc): `common.rs` fixtures plus `discord_integration`, `health`, `identity`, `memory`, `personality`, `prompt`, `runtime_dispatch`, `runtime_tool_calls`, `telegram_integration`.
 - Host adapters: `host/host_tests.rs`.
 - Provider host glue: `providers/telegram/{approval_surface_tests,bus_tests,remote_control_tests}.rs`.
-- Controllers: `controllers/{backend_tests,ops_tests,schemas_tests}.rs` (+ `ops_tests_part_01_tests.rs`/`ops_tests_part_02_tests.rs`), `controllers/ops/connect_email_config_tests_tests.rs`.
+- Controllers: `controllers/{backend_tests,ops_tests,schemas_tests}.rs` (+ `ops_connect_status_tests.rs`/`ops_yuanbao_email_tests.rs`), `controllers/ops/connect_email_config_tests_tests.rs`.
 - Runtime: `runtime/{startup_tests,startup_email_secret_tests_tests,startup_yuanbao_secret_tests_tests,supervision_tests,dispatch_tests}.rs`, `runtime/dispatch/{mod_scoping_tests_tests,mod_approval_surface_gating_tests_tests,routing_connected_fallback_tests_tests}.rs`.
