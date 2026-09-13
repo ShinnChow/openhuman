@@ -36,11 +36,8 @@ mod validate;
 pub(crate) use accounts::require_evm_account;
 pub use broadcast::execute_prepared;
 pub(crate) use broadcast::{sign_and_broadcast_evm, sign_and_broadcast_solana};
-pub use queries::{
-    balances, chain_status, network_defaults, supported_assets, EVM_BALANCE_NETWORKS,
-};
+pub use queries::{balances, chain_status, network_defaults, supported_assets};
 pub use quotes::prepared_quotes_for_test;
-pub(crate) use quotes::{current_owner, now_ms};
 #[cfg(test)]
 pub(crate) use quotes::{insert_quote_for_test, reset_quote_store_for_tests};
 pub use transfer::prepare_transfer;
@@ -50,11 +47,11 @@ pub use types::{
     PreparedKind, PreparedStatus, PreparedTransaction, ProviderStatus, SupportedAsset,
     TxLookupInfo, TxReceiptInfo, TxState, TxStatusInfo,
 };
-pub(crate) use types::{QuoteOwner, RawBroadcastResult};
+pub(crate) use types::RawBroadcastResult;
 #[cfg(test)]
 pub(crate) use validate::compressed_public_key;
-pub(crate) use validate::{chain_str, format_amount, validate_amount, validate_calldata};
-pub use validate::{hex_to_bytes, hex_to_u128, u128_to_hex};
+pub(crate) use validate::validate_calldata;
+pub use validate::{hex_to_u128, u128_to_hex};
 
 #[cfg(test)]
 use parking_lot::Mutex;
