@@ -148,5 +148,6 @@ orchestrator tool synthesis in `tools/orchestrator_tools.rs` and
 ## Tests
 
 `defaults_tests.rs`, `ops_tests.rs`, `schemas_tests.rs`, `types_tests.rs`;
-under `agents/`: `loader_tests.rs` (+ `loader_tests_part_0N_tests.rs`) and a
-`prompt_tests.rs` beside almost every archetype's `prompt.rs`.
+under `agents/`: `loader_tests.rs` (+ `loader_tests_orchestrator_tier_tests.rs`,
+`loader_tests_builtin_registration_tests.rs`, `loader_tests_specialist_agents_tests.rs`)
+and a `prompt_tests.rs` beside almost every archetype's `prompt.rs`.
