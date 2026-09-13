@@ -179,7 +179,7 @@ pub(crate) async fn ws_loop(
         // session-expired escalation below — not just explicit
         // `SocketManager::disconnect()` (CodeRabbit #4355).
         shared.ack_registry.cancel_all();
-        super::medulla::workflows::end_connection_generation();
+        workflows::end_connection_generation();
 
         match outcome {
             ConnectionOutcome::Shutdown => {

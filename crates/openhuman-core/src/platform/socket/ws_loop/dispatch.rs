@@ -105,7 +105,7 @@ pub(super) fn handle_sio_packet(
         b'1' => {
             // Socket.IO DISCONNECT
             log::info!("[socket] SIO DISCONNECT from server");
-            super::medulla::workflows::end_connection_generation();
+            workflows::end_connection_generation();
             *shared.status.write() = ConnectionStatus::Disconnected;
             *shared.socket_id.write() = None;
             emit_state_change(shared);
