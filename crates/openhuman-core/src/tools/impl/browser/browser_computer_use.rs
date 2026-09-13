@@ -69,7 +69,7 @@ impl BrowserTool {
         Ok(())
     }
 
-    async fn execute_computer_use_action(
+    pub(super) async fn execute_computer_use_action(
         &self,
         action: &str,
         args: &Value,
