@@ -16,8 +16,8 @@ use crate::memory::api::provider::people::{
 };
 use crate::memory::api::provider::types::{
     BackfillTreesOutcome, BackfillTreesRequest, ChunkEntityOccurrence, DiffReport, EntityHit,
-    EntityOccurrence, ForgetOutcome, ForgetSelector, MaintenanceReport, PurgeOutcome, SnapshotRef,
-    SourceItem,
+    EntityOccurrence, ForgetOutcome, ForgetSelector, IngestOutcome, MaintenanceReport,
+    PurgeOutcome, SnapshotRef, SourceItem,
 };
 use crate::memory::api::provider::{
     MemoryDiff, MemoryEntities, MemoryGoals, MemoryGraph, MemoryMaintenance, MemoryPeople,
