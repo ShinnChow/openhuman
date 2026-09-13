@@ -30,8 +30,9 @@ domains use to compose their own prompts.
   `DateTimeSection`, `RuntimeSection`, `AgentsInstructionsSection`,
   `PersonalityRosterSection`, `ArchetypePromptSection`,
   `DynamicPromptSection`, `GroundingSection`).
-- Named re-exports from `render_helpers` (`render_helpers.rs` `include!`s
-  `render_helpers_part_01.rs` / `_part_02.rs`) — free `render_*` functions
+- Named re-exports from `render_helpers` (`render_helpers.rs` plus the
+  `render_helpers/` submodules `section_renderers.rs`, `subagent.rs`,
+  `workspace_files.rs`) — free `render_*` functions
   (thin wrappers over the section structs), the workspace-file helpers
   (`inject_workspace_file[_capped]`, `inject_inline_content`,
   `inject_snapshot_content`, `sync_workspace_file`,
@@ -45,7 +46,7 @@ domains use to compose their own prompts.
 
 `IDENTITY.md`, `ROLE.md`, `SOUL.md`, `STYLE.md` are the bundled copies of the
 master agent's identity, role brief, personality, and writing style. They are
-embedded with `include_str!` in `render_helpers_part_02.rs`
+embedded with `include_str!` in `render_helpers/workspace_files.rs`
 (`default_workspace_file_content`) and, for `STYLE.md`, again in `builder.rs`
 as `GLOBAL_STYLE_SUFFIX`. Two uses:
 
