@@ -17,7 +17,6 @@ use crate::platform::socket::manager::{emit_state_change, SharedState};
 use crate::platform::socket::token_provider::{is_invalid_token_error, TokenProvider};
 use crate::platform::socket::types::ConnectionOutcome;
 
-use use crate::platform::socket::ws_loop::reconnect::workflows;;
 /// Number of consecutive `ConnectionOutcome::Failed` attempts at which the
 /// loop fires exactly one `error`-level log (and therefore one Sentry event).
 /// Below the threshold, repeated transient failures (gateway 5xx, TLS

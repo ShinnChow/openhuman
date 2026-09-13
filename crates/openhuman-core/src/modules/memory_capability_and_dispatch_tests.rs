@@ -4,7 +4,6 @@
 use crate::modules::memory::capabilities::capabilities_for;
 use super::*;
 
-use use crate::modules::memory::capabilities::capabilities_for;;
 /// The runtime-tree and flavour doors, driven against a **real** module.
 ///
 /// The test above proves the `module_call!` arms exist by discriminating

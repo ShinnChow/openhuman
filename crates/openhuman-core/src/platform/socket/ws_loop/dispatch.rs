@@ -14,7 +14,6 @@ use crate::util::utf8_safe_prefix_at_byte_boundary;
 use crate::platform::socket::event_handlers::{handle_sio_event, parse_sio_event};
 use crate::platform::socket::manager::SharedState;
 
-use use crate::platform::socket::ws_loop::dispatch::workflows;;
 /// Handle an incoming Engine.IO text message by its type prefix.
 pub(super) fn handle_eio_message(
     text: &str,
