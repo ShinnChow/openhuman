@@ -1,3 +1,35 @@
+//! Socket.IO live-event bridge to the desktop shell.
+//!
+//! `spawn_web_channel_bridge` spawns one forwarding task per source. Domain
+//! broadcast channels: web-chat events (`crate::web_chat`), dictation hotkeys
+//! and transcription results (`crate::voice::dictation_listener`), overlay
+//! attention bubbles (`crate::desktop::overlay::subscribe_attention_events`,
+//! see `desktop/overlay/README.md`), core notifications
+//! (`crate::desktop::notifications`), and shell companion state
+//! (`COMPANION_STATE_BUS`). `DomainEvent`s read off `crate::core::bus::BUS`:
+//! session expiry, MCP setup secret requests, memory sync and tree-build
+//! progress, channel listener health, and active-workspace changes. Web-chat
+//! events go to the initiating client's room and the `thread:<id>` room
+//! (`emit_web_channel_event`); everything else is broadcast to every
+//! connected client, most under both a colon- and an underscore-separated
+//! event name for frontend compatibility. `COMPANION_STATE_BUS` is a broadcast
+//! channel dedicated to shell-originated companion lifecycle events: the
+//! companion implementation itself lives in the Tauri shell, but the native
+//! macOS notch WKWebView has no Tauri IPC bridge and connects to the
+//! embedded core's Socket.IO endpoint directly, so this module keeps a
+//! transport-only seam for it rather than reintroducing a core-side
+//! companion domain.
+//!
+//! The socketioxide/axum transport bodies (the actual `SocketIo` server,
+//! connection handlers, and `spawn_web_channel_bridge`) are gated behind the
+//! `http-server` feature (#5048). The event payload types further down
+//! (`WebChannelEvent`, `TurnUsagePayload`, `SubagentUsagePayload`,
+//! `SubagentProgressDetail`) stay compiled in every build regardless — around
+//! ten always-on domains (`web_chat`, `cron`, `channels`, `agent`, …)
+//! construct them — so only the transport surface is gated, not the types
+//! (a "type carve-out"; see AGENTS.md). `pub mod socketio;` in `core::mod` is
+//! intentionally NOT gated for the same reason.
+
 use serde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;

@@ -1,19 +1,24 @@
 //! Utility functions for `OpenHuman`.
 //!
-//! Kernel family — always compiled, never gated. These are dependency-free
-//! helpers reused across domains; nothing here may reach into a domain.
+//! Kernel family — always compiled, never gated. Self-contained helpers
+//! reused across domains; nothing here may reach into a domain (no `use
+//! crate::` anywhere in this directory).
 //!
 //! - [`text`]     — UTF-8-safe truncation, char-boundary rounding, provenance tags
 //! - [`retry`]    — retry-with-backoff + transient-filesystem-error classification
 //! - [`sanitize`] — LLM-facing text sanitization (control-char stripping,
 //!   instruction-fence removal, UTF-8-safe byte caps)
 //! - [`bm25`]     — BM25 ranking over short documents (tool + skill search)
-//! - [`tls`]      — TLS client/connector construction
+//! - [`tls`]      — platform-conditional `reqwest::ClientBuilder` factory
 //! - [`types`]    — shared utility types
 //!
-//! Everything is re-exported at the module root, so the pre-reorg
-//! `openhuman::util::<fn>` paths (including the `truncate_with_ellipsis`
-//! doctest) still resolve.
+//! `retry`, `text`, and `types` items are re-exported at the module root, so
+//! `crate::util::<fn>` (and `openhuman_core::util::<fn>` from outside, the
+//! path the `truncate_with_ellipsis` doctest uses) resolves without naming the
+//! submodule. `bm25`, `redact`, `sanitize`, and `tls` are reached through
+//! their submodule path.
+//!
+//! See [`README.md`](README.md) for a per-file breakdown.
 
 /// BM25 ranking over short documents, shared by `tool_search` and
 /// `skill_search`. Deliberately names nothing from `crate::` — see its docs.

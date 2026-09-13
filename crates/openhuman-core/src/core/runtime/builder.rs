@@ -17,7 +17,8 @@
 //! The legacy entry points (`run_server`, `run_server_embedded`,
 //! `run_server_embedded_with_ready`) are now thin shims over this builder, so
 //! the desktop shell, the standalone CLI, and any new embedder share one path.
-//! See `docs/plans/pluggable-core/phase-1-corebuilder.md`.
+//! See the pluggable-core work (`core::runtime`) for how this fits with
+//! [`context`](crate::core::runtime::context) and `services`.
 
 use std::sync::Arc;
 

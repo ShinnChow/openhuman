@@ -8,11 +8,12 @@
 //! anything more granular than an iteration / tool boundary would
 //! thrash the filesystem under streaming load.
 //!
-//! On terminal completion the snapshot file is deleted. If the bridge
-//! exits without ever observing [`AgentProgress::TurnCompleted`] (for
-//! example because the agent loop returned an error), the snapshot is
-//! flagged [`TurnLifecycle::Interrupted`] and persisted so the UI can
-//! surface a retry affordance.
+//! On [`AgentProgress::TurnCompleted`] the snapshot is marked
+//! [`TurnLifecycle::Completed`] and kept on disk so a reloaded client can
+//! replay the finished turn. If the bridge exits without ever observing
+//! `TurnCompleted` (for example because the agent loop returned an error),
+//! the snapshot is flagged [`TurnLifecycle::Interrupted`] and persisted so
+//! the UI can surface a retry affordance.
 
 #[cfg(test)]
 #[path = "mirror_tests.rs"]

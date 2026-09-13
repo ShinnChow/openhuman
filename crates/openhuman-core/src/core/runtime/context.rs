@@ -5,7 +5,8 @@
 //! the workspace-bound stores, and run pure `bootstrap_core_runtime` registration. Today it is a
 //! facade — the store init still targets the process globals — but centralizing
 //! the sequence here is the seam the later stages build on (handler-threaded
-//! context, per-context stores). See `docs/plans/pluggable-core/phase-2-corecontext.md`.
+//! context, per-context stores). See the pluggable-core work (`core::runtime`)
+//! for how this fits with [`builder`](crate::core::runtime::builder).
 //!
 //! [`init_stores`] initializes the process-global stores bound to a single
 //! resolved workspace directory (memory, image attachments, WhatsApp data,
@@ -73,7 +74,7 @@ pub struct CoreContext {
     /// `Config::load_or_init()` and re-resolves the process-global workspace.
     /// An embedder that supplied a config would therefore watch its turns run
     /// against `~/.openhuman` anyway. Publishing it on the context — the seam
-    /// phase 2 of `docs/plans/pluggable-core/` introduced for exactly this
+    /// phase 2 of the pluggable-core work (`core::runtime`) introduced for exactly this
     /// migration — lets that loader prefer it without any handler changing.
     embedder_config: Option<crate::config::Config>,
     /// Per-tool-group disclosure for this context (see

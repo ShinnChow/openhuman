@@ -3,7 +3,7 @@
 //! Hosts one `openhuman-core` process per user/workspace and fronts them behind
 //! a single endpoint so a team server can manage many members' assistants while
 //! every existing client (`CloudHttpTransport`) keeps working unchanged. This is
-//! Phase 4 of the pluggable-core plan (`docs/plans/pluggable-core/phase-4-fleet-host.md`).
+//! Phase 4 of the pluggable-core work (see `core::runtime`).
 //!
 //! Design (process-per-user, not in-process multi-tenancy):
 //! - Each tenant gets its own OS process (`openhuman-core run --headless-api`),

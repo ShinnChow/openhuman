@@ -284,7 +284,7 @@ pub struct Config {
 
     /// Loadable native modules — whether they load, whether this host may fetch
     /// them, and where a developer's own build lives. The loadable *set* is
-    /// compiled in, not configured: see `openhuman::modules::registry`.
+    /// compiled in, not configured: see `crate::modules::registry`.
     #[serde(default)]
     pub modules: ModulesConfig,
 

@@ -1,3 +1,7 @@
+//! `SecurityPolicy` and the autonomy/risk gate. See [`README.md`](README.md)
+//! for the invariants this module enforces (workspace-internal path
+//! protection, fail-closed command classification, always-forbidden paths).
+
 mod command_checks;
 mod enforcement;
 mod path_checks;

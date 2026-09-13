@@ -1,11 +1,21 @@
-//! Shared types for JSON-RPC / CLI controller surfaces.
+//! Shared JSON-RPC / CLI wire vocabulary for OpenHuman.
 //!
-//! This module provides the foundational types and utilities for handling
-//! RPC outcomes across different domain modules. It ensures a consistent
-//! response format for both internal consumption and external presentation.
+//! This crate is linked by `openhuman_core` (re-exported there as
+//! `openhuman_core::rpc`), the Tauri shell (`crates/openhuman-app`), and the
+//! TUI (`crates/openhuman-tui`). It is a separate crate so the producer of
+//! RPC envelopes (the core) and their decoders (the shell's HTTP relay, the
+//! TUI) compile one definition of the wire shape, and that definition depends
+//! on nothing in the core. It must stay free of domain types and runtime
+//! dependencies.
 //!
-//! Domain `rpc` modules should use [`RpcOutcome`] to wrap their results,
-//! which facilitates consistent logging and error handling.
+//! - [`RpcOutcome`] and [`apply_log_envelope`] define handler results and the
+//!   log envelope rule. Domain `ops.rs` operations return `RpcOutcome<T>`.
+//! - [`unwrap_rpc`] unwraps the client-side `result`/`data` envelopes.
+//! - [`StructuredRpcError`] and [`STRUCTURED_RPC_ERROR_SENTINEL`] are the
+//!   typed error envelope decoded at the transport boundary.
+//! - Behind the `http-client` feature (default-on here, but disabled by the
+//!   root workspace dependency so each consumer opts in): [`post_json_rpc`],
+//!   [`bearer_header`], [`redact_url_for_log`], and [`HttpRpcResponse`].
 
 use serde::Serialize;
 use serde_json::json;
