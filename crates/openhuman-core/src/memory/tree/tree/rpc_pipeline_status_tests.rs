@@ -533,12 +533,12 @@ fn gate_pause_state_maps_the_live_policy() {
         (PauseReason::Unknown, "unknown"),
     ] {
         assert_eq!(
-            super::gate_pause_state(Policy::Paused { reason }),
+            gate_pause_state(Policy::Paused { reason }),
             (true, Some(slug.to_string()))
         );
     }
     for policy in [Policy::Aggressive, Policy::Normal, Policy::Throttled] {
-        assert_eq!(super::gate_pause_state(policy), (false, None));
+        assert_eq!(gate_pause_state(policy), (false, None));
     }
 }
 
@@ -547,9 +547,9 @@ fn gate_pause_state_maps_the_live_policy() {
 /// millisecond under the threshold is not a stall, the threshold is.
 #[test]
 fn queue_is_stalled_is_the_status_precedences_own_predicate() {
-    assert!(!super::queue_is_stalled(None));
-    assert!(!super::queue_is_stalled(Some(0)));
-    assert!(!super::queue_is_stalled(Some(QUEUE_STALL_THRESHOLD_MS - 1)));
-    assert!(super::queue_is_stalled(Some(QUEUE_STALL_THRESHOLD_MS)));
-    assert!(super::queue_is_stalled(Some(QUEUE_STALL_THRESHOLD_MS * 4)));
+    assert!(!queue_is_stalled(None));
+    assert!(!queue_is_stalled(Some(0)));
+    assert!(!queue_is_stalled(Some(QUEUE_STALL_THRESHOLD_MS - 1)));
+    assert!(queue_is_stalled(Some(QUEUE_STALL_THRESHOLD_MS)));
+    assert!(queue_is_stalled(Some(QUEUE_STALL_THRESHOLD_MS * 4)));
 }
