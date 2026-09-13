@@ -27,7 +27,7 @@ pub use types::ComposioTool;
 // reachable unqualified via `use super::*`, mirroring the single-scope shape
 // `include!` gave it before the split into responsibility-based submodules.
 #[cfg(test)]
-use crate::tools::traits::{Tool, ToolCategory};
+use crate::tools::traits::Tool;
 #[cfg(test)]
 use connections::ComposioAuthConfig;
 #[cfg(test)]
