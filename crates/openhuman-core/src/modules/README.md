@@ -35,7 +35,7 @@ directory on `modules`.
 | `documents.rs` | Host half of `tinydocs` (feature `documents`): the three document operations |
 | `wallet.rs` | Host half of `tinywallet` (feature `web3`): confidential and split transaction-signing flows |
 | `voice.rs` | Host half of `tinyvoice` (feature `voice`): the voice primitives |
-| `memory.rs` (+ `memory_part_01..04.rs`) | `ModuleMemoryProvider`, forwarding `MemoryProvider` calls to the loaded `tinymemory` module via `tinymemory-api` |
+| `memory/` (`provider.rs`, `core_provider.rs`, `capabilities.rs`, `documents_tree.rs`, `entities_graph_diff.rs`, `goals_tools_sources.rs`, `ingest_answer.rs`, `people_chunks_retrieval.rs`, `sync_sessions_episodic.rs`) | `ModuleMemoryProvider`, forwarding `MemoryProvider` calls to the loaded `tinymemory` module via `tinymemory-api` |
 | `memory_host.rs` | Host-owned callbacks served *to* the TinyMemory module: `EmbeddingHost`, `ChatHost`, `ComposioHost`, and `RuntimeHost` (event publishing, error reporting, scheduler policy, spaCy); sole survivor of the `host_impls` pair after the in-process engine left (openhuman#6161) |
 | `runtime.rs` | Host half of `tinyruntime`: resolving a language runtime (via `tinyruntime-nodejs`/`-python`) and running code on it |
 | `connectors.rs` | Reaching `tinyconnectors`; egress policy, route selection, and webhook delivery stay in this crate even though scope enforcement moved into the module |
