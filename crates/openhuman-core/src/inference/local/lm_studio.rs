@@ -123,8 +123,6 @@ pub(crate) fn apply_lm_studio_auth(
     }
 }
 
-use crate::util::redact_url_for_log;
-
 #[derive(Debug, Deserialize)]
 pub(crate) struct LmStudioModelsResponse {
     #[serde(default)]
