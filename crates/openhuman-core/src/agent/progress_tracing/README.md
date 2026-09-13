@@ -11,17 +11,19 @@ content).
 
 ## Key files
 
-- `agent/progress_tracing.rs` (parent file; `include!`s
-  `progress_tracing_impl_01_part_0{1,2}.rs`) — `SpanCollector` (pure state
-  machine: feed it progress events plus a timestamp, it accumulates finished
-  `TraceSpan`s), `TraceContext`, `RunType`, `SpanKind`/`SpanStatus`,
-  `spans_to_ndjson`, the local file/log exporter `export_spans`, and the two
-  run-completion entry points `export_run_trace` /
-  `export_run_trace_from_journal`. Each entry point runs two independent,
-  best-effort paths: a Langfuse push when `observability.share_usage_data` is
-  on (the default), and local NDJSON export to `export_path` or the app log
-  when `observability.agent_tracing.enabled` is on (opt-in).
-- `langfuse.rs` (+ `langfuse_part_01.rs`, `langfuse_part_02.rs`) — Langfuse
+- `agent/progress_tracing.rs` (parent module file) declares the submodules
+  below it. `collector/` — `SpanCollector` (pure state machine: feed it
+  progress events plus a timestamp, it accumulates finished `TraceSpan`s).
+  `types.rs` — `TraceContext`, `RunType`, `SpanKind`/`SpanStatus`.
+  `serialize.rs` — `spans_to_ndjson`. `export.rs` — the local file/log
+  exporter `export_spans`, and the two run-completion entry points
+  `export_run_trace` / `export_run_trace_from_journal`. Each entry point runs
+  two independent, best-effort paths: a Langfuse push when
+  `observability.share_usage_data` is on (the default), and local NDJSON
+  export to `export_path` or the app log when
+  `observability.agent_tracing.enabled` is on (opt-in).
+- `langfuse.rs` + `langfuse/` (`environment.rs`, `ingestion_batch.rs`,
+  `span_export.rs`, `journal_export.rs`) — Langfuse
   ingestion exporter: `push_spans` (live spans) and `push_observations`
   (journal observations plus the run-ledger `RunTelemetry` aggregate). Both
   POST to the backend's `/telemetry/langfuse/ingestion` proxy, derived from
