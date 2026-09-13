@@ -42,12 +42,12 @@ pub use quotes::prepared_quotes_for_test;
 pub(crate) use quotes::{insert_quote_for_test, reset_quote_store_for_tests};
 pub use transfer::prepare_transfer;
 pub use tx_lookup::{lookup_tx, tx_receipt, tx_status};
+pub(crate) use types::RawBroadcastResult;
 pub use types::{
     BalanceInfo, ChainStatus, ExecutePreparedParams, ExecutionResult, PrepareTransferParams,
     PreparedKind, PreparedStatus, PreparedTransaction, ProviderStatus, SupportedAsset,
     TxLookupInfo, TxReceiptInfo, TxState, TxStatusInfo,
 };
-pub(crate) use types::RawBroadcastResult;
 #[cfg(test)]
 pub(crate) use validate::compressed_public_key;
 pub(crate) use validate::validate_calldata;

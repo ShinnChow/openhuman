@@ -2,7 +2,11 @@ use super::*;
 use serde_json::json;
 
 fn map(pairs: &[(&str, Value)]) -> Map<String, Value> {
-    pairs.iter().cloned().map(|(k, v)| (k.to_string(), v)).collect()
+    pairs
+        .iter()
+        .cloned()
+        .map(|(k, v)| (k.to_string(), v))
+        .collect()
 }
 
 #[test]
