@@ -4,7 +4,7 @@
 use serde_json::{Map, Value};
 
 use crate::rpc::RpcOutcome;
-use crate::util::{read_optional, read_required};
+pub(super) use crate::util::{read_optional, read_required};
 
 // ── Param helpers ─────────────────────────────────────────────────────────────
 
