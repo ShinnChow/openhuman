@@ -58,10 +58,10 @@ domain.
 - `crate::inference::auth_error_registry` — surfaces per-provider auth errors
   back to the UI.
 - `crate::core::bus` (`BUS.publish`) / `crate::core::events::DomainEvent` —
-  `ops/http_error_part_02.rs::publish_backend_session_expired` and
+  `ops/http_error/auth_failure.rs::publish_backend_session_expired` and
   `openhuman_backend_model.rs` publish `DomainEvent::SessionExpired` when the
   managed backend reports an auth failure, so the credentials layer can
-  clear/refresh the session; `ops/http_error_part_02.rs` also publishes
+  clear/refresh the session; `ops/http_error/auth_failure.rs` also publishes
   `DomainEvent::ProviderApiKeyRejected` the first time a BYO key is rejected.
 - `crate::mcp::server::local` (via `claude_code/driver.rs`) — the Claude Code
   provider points the sandboxed `claude` subprocess at the in-process MCP
