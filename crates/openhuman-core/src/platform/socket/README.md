@@ -26,7 +26,7 @@ Persistent, Rust-native Socket.IO client to the OpenHuman backend. The `socket` 
 | `crates/openhuman-core/src/platform/socket/types.rs` | `WsStream` alias, `ConnectionOutcome` enum, observability event-name constants; re-exports `ConnectionStatus` / `SocketState` from `crate::api::models::socket`. |
 | `crates/openhuman-core/src/platform/socket/ops.rs` | RPC operations behind `schemas.rs` (`connect_with_session` and the live-socket reuse path that reinstalls the medulla workflow bridge). |
 | `crates/openhuman-core/src/platform/socket/medulla/` | The Medulla harness plane: `medulla:task_*`, capability probes, and workflow round trips bound to an agent session. See [`medulla/README.md`](medulla/README.md). |
-| `crates/openhuman-core/src/platform/socket/*_tests.rs` | Sibling test suites, included via `#[path]`; `ws_loop.rs` itself is split into `ws_loop_part_01.rs` / `ws_loop_part_02.rs` via `include!`. |
+| `crates/openhuman-core/src/platform/socket/*_tests.rs` | Sibling test suites, included via `#[path]`. |
 
 ## Public surface
 
