@@ -220,7 +220,7 @@ impl FlowTriggerSubscriber {
 /// claim. Removing the `flow_id` on `Drop` (rather than only on the happy
 /// path) means a panicking or erroring `flows_run` still frees the flow up
 /// for its next trigger tick.
-struct InFlightGuard {
+pub(super) struct InFlightGuard {
     set: Arc<Mutex<HashSet<String>>>,
     flow_id: String,
 }
