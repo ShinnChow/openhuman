@@ -22,7 +22,7 @@ Several providers construct their primary tool with a `tool_name` field so the
 same struct can register under either its own name (e.g. `exa_search`,
 `querit_search`, `tavily_search`) or the canonical `web_search_tool` slot when
 that engine is the active `search.engine` — see `exa.rs`, `querit.rs`, and
-`tavily_part_02.rs`.
+`tavily/search_tool.rs`.
 
 ## Registration
 
