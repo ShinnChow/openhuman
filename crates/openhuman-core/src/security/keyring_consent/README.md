@@ -90,10 +90,10 @@ matches on `keyring::backend_name()`'s identifiers (`"os"`,
 
 ## Used by
 
-- `credentials/profiles_impl_01_part_01.rs` and `credentials/credential_ref.rs`
+- `credentials/profiles/keychain.rs` and `credentials/credential_ref.rs`
   — consent preflight before profile secrets and credential refs touch the
   keyring.
-- `web3/wallet/ops_part_01.rs` — mnemonic goes to the keychain only on
+- `web3/wallet/ops/state.rs` — mnemonic goes to the keychain only on
   `Proceed`.
 - `desktop/app_state/` — carries `keyring_consent` in the stored app state and
   `keyring_status` in the snapshot; `policy::initialize` is fed from there.
