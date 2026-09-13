@@ -42,6 +42,7 @@ mod visibility;
 mod tests;
 
 pub use direct::{ComposioAction, ComposioConnectedAccount, ComposioTool};
+pub use execute::ComposioExecuteTool;
 pub use registry::all_composio_agent_tools;
 
 // Brought into this module's own namespace (private `use`, not `pub use`)
