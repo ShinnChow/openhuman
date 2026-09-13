@@ -1,7 +1,10 @@
 //! Screen-lock privacy hook: pauses always-on capture while the screen is
 //! locked so nothing spoken at the lock screen is ever transcribed.
 
-use super::{LOG_PREFIX, PAUSED};
+use super::LOG_PREFIX;
+#[cfg(target_os = "macos")]
+use super::PAUSED;
+#[cfg(target_os = "macos")]
 use std::sync::atomic::Ordering;
 
 /// Poll the screen-lock state and drive [`PAUSED`] so always-on never captures
