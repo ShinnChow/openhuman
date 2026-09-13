@@ -65,6 +65,8 @@ mod provider;
 mod sync_sessions_episodic;
 
 pub(crate) use capabilities::ARTIFACT_CAPABILITIES;
+#[cfg(test)]
+pub(crate) use capabilities::{capabilities_for, ARTIFACT_CAPABILITIES_PIN};
 pub use provider::{install_host_callbacks, publish_cli_boot_policy, set_modules_policy};
 pub(crate) use provider::policy;
 pub use provider::{ModuleMemoryProvider, MODULE_ID};
