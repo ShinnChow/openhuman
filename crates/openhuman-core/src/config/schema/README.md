@@ -63,9 +63,9 @@ is mounted as a submodule of `load/dirs.rs` via `#[path]`.
 `multimodal.rs` (`MultimodalConfig`, `MultimodalFileConfig`), `search.rs`
 (`SearchConfig`, `WebSearchConfig`, `SearxngConfig`, `SeltzConfig`).
 
-Most sections have a matching `*_tests.rs` (some further split into
-`*_tests_part_0N_tests.rs`); this is the repo's file-size-splitting
-convention, not separate modules.
+Most sections have a matching `*_tests.rs` (some further split into several
+`*_tests.rs` siblings, e.g. `types_model_pin_tests.rs`); this is the repo's
+file-size-splitting convention, not separate modules.
 
 ## Loading
 
