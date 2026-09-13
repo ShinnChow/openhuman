@@ -108,7 +108,7 @@ impl Agent {
     /// that), and a locator frozen at build time would silently keep resolving
     /// against the directory the agent no longer uses. The construction is two
     /// clones of small strings — cheaper than the `read_dir` it precedes.
-    pub(in super::super) fn session_locator(&self) -> std::sync::Arc<dyn SessionHistoryLocator> {
+    pub(crate) fn session_locator(&self) -> std::sync::Arc<dyn SessionHistoryLocator> {
         match &self.session_history_locator {
             Some(locator) => locator.clone(),
             None => std::sync::Arc::new(FileTranscriptLocator::new(
