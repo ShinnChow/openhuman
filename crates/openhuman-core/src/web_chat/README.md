@@ -21,7 +21,7 @@ surfaces.
    `Steer`, `Followup`, `Collect`, `Parallel`) against the thread's
    `InFlightEntry`/`ParallelEntry` (`types.rs`).
 3. It spawns a tokio task that runs `run_task::run_chat_task` through
-   `run_turn_under_cancel_and_deadline` (`ops_part_01.rs`): a cooperative
+   `run_turn_under_cancel_and_deadline` (`ops/turn_guards.rs`): a cooperative
    `CancellationToken`, the wall-clock backstop (`web_turn_deadline`), the
    `AgentTurnOrigin::WebChat` scope, and the
    `APPROVAL_CHAT_CONTEXT` task-local scope all wrap the same future.
