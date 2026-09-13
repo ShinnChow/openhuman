@@ -120,6 +120,7 @@ to that delegate, not a second skill runtime.
 
 `toolpacks_tests.rs` (pack-table invariants, owner rules,
 `strip_packed_from_visible`, `use_skill` dispatch and permission / timeout /
-effect forwarding, dual-registry binding) and its `toolpacks_tests_part_02_tests.rs`
+effect forwarding, dual-registry binding) and
+`toolpacks_tests_scoping_and_visibility_tests.rs`
 (`scope_use_skill_spec`, `render_pack_filtered` filtering, `route_sentence`,
 rebinding); `groups_tests.rs` (`GroupMode` defaults and narrowing rules).
