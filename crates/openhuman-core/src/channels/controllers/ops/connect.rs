@@ -16,6 +16,8 @@ pub use disconnect::disconnect_channel;
 pub use status::{channel_status, connected_channel_slugs, get_default_channel, set_default_channel};
 pub use test_channel::test_channel;
 pub(crate) use shared::merge_listener_health;
+#[cfg(test)]
+pub(crate) use email::persist_email_config;
 
 // `email_config_tests` below shares this module's scope via `use super::*;` —
 // the same way it did when this was one unsplit file — so bring in the
