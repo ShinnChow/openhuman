@@ -381,7 +381,7 @@ fn legacy_subagent_tool_call_without_args_deserializes() {
 }
 
 /// The ordinary sub-agent tool path — the common case, and the one #5987 was
-/// actually reported against. `observability_part_02.rs` emits
+/// actually reported against. `agent/tinyagents/observability/event_projection.rs` emits
 /// `SubagentToolCallStarted.arguments` as `Value::Null` there and only supplies
 /// the captured input on `SubagentToolCallCompleted.arguments`, so persisting
 /// the start event alone leaves these calls with no input after a reload.
