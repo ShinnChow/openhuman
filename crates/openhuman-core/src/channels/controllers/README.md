@@ -19,7 +19,7 @@ Owns the `channels.*` RPC namespace: provider metadata, connect/disconnect lifec
 
 | Path | Purpose |
 | --- | --- |
-| `connect.rs` (+ `connect_part_01.rs`, `connect_part_02.rs` via `include!`) | `list_channels`, `describe_channel`, `connect_channel`, `disconnect_channel`, `channel_status`, `test_channel`, `get_default_channel`/`set_default_channel`, `connected_channel_slugs`, `merge_listener_health` (`pub(crate)`, re-exported from `ops/mod.rs` under `#[cfg(test)]`) |
+| `connect.rs` (+ `connect/` — `catalog.rs`, `connect_channel.rs`, `disconnect.rs`, `email.rs`, `memory.rs`, `shared.rs`, `status.rs`, `test_channel.rs`) | `list_channels`, `describe_channel`, `connect_channel`, `disconnect_channel`, `channel_status`, `test_channel`, `get_default_channel`/`set_default_channel`, `connected_channel_slugs`, `merge_listener_health` (`pub(crate)`, re-exported from `ops/mod.rs` under `#[cfg(test)]`) |
 | `discord.rs` | Discord OAuth link flow and guild/channel/permission listing |
 | `messaging.rs` | `channel_send_message`, `channel_send_reaction`, `channel_create_thread`, `channel_update_thread`, `channel_list_threads` — all call the TinyHumans backend REST API (`crate::api::rest::BackendOAuthClient`); the only path that reaches `relay_runtime` is `OpenHumanChannelBackend::send_outbound_intent` in `backend.rs` |
 | `telegram.rs` | `telegram_login_start`/`telegram_login_check` |

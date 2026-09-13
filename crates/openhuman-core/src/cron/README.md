@@ -45,8 +45,8 @@ Cron publishes through `core/bus.rs` using variants declared in `core/events.rs`
 - `crates/openhuman-core/src/core/runtime/services.rs` — spawns `cron::scheduler::run` as the `cron` background service (`ServiceSet::cron`).
 - `crates/openhuman-core/src/core/all.rs` — controller registry wires `all_cron_registered_controllers`.
 - `crates/openhuman-core/src/tools/impl/system/schedule.rs` — the `schedule` tool exposes recurring and one-shot scheduling to agents on top of `cron::{list_jobs, get_job, …}`.
-- `crates/openhuman-core/src/channels/runtime/startup_part_01.rs` — registers `cron::bus::CronDeliverySubscriber` with the channel map; `channels::proactive::ProactiveMessageSubscriber` handles `ProactiveMessageRequested`.
-- `crates/openhuman-core/src/flows/ops_part_06.rs` — `bind_schedule_trigger` / `unbind_schedule_trigger` create and remove flow schedule jobs; `flows::bus::FlowTriggerSubscriber` consumes `FlowScheduleTick`.
+- `crates/openhuman-core/src/channels/runtime/startup/start_channels.rs` — registers `cron::bus::CronDeliverySubscriber` with the channel map; `channels::proactive::ProactiveMessageSubscriber` handles `ProactiveMessageRequested`.
+- `crates/openhuman-core/src/flows/ops/triggers.rs` — `bind_schedule_trigger` / `unbind_schedule_trigger` create and remove flow schedule jobs; `flows::bus::FlowTriggerSubscriber` consumes `FlowScheduleTick`.
 - `crates/openhuman-core/src/config/ops/ui.rs`, `desktop/app_state/`, `security/credentials/` — call `seed::seed_proactive_agents` / `seed::prune_retired_jobs`.
 
 ## Delivery modes
