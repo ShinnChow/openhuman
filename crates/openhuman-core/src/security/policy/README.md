@@ -104,8 +104,10 @@ Each of these must not be weakened to make a feature work:
 
 ## Tests
 
-- `policy_tests.rs` plus `policy_tests_part_01..05_tests.rs` — behavior tests
-  for classification, path checks, and tier enforcement.
+- `policy_tests.rs`, `policy_allowlist_tests.rs`, `policy_injection_tests.rs`,
+  `policy_paths_and_risk_tests.rs`, `policy_trusted_roots_tests.rs`, and
+  `policy_workspace_internal_tests.rs` — behavior tests for classification,
+  path checks, and tier enforcement.
 - `proptest_tests.rs` — property tests over command classification.
 - `enforcement_scratch_dir_tests_tests.rs` — `openhuman_scratch_dir` is
   namespaced on every platform and `ensure_openhuman_scratch_dir` creates it.
