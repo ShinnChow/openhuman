@@ -207,15 +207,15 @@ pub async fn install_host_callbacks(config: Arc<Config>) -> Result<(), String> {
 /// A memory driver served by the loaded `tinymemory` module.
 pub struct ModuleMemoryProvider {
     /// The id reported by [`MemoryProvider::driver_id`].
-    driver_id: String,
+    pub(super) driver_id: String,
     /// The config to load against, when the caller had one to give.
     ///
     /// `None` is the binding-site case: `build` has no `Config`, so the provider
     /// falls back to the policy published at boot. Tests pass one explicitly.
-    config: Option<Arc<Config>>,
+    pub(super) config: Option<Arc<Config>>,
     /// Set once the module has answered `Capabilities`, so the cross-check runs
     /// once rather than per call.
-    verified: std::sync::OnceLock<()>,
+    pub(super) verified: std::sync::OnceLock<()>,
     /// Memory subtree this driver is bound to, when it is not the shared one.
     ///
     /// `None` means `<workspace>/memory` — the root object the module serves
