@@ -184,7 +184,7 @@ Published from `ops/` via `crate::core::bus::BUS.publish` (`crate::core::events:
 ## Used by
 
 - `crates/openhuman-core/src/core/all.rs` — registers the controllers.
-- `crates/openhuman-core/src/tools/{mod,ops}.rs`, `tools/schemas_part_01.rs` — wires agent tools into the tool registry.
+- `crates/openhuman-core/src/tools/{mod,ops}.rs`, `tools/schemas/composio.rs` — wires agent tools into the tool registry.
 - `crates/openhuman-core/src/core/jsonrpc.rs` — at startup initializes trigger history and registers the three bus subscribers.
 - `crates/openhuman-core/src/channels/runtime/startup_part_01.rs` (`start_channels`) — the one caller of `start_periodic_sync()`. `core/runtime/services.rs`'s `composio_integration_sync` job only runs `memory::sources::reconcile::ensure_composio_sources`; its comment explains why the periodic loop is not started there.
 - `crates/openhuman-core/src/agent/**` — harness/session/subagent spawning (`integrations_agent`), triage escalation, debug (e.g. `agent/harness/subagent_runner/`, `agent/orchestration/tools/`, `agent/debug/mod.rs`).
