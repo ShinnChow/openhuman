@@ -41,7 +41,7 @@ pub async fn flows_search_tool_catalog(
 /// The multi-segment toolkit prefixes (`MICROSOFT_TEAMS_`, `ONE_DRIVE_`,
 /// `ZOHO_MAIL_`) all end in `_`, so a real action under one of them always has
 /// non-empty segments either side of its first `_` and passes unchanged.
-pub(super) fn toolkit_for_contract_slug(slug: &str) -> Option<String> {
+pub(crate) fn toolkit_for_contract_slug(slug: &str) -> Option<String> {
     let trimmed = slug.trim();
     let (toolkit_segment, action_segment) = trimmed.split_once('_')?;
     if toolkit_segment.is_empty() || action_segment.is_empty() {
