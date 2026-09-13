@@ -134,7 +134,7 @@ orchestrator tool synthesis in `tools/orchestrator_tools.rs` and
 - `config/schema/` — `Config.agent_registry: AgentRegistryConfig` is the
   persisted store every `ops.rs` function reads and writes.
 - `agent/harness/builtin_definitions.rs` — `load_builtins()` seeds the
-  process-global `AgentDefinitionRegistry`; `agent/harness/definition_part_02.rs`
+  process-global `AgentDefinitionRegistry`; `agent/harness/definition/registry.rs`
   calls `validate_tier_hierarchy` again after workspace overrides merge.
 - `agent/harness/session/builder/factory.rs` —
   `Agent::from_config_for_agent` falls back to `find_custom_in_config` +
