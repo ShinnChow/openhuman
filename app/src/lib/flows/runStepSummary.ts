@@ -31,6 +31,7 @@
 import createDebug from 'debug';
 
 import { type FlowRunItem, isPlainObject } from './runItems';
+import { truncateText } from '../../utils/truncateText';
 
 const log = createDebug('app:flows:step-summary');
 
