@@ -643,25 +643,7 @@ fn compile_time_app_env_values() -> [Option<&'static str>; 2] {
 ///
 /// Falls back to a scheme-prefixed parse for bare-host strings like
 /// `localhost:1234` so those are still sanitised rather than returned verbatim.
-pub(crate) fn redact_url_for_log(raw: &str) -> String {
-    let trimmed = raw.trim();
-
-    let parsed =
-        url::Url::parse(trimmed).or_else(|_| url::Url::parse(&format!("http://{trimmed}")));
-
-    let Ok(mut parsed) = parsed else {
-        return trimmed.to_string();
-    };
-
-    if !parsed.username().is_empty() {
-        let _ = parsed.set_username("redacted");
-    }
-    if parsed.password().is_some() {
-        let _ = parsed.set_password(Some("redacted"));
-    }
-
-    parsed.to_string().trim_end_matches('/').to_string()
-}
+pub(crate) use crate::util::redact_url_for_log;
 
 /// Emit a single `warn!` log the **first time** the backend URL falls back
 /// from a user-set local-AI endpoint. Uses `std::sync::Once` to suppress
