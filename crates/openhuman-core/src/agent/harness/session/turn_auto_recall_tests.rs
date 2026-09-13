@@ -1,4 +1,4 @@
-use super::part_04_tests::scripted_reply;
+use super::turn_learned_context_and_announcements_tests::scripted_reply;
 use super::*;
 
 // ── Lane C: auto-recall of facts about the user (#6040) ──────────────────────
