@@ -39,7 +39,9 @@ mod transcribe;
 
 pub use processor::{start_if_enabled, stop};
 
-use processor::{notch_status, PAUSED};
+use processor::notch_status;
+#[cfg(target_os = "macos")]
+use processor::PAUSED;
 
 #[cfg(test)]
 use crate::modules::voice as tinyvoice;
