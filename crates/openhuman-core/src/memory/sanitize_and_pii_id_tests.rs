@@ -1,6 +1,20 @@
 use super::*;
 
 use crate::memory::safety::pii::redact_pii;
+use crate::memory::safety::pii::PII_AADHAAR;
+use crate::memory::safety::pii::PII_CC;
+use crate::memory::safety::pii::PII_CNPJ;
+use crate::memory::safety::pii::PII_CPF;
+use crate::memory::safety::pii::PII_CUIT;
+use crate::memory::safety::pii::PII_DNI;
+use crate::memory::safety::pii::PII_IBAN;
+use crate::memory::safety::pii::PII_MYNUM;
+use crate::memory::safety::pii::PII_NINO;
+use crate::memory::safety::pii::PII_PAN_IN;
+use crate::memory::safety::pii::PII_PHONE;
+use crate::memory::safety::pii::PII_RFC;
+use crate::memory::safety::pii::PII_RRN;
+use crate::memory::safety::pii::PII_SSN;
 #[test]
 fn sanitize_text_redacts_bearer_and_openai_key() {
     let input = "Authorization: Bearer abcdefghijklmnop and sk-1234567890123456789012345";
