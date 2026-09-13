@@ -99,18 +99,18 @@ and the turn still proceeds.
 
 ## Selection
 
-`../factory_part_02.rs` (`create_chat_model*`) calls
-`try_create_claude_code_chat_model`, defined in `../factory_part_03.rs`: it
+`../factory/chat_model.rs` (`create_chat_model*`) calls
+`try_create_claude_code_chat_model`, defined in `../factory/subprocess_providers.rs`: it
 strips `PROVIDER_PREFIX` from the resolved provider string, rejects an empty
 model id, runs `enforce_local_only_inference` and `verify_session_active`,
 emits the inference egress descriptor, and builds
 `ClaudeCodeProvider::from_env(model, workspace_dir_from_config(config),
 config.action_dir)`. An `@<temp>` suffix is accepted but ignored (logged).
 `from_env` fails fast with an actionable error when the CLI is missing,
-outdated (`MIN_CLI_VERSION`), or unusable. `../factory_part_01.rs` also
-special-cases the prefix in `route_has_usable_credentials` (a CC route carries
-its own credentials) and `external_provider_label` ("Claude Code CLI" in
-Privacy-Mode messages).
+outdated (`MIN_CLI_VERSION`), or unusable. `../factory/routing.rs` and
+`../factory/access_gates.rs` also special-case the prefix in
+`route_has_usable_credentials` (a CC route carries its own credentials) and
+`external_provider_label` ("Claude Code CLI" in Privacy-Mode messages).
 
 ## Tests
 
