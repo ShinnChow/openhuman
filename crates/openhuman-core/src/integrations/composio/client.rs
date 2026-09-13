@@ -34,3 +34,5 @@ pub(crate) use factory::{build_composio_client, create_direct_composio_tool_for_
 use std::sync::Arc;
 #[cfg(test)]
 use super::types::ComposioExecuteResponse;
+#[cfg(test)]
+use execute::is_post_oauth_auth_readiness_error;
