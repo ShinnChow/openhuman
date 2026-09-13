@@ -1,4 +1,5 @@
 use super::*;
+use tinybus::EventHandler;
 use crate::api::rest::BackendApiError;
 use crate::core::events::DomainEvent;
 
