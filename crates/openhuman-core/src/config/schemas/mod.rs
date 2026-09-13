@@ -7,14 +7,15 @@
 //! delegate to `config::ops` (re-exported as `config::rpc`) for the actual
 //! mutation/read, and shape the `RpcOutcome` response.
 //!
-//! - `controllers.rs` — `include!`s `controllers_part_01.rs` / `controllers_part_02.rs`
-//!   (split for file-size only; together they define every handler and the
-//!   `all_controller_schemas` / `all_registered_controllers` lists).
+//! - `controllers.rs` — declares submodules `controllers/{agent,inference,
+//!   integrations,registry,voice,workspace}.rs` (split for file-size only;
+//!   together they define every handler and the `all_controller_schemas` /
+//!   `all_registered_controllers` lists, the latter in `controllers/registry.rs`).
 //! - `helpers.rs` — param-deserialization update structs (`*SettingsUpdate`,
 //!   `*Params`) and small JSON helpers (`deserialize_params`, `to_json`, etc.).
 //! - `schema_defs.rs` — `schemas(function)`, the by-name `ControllerSchema`
-//!   lookup, dispatching to the `schemas_schema_part_01.rs` /
-//!   `schemas_schema_part_02.rs` `#[path]` submodules that hold the definitions.
+//!   lookup, dispatching to the `schema_defs/{agent,inference,integrations,
+//!   voice,workspace}.rs` submodules that hold the definitions.
 //!
 //! Tests: `../schemas_tests.rs` (mounted below) and `controllers_tests.rs`.
 //!
