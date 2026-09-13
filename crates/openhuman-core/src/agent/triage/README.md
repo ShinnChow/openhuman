@@ -124,5 +124,5 @@ Re-exported from `mod.rs`:
 ## Tests
 
 `envelope_tests.rs`, `decision_tests.rs`, `escalation_tests.rs`,
-`evaluator_tests.rs` + `evaluator_tests_part_0N_tests.rs`, `events_tests.rs`,
+`evaluator_tests.rs`, `evaluator_deferral_tests.rs`, `evaluator_fallback_chain_tests.rs`, `events_tests.rs`,
 `origin_tests.rs`, `routing_tests.rs`.
