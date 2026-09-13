@@ -122,8 +122,7 @@ its reads so a slower, older snapshot never overwrites a newer advert.
 - `crates/openhuman-core/src/platform/socket/event_handlers.rs` — dispatches
   every down event and calls `emit_register_agents` /
   `emit_register_workflows` on `ready`.
-- `crates/openhuman-core/src/platform/socket/ws_loop_part_01.rs`,
-  `ws_loop_part_02.rs`, `manager.rs` — end the connection generation on
-  disconnect.
+- `crates/openhuman-core/src/platform/socket/manager.rs` — ends the
+  connection generation on disconnect.
 - `crates/openhuman-core/src/flows/medulla_bridge.rs` and
-  `flows/ops_part_05.rs` — install the bridge and re-advertise workflows.
+  `flows/ops/definitions.rs` — install the bridge and re-advertise workflows.
