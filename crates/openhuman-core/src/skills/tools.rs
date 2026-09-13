@@ -18,11 +18,15 @@
 //! argument-parsing and allowlist helpers, [`read`] holds the read-only
 //! tools, and [`write`] holds the mutating ones.
 
+#[cfg(test)]
 use std::sync::Arc;
 
+#[cfg(test)]
 use serde_json::json;
 
+#[cfg(test)]
 use crate::config::Config;
+#[cfg(test)]
 use crate::tools::traits::{PermissionLevel, Tool};
 
 mod helpers;
