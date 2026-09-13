@@ -5,7 +5,7 @@ the Socket.IO `chat:start`/`chat:cancel` handlers' business logic, and the
 whole request lifecycle from a raw message to a delivered, durably stored
 reply. `channels/` owns the external messaging providers (Telegram, WhatsApp,
 …); their inbound messages are dispatched through this module's `start_chat`
-too (`channels/bus_part_01.rs`), so this is the single turn runner behind both
+too (`channels/bus/subscriber.rs`), so this is the single turn runner behind both
 surfaces.
 
 ## Request lifecycle
