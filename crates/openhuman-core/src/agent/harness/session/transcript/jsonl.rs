@@ -2,12 +2,11 @@
 //! conversions between them and the public [`ChatMessage`] /
 //! [`TranscriptMeta`] / [`DisplayMessage`] types.
 
-
-use crate::agent::harness::session::transcript::metadata::turn_usage_from_metadata;
 use super::metadata::{attach_turn_usage_metadata, take_tool_failure};
 use super::types::{
     DisplayMessage, MessageUsage, TranscriptMeta, TurnUsage, TRANSCRIPT_SCHEMA_VERSION,
 };
+use crate::agent::harness::session::transcript::metadata::turn_usage_from_metadata;
 use crate::agent::messages::ChatMessage;
 use crate::inference::provider::ToolCall;
 use anyhow::{Context, Result};

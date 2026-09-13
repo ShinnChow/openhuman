@@ -339,9 +339,9 @@ fn gate(parent: Option<&AgentDefinition>, child: &AgentDefinition) -> Result<(),
     super::runner::tier_gate_decision(parent, child, "parent-agent", "task-1")
 }
 
-#[path = "ops_tests_slug_filter_typed_mode_tests.rs"]
-mod slug_filter_typed_mode_tests;
 #[path = "ops_tests_model_resolution_tests.rs"]
 mod model_resolution_tests;
+#[path = "ops_tests_slug_filter_typed_mode_tests.rs"]
+mod slug_filter_typed_mode_tests;
 #[path = "ops_tests_tier_gate_tests.rs"]
 mod tier_gate_tests;

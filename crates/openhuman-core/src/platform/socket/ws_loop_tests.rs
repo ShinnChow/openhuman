@@ -6,11 +6,11 @@ use tokio_tungstenite::tungstenite::http::{header::LOCATION, Response, StatusCod
 use crate::platform::socket::token_provider::{is_invalid_token_error, static_token_provider};
 
 use crate::platform::socket::manager::SharedState;
+use crate::platform::socket::types::ConnectionStatus;
+use futures_util::{SinkExt, StreamExt};
 use std::sync::Arc;
 use tokio::sync::mpsc;
-use futures_util::{SinkExt, StreamExt};
 use tokio_tungstenite::tungstenite::{Error as WsError, Message as WsMessage};
-use crate::platform::socket::types::ConnectionStatus;
 fn make_shared() -> Arc<SharedState> {
     Arc::new(SharedState {
         webhook_router: RwLock::new(None),

@@ -10,11 +10,11 @@ use std::sync::LazyLock;
 use regex::Regex;
 
 use super::checksums::{
-    digits, valid_cnpj, valid_cpf, valid_cuit, valid_dni_es, valid_iban, valid_luhn,
-    valid_nie_es, valid_nino, valid_ssn, valid_verhoeff,
+    digits, valid_cnpj, valid_cpf, valid_cuit, valid_dni_es, valid_iban, valid_luhn, valid_nie_es,
+    valid_nino, valid_ssn, valid_verhoeff,
 };
 use super::normalize::{scan_candidates, Candidates, NormalizedView};
-use crate::memory::safety::secrets::{Sanitized, SanitizationReport};
+use crate::memory::safety::secrets::{SanitizationReport, Sanitized};
 
 // ---------- Multilingual personal-PII redaction ----------
 //
@@ -373,7 +373,6 @@ fn push_simple(hits: &mut Vec<Hit>, norm: &str, re: &Regex, token: &'static str)
     }
 }
 
-
 fn push_checksum(
     hits: &mut Vec<Hit>,
     norm: &str,
@@ -464,4 +463,3 @@ fn splice_redactions(
         report: *report,
     }
 }
-

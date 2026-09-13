@@ -110,7 +110,10 @@ fn invalidate_inference_probe_cache_if_signed_out() {
     }
 }
 
-pub(super) async fn cached_probe_inference_readiness(role: &str, config: &Config) -> Result<(), String> {
+pub(super) async fn cached_probe_inference_readiness(
+    role: &str,
+    config: &Config,
+) -> Result<(), String> {
     invalidate_inference_probe_cache_if_signed_out();
 
     let key: InferenceProbeCacheKey = (role.to_string(), config.config_path.clone());
@@ -132,8 +135,7 @@ pub(super) async fn cached_probe_inference_readiness(role: &str, config: &Config
         }
     }
 
-    let result =
-        crate::inference::provider::probe_inference_readiness(role, config).await;
+    let result = crate::inference::provider::probe_inference_readiness(role, config).await;
     INFERENCE_PROBE_CACHE
         .lock()
         .unwrap_or_else(std::sync::PoisonError::into_inner)
@@ -187,9 +189,8 @@ pub(super) fn agent_node_role(config: &Config, node: &tinyflows::model::Node) ->
         .map(str::trim)
         .filter(|s| !s.is_empty() && !s.starts_with('='));
     if let Some(agent_ref) = static_agent_ref {
-        if let Some(entry_model) =
-            crate::agent::registry::find_custom_in_config(config, agent_ref)
-                .and_then(|entry| entry.model)
+        if let Some(entry_model) = crate::agent::registry::find_custom_in_config(config, agent_ref)
+            .and_then(|entry| entry.model)
         {
             let entry_model = entry_model.trim();
             if !entry_model.is_empty() {
@@ -271,9 +272,8 @@ pub(super) async fn evaluate_inference_readiness(
             config,
         )
     });
-    let needs_session =
-        crate::inference::provider::factory::current_host_requires_session()
-            || needs_backend_session;
+    let needs_session = crate::inference::provider::factory::current_host_requires_session()
+        || needs_backend_session;
 
     // Layer 1: signed-out is the cheapest, most decisive check. Session-wide
     // — checked once for the whole graph, not per node/role.

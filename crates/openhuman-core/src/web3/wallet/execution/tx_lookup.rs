@@ -5,7 +5,9 @@ use log::debug;
 
 use crate::rpc::RpcOutcome;
 
-use super::super::chains::{btc as chain_btc, evm as chain_evm, solana as chain_sol, tron as chain_tron};
+use super::super::chains::{
+    btc as chain_btc, evm as chain_evm, solana as chain_sol, tron as chain_tron,
+};
 use super::super::defaults::EvmNetwork;
 use super::super::ops::WalletChain;
 use super::types::{TxLookupInfo, TxReceiptInfo, TxStatusInfo};

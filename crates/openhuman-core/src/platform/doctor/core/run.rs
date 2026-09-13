@@ -15,7 +15,6 @@ use super::types::{
 };
 use super::workspace_checks::check_workspace;
 
-
 /// How many chunks the bound memory driver holds, or why the count could not
 /// be taken.
 ///

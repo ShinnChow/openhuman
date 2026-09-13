@@ -16,16 +16,15 @@ mod scan;
 // `Path`, `Workflow`, `WorkflowScope`, and `precedence` exactly as it did
 // before this module was split into submodules.
 #[cfg(test)]
-use std::path::Path;
-#[cfg(test)]
 use super::ops_types::{Workflow, WorkflowScope};
 #[cfg(test)]
 use collision::precedence;
+#[cfg(test)]
+use std::path::Path;
 
 pub use api::{
-    discover_automations, discover_workflows, discover_workflows_with_profile,
-    init_workflows_dir, is_workspace_trusted, load_workflow_metadata,
-    load_workflow_metadata_for_profile,
+    discover_automations, discover_workflows, discover_workflows_with_profile, init_workflows_dir,
+    is_workspace_trusted, load_workflow_metadata, load_workflow_metadata_for_profile,
 };
 pub use resource::{
     profile_local_skill_ids, read_workflow_resource, read_workflow_resource_with_profile,

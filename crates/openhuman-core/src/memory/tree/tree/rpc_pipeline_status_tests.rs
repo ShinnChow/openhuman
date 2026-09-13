@@ -2,10 +2,10 @@ use super::*;
 
 use crate::memory::tree::tree::rpc::pipeline_status::gate_pause_state;
 use crate::memory::tree::tree::rpc::retry_failed::blocking_cause;
-use crate::memory::tree::tree::rpc::stall::QUEUE_STALL_THRESHOLD_MS;
 use crate::memory::tree::tree::rpc::stall::derive_pipeline_status;
 use crate::memory::tree::tree::rpc::stall::queue_idle_ms;
 use crate::memory::tree::tree::rpc::stall::queue_is_stalled;
+use crate::memory::tree::tree::rpc::stall::QUEUE_STALL_THRESHOLD_MS;
 #[test]
 fn derive_pipeline_status_precedence_matches_spec() {
     use crate::memory::tree::health::{DegradedState, FailureCode, PipelineFailure};

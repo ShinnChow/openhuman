@@ -148,4 +148,3 @@ pub(crate) const TINYJUICE: ModuleRecord = ModuleRecord {
     ],
     load: LoadPolicy::Lazy,
 };
-

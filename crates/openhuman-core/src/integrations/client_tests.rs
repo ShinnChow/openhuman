@@ -7,8 +7,6 @@
 //! envelope's `error` field (or falls back to truncated raw text) and
 //! the bail message includes it.
 
-
-use std::sync::Arc;
 use super::*;
 use axum::{
     http::StatusCode,
@@ -17,6 +15,7 @@ use axum::{
     Json, Router,
 };
 use serde_json::json;
+use std::sync::Arc;
 
 // ── Integration: HTTP error propagation through `post`/`get` ──────
 

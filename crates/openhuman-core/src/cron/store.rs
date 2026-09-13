@@ -24,8 +24,8 @@ pub use runs::{delete_queued_runs, list_runs, record_last_run, record_run, resch
 // the connection helper and the `rusqlite::params!` macro directly via
 // `use super::*;`, exactly as when this was one spliced file.
 #[allow(unused_imports)]
+use runs::{MAX_CRON_OUTPUT_BYTES, TRUNCATED_OUTPUT_MARKER};
+#[allow(unused_imports)]
 use rusqlite::params;
 #[allow(unused_imports)]
 use schema::with_connection;
-#[allow(unused_imports)]
-use runs::{MAX_CRON_OUTPUT_BYTES, TRUNCATED_OUTPUT_MARKER};

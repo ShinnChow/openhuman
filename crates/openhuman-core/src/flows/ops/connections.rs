@@ -24,8 +24,7 @@ pub async fn flows_list_connections(
     //    error); a backend outage returns Err — tolerate it so the picker still
     //    surfaces HTTP credentials.
     let composio_conns =
-        match crate::integrations::composio::ops::composio_list_connections(config).await
-        {
+        match crate::integrations::composio::ops::composio_list_connections(config).await {
             Ok(outcome) => {
                 tracing::debug!(
                     count = outcome.value.connections.len(),
@@ -50,9 +49,7 @@ pub async fn flows_list_connections(
     //    out secret material here; injection happens server-side in
     //    `tinyflows::caps::OpenHumanHttp`).
     let http_creds =
-        match crate::security::credentials::HttpCredentialsStore::from_config(config)
-            .list()
-        {
+        match crate::security::credentials::HttpCredentialsStore::from_config(config).list() {
             Ok(list) => {
                 tracing::debug!(
                     count = list.len(),
@@ -78,17 +75,15 @@ pub async fn flows_list_connections(
     // connection sync. Loaded once here so `build_flow_connections` can stay
     // a pure, unit-testable matcher.
     let identities =
-        crate::integrations::composio::identity_store::load_connected_identities(
-            config,
-        )
-        .await
-        .unwrap_or_else(|error| {
-            tracing::warn!(
-                %error,
-                "[flows] flows_list_connections: load_connected_identities failed"
-            );
-            Vec::new()
-        });
+        crate::integrations::composio::identity_store::load_connected_identities(config)
+            .await
+            .unwrap_or_else(|error| {
+                tracing::warn!(
+                    %error,
+                    "[flows] flows_list_connections: load_connected_identities failed"
+                );
+                Vec::new()
+            });
     tracing::debug!(
         count = identities.len(),
         "[flows] flows_list_connections: identity-cache load"
@@ -213,9 +208,7 @@ fn composio_connection_display(
 
 /// Human-readable picker label for a named HTTP credential, e.g.
 /// `"stripe (bearer)"`. Only the (non-secret) name + scheme — never the value.
-fn http_credential_display(
-    cred: &crate::security::credentials::HttpCredentialSummary,
-) -> String {
+fn http_credential_display(cred: &crate::security::credentials::HttpCredentialSummary) -> String {
     format!("{} ({})", cred.name, cred.scheme)
 }
 

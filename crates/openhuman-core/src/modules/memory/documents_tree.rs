@@ -4,9 +4,15 @@ use async_trait::async_trait;
 use tinymemory_api::chunks::Chunk;
 use tinymemory_api::error::MemoryError;
 use tinymemory_api::provider::types::SourceScope;
-use tinymemory_api::provider::{MemoryDocuments, MemoryTree, RootSummary, SummaryContext, SummaryInput, SummaryOutput};
-use tinymemory_api::tree::{IngestRequest, QueryResult, SummaryForest, TreeLeaf, TreeNode, TreeStatus};
-use tinymemory_api::types::{NamespaceDocumentInput, NamespaceRetrievalContext, StoredMemoryDocument};
+use tinymemory_api::provider::{
+    MemoryDocuments, MemoryTree, RootSummary, SummaryContext, SummaryInput, SummaryOutput,
+};
+use tinymemory_api::tree::{
+    IngestRequest, QueryResult, SummaryForest, TreeLeaf, TreeNode, TreeStatus,
+};
+use tinymemory_api::types::{
+    NamespaceDocumentInput, NamespaceRetrievalContext, StoredMemoryDocument,
+};
 use tinymemory_bus::names::methods;
 
 use super::provider::{module_call, ModuleMemoryProvider};
@@ -284,4 +290,3 @@ impl MemoryTree for ModuleMemoryProvider {
         module_call!(self, "flavour_profile", methods::FLAVOUR_PROFILE, (scope,))
     }
 }
-

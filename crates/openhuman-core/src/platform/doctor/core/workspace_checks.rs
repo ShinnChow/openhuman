@@ -8,7 +8,6 @@ use crate::config::Config;
 
 use super::types::DiagnosticItem;
 
-
 pub(super) fn check_workspace(config: &Config, items: &mut Vec<DiagnosticItem>) {
     let cat = "workspace";
     let ws = &config.workspace_dir;

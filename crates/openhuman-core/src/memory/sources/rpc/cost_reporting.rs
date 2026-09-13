@@ -164,7 +164,10 @@ pub struct MonthlyCostSummaryResponse {
 ///
 /// `pub(super)` so `rpc`'s sibling test module can reach it through
 /// `super::*`.
-pub(super) fn summarise_month(entries: &[SyncAuditEntry], month: &str) -> MonthlyCostSummaryResponse {
+pub(super) fn summarise_month(
+    entries: &[SyncAuditEntry],
+    month: &str,
+) -> MonthlyCostSummaryResponse {
     let mut summary = MonthlyCostSummaryResponse {
         month: month.to_string(),
         total_cost_usd: 0.0,

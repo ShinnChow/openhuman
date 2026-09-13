@@ -29,8 +29,8 @@ pub use patterns::{has_likely_email, has_likely_pii, redact_pii};
 // `include!`-spliced scope.
 #[cfg(test)]
 pub(super) use checksums::{
-    digits, valid_cnpj, valid_cpf, valid_cuit, valid_dni_es, valid_iban, valid_luhn,
-    valid_nie_es, valid_nino, valid_ssn, valid_verhoeff,
+    digits, valid_cnpj, valid_cpf, valid_cuit, valid_dni_es, valid_iban, valid_luhn, valid_nie_es,
+    valid_nino, valid_ssn, valid_verhoeff,
 };
 #[cfg(test)]
 pub(super) use normalize::{scan_candidates, NormalizedView};

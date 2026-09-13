@@ -1,10 +1,9 @@
 //! `TavilyExtractTool`: full page content retrieval via `POST /extract`.
 
-
-use crate::search::tools::tavily::types::escape_link_destination;
-use crate::search::tools::tavily::types::escape_link_text;
 use super::client::TavilyClient;
 use super::types::{copy_string, non_empty, TavilyExtractResponse, TavilyExtractResult};
+use crate::search::tools::tavily::types::escape_link_destination;
+use crate::search::tools::tavily::types::escape_link_text;
 use crate::tools::traits::{Tool, ToolCallOptions, ToolResult};
 use async_trait::async_trait;
 use serde_json::{json, Value};

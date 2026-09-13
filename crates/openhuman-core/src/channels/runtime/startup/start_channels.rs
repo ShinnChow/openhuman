@@ -7,17 +7,17 @@ use super::chat_workload::{resolve_chat_workload, ChatWorkloadResolution};
 use super::credentials::{hydrate_channel_credentials, RuntimeProxyClients};
 use super::prompt::format_access_context;
 use super::relay::start_relay_runtime;
-use crate::core::bus::BUS;
-use crate::core::events::DomainEvent;
-use crate::channels::system_prompt::{ChannelPromptInputs, ChannelSystemPrompt};
 use crate::agent::harness::build_tool_instructions_filtered;
 use crate::agent::host_runtime;
 use crate::channels::context::{
     effective_channel_message_timeout_secs, ChannelRuntimeContext,
     DEFAULT_CHANNEL_INITIAL_BACKOFF_SECS, DEFAULT_CHANNEL_MAX_BACKOFF_SECS,
 };
+use crate::channels::system_prompt::{ChannelPromptInputs, ChannelSystemPrompt};
 use crate::channels::traits;
 use crate::config::Config;
+use crate::core::bus::BUS;
+use crate::core::events::DomainEvent;
 use crate::inference::provider;
 use crate::security::SecurityPolicy;
 use crate::tools;
@@ -99,9 +99,9 @@ pub async fn start_channels(mut config: Config) -> Result<()> {
 
     // Initialise the sub-agent definition registry from this workspace.
     // Idempotent — `bootstrap_core_runtime` may also call it.
-    if let Err(err) = crate::agent::harness::AgentDefinitionRegistry::init_global(
-        &config.workspace_dir,
-    ) {
+    if let Err(err) =
+        crate::agent::harness::AgentDefinitionRegistry::init_global(&config.workspace_dir)
+    {
         tracing::warn!(
             "AgentDefinitionRegistry::init_global failed: {err} — \
              spawn_subagent will be unavailable until restart"
@@ -318,8 +318,7 @@ pub async fn start_channels(mut config: Config) -> Result<()> {
     // Assemble the ChannelHost capability surface (shutdown, STT/TTS, reaction
     // gate, approvals, conversation store, event sink). Ported rich providers
     // reach host capabilities through this instead of calling core internals.
-    let channel_host =
-        crate::channels::host::build_channel_host(Arc::new(config.clone()));
+    let channel_host = crate::channels::host::build_channel_host(Arc::new(config.clone()));
 
     // Provider construction lives in `tinychannels::factory` so that this host
     // and the `tinychannels-module` cdylib build the same providers from the

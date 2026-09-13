@@ -42,9 +42,9 @@ pub use processor::{start_if_enabled, stop};
 use processor::{notch_status, PAUSED};
 
 #[cfg(test)]
-use processor::ENABLED;
-#[cfg(test)]
 use crate::modules::voice as tinyvoice;
+#[cfg(test)]
+use processor::ENABLED;
 
 #[cfg(test)]
 #[path = "always_on_tests.rs"]

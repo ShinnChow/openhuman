@@ -3,9 +3,7 @@
 
 use std::collections::BTreeMap;
 
-use crate::agent::progress_tracing::serialize::{
-    truncate_capture_text, MAX_TOOL_CONTENT_CHARS,
-};
+use crate::agent::progress_tracing::serialize::{truncate_capture_text, MAX_TOOL_CONTENT_CHARS};
 use crate::agent::progress_tracing::types::SpanKind;
 
 use super::state::SpanCollector;
@@ -13,7 +11,10 @@ use super::state::SpanCollector;
 impl SpanCollector {
     /// Lazily open the root turn span so a stream that begins mid-flight
     /// (or never sends `TurnStarted`) still produces a correlated tree.
-    pub(in crate::agent::progress_tracing) fn ensure_turn_span(&mut self, start_unix_ms: u64) -> String {
+    pub(in crate::agent::progress_tracing) fn ensure_turn_span(
+        &mut self,
+        start_unix_ms: u64,
+    ) -> String {
         if let Some(id) = &self.turn_span_id {
             return id.clone();
         }
@@ -80,7 +81,10 @@ impl SpanCollector {
 
     /// The parent any iteration / tool / subagent span should hang off:
     /// the current iteration if one is open, else the turn root.
-    pub(in crate::agent::progress_tracing) fn active_parent_id(&mut self, now_unix_ms: u64) -> String {
+    pub(in crate::agent::progress_tracing) fn active_parent_id(
+        &mut self,
+        now_unix_ms: u64,
+    ) -> String {
         if let Some(id) = &self.current_iteration_span_id {
             return id.clone();
         }
@@ -116,7 +120,11 @@ impl SpanCollector {
     /// Record a tool call's result as the span's `output`, truncated to
     /// [`MAX_TOOL_CONTENT_CHARS`]. Same capture gate as
     /// [`Self::capture_tool_arguments`]. Empty output is skipped.
-    pub(in crate::agent::progress_tracing) fn capture_tool_output(&mut self, index: usize, output: &str) {
+    pub(in crate::agent::progress_tracing) fn capture_tool_output(
+        &mut self,
+        index: usize,
+        output: &str,
+    ) {
         if !self.ctx.capture_content || output.is_empty() {
             return;
         }
@@ -133,7 +141,12 @@ impl SpanCollector {
 
     pub(in crate::agent::progress_tracing) fn close_current_iteration(&mut self, end_unix_ms: u64) {
         if let Some(index) = self.current_iteration_index.take() {
-            self.close_span(index, end_unix_ms, crate::agent::progress_tracing::types::SpanStatus::Ok, BTreeMap::new());
+            self.close_span(
+                index,
+                end_unix_ms,
+                crate::agent::progress_tracing::types::SpanStatus::Ok,
+                BTreeMap::new(),
+            );
         }
         self.current_iteration_span_id = None;
     }

@@ -164,10 +164,7 @@ pub(crate) async fn search_catalog(
 
     // Drop toolkits whose fetch failed (no backend session / network error) —
     // they contribute zero results rather than erroring the whole search.
-    let fetched: Vec<(
-        String,
-        Vec<crate::flows::tinyflows::caps::ToolContract>,
-    )> = fetched
+    let fetched: Vec<(String, Vec<crate::flows::tinyflows::caps::ToolContract>)> = fetched
         .into_iter()
         .filter_map(|(tk, catalog)| catalog.map(|c| (tk, c)))
         .collect();
@@ -388,4 +385,3 @@ impl Tool for SearchToolCatalogTool {
         )?))
     }
 }
-

@@ -26,9 +26,9 @@ pub use start_chat::start_chat;
 
 #[cfg(any(test, debug_assertions))]
 pub use state::parallel_in_flight_entries_for_test;
-pub(crate) use state::{event_session_id_for, key_for};
-pub use state::{cancel_should_target, in_flight_entries_for_test, invalidate_thread_sessions};
 pub(super) use state::THREAD_SESSIONS;
+pub use state::{cancel_should_target, in_flight_entries_for_test, invalidate_thread_sessions};
+pub(crate) use state::{event_session_id_for, key_for};
 
 #[cfg(any(test, debug_assertions))]
 pub use test_hooks::set_test_forced_run_chat_task_error;

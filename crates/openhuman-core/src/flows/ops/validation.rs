@@ -128,7 +128,10 @@ pub(crate) fn to_flow_validation_error(
 /// parent that is already known to fail at execution. Dynamic `=` expressions,
 /// missing ids, and store failures retain their existing runtime diagnostics;
 /// this gate only rejects a saved graph whose topology is demonstrably unsafe.
-pub(super) fn referenced_workflow_compatibility_errors(config: &Config, graph: &WorkflowGraph) -> Vec<String> {
+pub(super) fn referenced_workflow_compatibility_errors(
+    config: &Config,
+    graph: &WorkflowGraph,
+) -> Vec<String> {
     // Descend as deep as the root graph declared it may nest, for the same
     // reason as the inline walk above.
     let max_depth = max_sub_workflow_depth(graph);

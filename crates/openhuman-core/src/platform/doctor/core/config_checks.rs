@@ -5,7 +5,6 @@ use crate::config::Config;
 
 use super::types::DiagnosticItem;
 
-
 pub(super) fn check_config_semantics(config: &Config, items: &mut Vec<DiagnosticItem>) {
     let cat = "config";
 
@@ -221,4 +220,3 @@ pub(super) fn embedding_provider_validation_error(name: &str) -> Option<String> 
         Err(err) => Some(format!("invalid custom provider URL: {err}")),
     }
 }
-

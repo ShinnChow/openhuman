@@ -12,10 +12,8 @@ use crate::flows::ops::validate_and_migrate_graph;
 use crate::tools::traits::{PermissionLevel, Tool, ToolResult};
 
 use super::dry_run_diagnostics::{
-    find_upstream_condition, tool_call_arg_null_entries, tool_call_error_message,
-    CapturingObserver,
+    find_upstream_condition, tool_call_arg_null_entries, tool_call_error_message, CapturingObserver,
 };
-
 
 /// Wall-clock bound on a single `dry_run_workflow` mock execution. A malformed
 /// or pathological draft graph must never hang the agent tool-loop; the mock
@@ -272,16 +270,13 @@ impl Tool for DryRunWorkflowTool {
         // `SchemaAwareMockLlm`'s doc). Swap the vendored `MockLlm` echo for the
         // schema-aware mock so their `output_parser.schema` is honored too,
         // instead of the echo shape failing the sub-port's validation.
-        caps.llm =
-            std::sync::Arc::new(crate::flows::tinyflows::caps::SchemaAwareMockLlm);
+        caps.llm = std::sync::Arc::new(crate::flows::tinyflows::caps::SchemaAwareMockLlm);
         // Wiring preflight over the echo mocks (see the struct doc): required
         // Composio args must be present and non-null even in the sandbox.
-        caps.tools = std::sync::Arc::new(
-            crate::flows::tinyflows::caps::PreflightToolInvoker {
-                config: self.config.clone(),
-                inner: caps.tools.clone(),
-            },
-        );
+        caps.tools = std::sync::Arc::new(crate::flows::tinyflows::caps::PreflightToolInvoker {
+            config: self.config.clone(),
+            inner: caps.tools.clone(),
+        });
 
         // Which node ids are `tool_call` nodes — the null-resolution check
         // below is scoped to just these (see the struct doc: a null in an

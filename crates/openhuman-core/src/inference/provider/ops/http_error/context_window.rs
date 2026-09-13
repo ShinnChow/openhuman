@@ -1,7 +1,6 @@
 //! Context-window overflow classification: the request exceeded the
 //! configured model's context length.
 
-
 /// Whether a provider error body indicates the request exceeded the model's
 /// context window (the conversation/prompt is too long for the configured
 /// model). This is a deterministic user-state / usage condition — the

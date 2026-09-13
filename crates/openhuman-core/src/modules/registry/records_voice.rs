@@ -82,4 +82,3 @@ pub(crate) const TINYVOICE: ModuleRecord = ModuleRecord {
     ],
     load: LoadPolicy::Lazy,
 };
-

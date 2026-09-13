@@ -25,22 +25,22 @@ pub use singleton::{global_server, run_standalone, start_if_enabled, try_global_
 pub use types::{ServerState, VoiceServerConfig, VoiceServerStatus};
 
 #[cfg(test)]
-use pipeline::{
-    build_initial_prompt, capture_expected_app_name, process_recording_bg, push_recent_transcript,
-    truncate_for_log, update_state_if_current,
-};
-#[cfg(test)]
-use types::DEFAULT_SILENCE_THRESHOLD;
-#[cfg(test)]
 use crate::config::Config;
 #[cfg(test)]
 use crate::voice::audio_capture::RecordingHandle;
 #[cfg(test)]
 use crate::voice::hotkey::ActivationMode;
 #[cfg(test)]
+use pipeline::{
+    build_initial_prompt, capture_expected_app_name, process_recording_bg, push_recent_transcript,
+    truncate_for_log, update_state_if_current,
+};
+#[cfg(test)]
 use std::sync::Arc;
 #[cfg(test)]
 use tokio::sync::Mutex;
+#[cfg(test)]
+use types::DEFAULT_SILENCE_THRESHOLD;
 
 const LOG_PREFIX: &str = "[voice_server]";
 

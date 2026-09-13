@@ -9,16 +9,15 @@
 
 use std::sync::{Arc, Mutex};
 
-use crate::memory::api::provider::MemoryProvider;
-use crate::memory::api::provider::types::{ExportRecord, SourceScope};
 use crate::memory::api::provider::episodic::ConversationSegment;
 use crate::memory::api::provider::episodic::EpisodicTurn;
 use crate::memory::api::provider::retrieval::RetrievalResponse;
+use crate::memory::api::provider::types::{ExportRecord, SourceScope};
+use crate::memory::api::provider::MemoryProvider;
 use crate::memory::api::types::{
     MemoryCategory, MemoryEntry, MemoryTaint, NamespaceDocumentInput, NamespaceMemoryHit,
     NamespaceSummary,
 };
-
 
 /// One call that reached the driver.
 #[derive(Debug, Clone, PartialEq)]
@@ -115,7 +114,9 @@ pub fn export_record(taint: MemoryTaint) -> ExportRecord {
 }
 
 /// A guard over a fresh recording provider, plus a handle on that provider.
-pub fn guarded(policy: super::super::GuardPolicy) -> (Arc<RecordingProvider>, super::super::MemoryGuard) {
+pub fn guarded(
+    policy: super::super::GuardPolicy,
+) -> (Arc<RecordingProvider>, super::super::MemoryGuard) {
     guarded_with(RecordingProvider::new(), policy)
 }
 
@@ -163,8 +164,6 @@ pub fn document(content: &str, taint: MemoryTaint) -> NamespaceDocumentInput {
         taint,
     }
 }
-
-
 
 impl RecordingProvider {
     /// A provider with an empty call log and every seeded answer at its

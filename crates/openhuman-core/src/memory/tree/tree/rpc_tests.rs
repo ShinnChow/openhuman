@@ -1,8 +1,8 @@
 use super::*;
+use crate::memory::read_rpc::Config;
 use chrono::Utc;
 use serde_json::json;
 use tempfile::TempDir;
-use crate::memory::read_rpc::Config;
 // `DocumentInput` (and its `ChatBatch` / `EmailThread` siblings, which
 // `rpc_ingest_and_chunk_tests` reaches the same way) now arrive through the
 // `use super::*` above: they are defined in `canonicalize_types.rs` and

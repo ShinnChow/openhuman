@@ -88,7 +88,10 @@ pub(crate) async fn graph_wiring_warnings(config: &Config, graph: &WorkflowGraph
 /// `.item.json.<x>` fields with no `data.` prefix; flagging them as
 /// "missing the `data.` segment" would rewire an already-correct binding to
 /// a nonsense path (e.g. suggesting `.item.json.data.successful`).
-pub(super) async fn graph_output_field_warnings(config: &Config, graph: &WorkflowGraph) -> Vec<String> {
+pub(super) async fn graph_output_field_warnings(
+    config: &Config,
+    graph: &WorkflowGraph,
+) -> Vec<String> {
     use crate::flows::tinyflows::caps::fetch_live_toolkit_catalog;
     // Reading a graph's `=`-bindings is the engine's grammar, not this host's:
     // both helpers were a private copy here until the gates moved upstream.
@@ -133,8 +136,7 @@ pub(super) async fn graph_output_field_warnings(config: &Config, graph: &Workflo
             // exact slug overrides the schema-derived `output_fields` — most
             // relevant for an action whose live listing publishes no output
             // schema at all (e.g. every GitHub action, verified live).
-            let contract =
-                crate::flows::tinyflows::caps::apply_probe_override(contract.clone());
+            let contract = crate::flows::tinyflows::caps::apply_probe_override(contract.clone());
             // Nothing real to check `field_path` against — schema unknown AND
             // no probed output fields either.
             if contract.output_schema.is_none() && contract.output_fields.is_empty() {
@@ -271,9 +273,7 @@ fn schema_says_path_is_non_array(output_schema: &Value, configured_path: &str) -
 /// `primary_array_path` NOR an `output_schema` is known (truly nothing to
 /// check against).
 async fn graph_split_out_path_warnings(config: &Config, graph: &WorkflowGraph) -> Vec<String> {
-    use crate::flows::tinyflows::caps::{
-        apply_probe_override, fetch_live_toolkit_catalog,
-    };
+    use crate::flows::tinyflows::caps::{apply_probe_override, fetch_live_toolkit_catalog};
     use tinymemory_api::composio::toolkit_from_slug;
 
     let mut warnings = Vec::new();

@@ -14,7 +14,10 @@ use crate::cron::{CronJob, SessionTarget};
 /// by the `composio_execute` handler via `current_task_recency_window`.
 pub(super) const MORNING_BRIEFING_TASK_RECENCY_SECS: u64 = 24 * 60 * 60;
 
-pub(super) async fn run_agent_job(config: &Config, job: &CronJob) -> (bool, String, Option<String>) {
+pub(super) async fn run_agent_job(
+    config: &Config,
+    job: &CronJob,
+) -> (bool, String, Option<String>) {
     let name = job.name.clone().unwrap_or_else(|| "cron-job".to_string());
     let prompt = job.prompt.clone().unwrap_or_default();
     let prefixed_prompt = format!("[cron:{} {name}] {prompt}", job.id);
@@ -32,8 +35,7 @@ pub(super) async fn run_agent_job(config: &Config, job: &CronJob) -> (bool, Stri
     // runs with the definition's constraints instead of the generic
     // Agent::from_config defaults.
     if let Some(ref agent_id) = job.agent_id {
-        if let Some(registry) =
-            crate::agent::harness::definition::AgentDefinitionRegistry::global()
+        if let Some(registry) = crate::agent::harness::definition::AgentDefinitionRegistry::global()
         {
             if let Some(def) = registry.get(agent_id) {
                 tracing::debug!(
@@ -136,12 +138,10 @@ pub(super) async fn run_agent_job(config: &Config, job: &CronJob) -> (bool, Stri
                     // automation and lets external_effect tools run without
                     // an in-app prompt — the user explicitly created this
                     // cron job and authorized its prompt at the same time.
-                    let origin =
-                        crate::agent::turn_origin::AgentTurnOrigin::TrustedAutomation {
-                            job_id: job.id.clone(),
-                            source:
-                                crate::agent::turn_origin::TrustedAutomationSource::Cron,
-                        };
+                    let origin = crate::agent::turn_origin::AgentTurnOrigin::TrustedAutomation {
+                        job_id: job.id.clone(),
+                        source: crate::agent::turn_origin::TrustedAutomationSource::Cron,
+                    };
                     let turn = crate::memory::source_scope::with_source_scope(
                         profile.and_then(|profile| profile.memory_sources),
                         crate::agent::turn_origin::with_origin(
@@ -289,7 +289,10 @@ pub(super) fn apply_cron_profile_runtime_defaults(
     effective
 }
 
-pub(super) fn build_agent_for_cron_job(config: &Config, job: &CronJob) -> anyhow::Result<BuiltCronAgent> {
+pub(super) fn build_agent_for_cron_job(
+    config: &Config,
+    job: &CronJob,
+) -> anyhow::Result<BuiltCronAgent> {
     // 2b — profile attribution. When the job names a profile that still exists,
     // build the run under it via the SAME profile-aware session path the task
     // dispatcher uses (`from_config_for_agent_with_profile`), so the run inherits

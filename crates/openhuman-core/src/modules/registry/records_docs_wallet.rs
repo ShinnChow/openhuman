@@ -169,4 +169,3 @@ pub(crate) const TINYWALLET: ModuleRecord = ModuleRecord {
     ],
     load: LoadPolicy::Lazy,
 };
-

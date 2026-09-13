@@ -39,8 +39,8 @@ mod in_flight_tests;
 #[path = "catalog_tests.rs"]
 mod tests;
 
-pub use contract::ToolContract;
 pub(crate) use contract::fetch_live_toolkit_catalog;
+pub use contract::ToolContract;
 #[cfg(test)]
 pub(crate) use contract::{seed_live_catalog_cache, seed_live_catalog_cache_expired};
 pub(crate) use lookups::composio_required_args;
@@ -57,8 +57,6 @@ pub(crate) use probe::{seed_probe_cache, seed_probe_cache_expired};
 #[cfg(test)]
 use crate::config::Config;
 #[cfg(test)]
-use serde_json::Value;
-#[cfg(test)]
 use contract::{compute_composio_array_path, live_catalog_fetch_lock};
 #[cfg(test)]
 use lookups::composio_response_fields;
@@ -67,3 +65,5 @@ use probe::{
     cache_probe_result, probed_output_sample, resolve_composio_action_scope,
     COMPOSIO_ENVELOPE_META_KEYS_AT_ROOT,
 };
+#[cfg(test)]
+use serde_json::Value;

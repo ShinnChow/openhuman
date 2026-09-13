@@ -217,4 +217,3 @@ async fn steer_after_terminal_is_rejected() {
     );
     prune("task-term");
 }
-

@@ -2,7 +2,6 @@
 //! tinyagents seam, building its context middleware, and folding a cap-hit
 //! checkpoint summary back into the result.
 
-
 use crate::agent::harness::subagent_runner::ops::checkpoint;
 use std::collections::HashSet;
 use std::sync::Arc;

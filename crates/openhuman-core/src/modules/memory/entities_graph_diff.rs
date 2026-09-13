@@ -3,7 +3,9 @@
 
 use async_trait::async_trait;
 use tinymemory_api::error::MemoryError;
-use tinymemory_api::provider::types::{ChunkEntityOccurrence, DiffReport, EntityHit, EntityOccurrence, SnapshotRef};
+use tinymemory_api::provider::types::{
+    ChunkEntityOccurrence, DiffReport, EntityHit, EntityOccurrence, SnapshotRef,
+};
 use tinymemory_api::provider::{MemoryDiff, MemoryEntities, MemoryGraph};
 use tinymemory_api::types::{GraphRelationRecord, MemoryKvRecord};
 use tinymemory_bus::names::methods;
@@ -190,4 +192,3 @@ impl MemoryDiff for ModuleMemoryProvider {
         )
     }
 }
-

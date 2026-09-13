@@ -314,8 +314,7 @@ impl MemoryTree for RecordingProvider {
         &self,
         _per_namespace_cap: usize,
         _total_cap: usize,
-    ) -> Result<Vec<crate::memory::api::provider::content::RootSummary>, MemoryError>
-    {
+    ) -> Result<Vec<crate::memory::api::provider::content::RootSummary>, MemoryError> {
         self.record(Call::plain("tree.root_summaries_with_caps"));
         Ok(Vec::new())
     }

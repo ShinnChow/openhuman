@@ -194,10 +194,8 @@ pub(super) async fn run_flow_body(
     };
 
     // Scope the state store per-flow so two flows never collide on a state key.
-    let caps = crate::flows::tinyflows::build_capabilities(
-        config_arc.clone(),
-        format!("flow:{flow_id}"),
-    );
+    let caps =
+        crate::flows::tinyflows::build_capabilities(config_arc.clone(), format!("flow:{flow_id}"));
     let checkpointer = match crate::flows::tinyflows::open_flow_checkpointer(config) {
         Ok(checkpointer) => checkpointer,
         Err(e) => {

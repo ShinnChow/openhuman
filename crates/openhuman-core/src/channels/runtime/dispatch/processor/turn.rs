@@ -2,8 +2,6 @@
 //! assembly, dispatching the agentic turn over the native bus, and
 //! delivering the draft/final reply.
 
-use crate::core::bus::BUS;
-use crate::core::events::DomainEvent;
 use crate::agent::bus::{AgentTurnRequest, AgentTurnResponse, AGENT_RUN_TURN_METHOD};
 use crate::agent::messages::ChatMessage;
 use crate::agent::progress::AgentProgress;
@@ -16,6 +14,8 @@ use crate::channels::routes::{
 };
 use crate::channels::traits;
 use crate::channels::{ChannelSendExt, SendMessage};
+use crate::core::bus::BUS;
+use crate::core::events::DomainEvent;
 use crate::inference::provider;
 use crate::util::truncate_with_ellipsis;
 use std::sync::Arc;
@@ -367,13 +367,11 @@ pub(crate) async fn process_channel_runtime_message(
         // config)` — `route.provider` is the effective provider string. Tests (no
         // `config`) stay on an injected model source.
         turn_model_source: match &ctx.config {
-            Some(cfg) => {
-                crate::agent::tinyagents::TurnModelSource::new_crate_native_from_string(
-                    "chat",
-                    route.provider.clone(),
-                    cfg.clone(),
-                )
-            }
+            Some(cfg) => crate::agent::tinyagents::TurnModelSource::new_crate_native_from_string(
+                "chat",
+                route.provider.clone(),
+                cfg.clone(),
+            ),
             None => active_turn_model_source
                 .expect("test channel context must inject a turn model source"),
         },
@@ -399,8 +397,7 @@ pub(crate) async fn process_channel_runtime_message(
         // owns the local filesystem) goes through a different turn
         // builder and keeps the operator default. Mirrors the triage-arm
         // hardening in `agent::triage::evaluator`.
-        multimodal_files:
-            crate::config::MultimodalFileConfig::for_untrusted_channel_input(),
+        multimodal_files: crate::config::MultimodalFileConfig::for_untrusted_channel_input(),
         max_tool_iterations: ctx.max_tool_iterations,
         on_delta: None, // on_progress handles text deltas now
         target_agent_id: scoping.target_agent_id,

@@ -374,7 +374,10 @@ pub(super) fn extract_location_header(
 /// `location` may be absolute (`https://host/path?q=1`) or relative
 /// (`/socket.io/?EIO=4`). We use the `url` crate's relative-URL parser to do
 /// the join the same way browsers do, then map `http`→`ws` / `https`→`wss`.
-pub(super) fn resolve_redirect_target(current_ws_url: &str, location: &str) -> Result<String, String> {
+pub(super) fn resolve_redirect_target(
+    current_ws_url: &str,
+    location: &str,
+) -> Result<String, String> {
     let base = url::Url::parse(current_ws_url).map_err(|e| format!("invalid current URL: {e}"))?;
     let resolved = base
         .join(location)

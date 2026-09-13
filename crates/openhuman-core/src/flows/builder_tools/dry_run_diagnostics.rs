@@ -4,7 +4,6 @@
 use serde_json::{json, Value};
 use tinyflows::model::WorkflowGraph;
 
-
 /// Builds one `null_resolutions` diagnostic entry for a `tool_call` node's
 /// null-resolved `args.*` config expression.
 ///
@@ -103,7 +102,6 @@ pub(super) fn tool_call_arg_null_entries(
         })
         .collect()
 }
-
 
 /// Walks a graph backward from `node_id`'s predecessors (any number of hops)
 /// to find the nearest ancestor that is a `condition` node — used to name the

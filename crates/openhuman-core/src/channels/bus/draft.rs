@@ -1,8 +1,8 @@
 //! Posting and progressively editing the evolving "draft" reply bubble.
 
 use super::progressive_ui::{
-    channel_edits_unsupported, classify_edit_failure, mark_channel_edits_unsupported,
-    EditFailure, MAX_EDIT_FAILURES,
+    channel_edits_unsupported, classify_edit_failure, mark_channel_edits_unsupported, EditFailure,
+    MAX_EDIT_FAILURES,
 };
 use super::streaming_state::StreamingState;
 use serde_json::json;
@@ -94,8 +94,10 @@ pub(super) async fn flush_streaming_edit(channel: &str, state: &mut StreamingSta
             }
         }
     } else {
-        let body =
-            super::delivery::channel_message_body_with_idempotency(channel, json!({ "text": draft }));
+        let body = super::delivery::channel_message_body_with_idempotency(
+            channel,
+            json!({ "text": draft }),
+        );
         match client.send_channel_message(channel, &jwt, body).await {
             Ok(resp) => {
                 // A message was posted to the user — record that fact

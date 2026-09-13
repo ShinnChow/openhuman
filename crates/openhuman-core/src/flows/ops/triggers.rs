@@ -149,7 +149,6 @@ pub(super) fn unbind_trigger(config: &Config, flow: &Flow) {
     }
 }
 
-
 /// Registers (or refreshes) the `cron` job backing a `schedule`-trigger
 /// flow. Idempotent — re-uses an existing binding via
 /// `cron::find_flow_schedule_job` rather than creating a duplicate, so this
@@ -185,8 +184,7 @@ pub(super) fn bind_schedule_trigger(config: &Config, flow: &Flow) {
                 tracing::debug!(target: "flows", flow_id = %flow.id, cron_job_id = %existing.id, "[flows] refreshed existing schedule-trigger cron job");
             }
         }
-        Ok(None) => match crate::cron::add_flow_schedule_job(config, &flow.id, schedule)
-        {
+        Ok(None) => match crate::cron::add_flow_schedule_job(config, &flow.id, schedule) {
             Ok(job) => {
                 tracing::info!(target: "flows", flow_id = %flow.id, cron_job_id = %job.id, "[flows] registered schedule-trigger cron job")
             }

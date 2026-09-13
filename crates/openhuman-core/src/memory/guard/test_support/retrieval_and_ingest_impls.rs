@@ -8,16 +8,12 @@
 //! families live in [`super::provider_and_sync_impls`] and
 //! [`super::core_and_docs_impls`].
 
-
-use crate::memory::api::provider::types::SourceScope;
 use crate::memory::api::chunks::Chunk;
 use crate::memory::api::error::MemoryError;
-use crate::memory::api::provider::chunks::{
-    ChunkDetail, ChunkEmbedding, ChunkQuery,
-};
+use crate::memory::api::provider::chunks::{ChunkDetail, ChunkEmbedding, ChunkQuery};
 use crate::memory::api::provider::operations::{
-    MemoryAnswer, MemoryConversationIngest, MemoryDocumentIngest,
-    MemoryEventIngest, MemoryLearningIngest,
+    MemoryAnswer, MemoryConversationIngest, MemoryDocumentIngest, MemoryEventIngest,
+    MemoryLearningIngest,
 };
 use crate::memory::api::provider::people::{
     AddressBookSeedOutcome, PersonHandle, PersonInteraction, PersonRecord, PersonScore,
@@ -28,12 +24,13 @@ use crate::memory::api::provider::retrieval::{
     CoverWindowQuery, EntityMatch, FastRetrieveQuery, RetrievalHit, RetrievalResponse,
     SourceRetrievalQuery,
 };
+use crate::memory::api::provider::types::SourceScope;
 use crate::memory::api::provider::types::{IngestItem, IngestOutcome};
-use crate::memory::api::types::NamespaceMemoryHit;
 use crate::memory::api::provider::{
     EpisodicEvent, MemoryChunks, MemoryEpisodic, MemoryPeople, MemoryProfile, MemoryRetrieval,
     MemoryScoring,
 };
+use crate::memory::api::types::NamespaceMemoryHit;
 use async_trait::async_trait;
 
 use super::fixtures::{rendered_scope, Call, RecordingProvider};
@@ -58,8 +55,7 @@ impl MemoryEpisodic for RecordingProvider {
     async fn session_turns(
         &self,
         _session_id: &str,
-    ) -> Result<Vec<crate::memory::api::provider::episodic::EpisodicTurn>, MemoryError>
-    {
+    ) -> Result<Vec<crate::memory::api::provider::episodic::EpisodicTurn>, MemoryError> {
         self.record(Call::plain("episodic.session_turns"));
         Ok(self.session_turns.lock().unwrap().clone())
     }
@@ -67,10 +63,8 @@ impl MemoryEpisodic for RecordingProvider {
     async fn open_segment(
         &self,
         _session_id: &str,
-    ) -> Result<
-        Option<crate::memory::api::provider::episodic::ConversationSegment>,
-        MemoryError,
-    > {
+    ) -> Result<Option<crate::memory::api::provider::episodic::ConversationSegment>, MemoryError>
+    {
         self.record(Call::plain("episodic.open_segment"));
         Ok(None)
     }
@@ -78,10 +72,7 @@ impl MemoryEpisodic for RecordingProvider {
     async fn segments_pending_summary(
         &self,
         limit: u32,
-    ) -> Result<
-        Vec<crate::memory::api::provider::episodic::ConversationSegment>,
-        MemoryError,
-    > {
+    ) -> Result<Vec<crate::memory::api::provider::episodic::ConversationSegment>, MemoryError> {
         self.record(Call::plain("episodic.segments_pending_summary"));
         // Honour `limit` — a fake that ignored it would let a test drive more
         // segments than the caller asked for and hide a bounded-recovery bug.
@@ -272,8 +263,7 @@ impl MemoryChunks for RecordingProvider {
     async fn chunk_score(
         &self,
         _chunk_id: &str,
-    ) -> Result<Option<crate::memory::api::provider::chunks::ChunkScore>, MemoryError>
-    {
+    ) -> Result<Option<crate::memory::api::provider::chunks::ChunkScore>, MemoryError> {
         self.record(Call::plain("chunks.chunk_score"));
         Ok(None)
     }
@@ -281,8 +271,7 @@ impl MemoryChunks for RecordingProvider {
     async fn source_ingest_status(
         &self,
         _source_prefixes: &[crate::memory::api::provider::chunks::SourceIngestQuery],
-    ) -> Result<Vec<crate::memory::api::provider::chunks::SourceIngestStatus>, MemoryError>
-    {
+    ) -> Result<Vec<crate::memory::api::provider::chunks::SourceIngestStatus>, MemoryError> {
         self.record(Call::plain("chunks.source_ingest_status"));
         Ok(vec![])
     }
@@ -555,14 +544,12 @@ impl MemoryEventIngest for RecordingProvider {
     }
 }
 
-
 #[async_trait]
 impl MemoryAnswer for RecordingProvider {
     async fn answer(
         &self,
         _request: crate::memory::api::provider::operations::AnswerRequest,
-    ) -> Result<crate::memory::api::provider::operations::AnswerResponse, MemoryError>
-    {
+    ) -> Result<crate::memory::api::provider::operations::AnswerResponse, MemoryError> {
         self.record(Call {
             method: "answer.answer".into(),
             content: None,

@@ -7,7 +7,6 @@
 //! where they can be honest — `tinymemory`'s own loader E2E, against a real
 //! broker and a real `dlopen`.
 
-
 use std::sync::Arc;
 
 use tinymemory_api::capabilities::{Capabilities, Capability};

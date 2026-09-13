@@ -95,6 +95,5 @@ pub struct StoredAppStatePatch {
     #[serde(default)]
     pub onboarding_tasks: Option<Option<StoredOnboardingTasks>>,
     #[serde(default)]
-    pub keyring_consent:
-        Option<Option<crate::security::keyring_consent::ConsentPreference>>,
+    pub keyring_consent: Option<Option<crate::security::keyring_consent::ConsentPreference>>,
 }

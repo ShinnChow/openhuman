@@ -34,12 +34,12 @@ async fn backend_composio_client(
     config: &crate::config::Config,
     toolkit: &str,
 ) -> anyhow::Result<ComposioClient> {
-    let live_config = crate::config::rpc::reload_config_from_paths(
-        &config.config_path,
-        &config.workspace_dir,
-    )
-    .await
-    .map_err(|e| anyhow::anyhow!("composio backend client: failed to reload live config: {e}"))?;
+    let live_config =
+        crate::config::rpc::reload_config_from_paths(&config.config_path, &config.workspace_dir)
+            .await
+            .map_err(|e| {
+                anyhow::anyhow!("composio backend client: failed to reload live config: {e}")
+            })?;
     match create_composio_client(&live_config)? {
         ComposioClientKind::Backend(client) => Ok(client),
         ComposioClientKind::Direct(_) => Err(anyhow::anyhow!(
@@ -211,9 +211,7 @@ impl EventHandler<DomainEvent> for ComposioConnectionCreatedSubscriber {
                     })
                     .map(|s| (s.max_items, s.sync_depth_days))
                     .unwrap_or_else(|| {
-                        crate::memory::sources::memory_sync_defaults_for_toolkit(
-                            toolkit.as_str(),
-                        )
+                        crate::memory::sources::memory_sync_defaults_for_toolkit(toolkit.as_str())
                     })
             };
 
@@ -512,12 +510,9 @@ impl EventHandler<DomainEvent> for ComposioConnectionCreatedSubscriber {
                 return;
             }
             let label = format!("{toolkit} connection");
-            if let Err(e) = crate::memory::sources::upsert_composio_source(
-                &toolkit,
-                &connection_id,
-                &label,
-            )
-            .await
+            if let Err(e) =
+                crate::memory::sources::upsert_composio_source(&toolkit, &connection_id, &label)
+                    .await
             {
                 tracing::warn!(
                     toolkit = %toolkit,

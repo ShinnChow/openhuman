@@ -4,8 +4,6 @@
 //! Split out of `families.rs`; see [`super::types`] for the shared decorator
 //! scaffolding these `impl` blocks build on.
 
-
-use crate::memory::api::provider::types::SourceScope;
 use crate::memory::api::capabilities::Capability;
 use crate::memory::api::error::MemoryError;
 use crate::memory::api::provider::episodic::{ConversationSegment, EpisodicTurn};
@@ -21,6 +19,7 @@ use crate::memory::api::provider::sync::{
     RawArchiveCoverage, RawRebuildOutcome, SourceSyncState, SourceSyncStatus, SyncAuditEntry,
     SyncRunOutcome,
 };
+use crate::memory::api::provider::types::SourceScope;
 use crate::memory::api::provider::{
     EpisodicEvent, MemoryCodingSessions, MemoryEpisodic, MemoryProfile, MemoryRetrieval,
     MemoryScoring, MemorySourceSync,

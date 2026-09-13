@@ -1,8 +1,8 @@
 use super::super::types::Agent;
-use crate::agent::messages::ConversationMessage;
 use crate::agent::dispatcher::XmlToolDispatcher;
 use crate::agent::error::AgentError;
 use crate::agent::messages::ChatMessage;
+use crate::agent::messages::ConversationMessage;
 use crate::core::events::DomainEvent;
 use crate::inference::provider::{ChatResponse, UsageInfo};
 use crate::memory::Memory;

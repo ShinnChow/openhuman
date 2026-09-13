@@ -7,7 +7,6 @@ use crate::config::rpc as config_rpc;
 use crate::core::all::ControllerFuture;
 use crate::rpc::RpcOutcome;
 
-
 pub(super) fn handle_linkedin_enrichment(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         let preset_profile_url = params

@@ -3,19 +3,19 @@
 
 use serde_json::Value;
 
-use crate::channels::providers::yuanbao::YuanbaoConfig;
 use crate::channels::email_channel::EmailConfig;
+use crate::channels::providers::yuanbao::YuanbaoConfig;
 use crate::config::{Config, DiscordConfig, IMessageConfig, TelegramConfig};
 use crate::rpc::RpcOutcome;
 use crate::security::credentials;
 
 use super::super::super::definitions::{find_channel_definition, ChannelAuthMode};
 use super::super::types::ChannelConnectionResult;
-use super::email::{build_email_config, persist_email_config, verify_email_credentials};
-use super::shared::{credential_provider, parse_allowed_users, parse_optional_bool};
 use super::super::yuanbao::{
     build_effective_yuanbao_config, require_yuanbao_field, verify_yuanbao_credentials,
 };
+use super::email::{build_email_config, persist_email_config, verify_email_credentials};
+use super::shared::{credential_provider, parse_allowed_users, parse_optional_bool};
 
 /// Initiate a channel connection.
 ///
@@ -176,12 +176,7 @@ pub async fn connect_channel(
                     existing.mention_only,
                 )
             } else {
-                (
-                    crate::config::StreamMode::default(),
-                    1000,
-                    true,
-                    false,
-                )
+                (crate::config::StreamMode::default(), 1000, true, false)
             };
 
         persisted.channels_config.telegram = Some(TelegramConfig {
@@ -318,4 +313,3 @@ pub async fn connect_channel(
         format!("stored credentials for {}", provider_key),
     ))
 }
-

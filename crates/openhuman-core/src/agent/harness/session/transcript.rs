@@ -124,12 +124,11 @@ pub use paths::{
 };
 pub use reader::{read_transcript, read_transcript_display};
 pub use thread_lookup::{
-    find_root_transcript_for_thread,
-    find_root_transcripts_for_thread, read_thread_usage_summary,
+    find_root_transcript_for_thread, find_root_transcripts_for_thread, read_thread_usage_summary,
 };
 pub use types::{
-    CompactionMarker, DisplayMessage, DisplayRecord, MessageUsage,
-    SessionTranscript, TranscriptMeta, TurnUsage,
+    CompactionMarker, DisplayMessage, DisplayRecord, MessageUsage, SessionTranscript,
+    TranscriptMeta, TurnUsage,
 };
 pub use writer::{append_interrupted_partial, append_transcript_turn, write_transcript};
 

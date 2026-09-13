@@ -1,6 +1,5 @@
 use super::*;
 
-
 /// Cancels a flow run (issue G4), settling it to a terminal `"cancelled"`
 /// status and dropping its durable checkpoint so the aborted thread can never
 /// be resumed.

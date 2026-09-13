@@ -4,7 +4,6 @@
 //! small allowlist of tool-like operations exposed over JSON-RPC (see the module
 //! doc on `super`). [`tools_schemas`] is the schema lookup shared by both.
 
-
 use crate::core::all::RegisteredController;
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 

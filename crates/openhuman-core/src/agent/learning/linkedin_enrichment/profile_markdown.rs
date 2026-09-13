@@ -3,7 +3,6 @@
 
 use crate::config::Config;
 
-
 // ── PROFILE.md generation ────────────────────────────────────────────
 
 /// Summarise the scraped LinkedIn data with an LLM, then write the

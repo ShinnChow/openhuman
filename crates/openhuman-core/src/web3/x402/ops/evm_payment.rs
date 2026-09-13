@@ -226,13 +226,11 @@ pub(super) async fn evm_signer() -> Result<
         .await
         .map_err(|e| X402Error::Wallet(format!("load config: {e}")))?;
 
-    let mnemonic = crate::security::encryption::rpc::decrypt_secret(
-        &config,
-        &secret.encrypted_mnemonic,
-    )
-    .await
-    .map_err(|e| X402Error::Wallet(format!("decrypt mnemonic: {e}")))?
-    .value;
+    let mnemonic =
+        crate::security::encryption::rpc::decrypt_secret(&config, &secret.encrypted_mnemonic)
+            .await
+            .map_err(|e| X402Error::Wallet(format!("decrypt mnemonic: {e}")))?
+            .value;
 
     let signing_secret = tinywallet_bus::wire::SecretMaterial {
         mnemonic,

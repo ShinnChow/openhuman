@@ -29,6 +29,8 @@ pub use prompt::extract_prompt;
 pub use turn_handler::handle_voice_harness_turn;
 
 #[cfg(test)]
+use crate::agent::progress::AgentProgress;
+#[cfg(test)]
 use agent::VOICE_DIRECTIVE;
 #[cfg(test)]
 use prompt::{
@@ -37,8 +39,6 @@ use prompt::{
 };
 #[cfg(test)]
 use turn_handler::{next_handoff_line, VOICE_HANDOFF_LINES};
-#[cfg(test)]
-use crate::agent::progress::AgentProgress;
 
 #[cfg(test)]
 #[path = "realtime_harness_tests.rs"]

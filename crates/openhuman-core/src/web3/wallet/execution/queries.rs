@@ -5,7 +5,9 @@ use log::{debug, warn};
 
 use crate::rpc::RpcOutcome;
 
-use super::super::chains::{btc as chain_btc, evm as chain_evm, solana as chain_sol, tron as chain_tron};
+use super::super::chains::{
+    btc as chain_btc, evm as chain_evm, solana as chain_sol, tron as chain_tron,
+};
 use super::super::defaults::{
     evm_asset_catalog, network_defaults as default_networks, rpc_url_for_chain, EvmNetwork,
     WalletAssetDefinition, WalletNetworkDefaults,

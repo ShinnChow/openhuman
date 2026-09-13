@@ -9,7 +9,10 @@ use tinymemory_api::provider::types::{
     IngestOutcome, MaintenanceReport, PurgeOutcome, QueueFailure, QueueStats, ResetOutcome,
     SourceItem, StoreStats,
 };
-use tinymemory_api::provider::{DegradedCapabilities, Diagnosis, MemoryGoals, MemoryMaintenance, MemorySourceSink, MemoryToolMemory};
+use tinymemory_api::provider::{
+    DegradedCapabilities, Diagnosis, MemoryGoals, MemoryMaintenance, MemorySourceSink,
+    MemoryToolMemory,
+};
 use tinymemory_api::tool_memory::ToolMemoryRule;
 use tinymemory_api::types::MemoryTaint;
 use tinymemory_bus::names::methods;
@@ -157,4 +160,3 @@ impl MemoryMaintenance for ModuleMemoryProvider {
         module_call!(self, "degraded_state", methods::DEGRADED_STATE, ())
     }
 }
-

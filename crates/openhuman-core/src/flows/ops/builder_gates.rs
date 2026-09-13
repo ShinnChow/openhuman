@@ -431,8 +431,7 @@ pub(crate) async fn validate_agent_refs(config: &Config, graph: &WorkflowGraph) 
             }
             AgentRoute::RegistryFallback => {
                 if custom_registry.is_none() {
-                    custom_registry =
-                        Some(crate::agent::registry::list_agents(true).await);
+                    custom_registry = Some(crate::agent::registry::list_agents(true).await);
                 }
                 match custom_registry.as_ref().expect("just populated") {
                     Ok(entries) => match entries.iter().find(|entry| entry.id == agent_ref) {

@@ -13,13 +13,13 @@ pub use start_channels::start_channels;
 // modules below — which share this module's scope via `super::*` — can see
 // them exactly as they could when this was one unsplit file.
 #[cfg(test)]
+use crate::config::Config;
+#[cfg(test)]
 use chat_workload::{resolve_chat_workload, ChatWorkloadResolution};
 #[cfg(any(test, debug_assertions))]
 use credentials::resolve_yuanbao_app_secret;
 #[cfg(test)]
 use relay::RelayInboundMessageHandler;
-#[cfg(test)]
-use crate::config::Config;
 
 #[cfg(any(test, debug_assertions))]
 #[path = "startup_test_support_tests.rs"]

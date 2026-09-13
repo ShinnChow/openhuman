@@ -2,7 +2,6 @@
 
 use crate::modules::types::{LoadPolicy, ModuleRecord, PlatformAsset};
 
-
 /// The `tinymcp` module: the Model Context Protocol client.
 ///
 /// Owns both transports (Streamable HTTP and a subprocess over stdio), the
@@ -159,4 +158,3 @@ pub(crate) const TINYCONNECTORS: ModuleRecord = ModuleRecord {
     // loads without configuration and still answers the capability members.
     load: LoadPolicy::Lazy,
 };
-

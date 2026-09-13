@@ -1,6 +1,5 @@
 use super::*;
 
-
 /// Resumes a `flows_run` that paused at a human-in-the-loop approval gate,
 /// continuing it from the durable checkpoint (`thread_id`) with
 /// `approvals` newly granted. The UI approval card (B3) calls this once the
@@ -209,12 +208,10 @@ pub async fn flows_resume(
     }
     let compiled = tinyflows::compiler::compile(&flow.graph).map_err(|e| e.to_string())?;
     let config_arc = Arc::new(config.clone());
-    let caps = crate::flows::tinyflows::build_capabilities(
-        config_arc.clone(),
-        format!("flow:{flow_id}"),
-    );
-    let checkpointer = crate::flows::tinyflows::open_flow_checkpointer(config)
-        .map_err(|e| e.to_string())?;
+    let caps =
+        crate::flows::tinyflows::build_capabilities(config_arc.clone(), format!("flow:{flow_id}"));
+    let checkpointer =
+        crate::flows::tinyflows::open_flow_checkpointer(config).map_err(|e| e.to_string())?;
 
     // Run-lifecycle parity with `flows_run` (R-M1). A resume executes the flow's
     // real approved side effects for up to `FLOW_RUN_TIMEOUT_SECS`, so it needs

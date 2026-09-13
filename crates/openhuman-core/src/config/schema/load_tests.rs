@@ -102,11 +102,11 @@ async fn write_binary(path: &std::path::Path, bytes: &[u8]) {
 
 #[path = "load_active_user_and_dirs_tests.rs"]
 mod active_user_and_dirs_tests;
-#[path = "load_env_overlay_tests.rs"]
-mod env_overlay_tests;
-#[path = "load_corruption_recovery_tests.rs"]
-mod corruption_recovery_tests;
-#[path = "load_migration_tests.rs"]
-mod migration_tests;
 #[path = "load_backup_tests.rs"]
 mod backup_tests;
+#[path = "load_corruption_recovery_tests.rs"]
+mod corruption_recovery_tests;
+#[path = "load_env_overlay_tests.rs"]
+mod env_overlay_tests;
+#[path = "load_migration_tests.rs"]
+mod migration_tests;

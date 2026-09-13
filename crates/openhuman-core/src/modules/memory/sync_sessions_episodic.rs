@@ -10,7 +10,10 @@ use tinymemory_api::provider::sync::{
     RawArchiveCoverage, RawRebuildOutcome, SourceSyncState, SourceSyncStatus, SyncAuditEntry,
     SyncRunOutcome,
 };
-use tinymemory_api::provider::{ConversationSegment, EpisodicEvent, EpisodicTurn, MemoryCodingSessions, MemoryEpisodic, MemorySourceSync};
+use tinymemory_api::provider::{
+    ConversationSegment, EpisodicEvent, EpisodicTurn, MemoryCodingSessions, MemoryEpisodic,
+    MemorySourceSync,
+};
 use tinymemory_bus::names::methods;
 
 use super::provider::{from_bus, module_call, ModuleMemoryProvider};
@@ -180,8 +183,8 @@ impl MemoryCodingSessions for ModuleMemoryProvider {
         &self,
         request: CodingSessionIngestRequest,
     ) -> Result<CodingSessionIngestReport, MemoryError> {
-        let deadline = crate::memory::sources::rpc::ingest_budget(request.max_sessions)
-            + INGEST_BUS_GRACE;
+        let deadline =
+            crate::memory::sources::rpc::ingest_budget(request.max_sessions) + INGEST_BUS_GRACE;
         self.proxy("ingest_coding_sessions")
             .await?
             .with_timeout(deadline)
@@ -311,4 +314,3 @@ impl MemoryEpisodic for ModuleMemoryProvider {
         )
     }
 }
-

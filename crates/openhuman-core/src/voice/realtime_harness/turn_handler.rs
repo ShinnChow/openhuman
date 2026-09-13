@@ -14,8 +14,13 @@ use tokio::sync::Semaphore;
 use crate::agent::progress::AgentProgress;
 
 use super::agent::run_voice_turn;
-use super::chat_delivery::{deliver_voice_failure_to_chat, deliver_voice_result_to_chat, emit_error, emit_event};
-use super::prompt::{extract_prompt, is_answerable_prompt, is_content_free, readback_payload, should_arm_speak_back, spoken_delta};
+use super::chat_delivery::{
+    deliver_voice_failure_to_chat, deliver_voice_result_to_chat, emit_error, emit_event,
+};
+use super::prompt::{
+    extract_prompt, is_answerable_prompt, is_content_free, readback_payload, should_arm_speak_back,
+    spoken_delta,
+};
 
 /// How long a voice turn may run before we stop making the caller wait and hand
 /// the result off to chat. The cloud voice session cancels a turn with no spoken

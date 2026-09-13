@@ -219,8 +219,7 @@ async fn execute_and_persist_job(
         success,
         output: crate::util::truncate_with_ellipsis(&output, 512),
     });
-    let failure_message =
-        (!success).then(|| crate::util::truncate_with_ellipsis(&output, 256));
+    let failure_message = (!success).then(|| crate::util::truncate_with_ellipsis(&output, 256));
 
     (job.id.clone(), success, failure_message)
 }

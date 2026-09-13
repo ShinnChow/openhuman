@@ -14,7 +14,7 @@ fn find(id: &str) -> AgentDefinition {
 
 #[path = "loader_tests_builtin_registration_tests.rs"]
 mod builtin_registration_tests;
-#[path = "loader_tests_specialist_agents_tests.rs"]
-mod specialist_agents_tests;
 #[path = "loader_tests_orchestrator_tier_tests.rs"]
 mod orchestrator_tier_tests;
+#[path = "loader_tests_specialist_agents_tests.rs"]
+mod specialist_agents_tests;

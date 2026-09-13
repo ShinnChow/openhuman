@@ -10,6 +10,7 @@
 
 use std::sync::Arc;
 
+use crate::memory::api::capabilities::Capability;
 use crate::memory::api::error::MemoryError;
 use crate::memory::api::provider::chunks::MemoryChunks;
 use crate::memory::api::provider::episodic::MemoryEpisodic;
@@ -27,7 +28,6 @@ use crate::memory::api::provider::{
     MemoryDiff, MemoryDocuments, MemoryEntities, MemoryGoals, MemoryGraph, MemoryIngest,
     MemoryMaintenance, MemoryProvider, MemorySourceSink, MemoryToolMemory, MemoryTree,
 };
-use crate::memory::api::capabilities::Capability;
 
 use super::super::policy::GuardPolicy;
 
@@ -188,7 +188,6 @@ decorator!(
     as_scoring,
     Scoring
 );
-
 
 decorator!(
     /// Guarded [`MemoryDocumentIngest`].

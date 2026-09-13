@@ -6,12 +6,10 @@
 use super::current_user_generation::{
     current_user_generation, forget_current_user_caches, CURRENT_USER_SESSION_MUTATION_LOCK,
 };
+use super::LOG_PREFIX;
 use crate::api::rest::user_id_from_profile_payload;
 use crate::config::Config;
-use crate::security::credentials::{
-    AuthService, APP_SESSION_PROVIDER, DEFAULT_AUTH_PROFILE_NAME,
-};
-use super::LOG_PREFIX;
+use crate::security::credentials::{AuthService, APP_SESSION_PROVIDER, DEFAULT_AUTH_PROFILE_NAME};
 use log::{debug, warn};
 use serde_json::Value;
 use std::collections::{BTreeMap, HashMap};

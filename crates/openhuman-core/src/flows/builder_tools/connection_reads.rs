@@ -9,7 +9,6 @@ use crate::config::Config;
 use crate::flows::ops;
 use crate::tools::traits::{PermissionLevel, Tool, ToolResult};
 
-
 /// `list_connectable_toolkits`: read-only list of the Composio toolkits the
 /// builder can wire, each tagged connected/unconnected — so the agent can steer
 /// toolkit choice toward what's already connected (audit Phase 5, item 19).
@@ -154,4 +153,3 @@ pub(super) fn flow_connection_to_json(c: &crate::flows::types::FlowConnection) -
         "platform_user_id": c.platform_user_id,
     })
 }
-

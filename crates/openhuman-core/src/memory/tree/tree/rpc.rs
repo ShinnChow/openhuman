@@ -20,7 +20,6 @@
 //! [`set_enabled`] (the scheduler-gate toggle). Every handler keeps its
 //! original `rpc::<name>` path through the re-exports below.
 
-
 mod backfill;
 mod chunks;
 mod ingest;

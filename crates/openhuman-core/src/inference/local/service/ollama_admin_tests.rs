@@ -23,9 +23,9 @@ fn lm_studio_config(base: &str) -> Config {
     config
 }
 
+#[path = "ollama_admin_discovery_fallback_tests.rs"]
+mod discovery_fallback_tests;
 #[path = "ollama_admin_health_and_diagnostics_tests.rs"]
 mod health_and_diagnostics_tests;
 #[path = "ollama_admin_lm_studio_and_lifecycle_tests.rs"]
 mod lm_studio_and_lifecycle_tests;
-#[path = "ollama_admin_discovery_fallback_tests.rs"]
-mod discovery_fallback_tests;

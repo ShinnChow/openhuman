@@ -16,7 +16,10 @@ use tinymemory_api::provider::ForgetSelector;
 ///
 /// No `spawn_blocking`: the driver owns whether its own reads and writes
 /// block, and the module's do not run on this thread at all.
-pub(super) async fn clear_channel_memory(config: &Config, channel_id: &str) -> anyhow::Result<usize> {
+pub(super) async fn clear_channel_memory(
+    config: &Config,
+    channel_id: &str,
+) -> anyhow::Result<usize> {
     let kind = SourceKind::Chat.as_str().to_string();
     let exact = forget_matching(
         config,

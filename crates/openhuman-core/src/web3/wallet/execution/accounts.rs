@@ -1,7 +1,9 @@
 //! Resolving a derived wallet account for a chain, erroring cleanly when the
 //! wallet has not been configured yet.
 
-use super::super::ops::{status as wallet_status, WalletAccount, WalletChain, WALLET_NOT_CONFIGURED_MESSAGE};
+use super::super::ops::{
+    status as wallet_status, WalletAccount, WalletChain, WALLET_NOT_CONFIGURED_MESSAGE,
+};
 use super::validate::chain_str;
 
 /// Resolve the derived EVM account address, erroring if the wallet is not

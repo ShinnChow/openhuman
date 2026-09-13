@@ -1,12 +1,11 @@
 //! Unit tests for the composio connection-created event handler's gating.
 
-
-use crate::core::events::DomainEvent;
-use crate::memory::sync::composio::bus::trigger_subscriber::TRIAGE_DISABLED_ENV;
-use crate::memory::sync::composio::bus::trigger_subscriber::triage_disabled;
-use crate::memory::sync::composio::bus::connection_created_subscriber::WaitError;
 use super::connection_created_subscriber::toolkit_is_memory_source_registrable;
 use super::*;
+use crate::core::events::DomainEvent;
+use crate::memory::sync::composio::bus::connection_created_subscriber::WaitError;
+use crate::memory::sync::composio::bus::trigger_subscriber::triage_disabled;
+use crate::memory::sync::composio::bus::trigger_subscriber::TRIAGE_DISABLED_ENV;
 use serde_json::json;
 use std::sync::Mutex;
 use tinybus::EventHandler;

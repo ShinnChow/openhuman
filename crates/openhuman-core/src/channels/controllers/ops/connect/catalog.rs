@@ -12,9 +12,7 @@ pub async fn list_channels() -> Result<RpcOutcome<Vec<ChannelDefinition>>, Strin
 }
 
 /// Describe a single channel by id.
-pub async fn describe_channel(
-    channel_id: &str,
-) -> Result<RpcOutcome<ChannelDefinition>, String> {
+pub async fn describe_channel(channel_id: &str) -> Result<RpcOutcome<ChannelDefinition>, String> {
     let def = find_channel_definition(channel_id)
         .ok_or_else(|| format!("unknown channel: {channel_id}"))?;
     Ok(RpcOutcome::new(def, vec![]))

@@ -77,11 +77,8 @@ pub async fn flows_discover(
     );
     let timed = match &stream {
         Some(target) => {
-            crate::agent::tinyagents::thread_context::with_thread_id(
-                target.thread_id.clone(),
-                run,
-            )
-            .await
+            crate::agent::tinyagents::thread_context::with_thread_id(target.thread_id.clone(), run)
+                .await
         }
         None => run.await,
     };

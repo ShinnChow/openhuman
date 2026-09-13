@@ -1,8 +1,7 @@
 //! Subprocess-backed providers: the Claude Agent SDK and the Claude Code CLI.
 
-
-use crate::inference::provider::factory::access_gates::verify_session_active;
 use super::*;
+use crate::inference::provider::factory::access_gates::verify_session_active;
 
 /// Build the Claude Agent SDK subprocess directly as a crate model. This is a
 /// prompt-guided model: TinyAgents owns its text-tool protocol, while the

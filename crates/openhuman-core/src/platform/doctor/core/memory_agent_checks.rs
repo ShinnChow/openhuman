@@ -94,11 +94,10 @@ pub(super) fn check_embedding_model_health(config: &Config, items: &mut Vec<Diag
 
     // Resolve the effective (intended, non-probed) embedding settings.
     let local_embedding_model = config.workload_local_model("embeddings");
-    let (provider, model, _dims) =
-        crate::inference::embeddings::effective_embedding_settings(
-            &config.memory,
-            local_embedding_model.as_deref(),
-        );
+    let (provider, model, _dims) = crate::inference::embeddings::effective_embedding_settings(
+        &config.memory,
+        local_embedding_model.as_deref(),
+    );
 
     log::debug!("[doctor] check_embedding_model_health: provider={provider} model={model}");
 
@@ -331,4 +330,3 @@ pub(super) fn model_matches(installed: &str, configured: &str) -> bool {
 fn model_base(model: &str) -> &str {
     model.split(':').next().unwrap()
 }
-

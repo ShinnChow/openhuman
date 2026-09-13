@@ -13,7 +13,8 @@ use reqwest::{header::AUTHORIZATION, Client, Method, Url};
 use serde_json::Value;
 use std::time::Duration;
 
-pub(super) const AUTH_ME_REVALIDATION_TRANSIENT_STATUSES: &[u16] = &[408, 429, 500, 502, 503, 504, 520];
+pub(super) const AUTH_ME_REVALIDATION_TRANSIENT_STATUSES: &[u16] =
+    &[408, 429, 500, 502, 503, 504, 520];
 
 /// One process-wide client for `GET /auth/me`, so its pooled TCP+TLS
 /// connection survives between snapshot polls instead of being handshaken

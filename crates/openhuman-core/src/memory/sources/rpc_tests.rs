@@ -7,16 +7,15 @@
 //! that scanner guards is one that may shrink and must never grow — so the
 //! honest fix is to put the test where the repo already puts tests.
 
-
-use crate::memory::sources::types::MemorySourceEntry;
-use crate::memory::sources::rpc::apply_all::trigger_enabled_syncs;
-use crate::memory::sources::rpc::coding_sessions::unserved;
-use crate::memory::sources::rpc::source_sync::SyncDispatch;
-use crate::memory::sources::rpc::source_sync::describe_source_sync_failure;
-use crate::memory::sources::rpc::source_sync::sync_dispatch;
 use super::*;
 use crate::core::subsystem::DriverClass;
 use crate::memory::api::error::MemoryError;
+use crate::memory::sources::rpc::apply_all::trigger_enabled_syncs;
+use crate::memory::sources::rpc::coding_sessions::unserved;
+use crate::memory::sources::rpc::source_sync::describe_source_sync_failure;
+use crate::memory::sources::rpc::source_sync::sync_dispatch;
+use crate::memory::sources::rpc::source_sync::SyncDispatch;
+use crate::memory::sources::types::MemorySourceEntry;
 // Needed to call the family accessors on the *concrete* null provider
 // below; the handlers above reach them through `dyn MemoryProvider`, where
 // the trait is in scope by construction.

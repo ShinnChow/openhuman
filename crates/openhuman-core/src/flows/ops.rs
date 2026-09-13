@@ -65,11 +65,11 @@ use crate::flows::types::{
     FlowConnection, FlowRunStep, FlowRunTrigger, FlowSuggestion, SuggestionStatus,
 };
 use crate::flows::{flow_namespace, Flow, FlowRun};
+use crate::rpc::RpcOutcome;
 use crate::security::approval::{
     ApprovalChatContext, FlowRunContext, APPROVAL_CHAT_CONTEXT, APPROVAL_COPILOT_STREAM_CONTEXT,
     APPROVAL_FLOW_RUN_CONTEXT,
 };
-use crate::rpc::RpcOutcome;
 use tinyflows_catalog::build_registry;
 // `MemoryProvider` brings `driver_id()` / `as_documents()` into scope for the
 // `MemoryGuard` this file's delete path clears through. Nothing here names the
@@ -139,7 +139,6 @@ const GRAPH_CHANGED_SINCE_PARK_ERROR: &str = "the workflow changed after this ru
 // `auto_approve` short-circuits the ApprovalGate — matching `curl`/`shell`.
 // `Write` (code) is `Allow` under full, so trusted automations run sandboxed
 // code unattended; read-only blocks both outright.
-
 
 mod approval_manifest;
 mod builder;

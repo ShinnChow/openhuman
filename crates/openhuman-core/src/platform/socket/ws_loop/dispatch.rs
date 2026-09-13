@@ -1,7 +1,6 @@
 //! Incoming-message dispatch: Engine.IO framing and Socket.IO packet/ack
 //! parsing.
 
-
 use crate::platform::socket::manager::emit_state_change;
 use crate::platform::socket::medulla::workflows;
 use crate::platform::socket::types::ConnectionStatus;
@@ -146,4 +145,3 @@ pub(super) fn parse_sio_ack(text: &str) -> Option<(u64, serde_json::Value)> {
 // ---------------------------------------------------------------------------
 // Redirect-following connect
 // ---------------------------------------------------------------------------
-

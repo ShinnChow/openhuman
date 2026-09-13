@@ -370,4 +370,3 @@ impl MemoryScoring for ModuleMemoryProvider {
         module_call!(self, "embedder_slug", methods::EMBEDDER_SLUG, ())
     }
 }
-

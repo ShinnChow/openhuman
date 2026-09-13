@@ -83,7 +83,7 @@ impl Drop for EnvGuard {
     }
 }
 
-#[path = "shell_tests_schema_and_env_tests.rs"]
-mod schema_and_env_tests;
 #[path = "shell_tests_runtime_and_sandbox_tests.rs"]
 mod runtime_and_sandbox_tests;
+#[path = "shell_tests_schema_and_env_tests.rs"]
+mod schema_and_env_tests;

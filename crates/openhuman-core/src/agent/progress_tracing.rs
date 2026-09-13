@@ -57,15 +57,15 @@ pub(crate) mod journal_projection;
 /// Langfuse ingestion exporter (remote push to the co-hosted staging server).
 pub(crate) mod langfuse;
 
+/// The [`SpanCollector`] state machine that folds progress events into spans.
+mod collector;
+/// Handing finished spans to the local exporter and the Langfuse push.
+mod export;
+/// Content truncation caps, JSON-value builders, and NDJSON serialization.
+mod serialize;
 /// Data model: [`RunType`], [`TraceContext`], [`SpanKind`], [`SpanStatus`],
 /// [`TraceSpan`].
 mod types;
-/// The [`SpanCollector`] state machine that folds progress events into spans.
-mod collector;
-/// Content truncation caps, JSON-value builders, and NDJSON serialization.
-mod serialize;
-/// Handing finished spans to the local exporter and the Langfuse push.
-mod export;
 
 pub use collector::SpanCollector;
 pub use types::{trace_session_id, RunType, SpanKind, SpanStatus, TraceContext, TraceSpan};

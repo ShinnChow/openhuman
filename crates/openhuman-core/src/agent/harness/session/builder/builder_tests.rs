@@ -61,12 +61,12 @@ fn custom_profile(id: &str, dedicated_memory: bool) -> crate::agent::profiles::A
     profile
 }
 
-#[path = "builder_tests_session_agent_profile_tests.rs"]
-mod session_agent_profile_tests;
-#[path = "builder_tests_profile_soul_prompt_tests.rs"]
-mod profile_soul_prompt_tests;
 #[path = "builder_tests_memory_write_instruction_tests.rs"]
 mod memory_write_instruction_tests;
+#[path = "builder_tests_profile_soul_prompt_tests.rs"]
+mod profile_soul_prompt_tests;
+#[path = "builder_tests_session_agent_profile_tests.rs"]
+mod session_agent_profile_tests;
 #[path = "builder_tests_tool_spec_views_tests.rs"]
 mod tool_spec_views_tests;
 

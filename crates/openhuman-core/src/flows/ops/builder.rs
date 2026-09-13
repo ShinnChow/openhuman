@@ -80,8 +80,7 @@ pub(crate) async fn flows_build_with_extra_hidden_tools(
     // absent, so the WebChat origin below would NOT park and the unhidden
     // live-run tools would execute unapproved. Fall back to the full hide-list
     // whenever the gate is not installed, regardless of `stream`. (codex #5090)
-    let approval_gate_active =
-        crate::security::approval::ApprovalGate::try_global().is_some();
+    let approval_gate_active = crate::security::approval::ApprovalGate::try_global().is_some();
     if stream.is_some() && approval_gate_active {
         restrict_builder_toolset_for_copilot(&mut agent);
     } else {

@@ -5,7 +5,6 @@
 //! Split out of `families.rs`; see [`super::types`] for the shared decorator
 //! scaffolding these `impl` blocks build on.
 
-
 use crate::memory::api::capabilities::Capability;
 use crate::memory::api::error::MemoryError;
 use crate::memory::api::goals::GoalsDoc;

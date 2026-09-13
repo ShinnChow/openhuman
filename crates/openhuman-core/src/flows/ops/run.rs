@@ -120,24 +120,24 @@ pub async fn flows_run_detached(
     let body_thread_id = thread_id.clone();
     tokio::spawn(crate::core::runtime::context::CoreContext::propagate(
         async move {
-        if let Err(e) = run_flow_body(
-            config_arc,
-            flow,
-            flow_id_owned,
-            body_thread_id,
-            input,
-            resolved_inputs,
-            trigger,
-            no_actionable_nodes,
-            cancel_token,
-            run_guard,
-        )
-        .await
-        {
-            // The row is already reconciled by the body's terminal write /
-            // finalizer — this only logs that the detached run ended in error.
-            tracing::warn!(target: "flows", error = %e, "[flows] flows_run_detached: background run ended with error (row already reconciled)");
-        }
+            if let Err(e) = run_flow_body(
+                config_arc,
+                flow,
+                flow_id_owned,
+                body_thread_id,
+                input,
+                resolved_inputs,
+                trigger,
+                no_actionable_nodes,
+                cancel_token,
+                run_guard,
+            )
+            .await
+            {
+                // The row is already reconciled by the body's terminal write /
+                // finalizer — this only logs that the detached run ended in error.
+                tracing::warn!(target: "flows", error = %e, "[flows] flows_run_detached: background run ended with error (row already reconciled)");
+            }
         },
     ));
 

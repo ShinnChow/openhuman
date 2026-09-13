@@ -6,13 +6,13 @@
 //! owns sign-out invalidation of these caches; [`staleness`](super::staleness)
 //! reports how old the data being served is.
 
+use super::auth_timeout::{auth_fetch_timeout, current_user_backoff_base};
 use super::current_user_fetch::{fetch_current_user, sanitize_snapshot_user};
 use super::current_user_generation::{
     clear_current_user_failure_unless_stale, current_user_generation,
     note_current_user_success_unless_stale, record_current_user_failure_locked,
     record_current_user_failure_unless_stale,
 };
-use super::auth_timeout::{auth_fetch_timeout, current_user_backoff_base};
 use super::LOG_PREFIX;
 use crate::api::config::effective_backend_api_url;
 use crate::config::Config;
@@ -164,7 +164,11 @@ pub(super) fn suppressed_current_user_failure(
 ///
 /// A [`CurrentUserFetchError::Rejected`] is ignored — see
 /// [`CurrentUserFetchError::is_availability_failure`].
-pub(super) fn record_current_user_failure(api_base: &str, token: &str, error: CurrentUserFetchError) {
+pub(super) fn record_current_user_failure(
+    api_base: &str,
+    token: &str,
+    error: CurrentUserFetchError,
+) {
     if !error.is_availability_failure() {
         return;
     }
@@ -529,8 +533,7 @@ pub(super) async fn refresh_current_user_now(
 /// cache TTL is **ignored** here intentionally — for prompt rendering
 /// a slightly stale identity is fine; the freshness check only
 /// matters for the snapshot RPC that fronts the React shell.
-pub fn peek_cached_current_user_identity() -> Option<crate::agent::prompts::UserIdentity>
-{
+pub fn peek_cached_current_user_identity() -> Option<crate::agent::prompts::UserIdentity> {
     let cache = CURRENT_USER_CACHE.lock();
     let entry = cache.as_ref()?;
     let user = entry.user.as_object()?;

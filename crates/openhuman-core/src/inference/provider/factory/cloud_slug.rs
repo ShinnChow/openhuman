@@ -1,13 +1,12 @@
 //! `<slug>:<model>` BYOK cloud providers: shared slug resolution (model fallback,
 //! abstract-tier remapping, credentials, codex routing) and the crate-native builders.
 
-
+use super::*;
 use crate::inference::provider::crate_anthropic;
 use crate::inference::provider::crate_openai;
 use crate::inference::provider::factory::access_gates::verify_backend_session_active;
 use crate::inference::provider::factory::access_gates::verify_session_active;
 use crate::inference::provider::fallback_diagnostics;
-use super::*;
 
 /// Look up a `cloud_providers` entry by slug and build the provider.
 /// The shared resolution for a `<slug>:<model>` cloud provider — the cloud
@@ -313,9 +312,7 @@ pub(super) fn try_create_cloud_slug_chat_model_from_string_with_native_tools(
             // places `cache_control` breakpoints. Text mode (prompt-guided
             // tools) is only implemented on the Chat Completions adapter, so
             // that rare case keeps the compat path.
-            if native_tool_calling
-                && crate_anthropic::endpoint_is_anthropic_messages(&endpoint)
-            {
+            if native_tool_calling && crate_anthropic::endpoint_is_anthropic_messages(&endpoint) {
                 crate::security::egress::emit_external_transfer(
                     crate::security::egress::EgressDescriptor::inference(
                         &slug,
@@ -393,31 +390,30 @@ pub(super) fn try_create_cloud_slug_chat_model_from_string_with_native_tools(
     );
 
     let unsupported = config.temperature_unsupported_models.clone();
-    let chat =
-        crate_openai::build_crate_openai_model(crate_openai::CrateOpenAiConfig {
-            provider_name: slug.as_str(),
-            endpoint: endpoint.as_str(),
-            api_key: key.as_str(),
-            auth_style: auth,
-            model: effective_model.as_str(),
-            temperature_unsupported_models: unsupported.as_slice(),
-            temperature_override,
-            // Cloud OpenAI-compatible providers accept a `system` role — no merge
-            // (parity with the crate-native OpenAI model defaults).
-            merge_system_into_user: false,
-            extra_headers: extra_headers.as_slice(),
-            native_tool_calling: Some(native_tool_calling),
-            vision: None,
-            default_provider_options: None,
-            responses_api_primary,
-            responses_omit_max_output_tokens,
-            extra_query_params: extra_query_params.as_slice(),
-            user_agent: user_agent.as_deref(),
-            // OpenRouter forwards explicit `cache_control` markers to Anthropic
-            // and Gemini, which cache nothing through a Chat Completions relay
-            // without them; hosted OpenAI rejects unknown part fields, so the
-            // flag is keyed on the relay, not on by default.
-            explicit_cache_control: crate_openai::endpoint_is_openrouter(&endpoint),
-        });
+    let chat = crate_openai::build_crate_openai_model(crate_openai::CrateOpenAiConfig {
+        provider_name: slug.as_str(),
+        endpoint: endpoint.as_str(),
+        api_key: key.as_str(),
+        auth_style: auth,
+        model: effective_model.as_str(),
+        temperature_unsupported_models: unsupported.as_slice(),
+        temperature_override,
+        // Cloud OpenAI-compatible providers accept a `system` role — no merge
+        // (parity with the crate-native OpenAI model defaults).
+        merge_system_into_user: false,
+        extra_headers: extra_headers.as_slice(),
+        native_tool_calling: Some(native_tool_calling),
+        vision: None,
+        default_provider_options: None,
+        responses_api_primary,
+        responses_omit_max_output_tokens,
+        extra_query_params: extra_query_params.as_slice(),
+        user_agent: user_agent.as_deref(),
+        // OpenRouter forwards explicit `cache_control` markers to Anthropic
+        // and Gemini, which cache nothing through a Chat Completions relay
+        // without them; hosted OpenAI rejects unknown part fields, so the
+        // flag is keyed on the relay, not on by default.
+        explicit_cache_control: crate_openai::endpoint_is_openrouter(&endpoint),
+    });
     Some(Ok((chat, effective_model)))
 }

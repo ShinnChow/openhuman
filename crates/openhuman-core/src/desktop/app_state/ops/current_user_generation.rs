@@ -123,7 +123,11 @@ pub(super) fn record_current_user_failure_unless_stale(
 /// Stamp a refreshed user's freshness only if `generation` is still current,
 /// **checked while holding the success lock** — the same check-then-act the
 /// failure recorder avoids, for the same reason.
-pub(super) fn note_current_user_success_unless_stale(generation: u64, api_base: &str, token: &str) -> bool {
+pub(super) fn note_current_user_success_unless_stale(
+    generation: u64,
+    api_base: &str,
+    token: &str,
+) -> bool {
     let mut success = LAST_CURRENT_USER_SUCCESS.lock();
     if current_user_generation() != generation {
         return false;

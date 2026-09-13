@@ -2,9 +2,8 @@
 //! snapshots, session identity, and the per-session tool-visibility filter
 //! (which rebuilds the tool policy snapshot on every change).
 
-
-use crate::agent::messages::ConversationMessage;
 use super::super::types::{Agent, AgentBuilder};
+use crate::agent::messages::ConversationMessage;
 use crate::memory::Memory;
 use crate::tools::agent_policy::ToolPolicyEngine;
 use crate::tools::{Tool, ToolSpec};

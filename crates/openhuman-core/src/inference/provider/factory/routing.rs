@@ -1,9 +1,8 @@
 //! Role → configured provider-string resolution (`provider_for_role`) plus the
 //! managed-credits bypass check and the `<model>[@<temp>]` suffix parser.
 
-
-use crate::inference::provider::fallback_diagnostics;
 use super::*;
+use crate::inference::provider::fallback_diagnostics;
 
 /// The provider route a role has **explicitly** configured, before any
 /// fallback.

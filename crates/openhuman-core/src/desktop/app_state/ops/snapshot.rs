@@ -2,16 +2,21 @@
 //! polled entry point that assembles auth, current-user, runtime and local
 //! on-disk state into one response for the frontend.
 
-use super::current_user::{current_user_api_base, fetch_current_user_cached, note_current_user_timeout, CurrentUserFetchError};
+use super::auth_timeout::auth_fetch_timeout;
+use super::current_user::{
+    current_user_api_base, fetch_current_user_cached, note_current_user_timeout,
+    CurrentUserFetchError,
+};
 use super::current_user_fetch::sanitize_snapshot_user;
 use super::current_user_generation::{current_user_generation, CURRENT_USER_SESSION_MUTATION_LOCK};
-use super::auth_timeout::auth_fetch_timeout;
 use super::pending_session::{
     clear_deferred_session_after_backend_rejection, clear_pending_backend_validation_flag,
-    pending_session_user_id_for_cleanup, persist_revalidated_session_user,
-    same_config_state_dir, snapshot_user_pending_backend_validation,
+    pending_session_user_id_for_cleanup, persist_revalidated_session_user, same_config_state_dir,
+    snapshot_user_pending_backend_validation,
 };
-use super::runtime_snapshot::{build_runtime_snapshot, degraded_runtime_snapshot, RUNTIME_SNAPSHOT_TIMEOUT};
+use super::runtime_snapshot::{
+    build_runtime_snapshot, degraded_runtime_snapshot, RUNTIME_SNAPSHOT_TIMEOUT,
+};
 use super::staleness::current_user_staleness;
 use super::state_file::{
     load_stored_app_state, load_stored_app_state_unlocked, save_stored_app_state_unlocked,
@@ -52,7 +57,6 @@ pub(super) type SnapshotCurrentUserResult = (SnapshotCurrentUser, Option<Box<Con
 pub(super) fn snapshot_current_user_result(user: Option<Value>) -> SnapshotCurrentUserResult {
     (SnapshotCurrentUser::user(user), None)
 }
-
 
 pub async fn snapshot() -> Result<RpcOutcome<AppStateSnapshot>, String> {
     let req_id = SNAPSHOT_REQ_COUNTER.fetch_add(1, Ordering::Relaxed);
@@ -356,9 +360,7 @@ pub async fn snapshot() -> Result<RpcOutcome<AppStateSnapshot>, String> {
 
     let t_local_state = Instant::now();
     let local_state = load_stored_app_state(&snapshot_config)?;
-    crate::security::keyring_consent::policy::initialize(
-        local_state.keyring_consent.clone(),
-    );
+    crate::security::keyring_consent::policy::initialize(local_state.keyring_consent.clone());
     let local_state_ms = t_local_state.elapsed().as_millis();
 
     let total_ms = t_total.elapsed().as_millis();
@@ -400,7 +402,6 @@ pub async fn snapshot() -> Result<RpcOutcome<AppStateSnapshot>, String> {
         vec!["core app state snapshot fetched".to_string()],
     ))
 }
-
 
 pub async fn update_local_state(
     patch: StoredAppStatePatch,

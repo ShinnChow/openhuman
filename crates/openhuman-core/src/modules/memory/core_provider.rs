@@ -6,7 +6,9 @@ use async_trait::async_trait;
 use tinymemory_api::capabilities::{Capabilities, Capability};
 use tinymemory_api::error::MemoryError;
 use tinymemory_api::health::MemoryHealth;
-use tinymemory_api::provider::types::{ExportPage, ExportRecord, ImportOutcome, IngestItem, IngestOutcome, SourceScope};
+use tinymemory_api::provider::types::{
+    ExportPage, ExportRecord, ImportOutcome, IngestItem, IngestOutcome, SourceScope,
+};
 use tinymemory_api::provider::{
     MemoryAnswer, MemoryChunks, MemoryCodingSessions, MemoryConversationIngest, MemoryCore,
     MemoryDiff, MemoryDocumentIngest, MemoryDocuments, MemoryEntities, MemoryEpisodic,
@@ -23,7 +25,9 @@ use crate::modules::ops;
 use crate::modules::types::ModuleState;
 
 use super::capabilities::{artifact_capabilities, artifact_serves};
-use super::provider::{from_bus, module_call, module_call_slow, policy, ModuleMemoryProvider, MODULE_ID};
+use super::provider::{
+    from_bus, module_call, module_call_slow, policy, ModuleMemoryProvider, MODULE_ID,
+};
 
 #[async_trait]
 impl MemoryProvider for ModuleMemoryProvider {
@@ -73,8 +77,7 @@ impl MemoryProvider for ModuleMemoryProvider {
             .as_ref()
             .or_else(|| policy())
             .is_some_and(|config| config.modules.enabled);
-        if modules_enabled && matches!(ops::state_of(MODULE_ID), ModuleState::Loading)
-        {
+        if modules_enabled && matches!(ops::state_of(MODULE_ID), ModuleState::Loading) {
             return MemoryHealth::degraded("the memory module is loading");
         }
         match self.proxy("health").await {

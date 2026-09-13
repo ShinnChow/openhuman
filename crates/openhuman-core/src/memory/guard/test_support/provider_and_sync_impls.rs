@@ -89,8 +89,7 @@ impl MemoryMaintenance for RecordingProvider {
 
     async fn degraded_state(
         &self,
-    ) -> Result<crate::memory::api::provider::diagnosis::DegradedCapabilities, MemoryError>
-    {
+    ) -> Result<crate::memory::api::provider::diagnosis::DegradedCapabilities, MemoryError> {
         self.record(Call::plain("maintenance.degraded_state"));
         Ok(Default::default())
     }
@@ -259,4 +258,3 @@ impl MemoryCodingSessions for RecordingProvider {
         Ok(CodingSessionIngestReport::default())
     }
 }
-

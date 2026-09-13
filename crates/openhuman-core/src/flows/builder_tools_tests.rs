@@ -218,13 +218,13 @@ fn cancel_test_approval_gated_graph() -> Value {
     })
 }
 
-#[path = "builder_tools_reads_and_catalog_tests.rs"]
-mod reads_and_catalog_tests;
+#[path = "builder_tools_draft_id_tests.rs"]
+mod draft_id_tests;
 #[path = "builder_tools_dry_run_tests.rs"]
 mod dry_run_tests;
+#[path = "builder_tools_reads_and_catalog_tests.rs"]
+mod reads_and_catalog_tests;
 #[path = "builder_tools_save_and_edit_tests.rs"]
 mod save_and_edit_tests;
 #[path = "builder_tools_validate_and_create_tests.rs"]
 mod validate_and_create_tests;
-#[path = "builder_tools_draft_id_tests.rs"]
-mod draft_id_tests;

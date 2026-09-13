@@ -108,7 +108,10 @@ fn add_column_if_missing(conn: &Connection, name: &str, sql_type: &str) -> Resul
     }
 }
 
-pub(super) fn with_connection<T>(config: &Config, f: impl FnOnce(&Connection) -> Result<T>) -> Result<T> {
+pub(super) fn with_connection<T>(
+    config: &Config,
+    f: impl FnOnce(&Connection) -> Result<T>,
+) -> Result<T> {
     let db_path = config.workspace_dir.join("cron").join("jobs.db");
     if let Some(parent) = db_path.parent() {
         std::fs::create_dir_all(parent)

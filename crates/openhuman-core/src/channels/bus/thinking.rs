@@ -1,8 +1,8 @@
 //! Posting and progressively editing the ephemeral "💭 Thinking:" bubble.
 
 use super::progressive_ui::{
-    channel_edits_unsupported, classify_edit_failure, mark_channel_edits_unsupported,
-    EditFailure, MAX_FILLER_CHARS, MAX_THINKING_DISPLAY_CHARS,
+    channel_edits_unsupported, classify_edit_failure, mark_channel_edits_unsupported, EditFailure,
+    MAX_FILLER_CHARS, MAX_THINKING_DISPLAY_CHARS,
 };
 use super::streaming_state::StreamingState;
 use serde_json::json;
@@ -76,8 +76,10 @@ pub(super) async fn flush_thinking_message(channel: &str, state: &mut StreamingS
         }
     } else {
         // Send initial thinking message.
-        let body =
-            super::delivery::channel_message_body_with_idempotency(channel, json!({ "text": text }));
+        let body = super::delivery::channel_message_body_with_idempotency(
+            channel,
+            json!({ "text": text }),
+        );
         match client.send_channel_message(channel, &jwt, body).await {
             Ok(resp) => {
                 state.thinking_sent = true;

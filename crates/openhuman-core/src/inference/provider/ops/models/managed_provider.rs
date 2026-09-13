@@ -5,7 +5,6 @@
 //! `cloud_providers`: it has its own URL, its own credential, and its own
 //! meaning for a 401.
 
-
 /// Synthesize the managed (`openhuman`) provider entry when `cloud_providers`
 /// has no row for it.
 ///

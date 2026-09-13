@@ -6,8 +6,6 @@
 //! Split out of `families.rs`; see [`super::types`] for the shared decorator
 //! scaffolding these `impl` blocks build on.
 
-
-use crate::memory::api::provider::types::SourceScope;
 use crate::memory::api::capabilities::Capability;
 use crate::memory::api::chunks::Chunk;
 use crate::memory::api::error::MemoryError;
@@ -19,6 +17,7 @@ use crate::memory::api::provider::operations::{
     AnswerRequest, AnswerResponse, MemoryAnswer, MemoryConversationIngest, MemoryDocumentIngest,
     MemoryEventIngest, MemoryLearningIngest, RawMemoryEvent,
 };
+use crate::memory::api::provider::types::SourceScope;
 use crate::memory::api::provider::types::{IngestItem, IngestOutcome};
 use crate::memory::api::provider::MemoryChunks;
 use async_trait::async_trait;
@@ -30,7 +29,6 @@ use super::types::{
     GuardedAnswer, GuardedChunks, GuardedConversationIngest, GuardedDocumentIngest,
     GuardedEventIngest, GuardedLearningIngest,
 };
-
 
 /// Steps 3 + 4 over one ingest item, shared by the typed-ingest decorators:
 /// stamp provenance, redact on egress — the same admission
@@ -44,7 +42,10 @@ fn admit_typed_item(policy: &GuardPolicy, mut item: IngestItem) -> IngestItem {
 #[async_trait]
 impl MemoryDocumentIngest for GuardedDocumentIngest {
     async fn ingest_document(&self, document: IngestItem) -> Result<IngestOutcome, MemoryError> {
-        let namespace = document.namespace.clone().unwrap_or_else(|| "-".to_string());
+        let namespace = document
+            .namespace
+            .clone()
+            .unwrap_or_else(|| "-".to_string());
         self.policy.admit_write(
             Capability::DocumentIngest,
             "document_ingest.ingest_document",

@@ -270,7 +270,10 @@ pub(super) fn is_local_provider_no_model_loaded_message(signal: &str) -> bool {
 /// `&'static str` only, so it can never carry a raw error field (the no-leak
 /// contract that governs [`agent_error_to_user_message`]). Precedence mirrors
 /// the halt classifiers' evaluation order: credits → budget → missing key.
-pub(super) fn permanent_halt_message(credits_exhausted: bool, budget_exhausted: bool) -> &'static str {
+pub(super) fn permanent_halt_message(
+    credits_exhausted: bool,
+    budget_exhausted: bool,
+) -> &'static str {
     if credits_exhausted {
         CRON_HALT_INSUFFICIENT_CREDITS_MESSAGE
     } else if budget_exhausted {

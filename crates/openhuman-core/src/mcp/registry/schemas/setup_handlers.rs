@@ -1,7 +1,6 @@
 //! `mcp_setup` handler implementations — deserialise params and delegate
 //! to `setup_ops.rs`.
 
-
 use crate::mcp::registry::schemas::params::read_optional_string;
 use crate::mcp::registry::schemas::params::read_optional_u32;
 use serde_json::{Map, Value};

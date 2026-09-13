@@ -316,4 +316,3 @@ fn is_sensitive_key(key: &str) -> bool {
         || normalized.contains("secret")
         || normalized.ends_with("key")
 }
-

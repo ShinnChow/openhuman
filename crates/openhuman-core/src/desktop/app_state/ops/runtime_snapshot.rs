@@ -60,7 +60,10 @@ pub(super) fn service_status_mock_active() -> bool {
     std::env::var_os("OPENHUMAN_SERVICE_MOCK").is_some()
 }
 
-pub(super) fn fresh_cached_runtime_snapshot(config: &Config, req_id: u64) -> Option<RuntimeSnapshot> {
+pub(super) fn fresh_cached_runtime_snapshot(
+    config: &Config,
+    req_id: u64,
+) -> Option<RuntimeSnapshot> {
     if service_status_mock_active() {
         return None;
     }

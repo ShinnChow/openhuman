@@ -65,21 +65,20 @@ mod source_sync;
 mod status_toolkits;
 
 pub use apply_all::{apply_all_in_rpc, AllInResponse};
+pub(crate) use coding_sessions::ingest_budget;
 pub use coding_sessions::{
     coding_session_status_rpc, ingest_coding_sessions_rpc, CodingSessionIngestRequest,
     CodingSessionStatusResponse,
 };
-pub(crate) use coding_sessions::ingest_budget;
 pub use cost_reporting::{
-    estimate_sync_cost_rpc, monthly_cost_summary_rpc, sync_audit_log_rpc,
-    EstimateSyncCostRequest, EstimateSyncCostResponse, MonthlyCostSummaryResponse,
-    SyncAuditLogResponse,
+    estimate_sync_cost_rpc, monthly_cost_summary_rpc, sync_audit_log_rpc, EstimateSyncCostRequest,
+    EstimateSyncCostResponse, MonthlyCostSummaryResponse, SyncAuditLogResponse,
 };
 pub use registry_crud::{
-    add_rpc, get_rpc, list_items_rpc, list_rpc, read_item_rpc, remove_rpc, update_rpc,
-    AddRequest, AddResponse, GetRequest, GetResponse, ListItemsRequest, ListItemsResponse,
-    ListResponse, ReadItemRequest, ReadItemResponse, RemoveRequest, RemoveResponse,
-    UpdateRequest, UpdateResponse,
+    add_rpc, get_rpc, list_items_rpc, list_rpc, read_item_rpc, remove_rpc, update_rpc, AddRequest,
+    AddResponse, GetRequest, GetResponse, ListItemsRequest, ListItemsResponse, ListResponse,
+    ReadItemRequest, ReadItemResponse, RemoveRequest, RemoveResponse, UpdateRequest,
+    UpdateResponse,
 };
 pub use source_sync::{
     reconcile_rpc, sync_rpc, ReconcileRequest, ReconcileResponse, ReconcileScopeReport,

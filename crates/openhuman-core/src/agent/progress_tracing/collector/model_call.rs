@@ -3,7 +3,9 @@
 
 use std::collections::BTreeMap;
 
-use crate::agent::progress_tracing::serialize::{capture_model_content, json_f64, json_str, json_u32, json_u64};
+use crate::agent::progress_tracing::serialize::{
+    capture_model_content, json_f64, json_str, json_u32, json_u64,
+};
 use crate::agent::progress_tracing::types::{SpanKind, SpanStatus};
 
 use super::state::SpanCollector;

@@ -1,7 +1,6 @@
 //! Budget, quota, and per-request rate-cap classification — the deterministic
 //! "third-party account/plan is out of runway" family of provider errors.
 
-
 /// Whether a provider non-2xx response is a deterministic budget-exhausted
 /// user-state error that should be demoted from Sentry to an info log.
 pub fn is_budget_exhausted_http_400(status: reqwest::StatusCode, body: &str) -> bool {

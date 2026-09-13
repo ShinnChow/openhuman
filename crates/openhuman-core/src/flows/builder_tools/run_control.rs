@@ -13,7 +13,6 @@ use crate::tools::traits::{PermissionLevel, Tool, ToolResult};
 // Phase 4 — the self-debug loop + gated create (F4, F7)
 // ─────────────────────────────────────────────────────────────────────────────
 
-
 /// `resume_flow_run`: progress a run parked on a human approval by
 /// approving/rejecting its pending node(s). Execute + approval-gated — it
 /// advances a REAL run that can fire real outbound effects.

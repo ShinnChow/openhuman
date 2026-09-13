@@ -7,7 +7,7 @@ use super::parse::{
 use crate::tools;
 use std::sync::Arc;
 
-#[path = "harness_tool_call_parsing_tests.rs"]
-mod harness_tool_call_parsing_tests;
 #[path = "harness_tool_call_parsing_edge_case_tests.rs"]
 mod harness_tool_call_parsing_edge_case_tests;
+#[path = "harness_tool_call_parsing_tests.rs"]
+mod harness_tool_call_parsing_tests;

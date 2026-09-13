@@ -15,8 +15,7 @@ pub async fn flows_search_tool_catalog(
 ) -> Result<RpcOutcome<Value>, String> {
     tracing::debug!(target: "flows", %query, toolkit = toolkit.unwrap_or("<all>"), "[flows] flows_search_tool_catalog: searching live catalog");
     let tools =
-        crate::flows::builder_tools::search_live_catalog(config, query, toolkit, limit)
-            .await;
+        crate::flows::builder_tools::search_live_catalog(config, query, toolkit, limit).await;
     Ok(RpcOutcome::single_log(
         json!({ "tools": tools }),
         "tool catalog searched",
@@ -71,8 +70,7 @@ pub async fn flows_get_tool_contract(
     };
     tracing::debug!(target: "flows", slug = %trimmed, %toolkit, "[flows] flows_get_tool_contract: fetching contract");
     let Some(catalog) =
-        crate::flows::tinyflows::caps::fetch_live_toolkit_catalog(config, &toolkit)
-            .await
+        crate::flows::tinyflows::caps::fetch_live_toolkit_catalog(config, &toolkit).await
     else {
         return Err(format!(
             "Could not fetch the live Composio catalog for toolkit '{toolkit}'."
@@ -83,8 +81,7 @@ pub async fn flows_get_tool_contract(
         .find(|c| c.slug.eq_ignore_ascii_case(trimmed))
     {
         Some(contract) => {
-            let contract =
-                crate::flows::tinyflows::caps::apply_probe_override(contract.clone());
+            let contract = crate::flows::tinyflows::caps::apply_probe_override(contract.clone());
             let value = serde_json::to_value(&contract).map_err(|e| e.to_string())?;
             Ok(RpcOutcome::single_log(
                 json!({ "contract": value }),

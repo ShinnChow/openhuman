@@ -110,15 +110,9 @@ pub async fn compute_approval_manifest(config: &Config, graph: &WorkflowGraph) -
                             "label": "Tool chosen at run time",
                         }));
                     }
-                    Some(s)
-                        if s.starts_with(
-                            crate::flows::tinyflows::caps::NATIVE_TOOL_PREFIX,
-                        ) =>
-                    {
+                    Some(s) if s.starts_with(crate::flows::tinyflows::caps::NATIVE_TOOL_PREFIX) => {
                         let tool_name = s
-                            .trim_start_matches(
-                                crate::flows::tinyflows::caps::NATIVE_TOOL_PREFIX,
-                            )
+                            .trim_start_matches(crate::flows::tinyflows::caps::NATIVE_TOOL_PREFIX)
                             .trim()
                             .to_string();
                         if tool_name.is_empty() {

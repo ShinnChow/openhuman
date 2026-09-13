@@ -41,8 +41,7 @@ pub(super) async fn try_route_approval_reply(msg: &traits::ChannelMessage) -> bo
     let Some(request_id) = gate.pending_for_thread(&thread_id) else {
         return false;
     };
-    let Some(decision) = crate::security::approval::parse_approval_reply(&msg.content)
-    else {
+    let Some(decision) = crate::security::approval::parse_approval_reply(&msg.content) else {
         return false;
     };
     match gate.decide(&request_id, decision) {

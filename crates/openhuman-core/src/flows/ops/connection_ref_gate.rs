@@ -61,8 +61,7 @@ pub(crate) async fn validate_connection_refs(
     graph: &WorkflowGraph,
 ) -> Vec<String> {
     let connections: Option<Vec<FlowConnection>> =
-        match crate::integrations::composio::ops::composio_list_connections(config).await
-        {
+        match crate::integrations::composio::ops::composio_list_connections(config).await {
             Ok(outcome) => Some(build_flow_connections(
                 outcome.value.connections,
                 Vec::new(),

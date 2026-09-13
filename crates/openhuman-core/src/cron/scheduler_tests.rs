@@ -1,11 +1,11 @@
 use super::*;
 use crate::agent::error::AgentError;
 use crate::config::Config;
+use crate::cron::JobType;
+use crate::cron::SessionTarget;
 use crate::cron::{self, ActiveHours, DeliveryConfig};
 use crate::security::SecurityPolicy;
 use chrono::{Duration as ChronoDuration, Timelike, Utc};
-use crate::cron::JobType;
-use crate::cron::SessionTarget;
 #[cfg(not(windows))]
 use std::os::unix::fs::PermissionsExt;
 use std::sync::Arc;
@@ -101,11 +101,11 @@ fn next_user_error(
     }
 }
 
-#[path = "scheduler_profile_and_shell_tests.rs"]
-mod profile_and_shell_tests;
-#[path = "scheduler_halt_and_persist_tests.rs"]
-mod halt_and_persist_tests;
 #[path = "scheduler_classifier_and_delivery_tests.rs"]
 mod classifier_and_delivery_tests;
 #[path = "scheduler_frequency_tests.rs"]
 mod frequency_tests;
+#[path = "scheduler_halt_and_persist_tests.rs"]
+mod halt_and_persist_tests;
+#[path = "scheduler_profile_and_shell_tests.rs"]
+mod profile_and_shell_tests;

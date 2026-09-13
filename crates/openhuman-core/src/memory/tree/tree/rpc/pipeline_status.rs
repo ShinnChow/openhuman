@@ -9,7 +9,9 @@ use crate::rpc::RpcOutcome;
 
 use super::backfill::{queue_stats, store_stats};
 use super::retry_failed::latest_failed_job_failure;
-use super::stall::{compute_dir_size_bytes, derive_pipeline_status, queue_idle_ms, queue_is_stalled};
+use super::stall::{
+    compute_dir_size_bytes, derive_pipeline_status, queue_idle_ms, queue_is_stalled,
+};
 
 /// Per-status counters for the `mem_tree_jobs` table — snapshot returned by
 /// the `memory_tree_pipeline_status` RPC. Only the three states the status
@@ -187,7 +189,9 @@ pub(super) fn latest_quarantine(
 /// host's `scheduler_policy` so both surfaces spell a pause the same way.
 ///
 /// `pub(super)` — reused verbatim by tests declared directly under `rpc`.
-pub(super) fn gate_pause_state(policy: crate::cron::scheduler_gate::Policy) -> (bool, Option<String>) {
+pub(super) fn gate_pause_state(
+    policy: crate::cron::scheduler_gate::Policy,
+) -> (bool, Option<String>) {
     use crate::cron::scheduler_gate::{PauseReason, Policy};
     match policy {
         Policy::Paused { reason } => (

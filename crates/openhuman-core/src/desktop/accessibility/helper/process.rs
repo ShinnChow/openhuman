@@ -20,9 +20,9 @@ use std::{
 };
 
 #[cfg(target_os = "macos")]
-use serde_json::Value;
-#[cfg(target_os = "macos")]
 use super::swift_source::unified_swift_source;
+#[cfg(target_os = "macos")]
+use serde_json::Value;
 
 /// Process handle + stdin writer.  Held only briefly for writes.
 #[cfg(target_os = "macos")]
@@ -160,7 +160,9 @@ pub(crate) fn helper_send_receive(
 /// Used for `show`, `hide`, and `quit` commands.
 /// Only acquires UNIFIED_HELPER (for the stdin write) — never blocks on I/O.
 #[cfg(target_os = "macos")]
-pub(in crate::desktop::accessibility) fn helper_send_fire_and_forget(request: &serde_json::Value) -> Result<(), String> {
+pub(in crate::desktop::accessibility) fn helper_send_fire_and_forget(
+    request: &serde_json::Value,
+) -> Result<(), String> {
     ensure_helper_running()?;
     let mut guard = UNIFIED_HELPER
         .lock()

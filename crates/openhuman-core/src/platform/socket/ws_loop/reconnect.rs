@@ -1,7 +1,6 @@
 //! The reconnect loop: [`ws_loop`], its failure-escalation logging, the
 //! invalid-token retry decision, and the emit-queue drain used on shutdown.
 
-
 use crate::platform::socket::medulla::workflows;
 use std::sync::Arc;
 
@@ -441,4 +440,3 @@ pub(super) fn drain_pending_emits(rx: &mut mpsc::UnboundedReceiver<String>) -> u
 // ---------------------------------------------------------------------------
 // Single connection attempt
 // ---------------------------------------------------------------------------
-

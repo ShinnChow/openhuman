@@ -92,9 +92,9 @@ fn roles(messages: &[ChatMessage]) -> Vec<&str> {
     messages.iter().map(|m| m.role.as_str()).collect()
 }
 
+#[path = "transcript_forward_compat_tests.rs"]
+mod transcript_forward_compat_tests;
 #[path = "transcript_roundtrip_and_paths_tests.rs"]
 mod transcript_roundtrip_and_paths_tests;
 #[path = "transcript_thread_and_append_tests.rs"]
 mod transcript_thread_and_append_tests;
-#[path = "transcript_forward_compat_tests.rs"]
-mod transcript_forward_compat_tests;

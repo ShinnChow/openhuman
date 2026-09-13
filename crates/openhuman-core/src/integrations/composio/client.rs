@@ -20,10 +20,10 @@ mod triggers;
 mod tests;
 
 pub use connections::ComposioClient;
-pub use direct::{direct_execute, direct_list_connections};
 pub(crate) use direct::{direct_authorize, direct_list_tools};
-pub use factory::{create_composio_client, ComposioClientKind};
+pub use direct::{direct_execute, direct_list_connections};
 pub(crate) use factory::{build_composio_client, create_direct_composio_tool_for_api_key};
+pub use factory::{create_composio_client, ComposioClientKind};
 
 // Brought into this module's own namespace (private `use`, not `pub use`)
 // so `client_tests.rs` — declared as a direct child module of `client`
@@ -31,8 +31,8 @@ pub(crate) use factory::{build_composio_client, create_direct_composio_tool_for_
 // when this was one un-split file. See each item's `pub(super)` in its
 // owning submodule.
 #[cfg(test)]
-use std::sync::Arc;
-#[cfg(test)]
 use super::types::ComposioExecuteResponse;
 #[cfg(test)]
 use execute::is_post_oauth_auth_readiness_error;
+#[cfg(test)]
+use std::sync::Arc;

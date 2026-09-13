@@ -1,9 +1,9 @@
 use super::*;
 
-use std::sync::Arc;
-use tokio::sync::watch;
 use crate::platform::socket::types::ConnectionStatus;
 use serde_json::json;
+use std::sync::Arc;
+use tokio::sync::watch;
 // ── Redirect resolution (the real fix for OPENHUMAN-TAURI-9X) ──
 
 #[test]

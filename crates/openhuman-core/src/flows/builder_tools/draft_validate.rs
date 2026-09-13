@@ -193,4 +193,3 @@ pub(super) fn validate_workflow_report_is_ok(
 ) -> bool {
     structurally_valid && gate_errors.is_empty() && !gate_check_failed
 }
-

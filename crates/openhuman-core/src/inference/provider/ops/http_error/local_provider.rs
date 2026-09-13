@@ -1,7 +1,6 @@
 //! Local inference server (LM Studio / Ollama) user-state classification:
 //! no model loaded, and Ollama Cloud's opaque hosted-inference 500.
 
-
 /// Whether a provider non-2xx response is a local inference server that is
 /// running but has **no model loaded** (e.g. LM Studio idle): a 400 carrying
 /// `No models loaded. Please load a model …`.

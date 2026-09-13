@@ -15,7 +15,6 @@ use crate::modules::{host, ops, registry};
 
 use super::capabilities::artifact_capabilities;
 
-
 /// Registry id of the module these calls go to.
 pub const MODULE_ID: &str = "tinymemory";
 
@@ -535,4 +534,3 @@ pub async fn publish_cli_boot_policy() -> Result<Config, String> {
     set_modules_policy(Arc::new(config.clone()));
     Ok(config)
 }
-

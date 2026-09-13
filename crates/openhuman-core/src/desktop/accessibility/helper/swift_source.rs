@@ -15,7 +15,5 @@ use super::swift_paste::SWIFT_PASTE;
 
 #[cfg(target_os = "macos")]
 pub(super) fn unified_swift_source() -> String {
-    format!(
-        "{SWIFT_HEADER_AND_FOCUS}{SWIFT_PASTE}{SWIFT_AX_ACTIONS}{SWIFT_OVERLAY_AND_MAIN}"
-    )
+    format!("{SWIFT_HEADER_AND_FOCUS}{SWIFT_PASTE}{SWIFT_AX_ACTIONS}{SWIFT_OVERLAY_AND_MAIN}")
 }

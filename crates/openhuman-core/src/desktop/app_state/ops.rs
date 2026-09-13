@@ -83,7 +83,9 @@ pub use auth_timeout::{
 };
 pub use current_user::peek_cached_current_user_identity;
 pub use current_user_generation::{forget_current_user_caches, CURRENT_USER_SESSION_MUTATION_LOCK};
-pub(crate) use state_file::load_stored_app_state;
 pub use snapshot::{snapshot, update_local_state};
+pub(crate) use state_file::load_stored_app_state;
 pub use state_file::save_app_state;
-pub use types::{AppStateSnapshot, RuntimeSnapshot, StoredAppState, StoredAppStatePatch, StoredOnboardingTasks};
+pub use types::{
+    AppStateSnapshot, RuntimeSnapshot, StoredAppState, StoredAppStatePatch, StoredOnboardingTasks,
+};

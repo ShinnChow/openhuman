@@ -67,17 +67,14 @@ pub(crate) use tiers::{
 pub use tiers::{resolve_model_for_hint, role_for_model_tier};
 pub(crate) use turn_model::{
     create_turn_chat_model, create_turn_chat_model_from_string,
-    create_turn_chat_model_from_string_with_native_tools_and_route, create_turn_chat_model_with_native_tools_and_route,
+    create_turn_chat_model_from_string_with_native_tools_and_route,
+    create_turn_chat_model_with_native_tools_and_route,
 };
 
 // Factory-internal helpers shared across the submodules (and their tests)
 // through `use super::*`.
-use access_gates::{
-    emit_inference_egress, enforce_local_only_inference,
-};
-use chat_model::{
-    unresolved_chat_model_error, with_default_temperature,
-};
+use access_gates::{emit_inference_egress, enforce_local_only_inference};
+use chat_model::{unresolved_chat_model_error, with_default_temperature};
 use cloud_slug::{
     resolve_cloud_slug, try_create_cloud_slug_chat_model,
     try_create_cloud_slug_chat_model_from_string,
@@ -87,17 +84,13 @@ use local_runtime::{
     try_create_local_runtime_chat_model, try_create_local_runtime_chat_model_from_string,
     OptionalChatModelResult,
 };
-use managed_backend::{
-    resolve_managed_backend, resolve_managed_backend_with_model_override,
-};
-use primary_cloud::{
-    legacy_inference_slug, resolve_primary_cloud_provider_string,
-};
+use managed_backend::{resolve_managed_backend, resolve_managed_backend_with_model_override};
+use primary_cloud::{legacy_inference_slug, resolve_primary_cloud_provider_string};
 use routing::split_model_and_temperature;
 use subprocess_providers::{
-    prepare_claude_agent_sdk_chat_model,
-    try_create_claude_agent_sdk_chat_model, try_create_claude_agent_sdk_chat_model_from_string,
-    try_create_claude_code_chat_model, try_create_claude_code_chat_model_from_string,
+    prepare_claude_agent_sdk_chat_model, try_create_claude_agent_sdk_chat_model,
+    try_create_claude_agent_sdk_chat_model_from_string, try_create_claude_code_chat_model,
+    try_create_claude_code_chat_model_from_string,
 };
 use tiers::is_abstract_tier_model;
 

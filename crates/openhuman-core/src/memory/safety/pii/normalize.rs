@@ -325,4 +325,3 @@ pub(crate) fn scan_candidates(text: &str) -> Candidates {
 
     cand
 }
-

@@ -206,9 +206,7 @@ pub(super) async fn deliver_if_configured(
 /// Insert a notification into the alerts tab for a completed cron job.
 pub(super) fn push_cron_alert(config: &Config, job: &CronJob, output: &str) {
     use crate::desktop::notifications::store as notif_store;
-    use crate::desktop::notifications::types::{
-        IntegrationNotification, NotificationStatus,
-    };
+    use crate::desktop::notifications::types::{IntegrationNotification, NotificationStatus};
 
     let name = job.name.as_deref().unwrap_or("Cron job");
     let body = cron_alert_body(job, output);

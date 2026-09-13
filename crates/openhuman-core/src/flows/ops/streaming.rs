@@ -115,17 +115,15 @@ pub(super) async fn finalize_flow_stream(
             .await;
         }
         Err(err) => {
-            crate::web_chat::publish_web_channel_event(
-                crate::core::socketio::WebChannelEvent {
-                    event: "chat_error".to_string(),
-                    client_id: "system".to_string(),
-                    thread_id: target.thread_id.clone(),
-                    request_id: target.request_id.clone(),
-                    message: Some(err.clone()),
-                    error_type: Some("agent_error".to_string()),
-                    ..Default::default()
-                },
-            );
+            crate::web_chat::publish_web_channel_event(crate::core::socketio::WebChannelEvent {
+                event: "chat_error".to_string(),
+                client_id: "system".to_string(),
+                thread_id: target.thread_id.clone(),
+                request_id: target.request_id.clone(),
+                message: Some(err.clone()),
+                error_type: Some("agent_error".to_string()),
+                ..Default::default()
+            });
         }
     }
     tracing::info!(

@@ -10,14 +10,16 @@ use std::time::Instant;
 use log::{debug, info, warn};
 use tokio::sync::Mutex;
 
+use crate::config::Config;
 #[cfg(target_os = "macos")]
 use crate::desktop::accessibility;
-use crate::config::Config;
 use crate::modules::voice::{is_hallucinated, HallucinationMode};
 use crate::voice::audio_capture::RecordingHandle;
 use crate::voice::text_input;
 
-use super::types::{ServerState, VoiceServerConfig, MAX_INITIAL_PROMPT_CHARS, MAX_RECENT_TRANSCRIPTS};
+use super::types::{
+    ServerState, VoiceServerConfig, MAX_INITIAL_PROMPT_CHARS, MAX_RECENT_TRANSCRIPTS,
+};
 use super::LOG_PREFIX;
 
 /// Capture the frontmost app name at hotkey press so insertion can be validated later.

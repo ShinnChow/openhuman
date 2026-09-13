@@ -66,15 +66,13 @@ pub(super) fn deliver_voice_result_to_chat(
     // session (a fast read-back turn). Skipped for read-back turns themselves to
     // avoid a loop; harmless if the call already ended (nobody is subscribed).
     if allow_speak_back {
-        crate::web_chat::publish_web_channel_event(
-            crate::core::socketio::WebChannelEvent {
-                event: "voice_speak".to_string(),
-                client_id: VOICE_CHAT_CLIENT_ID.to_string(),
-                full_response: Some(spoken.to_string()),
-                success: Some(true),
-                ..Default::default()
-            },
-        );
+        crate::web_chat::publish_web_channel_event(crate::core::socketio::WebChannelEvent {
+            event: "voice_speak".to_string(),
+            client_id: VOICE_CHAT_CLIENT_ID.to_string(),
+            full_response: Some(spoken.to_string()),
+            success: Some(true),
+            ..Default::default()
+        });
     }
 }
 

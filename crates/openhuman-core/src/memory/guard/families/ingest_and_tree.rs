@@ -13,8 +13,10 @@ use crate::memory::api::provider::content::{
 };
 use crate::memory::api::provider::types::{IngestItem, IngestOutcome, SourceScope};
 use crate::memory::api::provider::{MemoryDocuments, MemoryIngest, MemoryTree};
+use crate::memory::api::tree::{
+    IngestRequest, QueryResult, SummaryForest, TreeLeaf, TreeNode, TreeStatus,
+};
 use crate::memory::api::types::NamespaceRetrievalContext;
-use crate::memory::api::tree::{IngestRequest, QueryResult, SummaryForest, TreeLeaf, TreeNode, TreeStatus};
 use crate::memory::api::types::{NamespaceDocumentInput, StoredMemoryDocument};
 use async_trait::async_trait;
 

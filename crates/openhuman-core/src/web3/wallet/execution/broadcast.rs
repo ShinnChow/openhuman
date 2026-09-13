@@ -6,7 +6,9 @@ use log::warn;
 
 use crate::rpc::RpcOutcome;
 
-use super::super::chains::{btc as chain_btc, evm as chain_evm, solana as chain_sol, tron as chain_tron};
+use super::super::chains::{
+    btc as chain_btc, evm as chain_evm, solana as chain_sol, tron as chain_tron,
+};
 use super::super::defaults::{explorer_tx_url, EvmNetwork};
 use super::super::ops::WalletChain;
 use super::quotes::{current_owner, now_ms, store_quote, take_quote_for, QUOTE_TTL_MS};

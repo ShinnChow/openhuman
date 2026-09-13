@@ -102,11 +102,8 @@ impl Tool for GetToolContractTool {
             "[flows] get_tool_contract: fetching the live contract (read-only)"
         );
 
-        let Some(catalog) = crate::flows::tinyflows::caps::fetch_live_toolkit_catalog(
-            &self.config,
-            &toolkit,
-        )
-        .await
+        let Some(catalog) =
+            crate::flows::tinyflows::caps::fetch_live_toolkit_catalog(&self.config, &toolkit).await
         else {
             return Ok(ToolResult::error(format!(
                 "Could not fetch the live Composio catalog for toolkit '{toolkit}' (no backend \
@@ -124,9 +121,8 @@ impl Tool for GetToolContractTool {
                 // every GitHub action verified live as of this fix), where
                 // `contract.primary_array_path` would otherwise be
                 // permanently `None`.
-                let contract = crate::flows::tinyflows::caps::apply_probe_override(
-                    contract.clone(),
-                );
+                let contract =
+                    crate::flows::tinyflows::caps::apply_probe_override(contract.clone());
 
                 // WS3 — EARLY runtime-gate warning (transcript failure #2): a
                 // real-but-uncurated action of a toolkit that ships a curated
