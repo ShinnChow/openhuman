@@ -4,8 +4,8 @@ The **adapter seam** between OpenHuman and the vendored [`tinyagents`](../../../
 
 ## Responsibilities
 
-- Assemble a per-turn harness (`assemble_turn_harness` in `mod_part_04.rs`): register the turn's `ChatModel`s, every shared tool, and the full middleware stack, then drive it via `AgentHarness::invoke_stream_in_context` (`mod_part_02.rs`).
-- Convert between OpenHuman and crate types: tiered `ChatModel` bundles from `(role, config)` (`mod_part_03.rs`, `model.rs`), `Tool` → crate `Tool` (`tools.rs`, `convert.rs`), and `ChatMessage`/`ConversationMessage` ↔ crate `Message` via `crate::agent::message_convert`.
+- Assemble a per-turn harness (`assemble_turn_harness` in `harness_assembly.rs`): register the turn's `ChatModel`s, every shared tool, and the full middleware stack, then drive it via `AgentHarness::invoke_stream_in_context` (`turn_runner.rs`).
+- Convert between OpenHuman and crate types: tiered `ChatModel` bundles from `(role, config)` (`turn_models.rs`, `model.rs`), `Tool` → crate `Tool` (`tools.rs`, `convert.rs`), and `ChatMessage`/`ConversationMessage` ↔ crate `Message` via `crate::agent::message_convert`.
 - Enforce cross-cutting policy as harness middleware: approval/security gating, tool policy and CLI/RPC-only denial, cost budgets, context compaction/summarization, credential scrubbing, malformed-argument recovery, and the repeated-tool-failure circuit breaker (`middleware*.rs`).
 - Route workloads to model tiers and record the resolved provider/model for audit (`routes.rs`, `resolved_route.rs`).
 - Make turns durable and replayable: a JSONL event journal plus status store (`journal.rs`), a startup sweep for orphaned runs (`reaper.rs`), and a read-only RPC surface over both (`replay/`).

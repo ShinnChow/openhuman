@@ -35,9 +35,9 @@ built (user signed in), and `config.integrations.tinyfish.is_active()`.
 
 `SearxngSearchTool` and `SeltzSearchTool` are not reachable through the engine
 registry at all — they are constructed per call by the `tools.searxng_search`
-(`handle_searxng_search`, `tools/schemas_part_02.rs:41`) and
-`tools.seltz_search` (`handle_seltz_search`, `tools/schemas_part_01.rs:555`)
-RPC handlers. Those handlers take the query and `max_results` from the RPC
+(`handle_searxng_search`) and `tools.seltz_search` (`handle_seltz_search`)
+RPC handlers, both in `crates/openhuman-core/src/tools/schemas/web_search.rs`.
+Those handlers take the query and `max_results` from the RPC
 params but read endpoint, key, timeout, and the `enabled` gate from the
 top-level `config.searxng` / `config.seltz` sections, not from
 `Config.search`. `SEARXNG_MAX_RESULTS` and `normalize_categories` are also
