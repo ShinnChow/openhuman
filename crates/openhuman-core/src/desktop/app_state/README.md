@@ -49,7 +49,7 @@ Aggregator that the React shell polls every few seconds (`openhuman.app_state_sn
 - `crates/openhuman-core/src/core/jsonrpc.rs` — `latch_from_config` at runtime bootstrap.
 - `crates/openhuman-core/src/agent/harness/session/builder/factory.rs` — `load_stored_app_state` to read `onboarding_tasks.enabled_tools` for tool filtering.
 - `peek_cached_current_user_identity` — `agent/harness/session/turn/context.rs`, `agent/tinyagents/host/context_composer.rs`, `agent/tinyagents/payload_summarizer.rs`, `web_chat/progress_bridge.rs`, and the Sentry `before_send` filters in `main.rs` and `crates/openhuman-app/src/lib.rs`.
-- `crates/openhuman-core/src/security/credentials/ops_part_02.rs` — takes `CURRENT_USER_SESSION_MUTATION_LOCK` and calls `forget_current_user_caches` on sign-out.
+- `crates/openhuman-core/src/security/credentials/ops/session_query.rs` — takes `CURRENT_USER_SESSION_MUTATION_LOCK` and calls `forget_current_user_caches` on sign-out.
 - `crates/openhuman-core/src/security/keyring_consent/ops.rs` — persists the consent choice through `update_local_state`.
 
 ## Tests
