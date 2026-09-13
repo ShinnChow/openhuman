@@ -244,7 +244,7 @@ impl Agent {
     /// comparison runs on a spawned background task so it never slows the
     /// authoritative read, and every store-read error is treated as "no shadow
     /// available" (logged at debug), never propagated.
-    fn maybe_shadow_read_session_store(
+    pub(super) fn maybe_shadow_read_session_store(
         &self,
         path: &std::path::Path,
         session: &transcript::SessionTranscript,
