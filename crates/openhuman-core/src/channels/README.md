@@ -54,7 +54,7 @@ Flat files: `bus.rs` (`ChannelInboundSubscriber`, handles `DomainEvent::ChannelI
 
 ## Tests
 
-- Unit, flat files: `bus_tests.rs`, `bus_inbound_thread_id_tests_tests.rs`, `cli_tests.rs`, `commands_tests.rs`, `context_tests.rs`, `proactive_tests.rs`, `relay_runtime_tests.rs`, `routes_tests.rs`, `system_prompt_tests.rs`, `traits_tests.rs` (`bus_part_0*.rs` are `include!` source splits, not tests; `bus_test_support_tests.rs` is a debug-build helper module).
+- Unit, flat files: `bus_tests.rs`, `bus_inbound_thread_id_tests_tests.rs`, `cli_tests.rs`, `commands_tests.rs`, `context_tests.rs`, `proactive_tests.rs`, `relay_runtime_tests.rs`, `routes_tests.rs`, `system_prompt_tests.rs`, `traits_tests.rs` (`bus/` — `delivery.rs`, `draft.rs`, `filler.rs`, `progressive_ui.rs`, `streaming_state.rs`, `subscriber.rs`, `thinking.rs`, `thread_id.rs` — are source submodules, not tests; `bus_test_support_tests.rs` is a debug-build helper module).
 - Cross-channel integration suite (`tests/`, see its module doc): `common.rs` fixtures plus `discord_integration`, `health`, `identity`, `memory`, `personality`, `prompt`, `runtime_dispatch`, `runtime_tool_calls`, `telegram_integration`.
 - Host adapters: `host/host_tests.rs`.
 - Provider host glue: `providers/telegram/{approval_surface_tests,bus_tests,remote_control_tests}.rs`.

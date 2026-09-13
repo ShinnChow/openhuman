@@ -106,4 +106,4 @@ SQLite DB at `{workspace_dir}/approval/approval.db`, table `pending_approvals` (
 
 ## Tests
 
-- `gate_tests.rs` (+ `gate_tests_part_01..03_tests.rs`), `store_tests.rs` (+ `store_tests_part_01..02_tests.rs`), `redact_tests.rs`, `schemas_tests.rs`, `types_tests.rs`.
+- `gate_tests.rs`, `store_tests.rs`, `redact_tests.rs`, `schemas_tests.rs`, `types_tests.rs`.
