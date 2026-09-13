@@ -166,8 +166,7 @@ function dispatchAndMaybeBanner(
 }
 
 function truncate(input: string, max: number): string {
-  if (input.length <= max) return input;
-  return `${input.slice(0, max - 1)}…`;
+  return truncateText(input, max);
 }
 
 /**
