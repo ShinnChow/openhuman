@@ -105,7 +105,7 @@ is returned by `status()` and reflects the cache directly — `Empty` reports
 RPC method for this; `crates/openhuman-core/src/agent/harness_init/registry.rs`
 reads `status().running` to decide whether the `runtime_python_server` init
 step is done. The about-app capability catalog
-(`platform/about_app/catalog_part_02.rs`, id `local_ai.python_runtime_installer`,
+(`platform/about_app/catalog_localai_settings_mobile.rs`, id `local_ai.python_runtime_installer`,
 domain `runtime_python`) describes the managed-interpreter capability this
 worker depends on, not this module's own status.
 
