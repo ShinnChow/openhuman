@@ -15,6 +15,7 @@ mod dispatch_loop;
 mod message;
 mod turn;
 
+#[cfg(test)]
 pub(crate) use approval::channel_has_approval_surface;
 pub(crate) use dispatch_loop::run_message_dispatch_loop;
 pub(crate) use message::RuntimeChannelMessage;
