@@ -100,7 +100,7 @@ Responses project the crate's own `AgentObservation` and `HarnessRunStatus` serd
 
 ## Host adapters
 
-`host/` implements the crate's ten host-capability traits (Phase 4 of the agents plan described in `host/mod.rs`), so that `agent/` can ask ten capabilities instead of reaching into ~45 domains directly. The adapters are implemented and tested, but **no live turn path calls them yet**. The session exposes `host_agent_memory()` and `host_experience_store()` accessors (`agent/harness/session/runtime_impl_01_part_01.rs`) that construct two of the adapters, and only tests call those. Repointing the call sites is the remaining half of Phase 4. Several adapter methods carry `TODO(phase4)` where a domain surface was not yet reachable; they are documented gaps, not silent stubs.
+`host/` implements the crate's ten host-capability traits (Phase 4 of the agents plan described in `host/mod.rs`), so that `agent/` can ask ten capabilities instead of reaching into ~45 domains directly. The adapters are implemented and tested, but **no live turn path calls them yet**. The session exposes `host_agent_memory()` and `host_experience_store()` accessors (`agent/harness/session/runtime/accessors.rs`) that construct two of the adapters, and only tests call those. Repointing the call sites is the remaining half of Phase 4. Several adapter methods carry `TODO(phase4)` where a domain surface was not yet reachable; they are documented gaps, not silent stubs.
 
 ## Notes
 

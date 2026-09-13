@@ -2,11 +2,11 @@
 //!
 //! Drives a chat turn from a Socket.IO `chat:start` event (or an inbound
 //! `channels/` provider message) through the agent harness to a delivered,
-//! durably-persisted reply: `start_chat` (`ops_part_02.rs`) validates and
+//! durably-persisted reply: `start_chat` (`ops/start_chat.rs`) validates and
 //! preprocesses the message, applies the queue mode against the thread's
 //! in-flight state, and spawns `run_task::run_chat_task` under the cancel
 //! token / wall-clock backstop / `APPROVAL_CHAT_CONTEXT` scope
-//! (`run_turn_under_cancel_and_deadline`, `ops_part_01.rs`). `run_chat_task`
+//! (`run_turn_under_cancel_and_deadline`, `ops/turn_guards.rs`). `run_chat_task`
 //! resolves or builds the cached session `Agent` (`session.rs`), spawns
 //! `spawn_progress_bridge` alongside the run, and returns the result; the
 //! spawning task then hands an `Ok` to `presentation::deliver_response`,
