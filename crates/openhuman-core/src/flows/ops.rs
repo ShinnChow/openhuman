@@ -166,27 +166,27 @@ mod wiring_warnings;
 
 pub use approval_manifest::*;
 pub use builder::*;
-use builder_gates::*;
+pub(crate) use builder_gates::*;
 use builder_toolset::*;
 pub use catalog::*;
-use connection_ref_gate::*;
+pub(crate) use connection_ref_gate::*;
 pub use connections::*;
 pub use definitions::*;
 pub use discovery::*;
 pub use drafts::*;
 use execution::*;
-use inference_readiness::*;
+pub(crate) use inference_readiness::*;
 pub use resume::*;
 pub use run::*;
 pub use run_management::*;
 use run_rows::*;
 pub use streaming::*;
-use tool_contract_gate::*;
+pub(crate) use tool_contract_gate::*;
 use trail_off::*;
 pub use triggers::*;
 pub use updates::*;
 pub use validation::*;
-use wiring_warnings::*;
+pub(crate) use wiring_warnings::*;
 
 #[cfg(test)]
 #[path = "ops_tests.rs"]
