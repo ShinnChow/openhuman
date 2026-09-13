@@ -47,8 +47,7 @@ interface StepSummary {
 const MAX_SUMMARY_CHARS = 180;
 
 function truncate(text: string): string {
-  const trimmed = text.trim();
-  return trimmed.length > MAX_SUMMARY_CHARS ? `${trimmed.slice(0, MAX_SUMMARY_CHARS)}…` : trimmed;
+  return truncateText(text, MAX_SUMMARY_CHARS, { trim: true });
 }
 
 /** Read a string field off a plain object, ignoring blank/non-string values. */
