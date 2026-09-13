@@ -3,6 +3,7 @@
 use serde_json::Value;
 
 use crate::channels::email_channel::{EmailChannel, EmailConfig};
+use tinychannels_bus::traits::Channel as _;
 use crate::config::Config;
 
 use super::shared::parse_optional_bool;
