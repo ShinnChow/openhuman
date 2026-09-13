@@ -12,7 +12,7 @@ them from racing:
 - the **board poller** (`poller.rs`, `start_board_poller`) — a periodic sweep
   catching cards that arrive without a proactive trigger. Spawned from both
   `core/runtime/services.rs` (under `ServiceSet::proactive_task_pollers`) and
-  `channels/runtime/startup_part_01.rs`; a `OnceLock` makes the second call a
+  `channels/runtime/startup/start_channels.rs`; a `OnceLock` makes the second call a
   no-op.
 - **proactive triage** (`agent::triage::escalation`, `apply_decision` →
   `dispatch_linked_card`) — dispatches a card once triage has decided to act
