@@ -42,6 +42,9 @@ pub(crate) use run::run_spawn_parallel_graph_with_cancellation_and_workspace;
 #[cfg(test)]
 pub(crate) use request::ParallelAgentTask;
 #[cfg(test)]
-pub(crate) use staging::with_ownership_boundary;
+pub(crate) use staging::{
+    prepare_spawn_parallel_tasks_from_defs, with_ownership_boundary, ParallelTaskRejectionKind,
+    SpawnParallelTaskPreflight, WorkerDispatchMode,
+};
 #[cfg(test)]
 pub(crate) use types::{ParallelAgentLineage, ParallelAgentResult};
