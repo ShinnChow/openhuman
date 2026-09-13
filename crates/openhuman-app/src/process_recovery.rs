@@ -284,7 +284,7 @@ mod imp {
     }
 
     #[cfg(test)]
-    #[path = "../../process_recovery_macos_tests.rs"]
+    #[path = "process_recovery_macos_tests.rs"]
     mod tests;
 }
 
@@ -458,7 +458,7 @@ mod linux_imp {
     }
 
     #[cfg(test)]
-    #[path = "../../process_recovery_linux_tests.rs"]
+    #[path = "process_recovery_linux_tests.rs"]
     mod tests;
 }
 
@@ -855,7 +855,7 @@ mod windows_imp {
     }
 
     #[cfg(test)]
-    #[path = "../../process_recovery_windows_tests.rs"]
+    #[path = "process_recovery_windows_tests.rs"]
     mod tests;
 }
 
