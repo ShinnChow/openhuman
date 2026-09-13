@@ -535,26 +535,6 @@ fn read_provider(params: &Map<String, Value>) -> Result<ProviderSlug, String> {
     ProviderSlug::parse(&raw)
 }
 
-fn read_required<T: DeserializeOwned>(params: &Map<String, Value>, key: &str) -> Result<T, String> {
-    let value = params
-        .get(key)
-        .cloned()
-        .ok_or_else(|| format!("missing required param '{key}'"))?;
-    serde_json::from_value(value).map_err(|e| format!("invalid '{key}': {e}"))
-}
-
-fn read_optional<T: DeserializeOwned>(
-    params: &Map<String, Value>,
-    key: &str,
-) -> Result<Option<T>, String> {
-    match params.get(key) {
-        None | Some(Value::Null) => Ok(None),
-        Some(value) => serde_json::from_value(value.clone())
-            .map(Some)
-            .map_err(|e| format!("invalid '{key}': {e}")),
-    }
-}
-
 /// Read an optional unsigned integer parameter and checked-convert it to
 /// `u32`. JSON integers arrive as `u64` on the wire; we accept any value
 /// that fits in `u32` and reject out-of-range values with a clear error
