@@ -7,7 +7,12 @@
 mod state;
 mod types;
 
-pub(crate) use types::*;
+pub use types::{
+    RevealRecoveryPhraseResult, WalletAccount, WalletChain, WalletSetupParams, WalletSetupSource,
+    WalletStatus, WALLET_NOT_CONFIGURED_MESSAGE,
+};
+pub(crate) use types::WalletSecretMaterial;
+use types::StoredWalletState;
 
 use log::debug;
 
