@@ -31,7 +31,7 @@ and reqwest keeps custom headers across the cross-host redirect.
 
 | Path | Role |
 | --- | --- |
-| `client.rs` + `client_part_01.rs` / `client_part_02.rs` | `IntegrationClient`: `post`/`get`/`get_bytes`/`patch`/`delete`/`upload_multipart`/`pricing`, backend URL sanitization, and client construction. |
+| `client.rs` + `client/` (`construct.rs`, `requests.rs`, `download.rs`, `pricing.rs`, `errors.rs`) | `IntegrationClient`: `post`/`get`/`get_bytes`/`patch`/`delete`/`upload_multipart`/`pricing`, backend URL sanitization, and client construction. |
 | `types.rs` | Shared serde types for backend envelopes and pricing. |
 | `tools.rs` + `tools/` | Non-search, non-connector agent tools: `tools/google_places.rs` (search + details), `tools/stock_prices.rs` (quote, exchange rate, options, crypto series, commodity via backend financial APIs), `tools/twilio.rs` (outbound calls). `tools.rs` only declares and re-exports them. |
 | [`file_storage/`](file_storage/README.md) | Managed cloud file-storage agent tools (`Storage*Tool`), backed by the backend's S3-based `file_storage` provider. |
