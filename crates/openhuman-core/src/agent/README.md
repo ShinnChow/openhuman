@@ -12,7 +12,7 @@ Multi-agent orchestration domain. Owns the LLM tool-calling loop, sub-agent disp
 - `pub mod triage` (`run_triage`, `apply_decision`, `TriggerEnvelope`, `TriageDecision`, `TriageAction`) — `triage/mod.rs` — classify external triggers, escalate to sub-agents.
 - `pub mod prompts::SystemPromptBuilder` — `prompts/` — system-prompt section composer.
 - `pub struct ChatMessage` / `pub enum ConversationMessage` / `pub struct ToolResultMessage` — `messages.rs` — transcript wire types; `inference/provider/types.rs::ChatRequest` borrows `&[ChatMessage]` from here.
-- `pub fn bus::register_agent_handlers` — `bus.rs` — registers the `agent.run_turn` native request handler (`AgentTurnRequest` → `AgentTurnResponse`) on `BUS.native()`; called from `channels/runtime/startup_part_01.rs`.
+- `pub fn bus::register_agent_handlers` — `bus.rs` — registers the `agent.run_turn` native request handler (`AgentTurnRequest` → `AgentTurnResponse`) on `BUS.native()`; called from `channels/runtime/startup/start_channels.rs`.
 - Built-in archetypes live in `crates/openhuman-core/src/agent/registry/agents/`; this module stays focused on harness/runtime behavior.
 - RPC `agent.{chat, chat_simple, server_status, list_definitions, get_definition, reload_definitions, triage_evaluate, graph_topologies, registry_snapshot}` — `schemas.rs`.
 - Read-only replay RPC `agent.{runs_active, run_status, run_events}` — `tinyagents/replay/schemas.rs` — pages a run's durable journal/status without holding the run open.
