@@ -20,7 +20,7 @@ The single source of truth for the OpenHuman desktop app's **user-facing capabil
 | `crates/openhuman-core/src/platform/about_app/catalog.rs` | Read API over the `CAPABILITIES` data it includes from `catalog_data.rs`. Implements `all_capabilities`, `capabilities_by_category`, `lookup`, `search`, and the `ensure_validated` integrity check. |
 | `crates/openhuman-core/src/platform/about_app/ops.rs` | RPC-facing logic returning `RpcOutcome<T>`: `list_capabilities`, `lookup_capability`, `search_capabilities`. Thin wrappers over `catalog.rs` with summary logs. |
 | `crates/openhuman-core/src/platform/about_app/schemas.rs` | Controller schemas + `handle_*` async handlers for the three RPC methods; param structs; the `all_about_app_controller_schemas` / `all_about_app_registered_controllers` registry pair. |
-| `crates/openhuman-core/src/platform/about_app/catalog_data.rs` | The `CAPABILITIES` data itself (`LazyLock<Vec<Capability>>`) plus the shared `CapabilityPrivacy` constants, concatenated from `catalog_part_01.rs` / `catalog_part_02.rs` / `catalog_part_03.rs`; `#[path]`-included by `catalog.rs`. |
+| `crates/openhuman-core/src/platform/about_app/catalog_data.rs` | The `CAPABILITIES` data itself (`LazyLock<Vec<Capability>>`) plus the shared `CapabilityPrivacy` constants, concatenated from the `catalog_conversation_intelligence.rs`, `catalog_workflows_automation.rs`, `catalog_auth_channels_team.rs`, and `catalog_localai_settings_mobile.rs` submodules. |
 | `crates/openhuman-core/src/platform/about_app/catalog_tests.rs` | Sibling test module (`#[path]`-included by `catalog.rs`) covering catalog behavior. |
 
 ## Public surface
