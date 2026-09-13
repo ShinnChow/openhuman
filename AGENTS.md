@@ -321,7 +321,7 @@ selection, transport configuration, and error classification. Authenticated
 `finish_authed_json` (`crates/openhuman-core/src/api/rest.rs`) classifies
 transient transport failures and maps 401/404 responses to typed
 `BackendApiError` variants; `IntegrationClient::map_sdk_error`
-(`crates/openhuman-core/src/integrations/client_part_01.rs`) plays the same
+(`crates/openhuman-core/src/integrations/client/errors.rs`) plays the same
 role for integrations. Route new SDK calls through those helpers instead of
 matching `tinyhumans_sdk::Error` by hand.
 
