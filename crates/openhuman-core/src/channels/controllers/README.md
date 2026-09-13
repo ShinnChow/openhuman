@@ -35,5 +35,5 @@ Owns the `channels.*` RPC namespace: provider metadata, connect/disconnect lifec
 ## Tests
 
 - `backend_tests.rs`.
-- `ops_tests.rs` (declared from `ops/mod.rs`; pulls in `ops_tests_part_01_tests.rs` and `ops_tests_part_02_tests.rs`), `ops/connect_email_config_tests_tests.rs`.
+- `ops_tests.rs` (declared from `ops/mod.rs`; pulls in `ops_connect_status_tests.rs` and `ops_yuanbao_email_tests.rs`), `ops/connect_email_config_tests_tests.rs`.
 - `schemas_tests.rs`.
