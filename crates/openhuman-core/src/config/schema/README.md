@@ -53,7 +53,7 @@ is mounted as a submodule of `load/dirs.rs` via `#[path]`.
 | `[update]` | `update.rs` | `UpdateConfig`, `UpdateRestartStrategy` |
 | `[voice_server]` | `voice_server.rs` | `VoiceServerConfig`, `SttEngine`, `VoiceActivationMode` |
 | `[[voice_providers]]`, `stt_provider` / `tts_provider` | `voice_providers.rs` | `VoiceProviderCreds`, `BuiltinVoiceProvider`, `BUILTIN_VOICE_PROVIDERS` |
-| top-level `Config` and its scalar keys | `types.rs` (+ `_part_01`/`_part_02`) | `Config`, `ModelRegistryEntry`, `MODEL_*` / `DEFAULT_MODEL` constants |
+| top-level `Config` and its scalar keys | `types.rs` (+ `types/config.rs`, `types/model_ids.rs`) | `Config`, `ModelRegistryEntry`, `MODEL_*` / `DEFAULT_MODEL` constants |
 | built-in defaults | `defaults.rs` | `impl Default for Config` and per-field `default_*` fns |
 
 `tools/mod.rs` groups the tool-facing sections: `browser.rs` (`BrowserConfig`,
