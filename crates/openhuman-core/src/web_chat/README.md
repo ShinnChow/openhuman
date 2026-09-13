@@ -169,7 +169,10 @@ Namespace `channel`, registered via
 
 ## Tests
 
-- `web_tests.rs` (+ `web_tests_part_01..04_tests.rs`) — end-to-end coverage
+- `web_tests.rs` (+ `web_tests_error_code_classification_tests.rs`,
+  `web_tests_rate_limit_classification_tests.rs`,
+  `web_tests_session_and_concurrency_tests.rs`,
+  `web_tests_start_chat_ingress_tests.rs`) — end-to-end coverage
   of `start_chat`/`cancel_*`/queue behavior.
 - `mod_test_support_tests.rs` — the `test_support` module
   (`classify_error_for_test`, `ClassifiedErrorSnapshot`) exposed through
