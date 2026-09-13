@@ -44,8 +44,11 @@ content).
   `tinyagents_harness::events::AgentEvent`; the module doc lists the known
   parity gaps (estimated vs. charged cost, no subagent prompt/output content).
 
-Tests for all three source files live in this directory as
-`*_tests.rs` / `*_part_0N_tests.rs`.
+Tests live in this directory as `*_tests.rs` files, e.g.
+`progress_tracing_tests.rs`, `progress_tracing_span_tree_tests.rs`,
+`progress_tracing_attribution_tests.rs`, `progress_tracing_content_gate_tests.rs`,
+`langfuse_tests.rs`, `langfuse_batch_tests.rs`, `langfuse_trace_fields_tests.rs`,
+`journal_projection_tests.rs`, `journal_projection_cost_rollup_tests.rs`.
 
 ## Called by
 
