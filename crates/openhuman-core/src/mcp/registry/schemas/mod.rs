@@ -21,3 +21,5 @@ pub use registry::{all_controller_schemas, all_registered_controllers, schemas};
 // had when `include!` spliced everything into one file.
 #[cfg(test)]
 use params::{read_optional_u32, read_required, type_name};
+#[cfg(test)]
+pub(crate) use setup_registry::setup_schemas;
