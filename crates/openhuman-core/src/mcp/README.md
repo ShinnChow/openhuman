@@ -110,6 +110,5 @@ serves `/rpc` without those namespaces; `config_servers` is simply
 
 See `Cargo.toml` (`crates/openhuman-core/Cargo.toml`, the `tinymcp` block)
 for why this stays a path dependency rather than the pinned release, and
-`crates/openhuman-core/src/modules/registry_part_02.rs` (included from
-`modules/registry.rs`) for the release version this application does pin for
-the loadable-module path.
+`crates/openhuman-core/src/modules/registry/records_mcp_connectors.rs` for
+the release version this application does pin for the loadable-module path.
