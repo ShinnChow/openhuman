@@ -48,7 +48,7 @@ Plus the sub-domain namespaces: `skill_registry.*` (`browse`, `search`, `sources
 - `crates/openhuman-core/src/config/workspace/ops.rs` — calls `skills::init_workflows_dir` during workspace bootstrap.
 - `crates/openhuman-core/src/agent/registry/agents/orchestrator/prompt.rs` — renders the `## Installed Skills` catalog, fed by the skill list on `PromptContext` (`agent/harness/session/turn/context.rs`).
 - `crates/openhuman-core/src/agent/context/channels_prompt.rs` — renders the `## Available Skills` list for channel-driven turns (`agent/prompts/` no longer emits a skills section).
-- `crates/openhuman-core/src/core/bus.rs` / `crates/openhuman-core/src/core/events.rs` — `bus.rs` subscribes to `DomainEvent` for triggered skills; `ops_create.rs` and `ops_install_part_01.rs` publish `DomainEvent::WorkflowsChanged` after create/install/uninstall so open sessions refresh their catalog. (`WorkflowLoaded`/`WorkflowStopped`/`WorkflowStartFailed`/`WorkflowExecuted` are declared in `events.rs` but nothing in this module publishes them.)
+- `crates/openhuman-core/src/core/bus.rs` / `crates/openhuman-core/src/core/events.rs` — `bus.rs` subscribes to `DomainEvent` for triggered skills; `ops_create.rs` and `ops_install/fetch.rs` publish `DomainEvent::WorkflowsChanged` after create/install/uninstall so open sessions refresh their catalog. (`WorkflowLoaded`/`WorkflowStopped`/`WorkflowStartFailed`/`WorkflowExecuted` are declared in `events.rs` but nothing in this module publishes them.)
 - `crates/openhuman-core/src/agent/harness/definition.rs` — `registry.rs` flattens `AgentDefinition` fields from `skill.toml`.
 
 ## Called by
