@@ -39,7 +39,7 @@ None. State is purely an in-memory broadcast channel; events not consumed when p
 ## Used by
 
 - `crates/openhuman-core/src/core/socketio.rs` — subscribes to the bus and forwards events to the overlay WebView over Socket.IO.
-- `crates/openhuman-core/src/voice/always_on_part_01.rs` — `notch_status` publishes "Listening" / "Processing" status messages (`source: "voice"`, with a TTL) that the notch maps to icons. The only in-tree publisher today.
+- `crates/openhuman-core/src/voice/always_on/processor.rs` — `notch_status` publishes "Listening" / "Processing" status messages (`source: "voice"`, with a TTL) that the notch maps to icons. The only in-tree publisher today.
 - `crates/openhuman-core/src/desktop/notifications/bus.rs` — references this module's bus only as a documented pattern to mirror (no code dependency).
 
 ## Notes / gotchas
