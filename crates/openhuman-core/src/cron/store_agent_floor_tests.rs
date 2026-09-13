@@ -1,5 +1,6 @@
 use super::*;
 
+use anyhow::Result;
 use crate::cron::CronJob;
 use crate::cron::CronJobPatch;
 use crate::cron::Schedule;
