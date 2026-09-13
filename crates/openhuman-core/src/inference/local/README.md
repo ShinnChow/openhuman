@@ -70,12 +70,12 @@ into `local::rpc` (`ops.rs`).
 `grep -rn 'inference::local::' crates/openhuman-core/src` shows the main
 callers outside this module: `agent/schemas.rs` (registers `agent.chat` /
 `agent.chat_simple` over `local::rpc::agent_chat*`), `inference/ops.rs` and
-`inference/provider/factory_part_0{1,3,4}.rs` (`profile::is_local_provider_string`,
+`inference/provider/factory/` (`profile::is_local_provider_string`,
 base-url resolution when routing into a local runtime), `inference/embeddings/factory.rs`
 (Ollama embedding base url), `agent/learning/reflection.rs` and
-`security/credentials/ops_part_01.rs` (`local::global`), `core/runtime/builder.rs`
+`security/credentials/ops/login_services.rs` (`local::global`), `core/runtime/builder.rs`
 (`local::try_global` on shutdown), `config/ops/model.rs` (`provider::normalize_provider`,
-`validate_ollama_url`), `agent/tinyagents/mod_part_03.rs` and `agent/triage/routing.rs`
+`validate_ollama_url`), `agent/tinyagents/turn_models.rs` and `agent/triage/routing.rs`
 (`profile::is_local_provider_string`), `voice/ops.rs` (`model_ids`, `paths`), and
 `agent/host_runtime.rs`, `runtime/python/process.rs`, `runtime/python_server/{kompress,spacy}.rs`
 (`process_util::apply_no_window`).

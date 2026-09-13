@@ -6,12 +6,12 @@ contributors here: "Rust configuration is defined under
 `crates/openhuman-core/src/config/schema/` and loaded through its config
 operations" (the operations live in `../ops/`, re-exported as `config::rpc`).
 
-`Config` itself is split with `include!`: `types.rs` pulls in
-`types_part_01.rs` / `types_part_02.rs` (the struct definition, model
-constants, and small helper types) purely to keep any one file under the
-repo's ~500-line guideline; treat all three as one unit. `load_user_state.rs`
-sits at this level but is mounted as a submodule of `load/dirs.rs` via
-`#[path]`.
+`Config` itself is split into submodules: `types.rs` declares `types/config.rs`
+(the struct definition), `types/model_ids.rs` (model constants), and
+`types/defaults.rs` / `types/output_language.rs` / `types/resolvers.rs` (small
+helper types) purely to keep any one file under the repo's ~500-line
+guideline; treat them as one unit. `load_user_state.rs` sits at this level but
+is mounted as a submodule of `load/dirs.rs` via `#[path]`.
 
 ## Layout — `[section]` → file → struct
 
