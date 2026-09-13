@@ -85,7 +85,9 @@ file-size-splitting convention, not separate modules.
    then apply the two pre-schema-version legacy rewrites in `load/migrate.rs`
    (`migrate_legacy_inference_url`, `migrate_cloud_provider_slugs`).
 4. Apply environment-variable overrides — `Config::apply_env_overrides_from`
-   in `load/env_overlay.rs` (`include!`s `env_overlay_impl_01_part_0N.rs`);
+   in `load/env_overlay.rs`, split into submodules under `load/env_overlay/`
+   (`dictation_context.rs`, `learning_memory.rs`, `observability.rs`,
+   `proxy.rs`, `runtime.rs`, `search.rs`, `subsystems_update.rs`);
    `load/env.rs` is only the `EnvLookup` seam that lets tests supply a fake
    environment.
 5. Run pending schema migrations (`../migrations/`, via
