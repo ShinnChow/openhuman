@@ -30,15 +30,11 @@ fn flow(name: &str, enabled: bool, nodes: Vec<Node>) -> Flow {
         last_run_at: None,
         last_status: None,
         require_approval: false,
-        description: String::new(),
     }
 }
 
-fn flow_described(name: &str, description: &str) -> Flow {
-    Flow {
-        description: description.to_string(),
-        ..flow(name, true, vec![])
-    }
+fn flow_described(name: &str, _description: &str) -> Flow {
+    flow(name, true, vec![])
 }
 
 #[test]
