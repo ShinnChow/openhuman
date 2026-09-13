@@ -82,7 +82,7 @@ Responses project the crate's own `AgentObservation` and `HarnessRunStatus` serd
 - `crate::agent::message_convert` for `ChatMessage` ↔ crate `Message` conversion.
 - `crate::agent::harness::{run_queue, tool_result_artifacts, subagent_runner}` and `crate::agent::{messages, progress, stop_hooks, cost, hooks}`: the OpenHuman-side turn plumbing this seam plugs into.
 - `crate::tools`: the `Tool` trait wrapped by `SharedToolAdapter`, and `tools::registry::denials` for recording policy blocks.
-- `crate::platform::cost`: the global cost tracker fed by `observability.rs` and `mod_part_05.rs`.
+- `crate::platform::cost`: the global cost tracker fed by `observability/event_bridge.rs` and `turn_outcome.rs`.
 - `crate::config` and `crate::inference`: tier constants, `Config`, providers, and embedding providers.
 
 ## Used by

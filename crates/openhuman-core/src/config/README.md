@@ -21,7 +21,7 @@ Authoritative TOML-backed configuration layer. Owns the `Config` schema (every d
 
 - `pub struct Config` — `schema/types.rs` (re-exported from `mod.rs`) — top-level user settings.
 - Per-domain config structs and enums — re-exported from `mod.rs`; see [schema/README.md](schema/README.md) for the full section → struct table.
-- Model constants: `DEFAULT_MODEL`, `MODEL_AGENTIC_V1`, `MODEL_CODING_V1`, `MODEL_REASONING_V1`, and others in `schema/types_part_01.rs`.
+- Model constants: `DEFAULT_MODEL`, `MODEL_AGENTIC_V1`, `MODEL_CODING_V1`, `MODEL_REASONING_V1`, and others in `schema/types/model_ids.rs`.
 - `pub struct DaemonConfig` — `daemon.rs` — Tauri-supervisor config wrapper (see Layout).
 - `pub fn apply_runtime_proxy_to_builder` / `pub fn build_runtime_proxy_client` / `pub fn build_runtime_proxy_client_with_timeouts` / `pub fn runtime_proxy_config` / `pub fn set_runtime_proxy_config` — `schema/proxy.rs`.
 - Workspace identity helpers: `pub fn clear_active_user`, `default_root_openhuman_dir`, `pre_login_user_dir`, `read_active_user_id`, `user_openhuman_dir`, `write_active_user_id`, `PRE_LOGIN_USER_ID` — `schema/load/dirs.rs`.
