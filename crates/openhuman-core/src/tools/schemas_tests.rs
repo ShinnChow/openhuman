@@ -1,7 +1,7 @@
 use super::*;
 
 use crate::tools::schemas::registry::tools_schemas;
-use std::iter::Map;
+use serde_json::{json, Map};
 const BASE_CONTROLLERS: usize = 6;
 
 #[test]
