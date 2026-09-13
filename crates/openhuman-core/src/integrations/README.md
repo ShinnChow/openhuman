@@ -37,7 +37,7 @@ and reqwest keeps custom headers across the cross-host redirect.
 | [`file_storage/`](file_storage/README.md) | Managed cloud file-storage agent tools (`Storage*Tool`), backed by the backend's S3-based `file_storage` provider. |
 | [`composio/`](composio/README.md) | Composio connector integration: catalogs, connections, triggers, direct-auth fallback, and the `tinyconnectors` module bridge. |
 | [`task_sources/`](task_sources/README.md) | Normalizes external task feeds (via the Composio providers) into agent-facing list/fetch/filter tools. |
-| `test_support.rs` + `test_support_backend.rs` | In-process axum fake of the integration backend (`spawn_fake_integration_backend`, records every request). Not a `mod` of this module: `tools/ops_tests.rs` pulls it in with `#[path = "../integrations/test_support.rs"]` for `ops_tests_part_02_tests.rs` / `ops_tests_part_03_tests.rs`. |
+| `test_support.rs` + `test_support_backend.rs` | In-process axum fake of the integration backend (`spawn_fake_integration_backend`, records every request). Not a `mod` of this module: `crates/openhuman-core/src/tools/ops_tests.rs` pulls it in with `#[path = "../integrations/test_support.rs"]` for its split test modules (`ops_tests_capability_gating_tests.rs`, `ops_tests_default_registry_tests.rs`, `ops_tests_domain_family_tests.rs`, `ops_tests_execution_and_serde_tests.rs`). |
 
 ## Search Boundary
 
