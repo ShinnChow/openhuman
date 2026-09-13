@@ -246,7 +246,7 @@ impl MemoryTree for GuardedTree {
         source_id: &str,
         limit: usize,
         scope: Option<&SourceScope>,
-    ) -> Result<Vec<crate::memory::ExtractionMode>, MemoryError> {
+    ) -> Result<Vec<crate::memory::api::chunks::Chunk>, MemoryError> {
         self.policy
             .admit_read(Capability::Tree, "tree.query_source", namespace, false)?;
         let ambient = self.policy.ambient_scope();
