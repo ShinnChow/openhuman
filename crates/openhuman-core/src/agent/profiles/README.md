@@ -106,7 +106,7 @@ profile-less run rather than failing the job.
   `tools/impl/system/mod.rs` (process tools) classifies the cwd and then adds
   `scan_command_for_cross_profile`. Both map `PROFILES_ROOT_SENTINEL` to a
   root-specific `[policy-blocked]` denial.
-- `cron/scheduler_part_02.rs` resolves a job's attributed profile via
+- `cron/scheduler/agent_run.rs` resolves a job's attributed profile via
   `load_profiles` and builds the run with
   `Agent::from_config_for_agent_with_profile`.
 - `agent/task_dispatcher/executor.rs` and
