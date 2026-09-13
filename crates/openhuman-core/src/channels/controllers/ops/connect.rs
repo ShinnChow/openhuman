@@ -15,6 +15,7 @@ pub use connect_channel::connect_channel;
 pub use disconnect::disconnect_channel;
 #[cfg(test)]
 pub(crate) use email::persist_email_config;
+#[cfg(test)]
 pub(crate) use shared::merge_listener_health;
 pub use status::{
     channel_status, connected_channel_slugs, get_default_channel, set_default_channel,
