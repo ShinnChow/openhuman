@@ -4,8 +4,11 @@
 //! sub-agent routes use; [`run_turn_via_tinyagents`] is a thin test-only
 //! variant with no middleware stack.
 
+#[cfg(test)]
 use crate::agent::tinyagents::model::ProfileOverrideModel;
+#[cfg(test)]
 use crate::agent::tinyagents::model::TurnChatModel;
+#[cfg(test)]
 use crate::agent::tinyagents::turn_policy::run_policy_for;
 use std::collections::HashSet;
 use std::sync::Arc;
