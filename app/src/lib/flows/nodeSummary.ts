@@ -27,7 +27,7 @@ function num(config: Record<string, unknown>, key: string): number | undefined {
 }
 
 function truncate(value: string, max = 52): string {
-  return value.length > max ? `${value.slice(0, max - 1)}…` : value;
+  return truncateText(value, max);
 }
 
 /**
