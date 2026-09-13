@@ -8,6 +8,7 @@
 //! honest fix is to put the test where the repo already puts tests.
 
 
+use crate::memory::sources::types::MemorySourceEntry;
 use crate::memory::sources::rpc::apply_all::trigger_enabled_syncs;
 use crate::memory::sources::rpc::coding_sessions::unserved;
 use crate::memory::sources::rpc::source_sync::SyncDispatch;
