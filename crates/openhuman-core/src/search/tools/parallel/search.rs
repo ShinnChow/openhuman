@@ -2,17 +2,11 @@
 
 use crate::integrations::IntegrationClient;
 use crate::tools::traits::{Tool, ToolResult};
+use crate::util::truncate_chars_flagged as truncate_chars;
 use async_trait::async_trait;
 use serde::Deserialize;
 use serde_json::json;
 use std::sync::Arc;
-
-/// UTF-8 safe truncation: returns the truncated slice and whether it was truncated.
-pub(super) fn truncate_chars(s: &str, max_chars: usize) -> (&str, bool) {
-    match s.char_indices().nth(max_chars) {
-        Some((byte_idx, _)) => (&s[..byte_idx], true),
-        None => (s, false),
-    }
 }
 
 // ── Response types ──────────────────────────────────────────────────
