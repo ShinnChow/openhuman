@@ -98,10 +98,12 @@ consumers: the agent harness (`agent/harness/session/builder/factory.rs`,
 
 ## Tests
 
-- `factory_tests*.rs`, `factory_tests_part_0{1,2,3}_tests.rs`,
+- `factory_tests.rs`, `factory_crate_native_tests.rs`,
+  `factory_egress_fallback_tests.rs`, `factory_route_resolution_tests.rs`,
   `factory_test_provider_override_tests.rs` — provider-string parsing, access
   gates, and model construction.
-- `ops_tests*.rs`, `ops/http_error_tests.rs`, `ops/models_tests.rs` — error
+- `ops_tests.rs`, `ops_tests_error_suppression_tests.rs`,
+  `ops_tests_models_parsing_tests.rs`, `ops/http_error_tests.rs`, `ops/models_tests.rs` — error
   classification and model listing.
 - `error_classify_tests.rs`, `error_code_tests.rs`, `config_rejection_tests.rs`,
   `billing_error_tests.rs`, `fallback_diagnostics_tests.rs` — per-classifier
