@@ -8,8 +8,6 @@
 //! broker and a real `dlopen`.
 
 
-use crate::modules::memory::capabilities::capabilities_for;
-use crate::modules::memory::capabilities::ARTIFACT_CAPABILITIES_PIN;
 use std::sync::Arc;
 
 use tinymemory_api::capabilities::{Capabilities, Capability};
