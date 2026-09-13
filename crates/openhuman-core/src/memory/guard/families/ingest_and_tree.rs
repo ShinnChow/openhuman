@@ -206,6 +206,7 @@ impl MemoryDocuments for GuardedDocuments {
 
 // ── Tree ─────────────────────────────────────────────────────────────────────
 
+#[async_trait]
 impl MemoryTree for GuardedTree {
     async fn append(&self, mut request: IngestRequest) -> Result<(), MemoryError> {
         self.policy
