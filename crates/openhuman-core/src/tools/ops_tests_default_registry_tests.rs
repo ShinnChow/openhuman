@@ -245,9 +245,9 @@ fn every_packed_tool_name_resolves_to_a_registered_tool() {
     for pack in crate::tools::toolpacks::PACKS {
         // Registered only once the user is signed in: `composio`'s tools come
         // from `all_composio_agent_tools`, which returns an empty vec without
-        // a session (`integrations/composio/tools_part_03.rs:320-323`), and
+        // a session (`integrations/composio/tools/registry.rs`), and
         // `storage` / `media` are built behind `integrations::build_client`,
-        // which needs a session token (`file_storage/tools_part_02.rs`,
+        // which needs a session token (`file_storage/tools/registry.rs`,
         // `media/generation/tools.rs`). Runtime auth state no unit test can
         // satisfy, in any feature configuration. Every name in those three is
         // a real tool in the source it is built from, verified by hand at the
