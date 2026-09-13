@@ -36,6 +36,7 @@ import {
   resolveDisplayStatus,
   useRunsPendingApprovalSet,
 } from '../../hooks/useRunsPendingApprovalSet';
+import { formatRunTimestamp } from '../../lib/flows/runTimestamp';
 import { useT } from '../../lib/i18n/I18nContext';
 import { Button, CenteredLoadingState, EmptyState, ErrorBanner } from '../ui';
 import { type FlowRepairRequest, FlowRunInspectorDrawer } from './FlowRunInspectorDrawer';
