@@ -8,7 +8,7 @@ Authoritative TOML-backed configuration layer. Owns the `Config` schema (every d
 | --- | --- |
 | `schema/` | The `Config` struct, every section type, loading/saving, env overrides, migrations trigger point — see [schema/README.md](schema/README.md) |
 | `ops/` | RPC/CLI mutation surface (`config::rpc`) built on the schema — see [ops/README.md](ops/README.md) |
-| `schemas/` | Controller schemas + thin RPC handlers for the `config` namespace (`controllers_part_0N.rs` via `include!`, `helpers.rs`, `schema_defs.rs` + `schemas_schema_part_0N.rs`); the method list is in the `//!` header of `schemas/mod.rs` |
+| `schemas/` | Controller schemas + thin RPC handlers for the `config` namespace (`controllers.rs` with submodules `controllers/{agent,inference,integrations,registry,voice,workspace}.rs`, `helpers.rs`, `schema_defs.rs` with submodules `schema_defs/{agent,inference,integrations,voice,workspace}.rs`); the method list is in the `//!` header of `schemas/mod.rs` |
 | `migrations/` | Automatic, schema-version-gated startup data migrations — see [migrations/README.md](migrations/README.md) |
 | `migration_helpers/` | User-triggered `migrate.{openclaw,hermes}` RPCs importing memory from other assistants — see [migration_helpers/README.md](migration_helpers/README.md) |
 | `workspace/` | Workspace bootstrap + editable Persona Pack (`SOUL.md`/`IDENTITY.md`) file RPCs — see [workspace/README.md](workspace/README.md) |
