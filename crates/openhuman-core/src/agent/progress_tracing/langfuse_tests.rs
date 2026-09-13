@@ -5,7 +5,6 @@ use crate::agent::progress_tracing::SpanKind;
 use tinyagents_harness::ids::{CallId, EventId, RunId};
 use tinyinference::usage::Usage;
 
-use crate::agent::progress_tracing::types::SpanKind;
 fn span(
     trace: &str,
     id: &str,
