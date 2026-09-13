@@ -23,7 +23,7 @@ Boots every enabled channel, keeps their listeners alive, and dispatches inbound
 | --- | --- |
 | `helpers.rs` | Stateless helpers: per-turn context block for non-web channels, deterministic ACK-emoji picker, worker join logging, scoped typing task |
 | `routing.rs` | `AgentScoping`, `resolve_target_agent`, `build_visible_tool_set`, `connected_with_fallback` — picks the active agent for the channel and its visible/delegation tool surface from `Config`, `AgentDefinitionRegistry`, and the connected-integrations snapshot |
-| `processor.rs` (+ `processor_part_01.rs..03.rs`) | `RuntimeChannelMessage`, `channel_has_approval_surface`, `try_route_approval_reply`, `process_channel_message`, `process_channel_runtime_message`, `run_message_dispatch_loop` |
+| `processor.rs` (+ `processor/` — `message.rs`, `approval.rs`, `turn.rs`, `dispatch_loop.rs`) | `RuntimeChannelMessage`, `channel_has_approval_surface`, `try_route_approval_reply`, `process_channel_message`, `process_channel_runtime_message`, `run_message_dispatch_loop` |
 | `mod.rs` | Declares the three submodules and the `#[cfg(test)]` / `#[cfg(any(test, debug_assertions))]` re-exports the test modules reach through `super::*` |
 
 Two policy points here: `channel_has_approval_surface` is `true` only for `TELEGRAM_APPROVAL_CLIENT_ID`, so other channels still run in the legacy "no chat context, silently allow" state until they get a surface subscriber; and scoping is per channel (`resolve_target_agent(&msg.channel)`), falling back to `AgentScoping::unscoped()` (every registered tool visible) when the registry is not initialised or the target agent is unknown.
