@@ -5,7 +5,7 @@ mod connect_channel;
 mod disconnect;
 mod email;
 mod memory;
-mod shared;
+pub(super) mod shared;
 mod status;
 mod test_channel;
 
