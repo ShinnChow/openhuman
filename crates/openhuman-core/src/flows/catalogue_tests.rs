@@ -227,7 +227,6 @@ fn a_saved_flow_reaches_the_catalogue_with_its_real_id() {
     let saved = super::super::store::create_flow(
         &config,
         "Weekly Report".to_string(),
-        String::new(),
         graph,
         false,
         true,
@@ -258,7 +257,6 @@ fn entries_are_sorted_by_name_so_the_prompt_prefix_is_stable() {
         super::super::store::create_flow(
             &config,
             name.to_string(),
-            String::new(),
             WorkflowGraph::default(),
             false,
             true,
