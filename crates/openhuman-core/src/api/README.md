@@ -131,7 +131,7 @@ call: it walks the `reqwest`/`hyper`/`rustls` error source chain (not just the
 top-level message) to distinguish a transient transport failure from one
 worth reporting, and turns specific status/path combinations into the typed
 `BackendApiError` variants above. `IntegrationClient::map_sdk_error`
-(`integrations/client_part_01.rs`) plays the same role for integrations.
+(`integrations/client/errors.rs`) plays the same role for integrations.
 Route new SDK calls through those helpers instead of matching
 `tinyhumans_sdk::Error` by hand.
 
@@ -166,7 +166,7 @@ see [`models/mod.rs`](models/mod.rs) for the full list.
 `platform/socket/` (realtime client), `hosted/*` (billing, referral,
 announcements, team), `medulla/client/`, `integrations/` and
 `integrations/composio/`, `channels/controllers/ops/` and
-`channels/bus_part_*.rs` (which match on `BackendApiError` variants),
+`channels/bus/{delivery,progressive_ui}.rs` (which match on `BackendApiError` variants),
 `security/credentials/` (defines the `get_session_token` that `jwt.rs`
 re-exports; consumes `BackendOAuthClient`, `flatten_authed_error`,
 `decode_jwt_exp`, and re-exports the OAuth types), `voice/`,

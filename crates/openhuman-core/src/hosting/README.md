@@ -22,9 +22,12 @@ mock of the provider's REST API. Outside the mock responses in
 | File | Role |
 | --- | --- |
 | `mod.rs` | `Account` (`from_config` credential resolution, `connect` for embedders that hold their own key, the shared `dyn Host`) and `resolve_in_workspace`. |
-| `tools.rs` | Module docs, then `include!`s the two parts below. |
-| `tools_part_01.rs` | `hosting_launch_site`, `hosting_deployment_status`, `hosting_list_deployments`, `hosting_deployment_logs`, `hosting_rollback`, `hosting_list_sites`. |
-| `tools_part_02.rs` | `hosting_set_env`, `hosting_add_domain`, `hosting_domain_status`, `hosting_analytics`. |
+| `tools.rs` | Module docs, `hosting_tools` (every tool for one account), and the argument helpers shared by the submodules below. |
+| `tools/launch.rs` | `hosting_launch_site`. |
+| `tools/deployments.rs` | `hosting_deployment_status`, `hosting_list_deployments`, `hosting_deployment_logs`, `hosting_rollback`. |
+| `tools/sites.rs` | `hosting_list_sites`, `hosting_set_env`. |
+| `tools/domains.rs` | `hosting_add_domain`, `hosting_domain_status`. |
+| `tools/analytics.rs` | `hosting_analytics`. |
 | `hosting_tests.rs` | Account resolution, workspace containment, and each tool's contract. |
 
 ## Agent tools
