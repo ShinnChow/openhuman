@@ -144,6 +144,6 @@ same real type in both builds.
   tool catalog and the orchestrator prompt.
 - `crates/openhuman-core/src/agent/harness/session/turn/core_turn.rs` — reads
   `connections::connected_overview()` when assembling a turn.
-- `crates/openhuman-core/src/platform/about_app/catalog_part_02.rs` — the
+- `crates/openhuman-core/src/platform/about_app/catalog_auth_channels_team.rs` — the
   `channels.mcp_registry_browse` / `mcp_server_install` /
   `mcp_server_connect` capability entries.
