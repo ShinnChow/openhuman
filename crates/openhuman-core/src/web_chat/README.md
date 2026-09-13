@@ -84,7 +84,7 @@ surfaces.
 | File | Purpose |
 | --- | --- |
 | `mod.rs` | Module wiring and re-exports; no business logic |
-| `ops.rs`, `ops_part_01.rs`, `ops_part_02.rs`, `ops_part_03.rs` | `start_chat`/`cancel_*`/`channel_web_*` operations, session cache, in-flight tracking, budget-signal correlation, `run_turn_under_cancel_and_deadline`; the parts are `include!`d into `ops.rs` |
+| `ops.rs` (thin shell over `ops/`: `start_chat.rs`, `channel_ops.rs`, `parallel_turn.rs`, `turn_guards.rs`, `state.rs`, `budget_correlation.rs`, `test_hooks.rs`) | `start_chat`/`cancel_*`/`channel_web_*` operations, session cache, in-flight tracking, budget-signal correlation, `run_turn_under_cancel_and_deadline` |
 | `run_task.rs` | `run_chat_task` — resolves/builds the session agent, spawns the progress bridge, runs the turn, applies the budget correlation to its error |
 | `session.rs` | Builds/fingerprints the cached session `Agent`, resolves target agent id, locale directive, provider role for a model override |
 | `progress_bridge.rs` | Forwards `AgentProgress` into `WebChannelEvent`s and `TurnStateMirror`, emits the `inference_heartbeat` liveness beat |
