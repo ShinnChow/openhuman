@@ -71,7 +71,7 @@ Namespace `learning` (wired into `crates/openhuman-core/src/core/all.rs`; 11 con
 | `learning.forget_facet` | Mark `Dropped` + `user_state = Forgotten` (blocks re-promotion). |
 | `learning.reset_cache` | Delete all `Auto` rows, preserve `Pinned`. |
 
-Facet handlers build a `FacetCache` over `crate::memory::ops::guard::active_memory_guard()` (`get_cache()` in `schemas_part_01.rs`); `linkedin_enrichment` / `save_profile` load config via `config::rpc::load_config_with_timeout`.
+Facet handlers build a `FacetCache` over `crate::memory::ops::guard::active_memory_guard()` (`get_cache()` in `schemas/cache_helpers.rs`); `linkedin_enrichment` / `save_profile` load config via `config::rpc::load_config_with_timeout`.
 
 ## Agent tools
 
