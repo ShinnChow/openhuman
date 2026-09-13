@@ -49,7 +49,7 @@ stores fixed 1024-dimension vectors (`EMBEDDING_DIM` in tinymemory-core's
 - `schemas.rs` declares the `embeddings` namespace functions (`get_settings`,
   `update_settings`, `set_api_key`, `clear_api_key`, `embed`,
   `test_connection`) and dispatches to the handlers in `rpc.rs`
-  (`rpc_part_01.rs`, `rpc_part_02.rs`).
+  (`rpc/settings.rs`, `rpc/api_keys.rs`, `rpc/embed.rs`, `rpc/probe.rs`, `rpc/served_models.rs`).
 - See `mod.rs` for the current provider set (Managed default via the backend's
   `POST /openai/v1/embeddings`, Voyage, OpenAI, Cohere, Ollama, Custom, Noop)
   and `tinyinference::embeddings` for their concrete implementations.

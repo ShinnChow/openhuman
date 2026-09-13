@@ -92,7 +92,7 @@ These are subscriber registrations rather than a single `bus.rs`; subscriptions 
 ## Persistence
 
 - **`user_profile_facets`** (the ambient cache) — accessed via `FacetCache`, which delegates to the `MemoryProfile` family of the active `MemoryGuard` (`list_active`, `list_all`, `get`, `upsert`, `set_user_state`, `delete`, `drop_below_threshold`; `reset_non_pinned` is a free fn in `cache.rs`). The SQL lives in the memory driver, not in this crate. Rows are `tinymemory_api::provider::ProfileFacet { key, value, state, user_state, stability, confidence, evidence_count, evidence_refs, class, cue_families, first/last_seen_at, … }`.
-- **KV memory namespaces** (via the `Memory` trait): `learning_observations`, `learning_patterns`, `learning_reflections`, `user_profile`, `tool_effectiveness`, plus transcript-ingest `conversation_memory` / `conversation_reflections`. LinkedIn enrichment also upserts the scraped profile through the guard's documents family (`put_profile_document` in `linkedin_enrichment_part_02.rs`) and writes `{workspace_dir}/PROFILE.md`.
+- **KV memory namespaces** (via the `Memory` trait): `learning_observations`, `learning_patterns`, `learning_reflections`, `user_profile`, `tool_effectiveness`, plus transcript-ingest `conversation_memory` / `conversation_reflections`. LinkedIn enrichment also upserts the scraped profile through the guard's documents family (`put_profile_document` in `linkedin_enrichment/memory_persistence.rs`) and writes `{workspace_dir}/PROFILE.md`.
 - **In-memory**: the global `candidate::Buffer` (transient evidence, not persisted) and per-session state in `extract/heuristics.rs`.
 
 ## Dependencies
