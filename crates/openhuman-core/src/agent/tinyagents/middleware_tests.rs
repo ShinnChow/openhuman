@@ -14,7 +14,7 @@ use std::sync::Arc;
 
 use async_trait::async_trait;
 
-use tinyagents_harness::middleware::{AgentRun, BudgetTracker, Middleware, ToolMiddleware};
+use tinyagents_harness::middleware::{AgentRun, BudgetTracker, Middleware};
 use tinyagents_harness::steering::{SteeringCommand, SteeringHandle};
 use tinyagents_harness::tool::{ToolPolicy as TaToolPolicy, ToolResult as TaToolResult};
 use tinyinference::message::{ContentBlock, Message as TaMessage};
