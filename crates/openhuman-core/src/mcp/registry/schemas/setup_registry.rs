@@ -4,7 +4,7 @@
 
 use crate::core::{ControllerSchema, FieldSchema, TypeSchema};
 
-pub(super) fn setup_schemas(function: &str) -> ControllerSchema {
+pub(crate) fn setup_schemas(function: &str) -> ControllerSchema {
     match function {
         "search" => ControllerSchema {
             namespace: "mcp_setup",
