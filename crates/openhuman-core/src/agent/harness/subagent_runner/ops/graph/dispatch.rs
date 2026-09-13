@@ -390,7 +390,7 @@ pub(in super::super) async fn run_subagent_via_graph(
     // than surfacing an empty/partial answer — the legacy `SubagentCheckpoint`.
     if outcome.hit_cap {
         let digest = build_cap_digest(&outcome.conversation, &outcome.tool_outcomes);
-        let strategy = super::checkpoint::SubagentCheckpoint {
+        let strategy = checkpoint::SubagentCheckpoint {
             chat_model: summary_model.clone(),
             agent_id: agent_id.to_string(),
             // The checkpoint summary call's output cap. #4469 item 5: honour this
