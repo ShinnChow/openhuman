@@ -155,11 +155,11 @@ Namespace `channel`, registered via
 - `core/all.rs` — registers `all_web_channel_registered_controllers()` under
   `DomainGroup::Channels`, deliberately *not* behind the `channels` feature
   (the in-app chat is core product surface, #5002).
-- `channels/bus_part_01.rs` — inbound external-provider messages run through
+- `channels/bus/subscriber.rs` — inbound external-provider messages run through
   `start_chat` with a per-sender `client_id`;
   `channels/providers/telegram/remote_control.rs` calls
   `invalidate_thread_sessions`.
-- `flows/ops_part_09.rs`/`ops_part_10.rs` and
+- `flows/ops/streaming.rs` and
   `agent/task_dispatcher/executor.rs` — core-initiated turns reuse
   `spawn_progress_bridge` and `presentation::deliver_response*` so they render
   on the same socket surface.
