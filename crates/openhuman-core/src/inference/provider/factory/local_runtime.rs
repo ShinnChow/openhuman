@@ -3,6 +3,7 @@
 
 use super::*;
 use crate::inference::provider::crate_openai;
+#[cfg(not(test))]
 use crate::inference::provider::factory::access_gates::verify_session_active;
 
 /// Local OpenAI-compatible runtimes (Ollama / LM Studio / MLX / OMLX /

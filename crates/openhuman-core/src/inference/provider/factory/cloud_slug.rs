@@ -4,7 +4,9 @@
 use super::*;
 use crate::inference::provider::crate_anthropic;
 use crate::inference::provider::crate_openai;
+#[cfg(not(test))]
 use crate::inference::provider::factory::access_gates::verify_backend_session_active;
+#[cfg(not(test))]
 use crate::inference::provider::factory::access_gates::verify_session_active;
 use crate::inference::provider::fallback_diagnostics;
 

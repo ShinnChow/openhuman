@@ -1,6 +1,7 @@
 //! Subprocess-backed providers: the Claude Agent SDK and the Claude Code CLI.
 
 use super::*;
+#[cfg(not(test))]
 use crate::inference::provider::factory::access_gates::verify_session_active;
 
 /// Build the Claude Agent SDK subprocess directly as a crate model. This is a

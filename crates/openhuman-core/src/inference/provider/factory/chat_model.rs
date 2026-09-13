@@ -2,6 +2,7 @@
 //! default-temperature wrapper, and the unresolved-route error builder.
 
 use super::*;
+#[cfg(not(test))]
 use crate::inference::provider::factory::access_gates::verify_session_active;
 
 /// Build an `Arc<dyn ChatModel>` for the given workload role.
