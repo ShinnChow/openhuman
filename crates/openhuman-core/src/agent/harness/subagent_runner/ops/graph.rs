@@ -61,6 +61,8 @@ use crate::tools::Tool;
 use std::collections::HashSet;
 #[cfg(test)]
 use std::sync::Arc;
+#[cfg(test)]
+use worker_mirror::{mirror_worker_thread, mirror_worker_thread_from_history};
 
 #[cfg(test)]
 #[path = "graph_tests.rs"]
