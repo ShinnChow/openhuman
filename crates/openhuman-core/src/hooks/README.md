@@ -53,7 +53,7 @@ it denies. Do not change this default without reading the configuration and
 security section of `AGENTS.md`. A hook that answers `allow` only lets the call
 continue to the autonomy policy and approval gate underneath it; both still
 apply. A hook that answers `ask` reaches the harness as
-`ToolHookDecision::Ask`, and `agent/tinyagents/middleware_part_03.rs` has no
+`ToolHookDecision::Ask`, and `agent/tinyagents/middleware/embedder_hooks.rs` has no
 approval channel, so today it denies rather than quietly allowing.
 
 Not every event in `types::HookEvent::ALL` fires yet. `HookEvent::is_wired`
@@ -125,7 +125,7 @@ therefore has no derived pre-event — denying it belongs to `preToolUse`. The
   `hooks.json`, not in `config.toml`.
 - RPC namespace `hooks` (`schemas.rs`) is registered via
   `all_hooks_registered_controllers` in `core/all.rs`.
-- `web_chat/ops_part_02.rs` calls `hooks::ops::prompt_submitted` before a
+- `web_chat/ops/start_chat.rs` calls `hooks::ops::prompt_submitted` before a
   submitted prompt reaches the agent.
 - `agent/harness/subagent_runner/ops/runner.rs` calls
   `hooks::ops::subagent_starting` before spawning a sub-agent.
