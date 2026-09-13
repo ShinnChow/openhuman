@@ -11,7 +11,7 @@ use serde_json::{json, Value};
 
 /// Retrieve full page contents for a list of URLs (`POST /extract`).
 pub struct TavilyExtractTool {
-    client: TavilyClient,
+    pub(super) client: TavilyClient,
 }
 
 impl TavilyExtractTool {
