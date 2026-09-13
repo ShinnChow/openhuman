@@ -68,9 +68,9 @@ mod serialize;
 mod types;
 
 pub use collector::SpanCollector;
-pub use types::{trace_session_id, RunType, SpanStatus, TraceContext, TraceSpan};
 #[cfg(test)]
 pub use types::SpanKind;
+pub use types::{trace_session_id, RunType, SpanStatus, TraceContext, TraceSpan};
 
 pub(crate) use export::{export_run_trace, export_run_trace_from_journal};
 
