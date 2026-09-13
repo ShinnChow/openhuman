@@ -68,8 +68,8 @@ tests use a `_for_test` variant that skips the permit.
 `TriggerEnvelope::from_cron` still exists, but only the manual RPCs
 `agent.triage_evaluate` (`agent/schemas.rs`) and `webhooks.trigger_agent`
 (`skills/webhooks/ops.rs`) build one. The cron scheduler does not call
-`run_triage`: `cron/scheduler_part_02.rs::run_agent_job` runs the job's
-agent directly, and `scheduler_part_03.rs` hard-codes
+`run_triage`: `cron/scheduler/agent_run.rs::run_agent_job` runs the job's
+agent directly, and `scheduler/delivery.rs` hard-codes
 `triage_action: "react"` / `triage_reason: "Scheduled delivery"` on the
 delivered notification for display.
 
