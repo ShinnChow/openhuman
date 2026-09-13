@@ -1,13 +1,16 @@
 //! Hotkey listener dispatch: rdev everywhere except the macOS Fn/Globe key,
 //! which needs the Swift-based globe listener instead.
 
+#[cfg(target_os = "macos")]
 use std::time::Duration;
 
+#[cfg(target_os = "macos")]
 use log::{debug, info, warn};
 use tokio_util::sync::CancellationToken;
 
 use crate::voice::hotkey;
 
+#[cfg(target_os = "macos")]
 use super::LOG_PREFIX;
 
 /// Opaque handle that keeps the hotkey listener alive. Drop to stop.
