@@ -23,7 +23,7 @@ pub(crate) struct NormalizedView {
 }
 
 impl NormalizedView {
-    pub(super) fn build(original: &str) -> Self {
+    pub(crate) fn build(original: &str) -> Self {
         let mut normalized = String::with_capacity(original.len());
         let mut byte_map: Vec<usize> = Vec::with_capacity(original.len() + 1);
         for (idx, ch) in original.char_indices() {
