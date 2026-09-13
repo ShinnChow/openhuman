@@ -91,6 +91,6 @@ that evidence on each run instead (#6158).
 
 ## Tests
 
-- Unit: `ops_tests.rs`, `scheduler_tests.rs` (shared fixtures; `#[path]`-includes `scheduler_tests_part_01_tests.rs` .. `_04_tests.rs`), `store_tests.rs` (+ `store_tests_part_01_tests.rs`), `schedule_tests.rs`, `types_tests.rs`, `seed_tests.rs`, `bus_tests.rs`.
+- Unit: `ops_tests.rs`, `scheduler_tests.rs` (shared fixtures; `#[path]`-includes `scheduler_profile_and_shell_tests.rs`, `scheduler_halt_and_persist_tests.rs`, `scheduler_classifier_and_delivery_tests.rs`, `scheduler_frequency_tests.rs`), `store_tests.rs` (+ `store_agent_floor_tests.rs`), `schedule_tests.rs`, `types_tests.rs`, `seed_tests.rs`, `bus_tests.rs`.
 - Schema/parsing coverage lives in `schemas_tests.rs`.
 - Tool coverage: `tools/{add,list,remove,run,runs,update}_tests.rs` (announce-mode `allowed_users` checks live in `add_tests.rs`) and `tools/collapsed_tests.rs` (action enum, merged schema, per-action permission resolution).
