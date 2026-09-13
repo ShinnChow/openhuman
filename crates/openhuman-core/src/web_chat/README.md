@@ -91,7 +91,7 @@ surfaces.
 | `presentation.rs` | `deliver_response` (one unsegmented `chat_done`, persisted first) and `deliver_response_single_bubble` (core-initiated turns); local-model emoji-reaction decision; legacy segmentation helpers |
 | `reply_persistence.rs` | Durable write of the reply about to be announced, under a deterministic id shared with the client's own append |
 | `event_bus.rs` | The `WebChannelEvent` broadcast channel plus approval/artifact/egress `DomainEvent` surface subscribers |
-| `web_errors.rs`, `web_errors_part_0{1,2,3}.rs` | Classifies raw provider error strings into user-facing copy; budget-exhausted / rate-limit / fallback-exhausted / timeout detection; the parts are `include!`d into `web_errors.rs` |
+| `web_errors.rs` (thin shell over `web_errors/`: `backend_error_code.rs`, `budget.rs`, `classify.rs`, `provider_detail.rs`, `response_predicates.rs`, `retry.rs`, `timeout.rs`) | Classifies raw provider error strings into user-facing copy; budget-exhausted / rate-limit / fallback-exhausted / timeout detection |
 | `schemas.rs` | `ControllerSchema`/`RegisteredController` definitions for the `channel.web_*` RPC functions |
 | `types.rs` | `SessionEntry`, `SessionCacheFingerprint`, `InFlightEntry`, `ParallelEntry`, `WebChatTaskResult`, `ChatRequestMetadata`, `WebChatParams` |
 
