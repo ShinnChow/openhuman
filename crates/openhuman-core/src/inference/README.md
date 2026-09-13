@@ -91,8 +91,8 @@ Also exposes a non-RPC HTTP router (`http::router()`) nested at `/v1` by `crates
 
 ## Events
 
-- Publishes `DomainEvent::SessionExpired` from `provider/ops/http_error_part_02.rs` (`publish_backend_session_expired`) and `provider/openhuman_backend_model.rs` when the managed backend rejects a session, so the credentials layer can clear/refresh it.
-- Publishes `DomainEvent::ProviderApiKeyRejected` once per provider from `provider/ops/http_error_part_02.rs` the first time a BYO key is rejected (401/403), gated by `auth_error_registry::record`.
+- Publishes `DomainEvent::SessionExpired` from `provider/ops/http_error/auth_failure.rs` (`publish_backend_session_expired`) and `provider/openhuman_backend_model.rs` when the managed backend rejects a session, so the credentials layer can clear/refresh it.
+- Publishes `DomainEvent::ProviderApiKeyRejected` once per provider from `provider/ops/http_error/auth_failure.rs` the first time a BYO key is rejected (401/403), gated by `auth_error_registry::record`.
 - No `bus.rs` / `EventHandler` subscribers in this domain.
 
 ## Persistence
@@ -114,7 +114,7 @@ Also exposes a non-RPC HTTP router (`http::router()`) nested at `/v1` by `crates
 - `crate::core::all` — `ControllerFuture`, `RegisteredController` (controller registry).
 - `crate::core::types` — `ControllerSchema`, `FieldSchema`, `TypeSchema`.
 - `crate::core::bus` (`BUS.publish`) / `crate::core::events::DomainEvent` — `SessionExpired` / `ProviderApiKeyRejected` publishing on auth failure.
-- `crate::security::live_policy` + `crate::security::egress` — Privacy-Mode `LocalOnly` enforcement and egress descriptors at the chat-factory chokepoint (`enforce_local_only_inference`, `emit_inference_egress` in `provider/factory_part_01.rs`).
+- `crate::security::live_policy` + `crate::security::egress` — Privacy-Mode `LocalOnly` enforcement and egress descriptors at the chat-factory chokepoint (`enforce_local_only_inference`, `emit_inference_egress` in `provider/factory/access_gates.rs`).
 - `crate::core::observability` — `expected_error_kind` for Sentry-noise classification.
 - `crate::core::jsonrpc` — endpoint mounting reference for `/v1`.
 - `crate::core::auth` — bearer auth for the OpenAI-compatible endpoint.
