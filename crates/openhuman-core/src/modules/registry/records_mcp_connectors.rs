@@ -160,4 +160,3 @@ pub(crate) const TINYCONNECTORS: ModuleRecord = ModuleRecord {
     load: LoadPolicy::Lazy,
 };
 
-/// Every module this build can load.
