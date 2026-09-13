@@ -18,8 +18,8 @@ of `mod.rs`.
 | File | Role |
 | ---- | ---- |
 | `registry.rs` | Config discovery and write-locking around the source registry's CRUD. Reads/rewrites `[[memory_sources]]` in the host's own config file; the registry type itself is `tinymemory_sources::registry::SourceRegistry`. |
-| `rpc.rs` + `rpc_part_0{1,2}.rs` | RPC handler implementations for memory sources. |
-| `schemas.rs` + `schemas_part_0{1,2}.rs` | Controller-registry schemas for `openhuman.memory_sources_*`. |
+| `rpc.rs` + `rpc/` (`registry_crud.rs`, `source_sync.rs`, `apply_all.rs`, `coding_sessions.rs`, `cost_reporting.rs`, `status_toolkits.rs`) | RPC handler implementations for memory sources. |
+| `schemas.rs` + `schemas/` (`registry_schemas.rs`, `sync_schemas.rs`, `apply_all_schemas.rs`, `coding_session_schemas.rs`, `cost_schemas.rs`, `status_schemas.rs`) | Controller-registry schemas for `openhuman.memory_sources_*`. |
 | `status.rs` | Per-source sync status: the chunk-key prefix (derived from the registry entry) and freshness label are host-side; in-flight/chunk counts go through `MemoryChunks::source_ingest_status`. |
 | `sync.rs` | `derive_scopes` — which tree scope and raw-archive id a configured source maps onto; the only production-reached piece of the old engine sync pipeline. |
 | `reconcile.rs` | Startup/list-time reconciliation of active Composio connections into the registry, built on `memory::sync::composio::scan_active_sync_targets`. |
