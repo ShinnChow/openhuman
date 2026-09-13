@@ -44,10 +44,10 @@ workspace root and then kept warm in a process-wide cache (`store_index.rs`,
 
 Async request paths use the `blocking` wrappers. Grepping
 `memory::conversations::` finds the store used directly by
-[`threads/`](../../threads/) (`mod.rs`, `ops_part_01.rs`, `turn_state/store.rs`,
+[`threads/`](../../threads/) (`mod.rs`, `ops.rs`, `turn_state/store.rs`,
 `welcome_migration.rs`), by
 [`channels/`](../../channels/) (`host/adapters.rs`,
-`providers/telegram/remote_control.rs`, `runtime/startup_part_01.rs`) for
+`providers/telegram/remote_control.rs`, `runtime/startup/start_channels.rs`) for
 mirroring channel turns, and by the agent harness/orchestration layer
 (`agent/harness/subagent_runner/`, `agent/orchestration/tools/`,
 `agent/task_session.rs`, `agent/tinyagents/host/agent_memory.rs`) for

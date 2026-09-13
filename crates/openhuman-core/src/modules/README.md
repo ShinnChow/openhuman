@@ -88,7 +88,7 @@ method constants, request/response types, and its contract version:
 | `tinymcp-bus` | `mcp` |
 | `tinychannels-bus` | channel vocabulary |
 | `tinymemory-api` | memory (selectively re-exported as `crate::memory::api`, not copied or widened) |
-| `tinymemory-bus` | memory method names (`names::methods`, used by `memory_part_01.rs`) |
+| `tinymemory-bus` | memory method names (`names::methods`, used throughout `memory/`, e.g. `memory/provider.rs`) |
 | `tinyconnectors-bus` | `tinyconnectors` names and the Composio types `memory_host.rs` forwards |
 
 Rules: never redeclare a contract type in OpenHuman; call members through
