@@ -11,7 +11,7 @@ surfaces.
 ## Request lifecycle
 
 1. `core/socketio.rs` receives a `chat:start` socket event and calls
-   [`start_chat`] (`ops_part_02.rs`) with the raw message, thread/client ids,
+   [`start_chat`] (`ops/start_chat.rs`) with the raw message, thread/client ids,
    and any model/profile/locale/queue-mode overrides.
 2. `start_chat` preprocesses `[FILE:…]`/`[IMAGE:…]` attachment markers
    *before* prompt-injection scanning or persistence (a multi-MB base64 blob
