@@ -8,8 +8,8 @@ import {
   type NotificationItem,
   notificationReceived,
 } from '../../store/notificationSlice';
-import { ensureNotificationPermission, showNativeNotification } from './tauriBridge';
 import { truncateText } from '../../utils/truncateText';
+import { ensureNotificationPermission, showNativeNotification } from './tauriBridge';
 
 const log = debug('native-notifications');
 

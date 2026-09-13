@@ -30,8 +30,8 @@
  */
 import createDebug from 'debug';
 
-import { type FlowRunItem, isPlainObject } from './runItems';
 import { truncateText } from '../../utils/truncateText';
+import { type FlowRunItem, isPlainObject } from './runItems';
 
 const log = createDebug('app:flows:step-summary');
 

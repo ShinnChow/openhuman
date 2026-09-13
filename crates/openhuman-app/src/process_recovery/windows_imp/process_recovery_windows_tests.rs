@@ -175,8 +175,8 @@ fn cim_runs_when_wmic_is_unavailable() {
 fn cim_runs_when_wmic_returns_nothing() {
     // 24H2 can leave a wmic shim that exits cleanly with no output,
     // which is not an error and still means no processes.
-    let out = select_enumeration(|| Ok(vec![]), || Ok(vec![proc(9, 0, "c", "c")]))
-        .expect("cim path");
+    let out =
+        select_enumeration(|| Ok(vec![]), || Ok(vec![proc(9, 0, "c", "c")])).expect("cim path");
     assert_eq!(out[0].pid, 9);
 }
 
