@@ -74,11 +74,12 @@ domain.
 consumers: the agent harness (`agent/harness/session/builder/factory.rs`,
 `agent/harness/session/runtime*.rs`, `agent/harness/subagent_runner/ops/*`,
 `agent/tinyagents/host/model_resolver.rs`), `web_chat/session.rs` and
-`web_chat/web_errors_part_0*.rs`, `voice/factory/{helpers,mod}.rs`,
-`inference/ops.rs` / `inference/schemas_part_0{1,2}.rs` /
+`web_chat/web_errors/` (`classify.rs`, `budget.rs`, `retry.rs`, `timeout.rs`,
+`backend_error_code.rs`, `provider_detail.rs`, `response_predicates.rs`), `voice/factory/{helpers,mod}.rs`,
+`inference/ops.rs` / `inference/schemas/` /
 `inference/http/server.rs`, `memory/tree/tree_runtime/ops.rs`,
-`flows/tinyflows/caps/{llm,prompt,agent}.rs`, `cron/scheduler_part_0{1,2}.rs`
-(`is_budget_exhausted_message`), and `threads/ops_part_02.rs` (`UsageInfo`).
+`flows/tinyflows/caps/{llm,prompt,agent}.rs`, `cron/scheduler/failure_classification.rs`
+(`is_budget_exhausted_message`), and `threads/ops/usage.rs` (`UsageInfo`).
 
 ## Sub-modules
 
