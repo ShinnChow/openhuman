@@ -2,7 +2,7 @@
 
 use crate::integrations::IntegrationClient;
 use crate::tools::traits::{Tool, ToolResult};
-use crate::util::truncate_chars_flagged as truncate_chars;
+pub(super) use crate::util::truncate_chars_flagged as truncate_chars;
 use async_trait::async_trait;
 use serde::Deserialize;
 use serde_json::json;
