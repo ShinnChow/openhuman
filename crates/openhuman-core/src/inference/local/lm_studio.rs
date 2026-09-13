@@ -5,6 +5,7 @@
 //! native API structs so the two providers can evolve independently.
 
 use crate::config::{Config, LocalAiConfig};
+use crate::util::redact_url_for_log;
 use serde::{Deserialize, Serialize};
 
 pub(crate) const DEFAULT_LM_STUDIO_BASE_URL: &str = "http://localhost:1234/v1";
