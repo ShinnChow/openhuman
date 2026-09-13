@@ -65,7 +65,7 @@ Behavior tests live beside their modules as `*_tests.rs` (e.g. `ops_tests.rs` an
 
 `e2e_plumbing_tests.rs` and `e2e_run_tests.rs` are mock-LLM end-to-end tests: plumbing (create → registry round-trip, orchestrator turn calling `list_workflows`/`run_workflow`, `await_run_outcome` polling) and run execution (`spawn_workflow_run_background` → terminal `DONE` → `await_run_outcome`, `#[ignore]`d and serial because they set the process-global `OPENHUMAN_WORKSPACE`).
 
-Catalog refresh in a live session (`refresh_workflows`) is covered by `crates/openhuman-core/src/agent/harness/session/turn_tests_part_04_tests.rs`.
+Catalog refresh in a live session (`refresh_workflows`) is covered by `crates/openhuman-core/src/agent/harness/session/session_builder_and_listener_tests.rs`.
 
 ## Notes
 
