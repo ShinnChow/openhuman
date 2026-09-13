@@ -197,7 +197,7 @@ pub(super) fn check_config_semantics(config: &Config, items: &mut Vec<Diagnostic
     }
 }
 
-fn embedding_provider_validation_error(name: &str) -> Option<String> {
+pub(super) fn embedding_provider_validation_error(name: &str) -> Option<String> {
     let normalized = name.trim();
     if normalized.eq_ignore_ascii_case("none") || normalized.eq_ignore_ascii_case("openai") {
         return None;
