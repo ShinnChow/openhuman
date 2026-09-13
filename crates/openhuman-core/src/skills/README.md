@@ -61,7 +61,7 @@ Plus the sub-domain namespaces: `skill_registry.*` (`browse`, `search`, `sources
 
 ## Tests
 
-Behavior tests live beside their modules as `*_tests.rs` (e.g. `ops_tests.rs` and its `ops_tests_part_0{1,2,3}_tests.rs` siblings, `ops_types_tests.rs`, `ops_create_render_skill_toml_tests_tests.rs`, `ops_discover_include_skills_tests_tests.rs`, `ops_discover_profile_scope_tests_tests.rs`, `ops_install_install_fetch_tests_tests.rs`, `preflight_tests.rs`, `registry_tests.rs`, `run_log_tests.rs`, `schemas_tests.rs`, `search_tests.rs`, `tools_tests.rs`, `types_tests.rs`, `bus_tests.rs`), wired via `#[path]` from the module they cover.
+Behavior tests live beside their modules as `*_tests.rs` (e.g. `ops_tests.rs` and its `ops_discovery_tests.rs`, `ops_create_and_url_tests.rs`, `ops_uninstall_tests.rs` siblings, `ops_types_tests.rs`, `ops_create_render_skill_toml_tests_tests.rs`, `ops_discover_include_skills_tests_tests.rs`, `ops_discover_profile_scope_tests_tests.rs`, `ops_install_install_fetch_tests_tests.rs`, `preflight_tests.rs`, `registry_tests.rs`, `run_log_tests.rs`, `schemas_tests.rs`, `search_tests.rs`, `tools_tests.rs`, `types_tests.rs`, `bus_tests.rs`), wired via `#[path]` from the module they cover.
 
 `e2e_plumbing_tests.rs` and `e2e_run_tests.rs` are mock-LLM end-to-end tests: plumbing (create → registry round-trip, orchestrator turn calling `list_workflows`/`run_workflow`, `await_run_outcome` polling) and run execution (`spawn_workflow_run_background` → terminal `DONE` → `await_run_outcome`, `#[ignore]`d and serial because they set the process-global `OPENHUMAN_WORKSPACE`).
 
