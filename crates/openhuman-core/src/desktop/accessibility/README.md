@@ -18,7 +18,7 @@ Re-exported from `mod.rs`:
 ## Calls into
 
 - macOS frameworks `ApplicationServices`, `CoreFoundation`, and `IOKit` via `#[link]` FFI in `permissions.rs`; `CGEvent` key synthesis happens inside the Swift helper, not in Rust.
-- The Swift helper process, compiled on first use with `swiftc` from the source embedded in `helper_part_02.rs` and driven over stdin/stdout JSON by `helper_send_receive`.
+- The Swift helper process, compiled on first use with `swiftc` from the source assembled in `helper/swift_source.rs` and driven over stdin/stdout JSON by `helper_send_receive`.
 - `cpal` (behind the `inference` feature) for the microphone probe.
 - No `crate::*` imports: this module does not read `Config`.
 
