@@ -24,7 +24,7 @@ use crate::memory::api::provider::{
     MemorySourceSink, MemoryToolMemory,
 };
 use crate::memory::api::tool_memory::ToolMemoryRule;
-use crate::memory::api::types::{GraphRelationRecord, MemoryKvRecord};
+use crate::memory::api::types::{GraphRelationRecord, MemoryKvRecord, MemoryTaint};
 use async_trait::async_trait;
 
 use super::super::audit::{trace_allowed, NO_NAMESPACE};
