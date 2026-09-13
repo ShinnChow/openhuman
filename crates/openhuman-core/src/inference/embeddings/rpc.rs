@@ -15,6 +15,9 @@ pub use embed::{embed, test_connection};
 pub use settings::{get_settings, update_settings};
 
 #[cfg(test)]
+use probe::redact_secrets;
+
+#[cfg(test)]
 use probe::{classify_embed_probe, EmbedProbe};
 #[cfg(test)]
 use served_models::{
