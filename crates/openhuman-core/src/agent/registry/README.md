@@ -141,9 +141,9 @@ orchestrator tool synthesis in `tools/orchestrator_tools.rs` and
   `definition_from_registry_entry` when an id is not in the harness registry.
 - `agent/schemas.rs` — `agent.graph_topologies` and `agent.registry_snapshot`
   enumerate `load_builtins()`.
-- `flows/` (`ops_part_02.rs`, `ops_part_03.rs`, `builder_tools_part_04.rs`,
-  `tinyflows/caps/agent.rs`) — resolve a flow `agent` node's `agent_ref`
-  through `list_agents`/`get_agent`/`find_custom_in_config`.
+- `flows/` (`ops/inference_readiness.rs`, `ops/builder_gates.rs`,
+  `builder_tools/kind_reads.rs`, `tinyflows/caps/agent.rs`) — resolve a flow
+  `agent` node's `agent_ref` through `list_agents`/`get_agent`/`find_custom_in_config`.
 
 ## Tests
 
