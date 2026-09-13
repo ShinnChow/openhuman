@@ -104,9 +104,9 @@ to that delegate, not a second skill runtime.
   spec entirely when that is none.
 - `agent/harness/session/turn/tools.rs` — rebinds the synthesized registry
   after every delegation refresh and re-strips packed names;
-  `agent/harness/session/runtime_impl_01_part_01.rs` re-strips after
+  `agent/harness/session/runtime/accessors.rs` re-strips after
   materializing the visible set.
-- `agent/tinyagents/middleware_part_03.rs` / `middleware_part_07.rs` — after
+- `agent/tinyagents/middleware/tool_policy.rs` — after
   the permission gates, intercepts the disclosure half of a `use_skill` call
   (`named_tool` is `None`) and renders it with `render_pack_filtered` against
   the session's allowlist, with `route_sentence` naming the owner delegate
