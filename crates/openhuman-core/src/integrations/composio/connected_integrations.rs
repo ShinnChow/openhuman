@@ -31,3 +31,7 @@ pub(crate) use fetch::{
 // direct child modules of `connected_integrations` above — can still reach
 // these via a plain `use super::<name>;`, exactly as when this was one
 // un-split file. See each item's `pub(super)` in its owning submodule.
+#[cfg(test)]
+use cache::{cache_key, CachedIntegrations, CACHE_TTL, INTEGRATIONS_CACHE};
+#[cfg(test)]
+use fetch::{connectable_toolkit_slugs, resolve_toolkit_description};
