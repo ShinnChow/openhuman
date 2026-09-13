@@ -81,7 +81,7 @@ Discovered consumers (`crate::security::keyring::*`):
 - `crates/openhuman-core/src/config/schema/load/secrets.rs` — `SecretStore::new` / `is_encrypted` to encrypt/decrypt config fields on load.
 - `crates/openhuman-core/src/security/credentials/profiles.rs`, `credentials/ops.rs` — `SecretStore`, `is_available`, `get`/`set`/`delete` for per-profile credential storage.
 - `crates/openhuman-core/src/security/keyring_consent/` — gates the OS-keyring-to-local fallback behind user consent and reports `backend_name()`/`is_available()` as a `KeyringStatus`; see [`../keyring_consent/README.md`](../keyring_consent/README.md).
-- `crates/openhuman-core/src/web3/wallet/ops_part_01.rs` — `is_available`/`get`/`set` for the wallet mnemonic.
+- `crates/openhuman-core/src/web3/wallet/ops/state.rs` — `is_available`/`get`/`set` for the wallet mnemonic.
 - `crates/openhuman-core/src/security/devices/rpc.rs` — device secret handling.
 
 ## Notes / gotchas
