@@ -28,6 +28,7 @@ import { useFlowPendingApprovals } from '../../hooks/useFlowPendingApprovals';
 import { useFlowRunPoller } from '../../hooks/useFlowRunPoller';
 import { type FlowNodeRunStatus, useFlowRunProgress } from '../../hooks/useFlowRunProgress';
 import { type FlowRunItem, normalizeItems } from '../../lib/flows/runItems';
+import { formatRunTimestamp } from '../../lib/flows/runTimestamp';
 import { summarizeStep } from '../../lib/flows/runStepSummary';
 import { useT } from '../../lib/i18n/I18nContext';
 import type { FlowRunStep } from '../../services/api/flowsApi';
