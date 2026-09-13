@@ -73,7 +73,7 @@ from always-compiled code.
 
 - Unit: `*_tests.rs` attached with `#[path]` to nearly every top-level file (`ops_tests*`, `bus_tests*`, `builder_tools_tests*`, `catalogue_tests.rs`, `discovery_tools_tests.rs`, `medulla_bridge_tests.rs`, `memory_tools_tests.rs`, `node_contracts_tests.rs`, `schemas_tests.rs`, `tools_tests.rs`), plus `import_tests.rs` for the n8n importer (declared in `mod.rs`).
 - `tinyflows/` has its own suite: `checkpoint_compat_tests.rs`, `memory_adapter_tests.rs`, `memory_node_e2e_tests.rs`, `observability_tests.rs`, `langfuse_export_tests.rs`, `tinyflows_tests.rs`, and `caps/*_tests.rs`.
-- Not compiled: `types.rs` / `types_tests.rs` and `store_tests_part_01..03.rs` are declared by no module (`flows::types` resolves to `tinyflows_catalog::types`, and `store.rs` has no test attachment). They are leftovers from moving the model and store into `tinyflows-catalog` / `tinyflows-sqlite`.
+- Not compiled: `types.rs` / `types_tests.rs` are declared by no module (`flows::types` resolves to `tinyflows_catalog::types`, and `store.rs` has no test attachment). They are leftovers from moving the model and store into `tinyflows-catalog` / `tinyflows-sqlite`.
 
 ## Related docs
 

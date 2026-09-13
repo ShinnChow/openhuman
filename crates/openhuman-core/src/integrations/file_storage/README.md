@@ -26,9 +26,10 @@ and TTL enforcement.
 | --- | --- |
 | `mod.rs` | Export-only module root; re-exports `build_file_storage_tools` and the six `Storage*Tool` structs. |
 | `types.rs` | Serde types for backend responses (`UploadResponse`, `ListFilesResponse`, `FileMeta`, `LinkResponse`, `DeleteResponse`). |
-| `tools.rs` | Module doc listing the backend endpoints and billing model; wires in `tools_part_01.rs` / `tools_part_02.rs` via `include!`. |
-| `tools_part_01.rs` | Shared helpers (`resolve_upload_path`, `validate_file_id`, `validate_visibility`, `sanitize_filename`, `action_dir_for_context`, `readonly_autonomy_block`) plus `StorageUploadFileTool`, `StorageDownloadFileTool`, `StorageListFilesTool`, and the `StorageGetLinkTool` struct. |
-| `tools_part_02.rs` | The `Tool` impl for `StorageGetLinkTool`, `StorageSetVisibilityTool`, `StorageDeleteFileTool`, and the `build_file_storage_tools` builder. |
+| `tools/mod.rs` | Module doc listing the backend endpoints and billing model; declares and re-exports the tool submodules. |
+| `tools/helpers.rs` | Shared helpers: `resolve_upload_path`, `validate_file_id`, `validate_visibility`, `sanitize_filename`, `action_dir_for_context`, `readonly_autonomy_block`. |
+| `tools/upload.rs`, `tools/download.rs`, `tools/list.rs`, `tools/link.rs`, `tools/visibility.rs`, `tools/delete.rs` | `StorageUploadFileTool`, `StorageDownloadFileTool`, `StorageListFilesTool`, `StorageGetLinkTool`, `StorageSetVisibilityTool`, `StorageDeleteFileTool` respectively, one `Tool` impl per file. |
+| `tools/registry.rs` | The `build_file_storage_tools` builder. |
 | `tools_tests.rs` | Tool metadata/schema tests and path-resolution/sanitization unit tests. |
 
 ## Agent Tools
@@ -49,7 +50,7 @@ alphanumeric/`-`/`_` charset before it is interpolated into the URL path
 
 ## Security Notes
 
-- `resolve_upload_path` (`tools_part_01.rs`) resolves the `path` argument
+- `resolve_upload_path` (`tools/helpers.rs`) resolves the `path` argument
   relative to `action_dir` if not absolute, canonicalizes both the workspace
   root and the candidate, and rejects the upload unless the canonicalized
   path starts with the canonicalized `action_dir` — this also rejects a
