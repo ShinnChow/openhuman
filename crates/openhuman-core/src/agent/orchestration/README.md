@@ -55,7 +55,9 @@ semantics, compatibility events, and JSON-RPC/tool response formatting.
   structural/agent validation, and the live execution engine (`engine.rs`).
 - `delegation.rs` — production worker for TinyAgents' durable
   plan→execute⇄review→finalize graph; every stage runs through `run_subagent`.
-- `spawn_parallel_graph.rs` (+ `_part_0N.rs`) — the fanout behind
+- `spawn_parallel_graph.rs` + `spawn_parallel_graph/` (`request.rs`, `staging.rs`,
+  `dispatch.rs`, `workers.rs`, `collect.rs`, `graph.rs`, `run.rs`, `types.rs`) —
+  the fanout behind
   `spawn_parallel_agents`: request/claim validation, worktree preflight, and the
   bounded `map_reduce` worker run; the tool file only translates `ToolResult`.
 - `subagent_events.rs` — the single owner that constructs and publishes
@@ -72,8 +74,10 @@ semantics, compatibility events, and JSON-RPC/tool response formatting.
 - `parent_context/builder.rs` — `build_root_parent` / `with_root_parent`, the
   single blessed entry point for constructing a root `ParentExecutionContext`
   outside an agent turn.
-- `running_subagents.rs` (+ `_part_01.rs`, `_part_02.rs`) — detached sub-agent
-  registry mirror; `background_completions.rs` / `background_delivery.rs` —
+- `running_subagents.rs` + `running_subagents/` (`registry.rs`, `roster.rs`,
+  `resolve.rs`, `cancel.rs`, `steering.rs`, `wait.rs`, `task_ledger.rs`) —
+  detached sub-agent registry mirror; `background_completions.rs` /
+  `background_delivery.rs` —
   queue and idle-gated, debounced, batched delivery of finished background
   runs back into chat; `run_ledger_finalize.rs` — global-bus subscriber that
   settles ledger rows for runs that outlive their spawning turn.
