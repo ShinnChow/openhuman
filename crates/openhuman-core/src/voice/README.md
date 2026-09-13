@@ -154,8 +154,8 @@ transcription count, rolling recent-transcript buffer for context) behind a
 - `crates/openhuman-core/src/platform/socket/event_handlers.rs` — spawns `realtime_harness::handle_voice_harness_turn` for each `voice:harness` socket event.
 - `crates/openhuman-core/src/web_chat/run_task.rs` — synthesizes agent reply speech and publishes PTT transcript-committed events.
 - `crates/openhuman-core/src/channels/host/adapters.rs` — channel-side STT provider dispatch and reply synthesis.
-- `crates/openhuman-core/src/security/credentials/ops_part_01.rs` — starts/stops the dictation server, dictation listener, and always-on listener when credentials that gate them change.
-- `crates/openhuman-core/src/config/schemas/controllers_part_02.rs` — re-applies `always_on::start_if_enabled` live after voice-server settings are saved.
+- `crates/openhuman-core/src/security/credentials/ops/login_services.rs` — starts/stops the dictation server, dictation listener, and always-on listener when credentials that gate them change.
+- `crates/openhuman-core/src/config/schemas/controllers/voice.rs` — re-applies `always_on::start_if_enabled` live after voice-server settings are saved.
 - `crates/openhuman-core/src/inference/local/service/speech.rs` — the local-AI service's STT path resolves and constructs the provider through `effective_stt_provider` / `create_stt_provider`.
 - `crates/openhuman-core/src/inference/local/install_piper.rs` — references `DEFAULT_PIPER_VOICE`.
 - `crates/openhuman-core/src/tools/mod.rs` — re-exports `voice::audio_toolkit::tools::*` into the agent tool catalog.
@@ -168,6 +168,6 @@ transcription count, rolling recent-transcript buffer for context) behind a
 - **Reply-speech and realtime approval-gate classification is "internal"** — if `reply_speech` is ever wrapped in a `Tool`, `external_effect()` MUST stay `false` so the approval gate never prompts on TTS (see file docstring + #1339/#1206). `realtime_harness` turns are classified `ExternalChannel` instead, since they originate as user speech over a channel.
 - **Provider precedence:** `effective_tts_provider` prefers the top-level `config.tts_provider`, falls back to `config.local_ai.tts_provider`, then `"cloud"`. `effective_stt_provider` walks `config.stt_provider` → `config.local_ai.stt_provider` but only accepts one that names a *specific* provider; `""`/`cloud`/`openhuman`/`backend` defer to `config.voice_server.stt_engine.provider_string()` so an engine picked in Settings is not shadowed by the legacy `"cloud"` default.
 - **Piper-voice guard:** dispatch handlers only default to `DEFAULT_PIPER_VOICE` when the active provider is `piper`; sending a Piper voice id to a cloud/external endpoint would be invalid.
-- **Dictation pipeline gates** (in `server_part_02.rs`): minimum duration → peak-RMS silence threshold → hallucination filter (`tinyvoice::is_hallucinated`) / empty-text — each drops the recording before delivery. A `session_generation` counter discards stale state transitions from superseded recordings.
+- **Dictation pipeline gates** (in `server/pipeline.rs` and `server/runtime.rs`): minimum duration → peak-RMS silence threshold → hallucination filter (`tinyvoice::is_hallucinated`) / empty-text — each drops the recording before delivery. A `session_generation` counter discards stale state transitions from superseded recordings.
 - **Kokoro TTS is intentionally not implemented** in this cut; the doc in `factory/entry.rs` describes how to add it as a new branch + sibling module.
 - **No local STT branch:** `"whisper"`/`"local"` provider strings are legacy and error rather than silently falling back — a real misconfiguration should surface, not degrade quietly (see `factory/entry.rs::create_stt_provider`).
