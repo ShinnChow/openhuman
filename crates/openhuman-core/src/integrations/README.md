@@ -20,9 +20,9 @@ task-source sub-domains, and the remaining non-search tool families.
 Every request `IntegrationClient` sends through the `tinyhumans-sdk` client
 carries the sanitized `x-sdk-name` product identity
 (`crate::api::product::product_identity_headers()` applied via
-`with_default_headers` in `client_part_01.rs`; asserted by
+`with_default_headers` in `client/construct.rs`; asserted by
 `integration_requests_carry_the_default_product_identity` in
-`client_tests_part_01_tests.rs`). The one deliberate exception, per AGENTS.md
+`client_error_propagation_tests.rs`). The one deliberate exception, per AGENTS.md
 "Backend API", is `get_bytes`: it uses a separate untagged `download_client`
 because the file-storage download route answers a 302 to a presigned S3 URL
 and reqwest keeps custom headers across the cross-host redirect.
