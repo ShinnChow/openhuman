@@ -5,7 +5,7 @@
 use std::collections::HashMap;
 use std::path::Path;
 
-use tinyagents_harness::workspace::WorkspaceDescriptor;
+use tinyagents_harness::workspace::{WorkspaceDescriptor, WorkspaceIsolation};
 use tokio::sync::mpsc::Sender;
 
 use crate::agent::harness::definition::{AgentDefinition, SandboxMode};
