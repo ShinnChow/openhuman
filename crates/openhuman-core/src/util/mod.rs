@@ -18,6 +18,9 @@
 /// BM25 ranking over short documents, shared by `tool_search` and
 /// `skill_search`. Deliberately names nothing from `crate::` — see its docs.
 pub mod bm25;
+/// Generic JSON-RPC param deserialisation (`read_required`/`read_optional`),
+/// shared across domain `schemas.rs` files.
+pub mod params;
 /// PII redaction for log output. See the module docs for why this is here and
 /// not taken from the memory engine.
 pub mod redact;
@@ -27,9 +30,12 @@ pub mod text;
 pub mod tls;
 pub mod types;
 
+pub use params::{read_optional, read_required};
+pub use redact::redact_url_for_log;
 pub use retry::{is_transient_fs_error, retry_with_backoff, retry_with_backoff_async};
 pub use text::{
     ceil_char_boundary, floor_char_boundary, provenance_tag, truncate_at_byte_boundary,
-    truncate_with_ellipsis, truncate_with_suffix, utf8_safe_prefix_at_byte_boundary,
+    truncate_chars_flagged, truncate_with_ellipsis, truncate_with_suffix,
+    utf8_safe_prefix_at_byte_boundary,
 };
 pub use types::MaybeSet;

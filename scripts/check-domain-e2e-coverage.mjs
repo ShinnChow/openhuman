@@ -197,8 +197,8 @@ function collectInvokedMethods() {
  * This reads EVERY `.rs` file under those roots. It used to read only files
  * whose path matched `/(^|\/)schemas?(\.rs|\/)/`, which stopped working on
  * 2026-08-30: the `include!` split (#5856/#5857) moved `ControllerSchema`
- * literals out of `schemas.rs` into `*_part_NN.rs` siblings that the pattern
- * does not match, and out of `flows/schemas.rs` into `flows_schema_part_*.rs`
+ * literals out of `schemas.rs` into sibling files that the pattern does not
+ * match, and out of `flows/schemas.rs` into `flows/schemas/*_schemas.rs`
  * entirely. Thirteen files and 180 controllers went invisible in one commit,
  * with no signal — the gate simply reported a smaller world.
  *

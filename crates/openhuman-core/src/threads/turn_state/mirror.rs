@@ -17,5 +17,20 @@
 #[cfg(test)]
 #[path = "mirror_tests.rs"]
 mod tests;
-include!("mirror_part_01.rs");
-include!("mirror_part_02.rs");
+
+mod caps;
+mod lifecycle;
+mod observe;
+mod state;
+
+pub use state::TurnStateMirror;
+
+#[cfg(test)]
+use super::store::TurnStateStore;
+#[cfg(test)]
+use super::types::{
+    SubagentToolCall, SubagentTranscriptItem, ToolTimelineStatus, TranscriptItem, TurnLifecycle,
+    TurnPhase,
+};
+#[cfg(test)]
+pub(crate) use caps::MAX_PERSISTED_TRANSCRIPT_ITEM;
