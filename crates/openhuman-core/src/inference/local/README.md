@@ -34,7 +34,7 @@ single-crate layout); see `../README.md` for the wider `inference` domain.
 | `transcription.rs` | `TranscriptionResult` — provider-neutral transcription result type. It outlived the bundled whisper.cpp engine that introduced it; the shape is still the contract with `channels::host::adapters`. |
 | `vision_embed.rs` | Vision-prompt and embedding entry points. |
 | `spawn_marker.rs` | Writes a marker file (PID, binary, owning process) for each `ollama serve` this process spawned so a daemon orphaned by a crash can be reclaimed (`ollama_admin/server.rs::reclaim_orphan_if_ours`) instead of leaked or blanket-killed. |
-| `assets.rs` + `assets_impl_01_part_0{1,2}.rs` | Asset status and download-progress tracking. |
+| `assets.rs` + `assets/` (`status.rs`, `progress.rs`, `download.rs`, `tts_download.rs`) | Asset status and download-progress tracking. |
 | `ollama_admin/` | Ollama daemon lifecycle, split by concern: `binary` (`resolve_or_install_ollama_binary`), `diagnostics`, `health` (`ollama_healthy*`, `has_model*`, `kill_ollama_server`, `shutdown_owned_ollama`), `model_pull`, `server` (`ensure_ollama_server[_fresh]`, `reclaim_orphan_if_ours`, `start_and_wait_for_server` — adopt vs own), `util` (`test_ollama_connection`, the only item re-exported from `ollama_admin/mod.rs`). |
 
 ## Singleton lifecycle
@@ -55,7 +55,7 @@ Model artifacts live under `<root>/models/local-ai/`
 ## RPC / controllers
 
 `inference.*` controllers registered from this module (`schemas.rs`,
-`ops.rs`/`ops_part_0{1,2}.rs`), aggregated into the domain-wide surface by
+`ops.rs`/`ops/`), aggregated into the domain-wide surface by
 `crates/openhuman-core/src/inference/mod.rs` and wired into the registry by
 `core/all.rs` (`crate::inference::all_local_inference_registered_controllers()`,
 alongside `all_inference_registered_controllers()`): `agent_chat`,
