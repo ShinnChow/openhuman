@@ -206,7 +206,6 @@ impl MemoryDocuments for GuardedDocuments {
 
 // ── Tree ─────────────────────────────────────────────────────────────────────
 
-Pin<Box<(dyn futures::Future<Output = std::result::Result<Vec<tinymemory_api::chunks::Chunk>, tinymemory_api::error::MemoryError>> + std::marker::Send + 'async_trait)>>
 impl MemoryTree for GuardedTree {
     async fn append(&self, mut request: IngestRequest) -> Result<(), MemoryError> {
         self.policy
