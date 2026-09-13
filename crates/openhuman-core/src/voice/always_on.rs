@@ -39,7 +39,7 @@ mod transcribe;
 
 pub use processor::{start_if_enabled, stop};
 
-use processor::notch_status;
+use processor::{notch_status, PAUSED};
 
 #[cfg(test)]
 use processor::ENABLED;
