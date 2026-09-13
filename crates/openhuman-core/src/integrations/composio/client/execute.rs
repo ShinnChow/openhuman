@@ -175,7 +175,7 @@ impl ComposioClient {
         })
     }
 
-    pub(super) async fn execute_tool_with_post_oauth_retry(
+    pub(crate) async fn execute_tool_with_post_oauth_retry(
         &self,
         tool: &str,
         body: &serde_json::Value,
