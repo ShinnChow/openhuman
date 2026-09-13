@@ -1,5 +1,4 @@
 use super::*;
-use super::*;
 
 #[test]
 fn scrubs_bearer_token() {
