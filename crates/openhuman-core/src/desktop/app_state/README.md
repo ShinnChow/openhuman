@@ -7,13 +7,15 @@ Aggregator that the React shell polls every few seconds (`openhuman.app_state_sn
 | File | Role |
 | --- | --- |
 | `mod.rs` | `pub use ops::*`, `recovery_signal::{config_recovered_this_session, latch_from_config}`, and the `all_app_state_*` / `app_state_schemas` controller aggregators. |
-| `ops.rs` | Aggregator only: `include!`s the parts below and attaches the sibling test files. |
-| `ops_part_01.rs` | Imports, TTL/timeout constants, the caches, serde types (`StoredOnboardingTasks`, `StoredAppState`, `AppStateSnapshot`, `RuntimeSnapshot`, `StoredAppStatePatch`), `app-state.json` load/save with corruption quarantine, and the current-user HTTP fetch. |
-| `ops_part_02.rs` | `fetch_current_user_cached` (5s TTL + failure backoff capped at 60s) and `peek_cached_current_user_identity`. |
-| `ops_part_03.rs` | `snapshot()` and `update_local_state()`. |
-| `ops_auth_timeout.rs` | `OPENHUMAN_AUTH_FETCH_TIMEOUT_SECS` parsing, clamped to 2–12s (default 5s). |
-| `ops_staleness.rs` | `LAST_CURRENT_USER_SUCCESS`, feeding `current_user_stale` / `current_user_stale_seconds` (#5930). |
-| `ops_current_user_generation.rs` | `CURRENT_USER_GENERATION` counter, `CURRENT_USER_SESSION_MUTATION_LOCK`, `forget_current_user_caches` (sign-out invalidation). |
+| `ops.rs` | Aggregator only: declares the submodules below and attaches the sibling test files. |
+| `ops/types.rs` | Serde types (`StoredOnboardingTasks`, `StoredAppState`, `AppStateSnapshot`, `RuntimeSnapshot`, `StoredAppStatePatch`). |
+| `ops/state_file.rs` | `app-state.json` load/save with corruption quarantine (`load_stored_app_state`, `save_app_state`). |
+| `ops/current_user_fetch.rs` | The current-user HTTP fetch (`fetch_current_user`). |
+| `ops/current_user.rs` | `fetch_current_user_cached` (5s TTL + failure backoff capped at 60s) and `peek_cached_current_user_identity`. |
+| `ops/snapshot.rs` | `snapshot()` and `update_local_state()`. |
+| `ops/auth_timeout.rs` | `OPENHUMAN_AUTH_FETCH_TIMEOUT_SECS` parsing, clamped to 2–12s (default 5s). |
+| `ops/staleness.rs` | `LAST_CURRENT_USER_SUCCESS`, feeding `current_user_stale` / `current_user_stale_seconds` (#5930). |
+| `ops/current_user_generation.rs` | `CURRENT_USER_GENERATION` counter, `CURRENT_USER_SESSION_MUTATION_LOCK`, `forget_current_user_caches` (sign-out invalidation). |
 | `recovery_signal.rs` | Process-lifetime latch for "config.toml was recovered from corruption this session" (#5167). |
 | `schemas.rs` | `app_state` controller schemas and thin handlers. |
 | `*_tests.rs` | Sibling test files attached with `#[cfg(test)] #[path = ...] mod`. |
