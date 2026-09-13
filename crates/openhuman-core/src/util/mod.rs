@@ -30,6 +30,7 @@ pub mod text;
 pub mod tls;
 pub mod types;
 
+pub use params::{read_optional, read_required};
 pub use redact::redact_url_for_log;
 pub use retry::{is_transient_fs_error, retry_with_backoff, retry_with_backoff_async};
 pub use text::{
