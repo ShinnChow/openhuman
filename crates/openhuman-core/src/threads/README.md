@@ -76,7 +76,7 @@ The `goals/` and `todos/` submodules register their own controller namespaces fr
 | Namespace | Functions |
 | --- | --- |
 | `thread_goals` (`openhuman.thread_goals_<function>`) | `get`, `set`, `complete`, `pause`, `resume`, `clear` — thread-level goal CRUD over `tinyagents_graph::goals`, via `goals::all_thread_goals_registered_controllers`. |
-| `todos` (`openhuman.todos_<function>`) | 13 functions (`list`, `add`, `edit`, `update_status`, `set_session_thread`, `decide_plan`, `revise_plan`, `remove`, `replace`, `clear`, `run_list`, `run_get`, `reclaim_stale`) over `tinyagents_graph::todos`, via `todos::all_todos_registered_controllers` (split `schemas_part_01.rs`/`schemas_part_02.rs`). |
+| `todos` (`openhuman.todos_<function>`) | 13 functions (`list`, `add`, `edit`, `update_status`, `set_session_thread`, `decide_plan`, `revise_plan`, `remove`, `replace`, `clear`, `run_list`, `run_get`, `reclaim_stale`) over `tinyagents_graph::todos`, via `todos::all_todos_registered_controllers` (split across the `schemas/` submodule). |
 
 ## Persistence
 
