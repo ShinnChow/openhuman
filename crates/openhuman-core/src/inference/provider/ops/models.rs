@@ -29,6 +29,9 @@ mod types;
 
 pub use types::ModelInfo;
 
+#[cfg(test)]
+use catalog_listing::resolve_local_runtime_key;
+
 pub use catalog_listing::{
     append_query_param, list_configured_models, list_configured_models_from_config,
 };
