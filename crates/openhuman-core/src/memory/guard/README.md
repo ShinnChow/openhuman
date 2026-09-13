@@ -23,7 +23,9 @@ raw driver, and there is no second, unguarded shape to reach for instead.
   (driver id, `DriverClass`, hook budgets, trust state) are cached at bind
   time; the `SecurityPolicy` itself is re-read live on every call so an
   autonomy change takes effect immediately.
-- Family decorators (`families.rs` + `families_part_0{1..4}.rs`) — one
+- Family decorators (`families.rs` + `families/` — `types.rs`,
+  `ingest_and_tree.rs`, `retrieval_and_profile.rs`, `graph_and_bookkeeping.rs`,
+  `typed_ingest_and_answer.rs`) — one
   `decorator!`-generated struct per optional capability family (`GuardedTree`,
   `GuardedProfile`, `GuardedGraph`, … — 23 of the contract's 26 families),
   each present exactly when the bound driver advertises that family. (The
