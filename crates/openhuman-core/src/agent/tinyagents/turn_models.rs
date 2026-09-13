@@ -230,7 +230,7 @@ pub struct TurnModelSource {
 /// The `(role, config)` a crate-native [`TurnModelSource`] builds its tiered
 /// [`TurnModels`] from per turn.
 #[derive(Clone)]
-struct CrateNativeSource {
+pub(crate) struct CrateNativeSource {
     role: String,
     config: Arc<crate::config::Config>,
     /// An explicit provider string for the **primary** model, overriding the
