@@ -21,7 +21,7 @@ pub(crate) struct TavilyClient {
     api_key: Option<String>,
     api_url: String,
     max_results: usize,
-    timeout_secs: u64,
+    pub(super) timeout_secs: u64,
 }
 
 impl TavilyClient {
