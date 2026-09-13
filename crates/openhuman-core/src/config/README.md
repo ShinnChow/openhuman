@@ -27,7 +27,7 @@ Authoritative TOML-backed configuration layer. Owns the `Config` schema (every d
 - Workspace identity helpers: `pub fn clear_active_user`, `default_root_openhuman_dir`, `pre_login_user_dir`, `read_active_user_id`, `user_openhuman_dir`, `write_active_user_id`, `PRE_LOGIN_USER_ID` — `schema/load/dirs.rs`.
 - `pub mod ops` (re-exported as `rpc`) — `ops/` — RPC handlers and settings mutation; see [ops/README.md](ops/README.md).
 - `pub mod settings_cli` — `settings_cli.rs` — `openhuman settings ...` CLI surface.
-- RPC namespace `config` — 42 methods (`get_config`, `update_model_settings`, `update_autonomy_settings`, `set_privacy_mode`, `reset_local_data`, ...) — `schemas/`; the full list is the `//!` header of `schemas/mod.rs` and `all_controller_schemas()` in `schemas/controllers_part_01.rs`.
+- RPC namespace `config` — 42 methods (`get_config`, `update_model_settings`, `update_autonomy_settings`, `set_privacy_mode`, `reset_local_data`, ...) — `schemas/`; the full list is the `//!` header of `schemas/mod.rs` and `all_controller_schemas()` in `schemas/controllers/registry.rs`.
 
 ## Calls into
 
