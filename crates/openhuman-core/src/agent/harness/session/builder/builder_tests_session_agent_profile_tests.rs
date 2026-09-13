@@ -548,7 +548,7 @@ async fn build_session_agent_uses_profile_memory_instead_of_root_memory() {
 /// tool filtering** (`any_tool_offered`), and the visible set comes from the
 /// resolved definition's tool scope. With `None` here the factory reads
 /// `AgentDefinitionRegistry`'s `static GLOBAL: OnceLock<…>`
-/// (`harness/definition_part_02.rs:24`) — first-write-wins and never reset — so
+/// (`harness/definition/registry.rs:22`) — first-write-wins and never reset — so
 /// the test was asserting against whichever definition set some *other* test in
 /// the binary had installed first. That is exactly the hazard `builtin_def`
 /// was written for: it loads fresh from the bundled TOML, "entirely independent
