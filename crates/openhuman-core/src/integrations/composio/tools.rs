@@ -53,6 +53,8 @@ pub use registry::all_composio_agent_tools;
 pub(crate) use visibility::{action_mutates_external_state, resolve_action_scope};
 
 #[cfg(test)]
+use crate::tools::traits::Tool;
+#[cfg(test)]
 use crate::tools::traits::{PermissionLevel, ToolCategory};
 #[cfg(test)]
 use authorize::ComposioAuthorizeTool;
