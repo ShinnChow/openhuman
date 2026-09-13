@@ -38,3 +38,10 @@ pub(crate) use collect::{format_spawn_parallel_success, SpawnParallelGraphOutcom
 pub(crate) use graph::spawn_parallel_graph_topology;
 pub(crate) use request::SpawnParallelTaskValidationError;
 pub(crate) use run::run_spawn_parallel_graph_with_cancellation_and_workspace;
+
+#[cfg(test)]
+pub(crate) use request::ParallelAgentTask;
+#[cfg(test)]
+pub(crate) use staging::with_ownership_boundary;
+#[cfg(test)]
+pub(crate) use types::{ParallelAgentLineage, ParallelAgentResult};
