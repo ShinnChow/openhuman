@@ -38,8 +38,8 @@ When search is disabled, search tools are absent from the agent runtime tool lis
   built, and `config.integrations.tinyfish.is_active()`.
 - `SearxngSearchTool` and `SeltzSearchTool` bypass the engine registry
   entirely. They are constructed per call by the `tools.searxng_search`
-  (`tools/schemas_part_02.rs:41`) and `tools.seltz_search`
-  (`tools/schemas_part_01.rs:555`) RPC handlers, which take the query from the
+  and `tools.seltz_search` RPC handlers
+  (`crates/openhuman-core/src/tools/schemas/web_search.rs`), which take the query from the
   RPC params and the endpoint, key, timeout, and `enabled` gate from the
   top-level `config.searxng` / `config.seltz` sections, not `Config.search`.
 
