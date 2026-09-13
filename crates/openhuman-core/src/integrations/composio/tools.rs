@@ -64,8 +64,6 @@ use connect::{
     ComposioConnectTool, DEFAULT_COMPOSIO_CONNECT_TIMEOUT_SECS,
 };
 #[cfg(test)]
-use execute::ComposioExecuteTool;
-#[cfg(test)]
 use list_connections::ComposioListConnectionsTool;
 #[cfg(test)]
 use list_toolkits::ComposioListToolkitsTool;
