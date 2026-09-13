@@ -88,7 +88,7 @@ The durable substrate session-memory targets is the workspace `MEMORY.md` file, 
 ## Notes / gotchas
 
 - **The context stats state issues no LLM calls and does not mutate history.** Live reduction is owned by the tinyagents middleware stack.
-- **Tool-result budgeting is not a context pipeline stage.** The tinyagents path applies per-result budgets in `ToolOutputMiddleware` (`agent/tinyagents/middleware_part_01.rs`), and artifact-preview fallback truncation lives in `agent/harness/tool_result_artifacts`.
+- **Tool-result budgeting is not a context pipeline stage.** The tinyagents path applies per-result budgets in `ToolOutputMiddleware` (`agent/tinyagents/middleware/tool_output.rs`), and artifact-preview fallback truncation lives in `agent/harness/tool_result_artifacts`.
 - **`autocompact_enabled()` is `config.enabled && config.autocompact_enabled`**, and `microcompact_keep_recent()` is `0` when `microcompact_enabled` is off — the manager folds the config gates so the turn reads one value per knob.
 - **Session memory is separate from compaction**: it does not mutate in-flight history; it gates a *persistent* `MEMORY.md` extraction. All three thresholds (token growth, tool calls, turns) must be crossed and no extraction may be in flight. `mark_extraction_failed` keeps deltas so the next turn retries; `mark_extraction_complete` resets them. The handle is `Arc`-cloned so a detached background task can flip completion state after the synchronous borrow is released.
 - **`prompt.rs` is a compat shim** — do not add prompt logic here; it lives in `agent::prompts`.
