@@ -304,7 +304,7 @@ pub(super) fn handle_searxng_search(params: Map<String, Value>) -> ControllerFut
     })
 }
 
-fn optional_string_array(params: &Map<String, Value>, key: &str) -> Result<Vec<String>, String> {
+pub(super) fn optional_string_array(params: &Map<String, Value>, key: &str) -> Result<Vec<String>, String> {
     let Some(value) = params.get(key) else {
         return Ok(Vec::new());
     };
