@@ -11,7 +11,7 @@ single-crate layout); see `../README.md` for the wider `inference` domain.
 | --- | --- |
 | `mod.rs` | Re-exports `super::{device, model_ids, parse, paths, presets, sentiment, types}` under `local::` (compatibility for files migrated from `local_ai/`); `pub use core::*`, `pub use ops as rpc`, `pub use service::LocalAiService`. |
 | `core.rs` | `LocalAiService` singleton (`global`/`try_global`), `model_artifact_path`. |
-| `ops.rs` + `ops_part_0{1,2}.rs` | RPC entry points: `local_ai_status/prompt/summarize/vision_prompt/embed/transcribe[_bytes]/tts/chat`, `agent_chat[_simple]`, `local_ai_should_react` (`ReactionDecision`), assets/downloads status. |
+| `ops.rs` + `ops/` (`runtime_ops.rs`, `chat.rs`, `agent_chat.rs`, `reactions.rs`, `turn_guards.rs`) | RPC entry points: `local_ai_status/prompt/summarize/vision_prompt/embed/transcribe[_bytes]/tts/chat`, `agent_chat[_simple]`, `local_ai_should_react` (`ReactionDecision`), assets/downloads status. |
 | `schemas.rs` | Local-runtime `inference.*` controller schemas + handlers (see RPC below); exported as `all_local_inference_controller_schemas` / `all_local_inference_registered_controllers`. |
 | `ollama.rs` | Ollama HTTP JSON types, `DEFAULT_OLLAMA_BASE_URL`, `ollama_base_url[_from_config]`, `validate_ollama_url`. |
 | `lm_studio.rs` | LM Studio OpenAI-compatible wire types, `lm_studio_base_url[_from_local_ai]`, URL normalisation and auth header; the daemon is only probed, never started. |
