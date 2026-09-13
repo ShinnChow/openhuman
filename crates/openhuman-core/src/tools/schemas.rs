@@ -16,3 +16,6 @@ mod registry;
 mod web_search;
 
 pub use registry::{all_controller_schemas, all_registered_controllers};
+
+#[cfg(test)]
+use web_search::optional_string_array;
