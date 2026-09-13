@@ -192,11 +192,11 @@ Published from `ops/` via `crate::core::bus::BUS.publish` (`crate::core::events:
 - `crates/openhuman-core/src/agent/learning/linkedin_enrichment*.rs`, `agent/learning/profile_md_renderer.rs` — connected-identity enrichment consumers.
 - `crates/openhuman-core/src/agent/prompts/connected_identities.rs` — renders connected identities into the agent prompt.
 - `crates/openhuman-core/src/skills/preflight.rs` — identity gate via `connection_identity`.
-- `crates/openhuman-core/src/security/credentials/ops_part_02.rs` — direct-mode API key storage.
+- `crates/openhuman-core/src/security/credentials/ops/composio.rs` — direct-mode API key storage.
 - `crates/openhuman-core/src/channels/runtime/dispatch/routing.rs` — channel routing over connected integrations.
-- `crates/openhuman-core/src/flows/**` (`ops_part_03`/`_04`/`_05.rs`, `tinyflows/caps/tools/composio.rs`) — workflow builder capability adapters over the catalog.
+- `crates/openhuman-core/src/flows/**` (`ops/catalog.rs`, `ops/connection_ref_gate.rs`, `ops/tool_contract_gate.rs`, `ops/connections.rs`, `ops/wiring_warnings.rs`, `ops/approval_manifest.rs`, `ops/builder.rs`, `tinyflows/caps/tools/composio.rs`) — workflow builder capability adapters over the catalog.
 - `crates/openhuman-core/src/integrations/task_sources/**` — re-exports `NormalizedTask`/`TaskContainer`/`TaskFetchFilter`/`TaskKind` from `providers/mod.rs` (its fetch stage is stubbed since `ComposioProvider::fetch_tasks` went away).
-- `crates/openhuman-core/src/memory/**` (`ops/sync.rs`, `sources/rpc_part_01.rs`/`_02.rs`, `tree/tree/mod.rs`) — memory sync and read paths over Composio-sourced data.
+- `crates/openhuman-core/src/memory/**` (`ops/sync.rs`, `sources/rpc/registry_crud.rs`/`source_sync.rs`/`status_toolkits.rs`/`apply_all.rs`, `tree/tree/mod.rs`) — memory sync and read paths over Composio-sourced data.
 - `crates/openhuman-core/src/modules/{connectors_tests,memory_host}.rs` — module loader tests/wiring for the connector bridge.
 - `crates/openhuman-core/src/core/observability.rs` — matches `direct_auth::COMPOSIO_INVALID_API_KEY_ANCHOR` / `_USER_MESSAGE` when classifying errors.
 
