@@ -1,6 +1,5 @@
 //! Assembles the embedded Swift source for the unified helper process from
 //! its per-responsibility fragments (focus query, paste, AX actions, overlay
-//! its per-responsibility fragments (focus query, paste, AX actions, overlay
 //! and main loop). Splitting the fragments keeps each one reviewable; the
 //! compiled Swift program is unaffected — this just concatenates them back
 
