@@ -10,7 +10,7 @@ use crate::platform::socket::types::ConnectionStatus;
 use futures_util::{SinkExt, StreamExt};
 use std::sync::Arc;
 use tokio::sync::mpsc;
-use tokio_tungstenite::tungstenite::{Error as WsError, Message as WsMessage};
+use tokio_tungstenite::tungstenite::Message as WsMessage;
 fn make_shared() -> Arc<SharedState> {
     Arc::new(SharedState {
         webhook_router: RwLock::new(None),
