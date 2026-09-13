@@ -71,7 +71,7 @@ alphanumeric/`-`/`_` charset before it is interpolated into the URL path
 
 ## Wiring
 
-`build_file_storage_tools(root_config, action_dir)` (`tools_part_02.rs`) is
+`build_file_storage_tools(root_config, action_dir)` (`tools/registry.rs`) is
 the sole construction entry point. It returns an empty tool list when
 `crate::integrations::build_client` yields no client (no backend URL
 configured, or the user is not signed in), otherwise builds a
