@@ -4,7 +4,7 @@ Multi-agent orchestration domain. Owns the LLM tool-calling loop, sub-agent disp
 
 ## Public surface
 
-- `pub struct Agent` / `pub struct AgentBuilder` / `pub struct TurnOverrides` — `harness/session/types.rs`, re-exported from `harness::session` and `agent` — top-level conversation runtime; entry point for any chat turn. Constructors `Agent::from_config`, `from_config_for_agent`, `from_config_for_agent_with_profile` live in `harness/session/builder/factory.rs`; `run_single` / `run_interactive` in `harness/session/runtime_impl_01_part_02.rs`. The `builder/`, `runtime*.rs`, and `turn/` submodules are private.
+- `pub struct Agent` / `pub struct AgentBuilder` / `pub struct TurnOverrides` — `harness/session/types.rs`, re-exported from `harness::session` and `agent` — top-level conversation runtime; entry point for any chat turn. Constructors `Agent::from_config`, `from_config_for_agent`, `from_config_for_agent_with_profile` live in `harness/session/builder/factory.rs`; `run_single` / `run_interactive` in `harness/session/runtime/run_loop.rs`. The `builder/`, `runtime/`, and `turn/` submodules are private.
 - `pub fn run_subagent` / `pub struct SubagentRunOptions` / `pub enum SubagentRunError` — `harness/subagent_runner/` — execute a hierarchical sub-agent from a parent tool loop.
 - `pub struct AgentDefinition` / `pub struct AgentDefinitionRegistry` / `pub enum SandboxMode` / `pub enum ToolScope` — `harness/definition.rs` (which `include!`s `definition_part_01.rs` / `definition_part_02.rs`) — sub-agent archetypes loaded from built-ins + workspace TOML.
 - `pub mod harness::fork_context` — task-local parent context for KV-cache reuse.
