@@ -14,6 +14,7 @@
  */
 import { describeSchedule, type Translate } from './cron';
 import type { NodeKind } from './types';
+import { truncateText } from '../../utils/truncateText';
 
 function str(config: Record<string, unknown>, key: string): string {
   const v = config[key];
