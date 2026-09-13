@@ -153,8 +153,9 @@ model/provider without the override ever reaching the persisted config.
 ## Tests
 
 Per-section `*_tests.rs` files, plus `load_tests.rs` (split into
-`load_tests_part_01..05_tests.rs`) for the loader/env-override/migration
-surface.
+`load_active_user_and_dirs_tests.rs`, `load_env_overlay_tests.rs`,
+`load_corruption_recovery_tests.rs`, `load_migration_tests.rs`,
+`load_backup_tests.rs`) for the loader/env-override/migration surface.
 
 ## Related docs
 
