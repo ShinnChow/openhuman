@@ -27,6 +27,7 @@ pub mod text;
 pub mod tls;
 pub mod types;
 
+pub use redact::redact_url_for_log;
 pub use retry::{is_transient_fs_error, retry_with_backoff, retry_with_backoff_async};
 pub use text::{
     ceil_char_boundary, floor_char_boundary, provenance_tag, truncate_at_byte_boundary,
