@@ -210,7 +210,7 @@ pub(super) fn insert_run_telemetry_generation(
 /// Push durable journal observations through the tinyagents crate Langfuse
 /// exporter. The journal is already redacted before persistence, and this
 /// exporter additionally strips model/tool payloads unless `capture_content`
-
+/// is explicitly enabled.
 pub(crate) async fn push_observations(
     config: &Config,
     trace_ctx: &TraceContext,
