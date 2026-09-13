@@ -100,8 +100,8 @@ iterations.
   crate.
 - `agent/bus.rs` serves the `agent.run_turn` native request through
   `run_channel_turn_via_graph`; channels reach the harness through that bus.
-- `cron/scheduler_part_02.rs`, `web_chat/`, `inference/local/ops.rs`
-  (`agent_chat`, in `ops_part_01.rs`) build and drive `Agent` turns directly;
+- `cron/scheduler/agent_run.rs`, `web_chat/`, `inference/local/ops/agent_chat.rs`
+  (`agent_chat`) build and drive `Agent` turns directly;
   `channels/runtime/dispatch/routing.rs` consults `AgentDefinitionRegistry`/
   `ToolScope`.
 - `agent/tinyagents/` middleware calls `credentials::scrub_credentials` on

@@ -63,7 +63,7 @@ keep working. The Rust module path is `crate::mcp::registry`.
 `set_enabled`. `setup_ops.rs` implements the `mcp_setup` namespace: `search`,
 `get`, `request_secret`, `submit_secret`, `test_connection`,
 `install_and_connect`. Both are registered together by
-`schemas::all_registered_controllers` (`schemas_part_01.rs`).
+`schemas::all_registered_controllers` (`schemas/registry.rs`).
 
 What stayed host-side inside these handlers, on purpose:
 
