@@ -52,7 +52,7 @@ domain.
   ambient thread-context plumbing consumed while building a model.
 - `crate::security::live_policy` + `crate::security::egress` — Privacy-Mode
   `LocalOnly` refusal and `EgressDescriptor` emission at the factory chokepoint
-  (`factory_part_01.rs`).
+  (`factory/access_gates.rs`).
 - `crate::inference::local` — `profile::is_local_provider_string`, Ollama /
   LM Studio base-url resolution for local provider strings.
 - `crate::inference::auth_error_registry` — surfaces per-provider auth errors

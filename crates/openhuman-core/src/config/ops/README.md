@@ -14,7 +14,7 @@ fn, which returns `RpcOutcome<T>`.
 | File | Responsibility |
 | --- | --- |
 | `agent.rs` | Autonomy, agent, agent-paths, activity-level, and memory-sync settings. |
-| `loader.rs` | Config loading/snapshotting and runtime flags; split into `loader_part_01.rs` / `loader_part_02.rs` via `include!`. |
+| `loader.rs` | Config loading/snapshotting and runtime flags; split into submodules `loader/load.rs`, `loader/paths.rs`, `loader/reset_local_data.rs`, `loader/runtime_flags.rs`, `loader/snapshot.rs`. |
 | `model.rs` | AI-provider, memory, runtime, local-AI, and Composio-trigger settings. |
 | `privacy.rs` | Privacy Mode (`[privacy]`) get/set. |
 | `sandbox.rs` | Sandbox / Docker runtime (`[sandbox]`, `[runtime.docker]`) settings. |
@@ -86,6 +86,8 @@ dictation and voice-server mutators exist only in `load_and_apply_*` form.
 
 `mod.rs` re-exports several otherwise-private items (`Config`,
 `active_workspace_marker_path`, `resolve_backend_api_url`, etc.) behind
-`#[cfg(test)]` purely so `ops_tests.rs` and its `ops_tests_part_0N_tests.rs`
-siblings can reach them through `use super::*`; they carry no runtime meaning
-outside test builds.
+`#[cfg(test)]` purely so `ops_tests.rs` and its sibling test files
+(`ops_agent_paths_tests.rs`, `ops_loader_and_search_tests.rs`,
+`ops_model_and_local_ai_tests.rs`, `ops_voice_and_autonomy_tests.rs`) can reach
+them through `use super::*`; they carry no runtime meaning outside test
+builds.
