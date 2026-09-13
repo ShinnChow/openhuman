@@ -305,9 +305,9 @@ pub(super) async fn evaluate_inference_readiness(
     // (redundant, in that case) early rejection here is test-only skipped.
     #[cfg(not(test))]
     let session_result = if needs_backend_session {
-        crate::inference::provider::factory::verify_backend_session_active(config)
+        crate::inference::provider::factory::access_gates::verify_backend_session_active(config)
     } else {
-        crate::inference::provider::factory::verify_session_active(config)
+        crate::inference::provider::factory::access_gates::verify_session_active(config)
     };
     #[cfg(not(test))]
     if let Err(e) = session_result {

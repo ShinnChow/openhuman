@@ -37,7 +37,7 @@
 //! - [`chat_model`] — the one-shot `create_chat_model*` entry points.
 //! - [`turn_model`] — the per-turn `create_turn_chat_model*` entry points.
 
-mod access_gates;
+pub(crate) mod access_gates;
 mod chat_model;
 mod cloud_slug;
 mod credentials;
