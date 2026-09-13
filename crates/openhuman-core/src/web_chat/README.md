@@ -58,7 +58,9 @@ surfaces.
   `register_egress_surface_subscriber` — bridge `DomainEvent`s onto the
   in-process `WebChannelEvent` broadcast bus consumed by both Socket.IO and
   the JSON-RPC `/events` SSE stream.
-- Operations (`ops.rs` + `ops_part_0{1,2,3}.rs`): `start_chat`, `cancel_chat`,
+- Operations (`ops.rs` thin shell over the `ops/` submodule: `start_chat.rs`,
+  `channel_ops.rs`, `parallel_turn.rs`, `turn_guards.rs`, `state.rs`,
+  `budget_correlation.rs`, `test_hooks.rs`): `start_chat`, `cancel_chat`,
   `cancel_chat_scoped`, `cancel_should_target`, `channel_web_chat`,
   `channel_web_cancel`, `channel_web_queue_status`, `channel_web_queue_clear`,
   `invalidate_thread_sessions`, plus `in_flight_entries_for_test` (exported
