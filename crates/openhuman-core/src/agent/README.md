@@ -77,7 +77,7 @@ Flat files: `bus.rs` (`agent.run_turn` native request handler), `cost.rs` (`pub(
 
 ## Tests
 
-- Unit: `agent_tests.rs` + `agent_tests_part_0N_tests.rs`, `multimodal_tests.rs` + `multimodal_tests_part_0N_tests.rs`, `dispatcher_tests.rs`, plus `*_tests.rs` files colocated with `bus.rs`, `cost.rs`, `error.rs`, `hooks.rs`, `host_runtime.rs`, `message_convert.rs`, `pformat.rs`, `platform_shell.rs`, `progress_sink.rs`, `schemas.rs`, `stop_hooks.rs`, `task_board.rs`, `task_session.rs`, `tool_policy.rs`, `turn_origin.rs`, `turn_workspace.rs`, and under `harness/`, `harness/session/`, `triage/`.
+- Unit: `agent_tests.rs`, `multimodal_tests.rs`, `dispatcher_tests.rs`, plus `*_tests.rs` files colocated with `bus.rs`, `cost.rs`, `error.rs`, `hooks.rs`, `host_runtime.rs`, `message_convert.rs`, `pformat.rs`, `platform_shell.rs`, `progress_sink.rs`, `schemas.rs`, `stop_hooks.rs`, `task_board.rs`, `task_session.rs`, `tool_policy.rs`, `turn_origin.rs`, `turn_workspace.rs`, and under `harness/`, `harness/session/`, `triage/`.
 - Integration: `tests/agent_builder_public.rs`, `tests/agent_harness_public.rs`, `tests/agent_harness_e2e.rs`, `tests/agent_multimodal_public.rs`, `tests/agent_turn_overrides_e2e.rs`, `tests/agent_approval_memory_coverage_e2e.rs`.
 - Schema regression: `schemas_tests.rs` (`controller_schema_inventory_is_stable`).
 
