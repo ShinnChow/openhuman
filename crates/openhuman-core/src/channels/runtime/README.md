@@ -6,7 +6,7 @@ Boots every enabled channel, keeps their listeners alive, and dispatches inbound
 
 | Path | Purpose |
 | --- | --- |
-| `startup.rs` (+ `startup_part_01.rs`, `startup_part_02.rs` via `include!`) | `start_channels` — builds the `channels::host` capability surface, hydrates secrets that live outside `config.toml` (`hydrate_channel_credentials`: email password, Yuanbao app secret, via `security::credentials::AuthService`), calls `tinychannels::build_channels`, registers the startup bus subscribers, spawns a supervised listener per channel and the optional relay runtime, then runs the dispatch loop |
+| `startup.rs` (+ `startup/` — `start_channels.rs`, `credentials.rs`, `chat_workload.rs`, `prompt.rs`, `relay.rs`) | `start_channels` — builds the `channels::host` capability surface, hydrates secrets that live outside `config.toml` (`hydrate_channel_credentials`: email password, Yuanbao app secret, via `security::credentials::AuthService`), calls `tinychannels::build_channels`, registers the startup bus subscribers, spawns a supervised listener per channel and the optional relay runtime, then runs the dispatch loop |
 | `supervision.rs` | `spawn_supervised_listener` — re-runs `Channel::listen` in a loop with exponential backoff plus full jitter, publishing `DomainEvent::ChannelConnected` / `ChannelDisconnected` / `HealthRestarted`; re-exports `tinychannels::runtime::compute_max_in_flight_messages` |
 | `dispatch/` | The inbound pipeline that turns a `RuntimeChannelMessage` into an agent turn and a reply |
 | `test_support.rs` | `#[cfg(any(test, debug_assertions))]` dispatch harness (`run_dispatch_harness`, `DispatchHarnessOptions`) used by `channels/tests/` and raw coverage |
