@@ -1,35 +1,12 @@
 //! Shared param-deserialisation and outcome-conversion helpers used by
 //! every `mcp_clients_*` and `mcp_setup_*` handler.
 
-use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
 
 use crate::rpc::RpcOutcome;
+use crate::util::{read_optional, read_required};
 
 // ── Param helpers ─────────────────────────────────────────────────────────────
-
-pub(super) fn read_required<T: DeserializeOwned>(
-    params: &Map<String, Value>,
-    key: &str,
-) -> Result<T, String> {
-    let value = params
-        .get(key)
-        .cloned()
-        .ok_or_else(|| format!("missing required param '{key}'"))?;
-    serde_json::from_value(value).map_err(|e| format!("invalid '{key}': {e}"))
-}
-
-pub(super) fn read_optional<T: DeserializeOwned>(
-    params: &Map<String, Value>,
-    key: &str,
-) -> Result<Option<T>, String> {
-    match params.get(key) {
-        None | Some(Value::Null) => Ok(None),
-        Some(v) => serde_json::from_value(v.clone())
-            .map(Some)
-            .map_err(|e| format!("invalid '{key}': {e}")),
-    }
-}
 
 pub(super) fn read_optional_string(
     params: &Map<String, Value>,
