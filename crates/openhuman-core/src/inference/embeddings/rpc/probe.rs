@@ -287,7 +287,7 @@ fn is_embedding_model_incompatible(lower: &str) -> bool {
 /// form with embedded hyphens/underscores) and `Bearer <token>` headers, and
 /// replaces each **whole** match — the replacements deliberately contain no `sk-`
 /// substring, so not even a key *prefix* can surface (#5116).
-fn redact_secrets(input: &str) -> String {
+pub(super) fn redact_secrets(input: &str) -> String {
     use once_cell::sync::Lazy;
     use regex::Regex;
     static SK_KEY_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(?i)\bsk-[A-Za-z0-9_-]+").unwrap());
