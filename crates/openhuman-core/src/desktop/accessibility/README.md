@@ -24,9 +24,9 @@ Re-exported from `mod.rs`:
 
 ## Called by
 
-- `crates/openhuman-core/src/voice/server_part_01.rs` — `globe_listener_start` / `globe_listener_poll` for the Fn hotkey; `server_part_02.rs` — `focused_text_context_verbose` to capture the frontmost app at hotkey press.
+- `crates/openhuman-core/src/voice/server/hotkey_listener.rs` — `globe_listener_start` / `globe_listener_poll` for the Fn hotkey; `voice/server/pipeline.rs` — `focused_text_context_verbose` to capture the frontmost app at hotkey press.
 - `crates/openhuman-core/src/voice/text_input.rs` — `validate_focused_target` before inserting dictated text.
-- `crates/openhuman-core/src/voice/always_on_part_02.rs` — `detect_microphone_permission`; `audio_capture.rs` — the same plus `microphone_denied_message` / `request_microphone_access` before opening the input device.
+- `crates/openhuman-core/src/voice/always_on/capture.rs` — `detect_microphone_permission`; `audio_capture.rs` — the same plus `microphone_denied_message` / `request_microphone_access` before opening the input device.
 - `crates/openhuman-core/src/core/all_tests.rs` — asserts `detect_microphone_permission()` is `Unknown` when `inference` is compiled out.
 
 ## Tests
