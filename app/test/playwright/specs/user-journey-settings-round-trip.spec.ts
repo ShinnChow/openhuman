@@ -14,8 +14,8 @@ const panels: PanelCheck[] = [
   { hash: '/settings/memory-data', markers: ['Memory', 'Data', 'Storage'] },
   { hash: '/settings/developer-options', markers: ['Developer', 'Debug', 'Advanced'] },
   {
-    hash: '/settings/billing',
-    markers: ['Billing moved to the web', 'Open billing dashboard', 'credits'],
+    hash: '/settings/account',
+    markers: ['Account', 'Billing'],
   },
   // Home folded into the unified chat surface — /home redirects to /chat.
   { hash: '/home', markers: [] },
