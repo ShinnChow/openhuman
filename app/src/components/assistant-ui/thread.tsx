@@ -909,6 +909,16 @@ const ThreadSuggestionItem: FC = () => {
   );
 };
 
+export function extractComposerPasteFiles(
+  clipboardData: DataTransfer | null | undefined
+): globalThis.File[] {
+  const itemFiles = Array.from(clipboardData?.items ?? [])
+    .filter(item => item.kind === 'file' && /^(image|video)\//.test(item.type))
+    .map(item => item.getAsFile())
+    .filter((file): file is globalThis.File => file !== null);
+  return itemFiles.length > 0 ? itemFiles : Array.from(clipboardData?.files ?? []);
+}
+
 const Composer: FC<{
   model: string | null;
   onModelChange?: (value: string | null, contextWindow?: number | null) => void;
@@ -967,10 +977,7 @@ const Composer: FC<{
       debug('[assistant-composer] paste: refused, ingest not accepting');
       return;
     }
-    const files = Array.from(event.clipboardData?.items ?? [])
-      .filter(item => item.kind === 'file' && /^(image|video)\//.test(item.type))
-      .map(item => item.getAsFile())
-      .filter((file): file is File => file !== null);
+    const files = extractComposerPasteFiles(event.clipboardData);
     if (files.length === 0) {
       // The overwhelmingly common case: an ordinary text paste. Left for Lexical.
       return;
@@ -1006,6 +1013,7 @@ const Composer: FC<{
           <div
             data-slot="aui_composer-shell"
             data-dragging={onComposerFiles && isDraggingFiles ? 'true' : undefined}
+            onPasteCapture={handlePasteCapture}
             // Keyed to `content-faint` rather than `line`/`line-strong`, which
             // sat too close to the composer's own surface to read as an edge at
             // all; `content-faint` is a real step along the grey ramp in both
@@ -1083,7 +1091,6 @@ const Composer: FC<{
             <LexicalComposerInput
               ref={inputWrapperRef}
               placeholder="Send a message..."
-              onPasteCapture={handlePasteCapture}
               onCompositionStartCapture={() => {
                 isComposingTextRef.current = true;
               }}

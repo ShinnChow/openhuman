@@ -13,6 +13,15 @@ fn test_config() -> (Config, TempDir) {
     (config, dir)
 }
 
+#[test]
+fn schema_migration_surfaces_non_duplicate_alter_errors() {
+    let conn = rusqlite::Connection::open_in_memory().unwrap();
+    conn.execute_batch("CREATE VIEW pending_approvals AS SELECT 1 AS id")
+        .unwrap();
+    let error = migrate_columns(&conn).expect_err("a view cannot be migrated as a table");
+    assert!(error.to_string().contains("add column executed_at"));
+}
+
 /// Build a sample `PendingApproval`. The `_session_id` parameter
 /// is preserved as a positional argument for call-site readability
 /// (so a reader can see "this row belongs to sess-A") even though

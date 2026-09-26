@@ -3285,12 +3285,10 @@ pub fn run() {
                 window_state::install_dpi_guard(&window);
                 // Windows starts at a compact near-square size. Other desktop
                 // targets keep their existing work-area first-launch layout.
-                if !window_state::restore_main(&window) {
-                    if cfg!(windows) {
-                        window_state::center_main(&window);
-                    } else if !window_state::maximize_to_work_area(&window) {
-                        window_state::center_main(&window);
-                    }
+                let restored = window_state::restore_main(&window);
+                let maximized = !restored && !cfg!(windows) && window_state::maximize_to_work_area(&window);
+                if should_center_main_window(restored, cfg!(windows), maximized) {
+                    window_state::center_main(&window);
                 }
                 if !daemon_mode {
                     if let Err(err) = window.show() {
@@ -3631,6 +3629,10 @@ pub fn run() {
     // anything still parented to us so the GUI exit leaves no background
     // processes behind.
     process_kill::sweep_orphan_children();
+}
+
+fn should_center_main_window(restored: bool, windows: bool, maximized: bool) -> bool {
+    !restored && (windows || !maximized)
 }
 
 pub fn run_core_from_args(args: &[String]) -> Result<(), String> {

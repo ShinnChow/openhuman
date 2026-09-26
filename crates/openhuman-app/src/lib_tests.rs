@@ -1,5 +1,13 @@
 use super::*;
 
+#[test]
+fn main_window_centering_only_follows_failed_restore_and_maximize() {
+    assert!(!should_center_main_window(true, false, false));
+    assert!(should_center_main_window(false, true, false));
+    assert!(!should_center_main_window(false, false, true));
+    assert!(should_center_main_window(false, false, false));
+}
+
 // Tests that read/write process-global env vars must serialize through this
 // mutex. Rust's test runner executes tests in parallel by default; without
 // coordination, concurrent set_var / remove_var calls race and produce
