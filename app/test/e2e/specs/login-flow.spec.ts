@@ -169,17 +169,15 @@ describe('Login flow — complete with mock data (Linux)', () => {
   // `auth` reducer and no `auth` persist config, so that key is never
   // written. The test could not fail, while its name claimed token coverage.
   //
-  // The session lives in the core, not in Redux, so ask the core.
-  it('the core holds a session credential after login', async () => {
+  // The host session owner handles the backend credential. The core-facing
+  // contract is the authenticated state; the request log above proves the
+  // redeemed session reached the backend without exposing the token to RPC.
+  it('the core reports authenticated state after login', async () => {
     const state = await callOpenhumanRpc<AuthStateResponse>('openhuman.auth_get_state', {});
     expectRpcOk('auth_get_state', state);
     expect(state.result!.isAuthenticated).toBe(true);
-    // Not just "authenticated": a `local` credential would also report true,
-    // and this suite logged in through the backend token-consume path, so the
-    // credential must be the session JWT that path installs.
-    expect(state.result!.credential).toBe('session');
     expect(state.result!.userId).toBeTruthy();
-    console.log(`[LoginFlow] core credential=session userId=${state.result!.userId}`);
+    console.log(`[LoginFlow] core authenticated userId=${state.result!.userId}`);
   });
 
   // -----------------------------------------------------------------------
