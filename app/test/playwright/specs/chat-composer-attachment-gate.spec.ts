@@ -215,10 +215,9 @@ test.describe('Chat composer attachment gate', () => {
     await stopButton(page).click();
     await expect(stopButton(page)).toHaveCount(0, { timeout: 20_000 });
 
-    // Removing Cancel means the cancellation request has been accepted, but
-    // the host-owned composer controls remount on the following idle render.
-    // Wait for that settled state before locating its attachment control.
-    await expect(page.getByTestId('composer-human-mode')).toBeVisible({ timeout: 20_000 });
+    // Stop preserves the prompt for editing, so the primary slot is Send;
+    // attachment controls nevertheless become available immediately.
+    await expect(page.getByTestId('send-message-button')).toBeVisible({ timeout: 20_000 });
     await expect(attachButton(page)).toBeEnabled({ timeout: 20_000 });
   });
 

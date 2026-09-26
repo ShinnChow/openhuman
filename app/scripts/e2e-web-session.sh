@@ -205,6 +205,11 @@ if [ ! -x "$OPENHUMAN_CORE_BIN" ]; then
 fi
 
 export OPENHUMAN_CORE_TOKEN="$PW_CORE_RPC_TOKEN"
+# The deterministic browser lane scripts direct tool calls (cron, edits,
+# parallel agents, and similar) rather than exercising the model's `use_skill`
+# disclosure choreography. Advertise the compiled tool packs for this harness
+# core only; production hosts retain the fail-closed packed default.
+export OPENHUMAN_E2E=1
 # The skills registry defaults to a public HermesHub fetch. The browser E2E
 # lane must remain deterministic and offline, so serve its compact catalog
 # fixture from the local mock backend instead.

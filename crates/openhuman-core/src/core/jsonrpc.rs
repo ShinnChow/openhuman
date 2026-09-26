@@ -1510,6 +1510,12 @@ async fn run_server_with_services(
     let mut builder = crate::core::runtime::CoreBuilder::new(host_kind)
         .token(token)
         .services(services);
+    // The browser E2E harness scripts direct tool calls through its mock model.
+    // Keep production's fail-closed packed default, while making those calls
+    // visible in the deterministic test core without changing library hosts.
+    if std::env::var_os("OPENHUMAN_E2E").is_some() {
+        builder = builder.tool_groups(crate::tools::toolpacks::ToolGroups::advertised());
+    }
     if let Some(host) = host {
         builder = builder.host(host);
     }
