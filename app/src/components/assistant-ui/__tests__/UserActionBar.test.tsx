@@ -29,7 +29,7 @@ import { AssistantUiRuntimeProvider } from '../../../providers/AssistantUiRuntim
 import chatRuntimeReducer from '../../../store/chatRuntimeSlice';
 import threadReducer from '../../../store/threadSlice';
 import type { ThreadMessage } from '../../../types/thread';
-import { Thread } from '../thread';
+import { extractComposerPasteFiles, Thread } from '../thread';
 
 const THREAD_ID = 't-action-bar';
 
@@ -64,6 +64,19 @@ function renderThreadWithOneUserMessage() {
 }
 
 describe('User-message action bar — capability-gated Edit (#5897)', () => {
+  it('extracts media from either clipboard representation', () => {
+    const file = new File(['x'], 'clip.png', { type: 'image/png' });
+    expect(
+      extractComposerPasteFiles({ items: [], files: [file] } as unknown as DataTransfer)
+    ).toEqual([file]);
+    expect(
+      extractComposerPasteFiles({
+        items: [{ kind: 'file', type: 'image/png', getAsFile: () => file }],
+        files: [],
+      } as unknown as DataTransfer)
+    ).toEqual([file]);
+  });
+
   it('renders the user message and its action bar', async () => {
     const { container } = renderThreadWithOneUserMessage();
 
