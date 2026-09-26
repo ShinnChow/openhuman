@@ -106,6 +106,13 @@ mkdir -p "$OPENHUMAN_WORKSPACE"
 # (and retains services for) the runner's global ~/.openhuman state.
 E2E_WEB_CORE_HOME="$OPENHUMAN_WORKSPACE/home"
 mkdir -p "$E2E_WEB_CORE_HOME"
+# Keep the acting-tool sandbox inside the shard as well. Besides isolating
+# browser runs from the host's projects directory, this gives tool-call specs
+# a deterministic, readable fixture without touching the checkout.
+E2E_ACTION_DIR="$OPENHUMAN_WORKSPACE/action"
+mkdir -p "$E2E_ACTION_DIR"
+printf 'E2E tool presentation fixture\n' >"$E2E_ACTION_DIR/tool-presentation-fixture.txt"
+export OPENHUMAN_ACTION_DIR="$E2E_ACTION_DIR"
 cat > "$OPENHUMAN_WORKSPACE/config.toml" <<EOF
 api_url = "http://127.0.0.1:${E2E_MOCK_PORT}"
 primary_cloud = "p_e2e_mock"
