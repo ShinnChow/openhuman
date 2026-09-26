@@ -147,7 +147,10 @@ test.describe('Settings - Account Preferences', () => {
   });
 
   test('opens the billing route and settles the redirect status copy', async ({ page }) => {
-    test.skip(true, 'billing is exposed as an account-settings button; the retired nested route is covered by card-payment-flow');
+    test.skip(
+      true,
+      'billing is exposed as an account-settings button; the retired nested route is covered by card-payment-flow'
+    );
     await gotoSettingsRoute(page, '/settings/account');
 
     await expect(page.getByRole('heading', { name: 'Billing', exact: true })).toBeVisible();

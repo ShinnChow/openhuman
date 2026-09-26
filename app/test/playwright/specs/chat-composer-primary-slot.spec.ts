@@ -196,7 +196,9 @@ test.describe('Chat composer primary slot', () => {
     await expect(sendButton(page)).toHaveCount(0);
   });
 
-  test('Stop ends the turn and restores the send action for the retained draft', async ({ page }) => {
+  test('Stop ends the turn and restores the send action for the retained draft', async ({
+    page,
+  }) => {
     await openChat(page);
     await beginStreamingTurn(page, 'Count slowly for me');
 
