@@ -252,16 +252,13 @@ export async function sendTurn(
 
 /** Create a thread from the sidebar and return its id. */
 export async function startNewThread(page: Page): Promise<string> {
+  const previous = await selectedThreadId(page);
   const sidebar = page.getByTestId('new-thread-sidebar-button');
   if (await sidebar.isVisible().catch(() => false)) {
     await sidebar.click({ force: true });
   } else {
     await page.getByTestId('new-thread-button').click({ force: true });
   }
-  // The current shell reuses an empty selected thread when the user presses
-  // New Conversation; only a thread that already has content is replaced.
-  // Treat the resulting selected id as authoritative instead of requiring a
-  // change that the product intentionally does not make for the empty case.
-  await expect.poll(async () => selectedThreadId(page), { timeout: 20_000 }).toBeTruthy();
+  await expect.poll(async () => selectedThreadId(page), { timeout: 20_000 }).not.toBe(previous);
   return waitForSelectedThreadId(page);
 }
