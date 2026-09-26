@@ -268,9 +268,12 @@ test.describe('Chat composer attachment gate', () => {
         const file = new File([bytes], fileName, { type: 'image/png' });
         const data = new DataTransfer();
         data.items.add(file);
-        target.dispatchEvent(
-          new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true })
-        );
+        // Chromium ignores the readonly `clipboardData` init member on a
+        // synthetic ClipboardEvent. Define it explicitly so the event seen by
+        // React has the same DataTransfer the browser would provide.
+        const event = new Event('paste', { bubbles: true, cancelable: true });
+        Object.defineProperty(event, 'clipboardData', { value: data });
+        target.dispatchEvent(event);
       },
       { selector: '[data-testid="chat-message-input"]', fileName: name }
     );
